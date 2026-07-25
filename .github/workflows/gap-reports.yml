@@ -2,8 +2,13 @@ name: gap reports
 
 on:
   schedule:
-    # 15:00 UTC (~11am ET): late enough that last night's setlist is posted.
-    # Most days find no show and the run is over in seconds.
+    # Hourly across the window a show can be settling in: an east coast encore
+    # lands around 03:30 UTC, a west coast one around 06:30. A show publishes
+    # once its song count has held still for QUIET_HOURS, so the run interval
+    # only decides how soon after that we notice. Nothing to do on most days,
+    # and finding nothing costs one API call.
+    - cron: "0 2-13 * * *"
+    # Once a day, also re-fetch recent settled shows to pick up corrections.
     - cron: "0 15 * * *"
   workflow_dispatch:
     inputs:
@@ -39,9 +44,13 @@ jobs:
       - name: Add new shows and render the site
         env:
           PHISHNET_API_KEY: ${{ secrets.PHISHNET_API_KEY }}
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
+          # Only the once-a-day run pays to re-fetch shows that already settled.
+          recheck=""
+          [ "$SCHEDULE" = "0 15 * * *" ] && recheck="--recheck"
           python phishgap.py --site site --previous --rebuild \
-            --catch-up "${{ github.event.inputs.days || 21 }}"
+            --catch-up "${{ github.event.inputs.days || 21 }}" $recheck
 
       - name: Commit the data archive
         id: archive

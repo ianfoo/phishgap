@@ -42,6 +42,25 @@ Rather than naming dates, let it find them:
 ./phishgap.py --site site --previous --catch-up 400  # or a whole year of them
 ```
 
+A show is held back until its setlist stops growing. Nothing in the API says
+whether a setlist is finished — there is no show time to reason from, the show
+record's `updated_at` lags by days, and the format is not promised: a
+rained-out show can stop mid-second-set with no encore, so counting sets proves
+nothing. So stability stands in for completeness. A song count that has not
+moved for `QUIET_HOURS` is taken for the whole show; until then the report is
+archived as `provisional` and kept off the site, because a half-entered setlist
+would publish wrong totals. The window is sized to clear the longest gap
+between two songs being entered — a 45-minute jam, or a setbreak, plus the lag
+of whoever is typing. If stability never settles, a backstop publishes anyway
+once no show that night could still be running anywhere in North America.
+
+`--catch-up` re-fetches provisional shows every run, however often you run it.
+Corrections to shows that already settled arrive with `--recheck`:
+
+```sh
+./phishgap.py --site site --previous --catch-up --recheck
+```
+
 Because the archive holds every report, re-rendering after a style change costs
 nothing and touches no API:
 
@@ -73,11 +92,12 @@ JSON archive; the generated pages live only on `gh-pages`.
 ./publish.sh                                      # push site/ to gh-pages
 ```
 
-`.github/workflows/gap-reports.yml` does the same thing on a schedule: once a
-day it looks for shows the archive is missing, and on a day with no show it
-finds nothing and publishes nothing. It needs one repository secret,
-`PHISHNET_API_KEY`. Pushing a change to `phishgap.py` also triggers it, so a
-template edit republishes every page.
+`.github/workflows/gap-reports.yml` does the same thing on a schedule: hourly
+through the window a show can be settling in, plus a once-a-day pass that also
+re-checks recent shows for corrections. On a day with no show it finds nothing
+and publishes nothing. It needs one repository secret, `PHISHNET_API_KEY`.
+Pushing a change to `phishgap.py` also triggers it, so a template edit
+republishes every page.
 
 ## Notes
 

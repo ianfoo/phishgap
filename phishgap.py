@@ -51,6 +51,20 @@ MIN_INTERVAL = 0.6
 MAX_TRIES = 5
 _last_fetch = [0.0]
 
+# How long a song count has to hold still before it is taken for the finished
+# show. This is NOT the run interval: runs can be hourly and the quiet period
+# still two. What it has to clear is the longest gap between two consecutive
+# songs being entered -- a 45-minute jam, or a setbreak, plus the lag of
+# whoever is typing. Call that 90 minutes and round up.
+QUIET_HOURS = 2
+
+# Backstop for when stability never settles, e.g. a setlist entered set by set
+# and then abandoned overnight. Doors are never later than about 20:30 local and
+# even a three-set night is done inside five hours, so 09:00 UTC the next day is
+# past the latest plausible end for a Pacific show -- and for anywhere else on
+# the continent by more. No venue time zone required, just the worst case.
+LAST_END_UTC = datetime.time(9, 0)
+
 # --catch-up re-fetches shows this recent even when they are already archived.
 # There is no hour that is safely after both an east coast and a west coast
 # show, so any schedule can catch a setlist mid-entry; without a recheck window
@@ -196,13 +210,17 @@ def build(showdate, apikey, artist="Phish", **kw):
     return report
 
 
+def _utcnow():
+    return datetime.datetime.now(datetime.timezone.utc)
+
+
 def recent_shows(apikey, days, artist="Phish", **kw):
     """Dates of shows already played within the last `days`, oldest first.
 
     One call per calendar year touched by the window, which is how --catch-up
     stays cheap enough to run on a schedule: most days it finds nothing new.
     """
-    today = datetime.date.today()
+    today = _utcnow().date()
     start = today - datetime.timedelta(days=days)
     dates = set()
     for year in sorted({start.year, today.year}):
@@ -970,26 +988,77 @@ def saved_reports(site_dir):
     return out
 
 
-def _is_fuller(report, site_dir):
+def archived(site_dir, date):
+    """The report already on disk for `date`, or None."""
+    _, blob = site_paths(site_dir, date)
+    if not os.path.isfile(blob):
+        return None
+    with open(blob, encoding="utf-8") as fh:
+        try:
+            return json.load(fh)
+        except ValueError:
+            return None
+
+
+def is_fuller(report, prior):
     """Whether a re-fetched show is worth replacing the archived one with.
 
     A re-check exists to complete a setlist that was archived mid-entry, so it
     must never do the reverse and trade a full setlist for a thinner one.
     """
-    _, blob = site_paths(site_dir, report["date"])
-    if not os.path.isfile(blob):
-        return True
-    with open(blob, encoding="utf-8") as fh:
-        try:
-            prior = json.load(fh)
-        except ValueError:
-            return True
-    was, now = len(prior.get("songs") or []), len(report["songs"])
+    was, now = len(prior.get("songs") or []) if prior else 0, len(report["songs"])
     if now >= was:
         return True
     print("keeping archived %s: %d songs beats the %d just fetched"
           % (report["date"], was, now), file=sys.stderr)
     return False
+
+
+def _ts(value):
+    """Parse an archived timestamp, or None if it is missing or unreadable.
+
+    Naive values are read as UTC. A stamp we cannot trust restarts the quiet
+    period, which delays a show rather than publishing a partial one.
+    """
+    try:
+        t = datetime.datetime.fromisoformat(value)
+    except (TypeError, ValueError):
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=datetime.timezone.utc)
+
+
+def _certainly_over(showdate, now):
+    """True once no show on `showdate` could still be running anywhere in NA."""
+    bound = datetime.datetime.combine(
+        datetime.date.fromisoformat(showdate) + datetime.timedelta(days=1),
+        LAST_END_UTC, tzinfo=datetime.timezone.utc)
+    return now >= bound
+
+
+def settle(report, prior, now):
+    """Mark a freshly fetched show provisional until its song count holds still.
+
+    Completeness cannot be read off the data. There is no showtime to reason
+    from, the show record's updated_at lags by days, and the format is not
+    promised -- a rained-out show can stop mid-second-set with no encore, so
+    counting sets proves nothing. Stability stands in for completeness instead:
+    a count that has not moved for QUIET_HOURS is taken for the whole show.
+    Nothing about geography or set lengths is assumed, so a weather-shortened
+    night converges exactly like a normal one; it just stops growing sooner.
+    """
+    count = len(report["songs"])
+    same = prior and len(prior.get("songs") or []) == count
+    since = _ts((prior or {}).get("count_since")) if same else None
+    since = since if since and since <= now else now
+    report["count_since"] = since.isoformat(timespec="seconds")
+    held = now - since
+    report["provisional"] = not (held >= datetime.timedelta(hours=QUIET_HOURS)
+                                or _certainly_over(report["date"], now))
+    if report["provisional"]:
+        print("%s held provisional: %d songs, steady %d min of %d needed"
+              % (report["date"], count, held.total_seconds() // 60,
+                 QUIET_HOURS * 60), file=sys.stderr)
+    return report
 
 
 def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
@@ -1003,12 +1072,17 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         page, blob = site_paths(site_dir, report["date"])
         with open(blob, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)
+        if report.get("provisional"):
+            # Archived so the next run can compare against it, but kept off the
+            # site: a half-entered setlist would publish wrong totals.
+            continue
         with open(page, "w", encoding="utf-8") as fh:
             fh.write(render_html(report, bar_scale=bar_scale,
                                  index_href="./index.html"))
         print("wrote %s" % page, file=sys.stderr)
 
-    known = saved_reports(site_dir)
+    # Reports predating the provisional flag have no such key, so they publish.
+    known = [r for r in saved_reports(site_dir) if not r.get("provisional")]
     if rebuild:
         fresh = {r["date"] for r in reports}
         for report in known:
@@ -1370,7 +1444,13 @@ def main():
                          "(use after a template change; no API calls)")
     ap.add_argument("--catch-up", nargs="?", type=int, const=21, metavar="DAYS",
                     help="with --site, add every show played in the last DAYS "
-                         "(default 21) that the site does not have yet")
+                         "(default 21) that the site does not have yet, and "
+                         "re-fetch any it is still holding as provisional")
+    ap.add_argument("--recheck", nargs="?", type=int, const=RECHECK_DAYS,
+                    metavar="DAYS",
+                    help="with --catch-up, also re-fetch settled shows from "
+                         "the last DAYS (default %d) to pick up corrections"
+                         % RECHECK_DAYS)
     ap.add_argument("--html", help="write an HTML report here")
     ap.add_argument("--pdf", help="write a PDF report here")
     ap.add_argument("--bar-scale", choices=BAR_SCALES, default="linear",
@@ -1394,6 +1474,8 @@ def main():
                  "several dates at once" % one_file)
     if (args.rebuild or args.force or args.catch_up) and not args.site:
         sys.exit("error: --rebuild, --force and --catch-up need --site DIR")
+    if args.recheck and not args.catch_up:
+        sys.exit("error: --recheck only means something with --catch-up")
     if not (args.showdate or args.from_json or args.rebuild or args.catch_up):
         sys.exit("error: give at least one show date (YYYY-MM-DD)")
     if args.html and args.pdf and \
@@ -1406,14 +1488,19 @@ def main():
         if args.catch_up:
             key = load_key(args.apikey)
             played = recent_shows(key, args.catch_up, artist=args.artist, **kw)
-            have = set() if args.force else archived_dates(args.site)
-            cutoff = (datetime.date.today()
-                      - datetime.timedelta(days=RECHECK_DAYS)).isoformat()
-            recheck = {d for d in played if d >= cutoff and d in have}
+            have = {} if args.force else {r["date"]: r
+                                          for r in saved_reports(args.site)}
+            # Anything still unsettled is re-fetched every run, however often
+            # that is; settled shows only when --recheck asks for corrections.
+            recheck = {d for d in played if (have.get(d) or {}).get("provisional")}
+            if args.recheck:
+                cutoff = (_utcnow().date()
+                          - datetime.timedelta(days=args.recheck)).isoformat()
+                recheck |= {d for d in played if d >= cutoff and d in have}
             fresh = [d for d in played
                      if (d not in have or d in recheck) and d not in dates]
             print("catch-up: %d show%s played in the last %d days, "
-                  "%d new, %d re-checked"
+                  "%d new, %d re-fetched"
                   % (len(played), "" if len(played) == 1 else "s",
                      args.catch_up, len(fresh) - len(recheck), len(recheck)),
                   file=sys.stderr)
@@ -1439,10 +1526,13 @@ def main():
                     raise
                 print("skipping %s: %s" % (date, exc), file=sys.stderr)
                 continue
-            if date in recheck and not _is_fuller(report, args.site):
+            prior = archived(args.site, date) if args.site else None
+            if not is_fuller(report, prior):
                 continue
             if args.previous:
                 add_previous(report, key, **kw)
+            if args.site:
+                settle(report, prior, _utcnow())
             reports.append(report)
     except ApiError as exc:
         sys.exit("error: %s" % exc)
