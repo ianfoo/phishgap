@@ -9,25 +9,30 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{color-scheme:light dark;
-      --paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;
-      --rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;
-      --dim:#877e6e;--track:rgba(23,21,15,.085);--hover:rgba(200,55,27,.055);
-      --grain-blend:multiply;--grain-opacity:.45;}
-/* Dark palette is scoped to `screen` so print and PDF stay on paper stock. */
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#877e6e;--track:rgba(23,21,15,.085);--hover:rgba(200,55,27,.055);--grain-blend:multiply;--grain-opacity:.45;}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-  :root{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;
-        --rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;
-        --dim:#948b7c;--track:rgba(236,229,213,.1);
-        --hover:rgba(255,107,69,.07);
-        --grain-blend:screen;--grain-opacity:.2;}
-  /* A 3px cream bar blooms on near-black the way 3px of ink never does on
-     paper, so the hero rule gets thinner and steps back a tone in the dark. */
-  .hero{border-top-width:2px;border-top-color:#6b6353}
-  /* Favicons drawn as a solid black glyph on transparency vanish here. */
-  .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]) .hero{border-top-width:2px;border-top-color:#6b6353}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 }
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"] .hero{border-top-width:2px;border-top-color:#6b6353}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.6rem;letter-spacing:.12em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled){color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
 
 *{box-sizing:border-box}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
@@ -195,7 +200,40 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   thead{display:table-header-group}
   footer{break-before:avoid}
 }
-</style></head><body><div class="wrap">
+</style><script>
+(function(){
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script></head><body><div class="wrap">
 <header><nav class='crumb'><a class='prev' rel='prev' href='./2026-07-19.html' aria-label='Previous show, 2026-07-19'>&larr; 2026-07-19</a><a class='all' href='./index.html'>All reports</a><a class='next' rel='next' href='./2026-07-22.html' aria-label='Next show, 2026-07-22'>2026-07-22 &rarr;</a></nav><h1>Gap <em>Report</em></h1>
 <p class="show"><span class="date">2026-07-21</span><span class='tour'>2026 Summer Tour</span></p>
 <p class="where">Empower Federal Credit Union Amphitheater at Lakeview, Syracuse, NY</p></header>
@@ -223,5 +261,5 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <tr><td class='n'><span class='gap small'>5</span></td><td class='song'>More</td><td class='bar'><span class='track'><span class='fill small' style='width:11.11%'></span></span></td><td class='last'><span class='date'>2026-07-12</span><span class='venue'>Ruoff Music Center</span><span class='place'>Noblesville, IN</span></td></tr>
 <tr><td class='n'><span class='gap small'>9</span></td><td class='song'>Say It To Me S.A.N.T.O.S.</td><td class='bar'><span class='track'><span class='fill small' style='width:20.00%'></span></span></td><td class='last'><span class='date'>2026-07-07</span><span class='venue'>Kohl Center</span><span class='place'>Madison, WI</span></td></tr>
 </tbody></table><div class='notes'><p>Turtle in the Clouds was unfinished. Trey teased In the Summertime in Sand and A Love Supreme in Light. During the jam in Blaze On, Trey addressed the crowd and explained that the show would be ending early due to weather and that to maximize their time, the band would not play an encore.</p></div>
-<footer><span>Data: Phish.net API v5</span><span>Generated 2026-07-25</span></footer>
+<footer><span>Data: Phish.net API v5</span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span><span>Generated 2026-07-25</span></footer>
 </div></body></html>
