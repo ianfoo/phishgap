@@ -339,11 +339,17 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
    is room for it, can be lifted out to ride the breadcrumb row where there is
    not -- see the max-width block. One element either way. */
 header{padding-bottom:.9rem}
-.crumb{margin:0 0 1rem;font-size:.62rem;letter-spacing:.16em;
+/* Three fixed columns rather than space-between, so the index link stays put
+   when a show is missing one of its neighbours. */
+.crumb{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
+       gap:.5rem;margin:0 0 1rem;font-size:.62rem;letter-spacing:.16em;
        text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;
+.crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.crumb .prev{grid-column:1;justify-self:start}
+.crumb .all{grid-column:2;justify-self:center}
+.crumb .next{grid-column:3;justify-self:end}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
    letter-spacing:-.02em}
@@ -457,7 +463,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      even at 320px, and the masthead closes up so it reads as one block rather
      than a stack of separate announcements. */
   header{padding-bottom:.55rem}
-  .crumb{margin-bottom:.7rem}
+  /* Two full dates and the index link have to share one line here, and at
+     320px they only just do, so the pager gives up some tracking rather than
+     risk pushing the page sideways. */
+  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.56rem;letter-spacing:.09em}
   h1{margin-bottom:.45rem}
   .show .date{font-size:1.15rem}
   .show .tour{font-size:.62rem;font-weight:400;letter-spacing:.14em}
@@ -574,7 +583,8 @@ def _bar_pct(gap, biggest, scale="linear"):
     return gap / biggest * 100
 
 
-def render_html(report, bar_scale="linear", index_href=None):
+def render_html(report, bar_scale="linear", index_href=None,
+                prev_date=None, next_date=None):
     allg = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(allg) if allg else 0
     avg = _stat(sum(allg) / len(allg)) if allg else "n/a"
@@ -650,10 +660,19 @@ def render_html(report, bar_scale="linear", index_href=None):
     if report.get("notes"):
         notes = "<div class='notes'>%s</div>" % report["notes"]
 
+    # Walking a tour without going back to the index. The first and last shows
+    # the site knows about simply have one fewer link; the grid holds the
+    # index link in the middle either way.
     crumb = ""
     if index_href:
-        crumb = ("<nav class='crumb'><a href='%s'>&larr; All reports</a></nav>"
-                 % html.escape(index_href, quote=True))
+        step = ("<a class='%s' rel='%s' href='./%s.html' "
+                "aria-label='%s show, %s'>%s</a>")
+        crumb = "<nav class='crumb'>%s<a class='all' href='%s'>All reports</a>%s</nav>" % (
+            step % ("prev", "prev", prev_date, "Previous", prev_date,
+                    "&larr; " + prev_date) if prev_date else "",
+            html.escape(index_href, quote=True),
+            step % ("next", "next", next_date, "Next", next_date,
+                    next_date + " &rarr;") if next_date else "")
 
     # What a chat client shows when someone drops the link in a thread. Plain
     # text, entities and all, because html.escape has the last word on it.
@@ -1098,31 +1117,39 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     re-render every page after a template change without touching the API.
     """
     os.makedirs(os.path.join(site_dir, "data"), exist_ok=True)
+    # Archive everything first, provisional included, so the neighbour map that
+    # the prev/next links need is built from the whole published site at once.
     for report in reports:
-        page, blob = site_paths(site_dir, report["date"])
+        _, blob = site_paths(site_dir, report["date"])
         with open(blob, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)
-        if report.get("provisional"):
-            # Archived so the next run can compare against it, but kept off the
-            # site: a half-entered setlist would publish wrong totals.
-            continue
-        with open(page, "w", encoding="utf-8") as fh:
-            fh.write(render_html(report, bar_scale=bar_scale,
-                                 index_href="./index.html"))
-        print("wrote %s" % page, file=sys.stderr)
 
     # Reports predating the provisional flag have no such key, so they publish.
     known = [r for r in saved_reports(site_dir) if not r.get("provisional")]
-    if rebuild:
-        fresh = {r["date"] for r in reports}
-        for report in known:
-            if report["date"] in fresh:
-                continue          # just written above
-            page, _ = site_paths(site_dir, report["date"])
-            with open(page, "w", encoding="utf-8") as fh:
-                fh.write(render_html(report, bar_scale=bar_scale,
-                                     index_href="./index.html"))
-            print("rebuilt %s" % page, file=sys.stderr)
+    order = sorted(r["date"] for r in known)
+    around = {d: (order[i - 1] if i else None,
+                  order[i + 1] if i + 1 < len(order) else None)
+              for i, d in enumerate(order)}
+
+    # A new show gives its neighbour a next link it did not have, so that page
+    # is stale too. --rebuild rewrites the lot regardless.
+    fresh = {r["date"] for r in reports if not r.get("provisional")}
+    stale = set(fresh)
+    for date in fresh:
+        stale |= {d for d in around.get(date, ()) if d}
+
+    for report in known:
+        date = report["date"]
+        if not (rebuild or date in stale):
+            continue
+        page, _ = site_paths(site_dir, date)
+        prev, nxt = around.get(date, (None, None))
+        with open(page, "w", encoding="utf-8") as fh:
+            fh.write(render_html(report, bar_scale=bar_scale,
+                                 index_href="./index.html",
+                                 prev_date=prev, next_date=nxt))
+        print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
+              file=sys.stderr)
 
     index = os.path.join(site_dir, "index.html")
     with open(index, "w", encoding="utf-8") as fh:
