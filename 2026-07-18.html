@@ -39,11 +39,17 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
    is room for it, can be lifted out to ride the breadcrumb row where there is
    not -- see the max-width block. One element either way. */
 header{padding-bottom:.9rem}
-.crumb{margin:0 0 1rem;font-size:.62rem;letter-spacing:.16em;
+/* Three fixed columns rather than space-between, so the index link stays put
+   when a show is missing one of its neighbours. */
+.crumb{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
+       gap:.5rem;margin:0 0 1rem;font-size:.62rem;letter-spacing:.16em;
        text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;
+.crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.crumb .prev{grid-column:1;justify-self:start}
+.crumb .all{grid-column:2;justify-self:center}
+.crumb .next{grid-column:3;justify-self:end}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
    letter-spacing:-.02em}
@@ -157,7 +163,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      even at 320px, and the masthead closes up so it reads as one block rather
      than a stack of separate announcements. */
   header{padding-bottom:.55rem}
-  .crumb{margin-bottom:.7rem}
+  /* Two full dates and the index link have to share one line here, and at
+     320px they only just do, so the pager gives up some tracking rather than
+     risk pushing the page sideways. */
+  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.56rem;letter-spacing:.09em}
   h1{margin-bottom:.45rem}
   .show .date{font-size:1.15rem}
   .show .tour{font-size:.62rem;font-weight:400;letter-spacing:.14em}
@@ -187,7 +196,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   footer{break-before:avoid}
 }
 </style></head><body><div class="wrap">
-<header><nav class='crumb'><a href='./index.html'>&larr; All reports</a></nav><h1>Gap <em>Report</em></h1>
+<header><nav class='crumb'><a class='prev' rel='prev' href='./2026-07-17.html' aria-label='Previous show, 2026-07-17'>&larr; 2026-07-17</a><a class='all' href='./index.html'>All reports</a><a class='next' rel='next' href='./2026-07-19.html' aria-label='Next show, 2026-07-19'>2026-07-19 &rarr;</a></nav><h1>Gap <em>Report</em></h1>
 <p class="show"><span class="date">2026-07-18</span><span class='tour'>2026 Summer Tour</span></p>
 <p class="where">Merriweather Post Pavilion, Columbia, MD</p></header>
 <section class="hero"><div class='card'><div class='num'>17</div><div class='lbl'>Songs Played</div></div><div class='card'><div class='num hot'>241</div><div class='lbl'>Longest Gap</div></div><div class='card'><div class='num'>9</div><div class='lbl'>Median Gap</div></div><div class='card'><div class='num'>30.6</div><div class='lbl'>Average Gap</div></div></section>
