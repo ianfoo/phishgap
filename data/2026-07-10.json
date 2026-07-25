@@ -15,9 +15,9 @@
       "slug": "blaze-on",
       "gap": 5,
       "jamchart": false,
-      "prev_date": "2026-06-02",
-      "prev_venue": "Red Butte Garden Amphitheater",
-      "prev_place": "Salt Lake City, UT"
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -55,9 +55,9 @@
       "slug": "wolfmans-brother",
       "gap": 10,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -65,9 +65,9 @@
       "slug": "limb-by-limb",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -75,9 +75,9 @@
       "slug": "hey-stranger",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-05-30",
-      "prev_venue": "The Wilma Theatre",
-      "prev_place": "Missoula, MT"
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -85,9 +85,9 @@
       "slug": "bouncing-around-the-room",
       "gap": 3,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -95,9 +95,9 @@
       "slug": "oblivion",
       "gap": 8,
       "jamchart": false,
-      "prev_date": "2026-06-02",
-      "prev_venue": "Red Butte Garden Amphitheater",
-      "prev_place": "Salt Lake City, UT"
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -115,9 +115,9 @@
       "slug": "you-enjoy-myself",
       "gap": 10,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -125,9 +125,9 @@
       "slug": "backwards-down-the-number-line",
       "gap": 7,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -145,9 +145,9 @@
       "slug": "whats-going-through-your-mind",
       "gap": 6,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "ENCORE",
@@ -159,5 +159,7 @@
       "prev_venue": "Forest Hills Stadium",
       "prev_place": "Forest Hills, NY"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:44:37+00:00",
+  "provisional": false
 }

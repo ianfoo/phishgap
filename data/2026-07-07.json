@@ -15,9 +15,9 @@
       "slug": "chalk-dust-torture",
       "gap": 3,
       "jamchart": false,
-      "prev_date": "2026-06-19",
-      "prev_venue": "Massey Hall",
-      "prev_place": "Toronto, Ontario"
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -25,9 +25,9 @@
       "slug": "ghost",
       "gap": 3,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -35,9 +35,9 @@
       "slug": "back-on-the-train",
       "gap": 0,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -45,9 +45,9 @@
       "slug": "free",
       "gap": 7,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -145,9 +145,9 @@
       "slug": "sand",
       "gap": 1,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -175,9 +175,9 @@
       "slug": "slave-to-the-traffic-light",
       "gap": 4,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "ENCORE",
@@ -185,9 +185,11 @@
       "slug": "say-it-to-me-santos",
       "gap": 4,
       "jamchart": false,
-      "prev_date": "2026-06-20",
-      "prev_venue": "Kleinhans Music Hall",
-      "prev_place": "Buffalo, NY"
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:44:17+00:00",
+  "provisional": false
 }

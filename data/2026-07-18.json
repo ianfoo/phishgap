@@ -75,9 +75,9 @@
       "slug": "shade",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -125,9 +125,9 @@
       "slug": "lifeboy",
       "gap": 16,
       "jamchart": false,
-      "prev_date": "2026-06-14",
-      "prev_venue": "Lake Superior Big Top Chautauqua",
-      "prev_place": "Bayfield, WI"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -165,9 +165,9 @@
       "slug": "if-i-could",
       "gap": 63,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2025-04-18",
+      "prev_venue": "Climate Pledge Arena",
+      "prev_place": "Seattle, WA"
     },
     {
       "set": "ENCORE",
@@ -179,5 +179,7 @@
       "prev_venue": "Kohl Center",
       "prev_place": "Madison, WI"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:45:29+00:00",
+  "provisional": false
 }

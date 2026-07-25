@@ -25,9 +25,9 @@
       "slug": "gumbo",
       "gap": 10,
       "jamchart": false,
-      "prev_date": "2026-06-03",
-      "prev_venue": "Gerald R. Ford Amphitheater",
-      "prev_place": "Vail, CO"
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -55,9 +55,9 @@
       "slug": "steam",
       "gap": 13,
       "jamchart": false,
-      "prev_date": "2026-06-20",
-      "prev_venue": "Kleinhans Music Hall",
-      "prev_place": "Buffalo, NY"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -75,9 +75,9 @@
       "slug": "horn",
       "gap": 8,
       "jamchart": false,
-      "prev_date": "2026-06-14",
-      "prev_venue": "Lake Superior Big Top Chautauqua",
-      "prev_place": "Bayfield, WI"
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -85,9 +85,9 @@
       "slug": "split-open-and-melt",
       "gap": 13,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -105,9 +105,9 @@
       "slug": "its-ice",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-02",
-      "prev_venue": "Red Butte Garden Amphitheater",
-      "prev_place": "Salt Lake City, UT"
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -145,9 +145,9 @@
       "slug": "the-squirming-coil",
       "gap": 7,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "ENCORE",
@@ -159,5 +159,7 @@
       "prev_venue": "TD Pavilion at the Mann",
       "prev_place": "Philadelphia, PA"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:45:05+00:00",
+  "provisional": false
 }

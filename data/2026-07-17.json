@@ -45,9 +45,9 @@
       "slug": "mercury",
       "gap": 10,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -55,9 +55,9 @@
       "slug": "sample-in-a-jar",
       "gap": 8,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -75,9 +75,9 @@
       "slug": "guyute",
       "gap": 12,
       "jamchart": false,
-      "prev_date": "2026-06-13",
-      "prev_venue": "The Orpheum Theatre",
-      "prev_place": "Minneapolis, MN"
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -115,9 +115,9 @@
       "slug": "the-lizards",
       "gap": 11,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -169,5 +169,7 @@
       "prev_venue": "Hampton Coliseum",
       "prev_place": "Hampton, VA"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:45:22+00:00",
+  "provisional": false
 }
