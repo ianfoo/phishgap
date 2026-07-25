@@ -306,29 +306,114 @@ def render_text(report):
     return "\n".join(out) + "\n"
 
 
-# Shared by the report pages and the index, so one palette edit moves both.
-PALETTE_CSS = """
-:root{color-scheme:light dark;
-      --paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;
-      --rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;
-      --dim:#877e6e;--track:rgba(23,21,15,.085);--hover:rgba(200,55,27,.055);
-      --grain-blend:multiply;--grain-opacity:.45;}
-/* Dark palette is scoped to `screen` so print and PDF stay on paper stock. */
-@media screen and (prefers-color-scheme:dark){
-  :root{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;
-        --rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;
-        --dim:#948b7c;--track:rgba(236,229,213,.1);
-        --hover:rgba(255,107,69,.07);
-        --grain-blend:screen;--grain-opacity:.2;}
-  /* A 3px cream bar blooms on near-black the way 3px of ink never does on
-     paper, so the hero rule gets thinner and steps back a tone in the dark. */
-  .hero{border-top-width:2px;border-top-color:#6b6353}
-  /* Favicons drawn as a solid black glyph on transparency vanish here. */
-  .badge img.flip{filter:invert(1)}
+LIGHT = {
+    "paper": "#f2ece0", "ink": "#17150f", "ink-soft": "#413c31",
+    "rule": "#c9bfa9", "rule-soft": "rgba(201,191,169,.45)",
+    "hot": "#c8371b", "cool": "#4f6046", "dim": "#877e6e",
+    "track": "rgba(23,21,15,.085)", "hover": "rgba(200,55,27,.055)",
+    "grain-blend": "multiply", "grain-opacity": ".45",
 }
+DARK = {
+    "paper": "#131210", "ink": "#ece5d5", "ink-soft": "#c4bcaa",
+    "rule": "#413a30", "rule-soft": "rgba(236,229,213,.13)",
+    "hot": "#ff6b45", "cool": "#93b184", "dim": "#948b7c",
+    "track": "rgba(236,229,213,.1)", "hover": "rgba(255,107,69,.07)",
+    "grain-blend": "screen", "grain-opacity": ".2",
+}
+
+
+def _vars(palette):
+    return "".join("--%s:%s;" % kv for kv in palette.items())
+
+
+def _dark_under(root):
+    """The dark rules, written against whichever :root selector applies.
+
+    An explicit choice has to beat the system preference in both directions,
+    which normally means two copies of the palette drifting apart. Emitting
+    both from one dict instead: once for a dark system that has not been
+    overridden, once for an explicit dark. Both stay inside `screen`, so print
+    and PDF are never anything but paper stock.
+    """
+    return ("%(r)s{%(v)s}\n"
+            # A 3px cream bar blooms on near-black the way 3px of ink never
+            # does on paper, so the hero rule thins and steps back a tone.
+            "%(r)s .hero{border-top-width:2px;border-top-color:#6b6353}\n"
+            # Favicons drawn as solid black on transparency vanish here.
+            "%(r)s .badge img.flip{filter:invert(1)}\n"
+            % {"r": root, "v": _vars(DARK)})
+
+
+# Shared by the report pages and the index, so one palette edit moves both.
+PALETTE_CSS = (
+    ":root{color-scheme:light dark;%s}\n" % _vars(LIGHT)
+    + ':root[data-theme="light"]{color-scheme:only light}\n'
+    + ':root[data-theme="dark"]{color-scheme:only dark}\n'
+    + "@media screen and (prefers-color-scheme:dark){\n%s}\n"
+      % _dark_under(':root:not([data-theme="light"])')
+    + "@media screen{\n%s}\n" % _dark_under(':root[data-theme="dark"]')
+)
+
+# Footer control. The buttons ship disabled and JavaScript enables them, so a
+# page with scripting off offers nothing it cannot deliver.
+THEME_CSS = """
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.6rem;letter-spacing:.12em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled){color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
 """
 
-CSS = PALETTE_CSS + """
+THEME_UI = ("<span class='theme' role='group' aria-label='Colour theme'>"
+            + "".join("<button type='button' data-theme='%s' disabled>%s</button>"
+                      % (v, v.title()) for v in ("auto", "light", "dark"))
+            + "</span>")
+
+# Runs in <head> so the stored choice is on the root element before first
+# paint, otherwise a dark-mode reader gets a flash of paper. localStorage
+# throws on a file:// page in some browsers, which is exactly how these get
+# shared, hence the try blocks.
+THEME_JS = """<script>
+(function(){
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script>"""
+
+CSS = PALETTE_CSS + THEME_CSS + """
 *{box-sizing:border-box}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
@@ -508,14 +593,14 @@ SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>{css}</style></head><body><div class="wrap">
+<style>{css}</style>{theme_js}</head><body><div class="wrap">
 <header>{crumb}<h1>Gap <em>Report</em></h1>
 <p class="show"><span class="date">{date}</span>{tour}</p>
 <p class="where">{venue}</p></header>
 <section class="hero">{hero}</section>
 <p class="links">{links}</p>
 {sections}{notes}
-<footer><span>Data: Phish.net API v5</span><span>{stamp}</span></footer>
+<footer><span>Data: Phish.net API v5</span>{theme_ui}<span>{stamp}</span></footer>
 </div></body></html>
 """
 
@@ -689,7 +774,8 @@ def render_html(report, bar_scale="linear", index_href=None,
             if tour and "not part of a tour" not in tour.lower() else "")
 
     return SHELL.format(
-        css=CSS, date=html.escape(report["date"]), crumb=crumb, tour=tour,
+        css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI,
+        date=html.escape(report["date"]), crumb=crumb, tour=tour,
         venue=html.escape(report["venue"]), hero=hero,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
@@ -698,7 +784,7 @@ def render_html(report, bar_scale="linear", index_href=None,
 
 # ------------------------------------------------------------------ index ---
 
-INDEX_CSS = PALETTE_CSS + """
+INDEX_CSS = PALETTE_CSS + THEME_CSS + """
 *{box-sizing:border-box}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
@@ -856,7 +942,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>{css}</style></head><body><div class="wrap">
+<style>{css}</style>{theme_js}</head><body><div class="wrap">
 <header><h1>Gap <em>Reports</em></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
@@ -874,7 +960,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
-<footer><span>Data: Phish.net API v5</span><span>{stamp}</span></footer>
+<footer><span>Data: Phish.net API v5</span>{theme_ui}<span>{stamp}</span></footer>
 </div><script>{js}</script></body></html>
 """
 
@@ -988,7 +1074,8 @@ def render_index(reports, page_href="./%s.html"):
         subtitle, blurb = "No reports yet", "Per-song gaps for Phish shows."
 
     return INDEX_SHELL.format(
-        css=INDEX_CSS, js=INDEX_JS, hero=hero, years=chips,
+        css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
+        hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         subtitle=subtitle, blurb=html.escape(blurb, quote=True),
         stamp=time.strftime("Updated %Y-%m-%d"))
