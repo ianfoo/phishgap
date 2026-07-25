@@ -508,12 +508,6 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    white-space:nowrap}
 .verdict{display:block;margin-top:.2rem;font-size:.62rem;letter-spacing:.1em;
    text-transform:uppercase;white-space:nowrap}
-/* The mean only fits once the gap column is wide enough to hold it. A column
-   sized in percent cannot hold text sized in rem: below about this width the
-   nowrap line outgrows its box, and text-align cannot save it -- an overlong
-   line starts at the box's start edge and spills out the end, straight into
-   the song title. Screen only: the print column measures out fine. */
-@media screen and (max-width:1039px){.wide{display:none}}
 .verdict.overdue{color:var(--hot)}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
@@ -878,16 +872,18 @@ def render_html(report, bar_scale="linear", index_href=None,
         # marked on the bar so an overshoot is visible rather than arithmetic.
         typical = ""
         if s.get("gap_median") is not None:
-            typical = ("<span class='typ'>med %s<span class='wide'> &middot; avg "
-                       "%s</span></span>" % (_stat(s["gap_median"]),
-                                             _stat(s["gap_mean"])))
+            # The median alone. The mean sits within 20% of it for two thirds
+            # of songs, so it earned its space rarely, and the percentile band
+            # that actually decides the verdict read as jargon on the page --
+            # its ends are interpolated values that appear nowhere in the
+            # song's real gaps. Both are still archived in the JSON.
+            typical = ("<span class='typ'>med %s</span>"
+                       % _stat(s["gap_median"]))
         elif s.get("recent_plays") is not None:
             # No norm to compare against, so say why: this is how thin its
             # recent record is.
-            typical = ("<span class='typ'>%d<span class='wide'> play%s</span>"
-                       " in %d yr</span>"
-                       % (s["recent_plays"],
-                          "" if s["recent_plays"] == 1 else "s", RECENT_YEARS))
+            typical = ("<span class='typ'>%d in %d yr</span>"
+                       % (s["recent_plays"], RECENT_YEARS))
         tag = ""
         if s.get("verdict") in ("premature", "overdue", "bustout"):
             tag = "<span class='verdict %s'>%s</span>" % (s["verdict"],
