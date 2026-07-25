@@ -1,0 +1,253 @@
+{
+  "date": "2026-07-24",
+  "venue": "Madison Square Garden, New York, NY",
+  "venue_name": "Madison Square Garden",
+  "city": "New York",
+  "state": "NY",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>This show was Phish's 93rd performance at Madison Square Garden and featured a setlist comprised entirely of songs from the 1993 era of the band, Trey wearing a Marvin the Martian T-shirt (a common occurrence in 1993), and multiple bustouts: Big Ball Jam (last played <a href=\"https://phish.net/setlists/phish-december-09-1994-mesa-amphitheatre-mesa-az-usa.html\">December 9, 1994</a>, or 1,170 shows), La Grange (last played <a href=\"https://phish.net/setlists/phish-july-08-2012-saratoga-performing-arts-center-saratoga-springs-ny-usa.html\">July 8, 2012</a>, or 531 shows), Sparks (last played <a href=\"https://phish.net/setlists/phish-december-30-2016-madison-square-garden-new-york-ny-usa.html\">December 30, 2016</a>, or 357 shows), Makisupa Policeman (last played <a href=\"https://phish.net/setlists/phish-july-11-2023-orion-amphitheater-huntsville-al-usa.html\">July 11, 2023</a>, or 149 shows), Kung (last played <a href=\"https://phish.net/setlists/phish-november-30-2019-dunkin-donuts-center-providence-ri-usa.html\">November 30, 2019</a>, or 258 shows), and Sweet Adeline (last played <a href=\"https://phish.net/setlists/phish-december-29-2016-madison-square-garden-new-york-ny-usa.html\">December 29, 2016</a>, or 358 shows). Weigh's lyrics were changed to \"on a summer day.\" Makisupa included the lyrics \"iced green matcha tea, policeman looking at me\" lyrics. Kung began over the Makisupa drumbeat. Trey quoted <a href=\"https://phish.net/song/big-balls\">Big Balls</a> in the Tube prior to Big Ball Jam.</p>",
+  "permalink": "https://phish.net/setlists/phish-july-24-2026-madison-square-garden-new-york-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Llama",
+      "slug": "llama",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-07-17",
+      "prev_venue": "Coastal Credit Union Music Park at Walnut Creek",
+      "prev_place": "Raleigh, NC"
+    },
+    {
+      "set": "SET 1",
+      "song": "Bathtub Gin",
+      "slug": "bathtub-gin",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-12",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Lengthwise",
+      "slug": "lengthwise",
+      "gap": 73,
+      "jamchart": false,
+      "prev_date": "2024-12-30",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Maze",
+      "slug": "maze",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-12",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Gumbo",
+      "slug": "gumbo",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-14",
+      "prev_venue": "Enmarket Arena",
+      "prev_place": "Savannah, GA"
+    },
+    {
+      "set": "SET 1",
+      "song": "Daniel Saw the Stone",
+      "slug": "daniel-saw-the-stone",
+      "gap": 55,
+      "jamchart": false,
+      "prev_date": "2025-06-27",
+      "prev_venue": "Moody Center",
+      "prev_place": "Austin, TX"
+    },
+    {
+      "set": "SET 1",
+      "song": "Weigh",
+      "slug": "weigh",
+      "gap": 88,
+      "jamchart": false,
+      "prev_date": "2024-08-10",
+      "prev_venue": "Bethel Woods Center for the Arts",
+      "prev_place": "Bethel, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Guelah Papyrus",
+      "slug": "guelah-papyrus",
+      "gap": 19,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Divided Sky",
+      "slug": "divided-sky",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-15",
+      "prev_venue": "Enmarket Arena",
+      "prev_place": "Savannah, GA"
+    },
+    {
+      "set": "SET 1",
+      "song": "Tube",
+      "slug": "tube",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-07-10",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Big Ball Jam",
+      "slug": "big-ball-jam",
+      "gap": 1170,
+      "jamchart": false,
+      "prev_date": "1994-12-09",
+      "prev_venue": "Mesa Amphitheatre",
+      "prev_place": "Mesa, AZ"
+    },
+    {
+      "set": "SET 1",
+      "song": "La Grange",
+      "slug": "la-grange",
+      "gap": 531,
+      "jamchart": false,
+      "prev_date": "2012-07-08",
+      "prev_venue": "Saratoga Performing Arts Center",
+      "prev_place": "Saratoga Springs, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Also Sprach Zarathustra",
+      "slug": "also-sprach-zarathustra",
+      "gap": 1,
+      "jamchart": false,
+      "prev_date": "2026-07-21",
+      "prev_venue": "Empower Federal Credit Union Amphitheater at Lakeview",
+      "prev_place": "Syracuse, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Chalk Dust Torture",
+      "slug": "chalk-dust-torture",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Sparks",
+      "slug": "sparks",
+      "gap": 357,
+      "jamchart": false,
+      "prev_date": "2016-12-30",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Slave to the Traffic Light",
+      "slug": "slave-to-the-traffic-light",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "The Wedge",
+      "slug": "the-wedge",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-15",
+      "prev_venue": "Enmarket Arena",
+      "prev_place": "Savannah, GA"
+    },
+    {
+      "set": "SET 2",
+      "song": "Makisupa Policeman",
+      "slug": "makisupa-policeman",
+      "gap": 149,
+      "jamchart": false,
+      "prev_date": "2023-07-11",
+      "prev_venue": "Orion Amphitheater",
+      "prev_place": "Huntsville, AL"
+    },
+    {
+      "set": "SET 2",
+      "song": "Kung",
+      "slug": "kung",
+      "gap": 258,
+      "jamchart": false,
+      "prev_date": "2019-11-30",
+      "prev_venue": "Dunkin' Donuts Center",
+      "prev_place": "Providence, RI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Suzy Greenberg",
+      "slug": "suzy-greenberg",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Golgi Apparatus",
+      "slug": "golgi-apparatus",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-07-17",
+      "prev_venue": "Coastal Credit Union Music Park at Walnut Creek",
+      "prev_place": "Raleigh, NC"
+    },
+    {
+      "set": "SET 2",
+      "song": "Good Times Bad Times",
+      "slug": "good-times-bad-times",
+      "gap": 34,
+      "jamchart": false,
+      "prev_date": "2025-09-14",
+      "prev_venue": "Coca-Cola Amphitheater",
+      "prev_place": "Birmingham, AL"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Sweet Adeline",
+      "slug": "sweet-adeline",
+      "gap": 358,
+      "jamchart": false,
+      "prev_date": "2016-12-29",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Fluffhead",
+      "slug": "fluffhead",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-12",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "date": "2026-07-11",
+  "venue": "Ruoff Music Center, Noblesville, IN",
+  "venue_name": "Ruoff Music Center",
+  "city": "Noblesville",
+  "state": "IN",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Theme from the Bottom and 555 were unfinished. Reba did not contain the whistling ending. My Friend, My Friend did not feature the \"myfe\" ending.&nbsp;</p>",
+  "permalink": "https://phish.net/setlists/phish-july-11-2026-ruoff-music-center-noblesville-in-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "AC/DC Bag",
+      "slug": "acdc-bag",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-05-31",
+      "prev_venue": "Jackson Hole Center for the Arts - Center Theater",
+      "prev_place": "Jackson, WY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Punch You in the Eye",
+      "slug": "punch-you-in-the-eye",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Theme from the Bottom",
+      "slug": "theme-from-the-bottom",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Timber (Jerry the Mule)",
+      "slug": "timber-jerry-the-mule",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "555",
+      "slug": "555",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Reba",
+      "slug": "reba",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Dirt",
+      "slug": "dirt",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Most Events Aren't Planned",
+      "slug": "most-events-arent-planned",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Everything's Right",
+      "slug": "everythings-right",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-06-03",
+      "prev_venue": "Gerald R. Ford Amphitheater",
+      "prev_place": "Vail, CO"
+    },
+    {
+      "set": "SET 2",
+      "song": "Tweezer",
+      "slug": "tweezer",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Golden Age",
+      "slug": "golden-age",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "My Friend, My Friend",
+      "slug": "my-friend-my-friend",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "No Quarter",
+      "slug": "no-quarter",
+      "gap": 43,
+      "jamchart": false,
+      "prev_date": "2025-07-04",
+      "prev_venue": "Folsom Field",
+      "prev_place": "Boulder, CO"
+    },
+    {
+      "set": "SET 2",
+      "song": "Carini",
+      "slug": "carini",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-05-29",
+      "prev_venue": "The Wilma Theatre",
+      "prev_place": "Missoula, MT"
+    },
+    {
+      "set": "ENCORE",
+      "song": "A Life Beyond The Dream",
+      "slug": "a-life-beyond-the-dream",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Tweezer Reprise",
+      "slug": "tweezer-reprise",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    }
+  ]
+}

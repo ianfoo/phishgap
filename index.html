@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phish Gap Reports</title>
+<meta name="description" content="Per-song gaps for 13 Phish shows, 2026-07-07 to 2026-07-24.">
+<meta property="og:title" content="Phish Gap Reports">
+<meta property="og:description" content="Per-song gaps for 13 Phish shows, 2026-07-07 to 2026-07-24.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;
+      --paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;
+      --rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;
+      --dim:#877e6e;--track:rgba(23,21,15,.085);--hover:rgba(200,55,27,.055);
+      --grain-blend:multiply;--grain-opacity:.45;}
+/* Dark palette is scoped to `screen` so print and PDF stay on paper stock. */
+@media screen and (prefers-color-scheme:dark){
+  :root{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;
+        --rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;
+        --dim:#948b7c;--track:rgba(236,229,213,.1);
+        --hover:rgba(255,107,69,.07);
+        --grain-blend:screen;--grain-opacity:.2;}
+  /* A 3px cream bar blooms on near-black the way 3px of ink never does on
+     paper, so the hero rule gets thinner and steps back a tone in the dark. */
+  .hero{border-top-width:2px;border-top-color:#6b6353}
+  /* Favicons drawn as a solid black glyph on transparency vanish here. */
+  .badge img.flip{filter:invert(1)}
+}
+
+*{box-sizing:border-box}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:15px;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
+   letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--hot)}
+header{padding-bottom:.9rem}
+.show{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
+      text-transform:uppercase;color:var(--ink-soft)}
+.hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
+      border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
+.card:first-child{border-left:0;padding-left:0}
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.3rem;line-height:1;
+     letter-spacing:-.01em}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;
+     color:var(--dim);margin-top:.4rem}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
+       margin:1.9rem 0 .9rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.9rem;
+        padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
+        background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.chip:focus-visible,.sort:focus-visible{
+  outline:2px solid var(--hot);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+      padding:.42rem .6rem;border:1px solid var(--rule);background:transparent;
+      color:var(--dim);cursor:pointer}
+.chip:hover{color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.sort{font:inherit;font-size:.7rem;padding:.4rem .3rem;background:transparent;
+      color:var(--ink);border:1px solid var(--rule);border-radius:0}
+.count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);margin-left:auto}
+.count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+         font-size:.95rem;color:var(--ink)}
+.reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:7.2rem 1fr auto;column-gap:1.1rem;
+     align-items:baseline;padding:.7rem .25rem;text-decoration:none;
+     color:inherit;border-bottom:1px solid var(--rule-soft)}
+.row:hover{background:var(--hover)}
+.r-date{font-family:'Alfa Slab One',Georgia,serif;font-size:1.05rem;
+        line-height:1.3rem;white-space:nowrap}
+.r-venue{font-size:.85rem;font-weight:600;letter-spacing:.04em;
+         text-transform:uppercase;line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+.r-stats{font-size:.7rem;color:var(--dim);text-align:right;white-space:nowrap;
+         line-height:1.3rem}
+.r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+           font-size:.95rem;color:var(--ink)}
+.r-stats b.hot{color:var(--hot)}
+.r-song{display:block;font-size:.7rem;color:var(--dim)}
+.empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+       font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+       color:var(--dim);display:flex;justify-content:space-between;
+       flex-wrap:wrap;gap:.5rem}
+@media screen{
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
+    opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+}
+/* Same lesson as the report tables: stack instead of squeezing columns, so
+   the rules still run the full width and nothing has to be hidden. */
+@media screen and (max-width:620px){
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
+  .r-stats{text-align:left;white-space:normal}
+  .r-song{display:inline}
+  .r-song::before{content:" ("}
+  .r-song::after{content:")"}
+  .card{flex:1 1 45%;padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.53rem;letter-spacing:.1em}
+  .show{font-size:.72rem;letter-spacing:.05em}
+  .count{margin-left:0}
+}
+</style></head><body><div class="wrap">
+<header><h1>Gap <em>Reports</em></h1>
+<p class="show">13 reports &middot; 2026-07-07 &rarr; 2026-07-24</p></header>
+<section class="hero"><div class='card'><div class='num'>13</div><div class='lbl'>Reports</div></div><div class='card'><div class='num hot'>1,468</div><div class='lbl'>Longest Gap</div></div><div class='card'><div class='num'>224</div><div class='lbl'>Songs Logged</div></div><div class='card'><div class='num'>7</div><div class='lbl'>Venues</div></div></section>
+<div class="tools">
+<input id="q" class="search" type="search" autocomplete="off" disabled
+       placeholder="Search date, venue, city, song&hellip;" aria-label="Search reports">
+<div class="chips"></div>
+<label class="count" for="sort">Sort
+<select id="sort" class="sort" disabled>
+<option value="newest">Newest</option><option value="oldest">Oldest</option>
+<option value="gap">Longest gap</option></select></label>
+<span class="count"><b id="shown">13</b> of 13 shows</span>
+</div>
+<ol class="reports" id="list">
+<li data-date='2026-07-24' data-year='2026' data-longest='1170' data-search="2026-07-24 madison square garden new york, ny 2026 summer tour llama bathtub gin lengthwise maze gumbo daniel saw the stone weigh guelah papyrus divided sky tube big ball jam la grange also sprach zarathustra chalk dust torture sparks slave to the traffic light the wedge makisupa policeman kung suzy greenberg golgi apparatus good times bad times sweet adeline fluffhead"><a class='row' href='./2026-07-24.html'><span class='r-date'>2026-07-24</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><b>24</b> songs &middot; median <b>11</b> &middot; longest <b class='hot'>1,170</b><span class='r-song'>Big Ball Jam</span></span></a></li>
+<li data-date='2026-07-22' data-year='2026' data-longest='1468' data-search="2026-07-22 madison square garden new york, ny 2026 summer tour glide runaway jim foam axilla stash cold as ice love you hold your head up sparkle ac/dc bag reba possum david bowie the vibration of life mike&#x27;s song i am hydrogen weekapaug groove bouncing around the room my friend, my friend split open and melt the lizards harry hood the horse silent in the morning big black furry creature from mars run like an antelope"><a class='row' href='./2026-07-22.html'><span class='r-date'>2026-07-22</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><b>26</b> songs &middot; median <b>10</b> &middot; longest <b class='hot'>1,468</b><span class='r-song'>Cold as Ice</span></span></a></li>
+<li data-date='2026-07-21' data-year='2026' data-longest='45' data-search="2026-07-21 empower federal credit union amphitheater at lakeview syracuse, ny 2026 summer tour turtle in the clouds bug seven below ocelot mull sigma oasis ghost sand everything&#x27;s right what&#x27;s the use? light also sprach zarathustra blaze on prince caspian more say it to me s.a.n.t.o.s."><a class='row' href='./2026-07-21.html'><span class='r-date'>2026-07-21</span><span class='r-where'><span class='r-venue'>Empower Federal Credit Union Amphitheater at Lakeview</span><span class='r-place'>Syracuse, NY</span></span><span class='r-stats'><b>16</b> songs &middot; median <b>8</b> &middot; longest <b class='hot'>45</b><span class='r-song'>Turtle in the Clouds</span></span></a></li>
+<li data-date='2026-07-19' data-year='2026' data-longest='138' data-search="2026-07-19 merriweather post pavilion columbia, md 2026 summer tour undermind back on the train ass handed the moma dance fast enough for you nicu oblivion possum carini no men in no man&#x27;s land beneath a sea of stars part 1 ruby waves backwards down the number line i am the walrus first tube"><a class='row' href='./2026-07-19.html'><span class='r-date'>2026-07-19</span><span class='r-where'><span class='r-venue'>Merriweather Post Pavilion</span><span class='r-place'>Columbia, MD</span></span><span class='r-stats'><b>15</b> songs &middot; median <b>8</b> &middot; longest <b class='hot'>138</b><span class='r-song'>Ass Handed</span></span></a></li>
+<li data-date='2026-07-18' data-year='2026' data-longest='241' data-search="2026-07-18 merriweather post pavilion columbia, md 2026 summer tour what&#x27;s going through your mind contact you enjoy myself axilla (part ii) mcgrupp and the watchful hosemasters have mercy shade runaway jim life saving gun gotta jibboo ether edge lifeboy boogie on reggae woman free monsters if i could run like an antelope"><a class='row' href='./2026-07-18.html'><span class='r-date'>2026-07-18</span><span class='r-where'><span class='r-venue'>Merriweather Post Pavilion</span><span class='r-place'>Columbia, MD</span></span><span class='r-stats'><b>17</b> songs &middot; median <b>9</b> &middot; longest <b class='hot'>241</b><span class='r-song'>Have Mercy</span></span></a></li>
+<li data-date='2026-07-17' data-year='2026' data-longest='45' data-search="2026-07-17 coastal credit union music park at walnut creek raleigh, nc 2026 summer tour buried alive character zero llama mercury sample in a jar destiny unbound guyute golgi apparatus harry hood fuego the lizards a wave of hope fee meatstick the mango song izabella"><a class='row' href='./2026-07-17.html'><span class='r-date'>2026-07-17</span><span class='r-where'><span class='r-venue'>Coastal Credit Union Music Park at Walnut Creek</span><span class='r-place'>Raleigh, NC</span></span><span class='r-stats'><b>16</b> songs &middot; median <b>9.5</b> &middot; longest <b class='hot'>45</b><span class='r-song'>The Mango Song</span></span></a></li>
+<li data-date='2026-07-15' data-year='2026' data-longest='82' data-search="2026-07-15 enmarket arena savannah, ga 2026 summer tour dinner and a movie vultures taste the wedge pebbles and marbles divided sky halley&#x27;s comet drift while you&#x27;re sleeping sightless escape a song i heard the ocean sing crosseyed and painless farmhouse scents and subtle sounds ghost rock and roll"><a class='row' href='./2026-07-15.html'><span class='r-date'>2026-07-15</span><span class='r-where'><span class='r-venue'>Enmarket Arena</span><span class='r-place'>Savannah, GA</span></span><span class='r-stats'><b>15</b> songs &middot; median <b>8</b> &middot; longest <b class='hot'>82</b><span class='r-song'>Dinner and a Movie</span></span></a></li>
+<li data-date='2026-07-14' data-year='2026' data-longest='132' data-search="2026-07-14 enmarket arena savannah, ga 2026 summer tour david bowie gumbo birds of a feather the old home place steam the curtain with horn split open and melt sand it&#x27;s ice about to run piper walls of the cave the squirming coil fire"><a class='row' href='./2026-07-14.html'><span class='r-date'>2026-07-14</span><span class='r-where'><span class='r-venue'>Enmarket Arena</span><span class='r-place'>Savannah, GA</span></span><span class='r-stats'><b>15</b> songs &middot; median <b>9</b> &middot; longest <b class='hot'>132</b><span class='r-song'>Fire</span></span></a></li>
+<li data-date='2026-07-12' data-year='2026' data-longest='17' data-search="2026-07-12 ruoff music center noblesville, in 2026 summer tour 46 days evolve rift bathtub gin maze mountains in the mist stash simple pillow jets light cream also sprach zarathustra more wilson fluffhead"><a class='row' href='./2026-07-12.html'><span class='r-date'>2026-07-12</span><span class='r-where'><span class='r-venue'>Ruoff Music Center</span><span class='r-place'>Noblesville, IN</span></span><span class='r-stats'><b>15</b> songs &middot; median <b>9</b> &middot; longest <b class='hot'>17</b><span class='r-song'>Cream</span></span></a></li>
+<li data-date='2026-07-11' data-year='2026' data-longest='43' data-search="2026-07-11 ruoff music center noblesville, in 2026 summer tour ac/dc bag punch you in the eye theme from the bottom timber (jerry the mule) 555 reba dirt most events aren&#x27;t planned everything&#x27;s right tweezer golden age my friend, my friend no quarter carini a life beyond the dream tweezer reprise"><a class='row' href='./2026-07-11.html'><span class='r-date'>2026-07-11</span><span class='r-where'><span class='r-venue'>Ruoff Music Center</span><span class='r-place'>Noblesville, IN</span></span><span class='r-stats'><b>16</b> songs &middot; median <b>9</b> &middot; longest <b class='hot'>43</b><span class='r-song'>No Quarter</span></span></a></li>
+<li data-date='2026-07-10' data-year='2026' data-longest='30' data-search="2026-07-10 ruoff music center noblesville, in 2026 summer tour blaze on plasma roggae tube wolfman&#x27;s brother limb by limb hey stranger bouncing around the room oblivion down with disease you enjoy myself backwards down the number line loving cup what&#x27;s going through your mind rocky top"><a class='row' href='./2026-07-10.html'><span class='r-date'>2026-07-10</span><span class='r-where'><span class='r-venue'>Ruoff Music Center</span><span class='r-place'>Noblesville, IN</span></span><span class='r-stats'><b>15</b> songs &middot; median <b>8</b> &middot; longest <b class='hot'>30</b><span class='r-song'>Rocky Top</span></span></a></li>
+<li data-date='2026-07-08' data-year='2026' data-longest='9' data-search="2026-07-08 kohl center madison, wi 2026 summer tour sigma oasis the moma dance runaway jim cities leaves julius cavern kill devil falls prince caspian twist no men in no man&#x27;s land possum monsters harry hood waste first tube"><a class='row' href='./2026-07-08.html'><span class='r-date'>2026-07-08</span><span class='r-where'><span class='r-venue'>Kohl Center</span><span class='r-place'>Madison, WI</span></span><span class='r-stats'><b>16</b> songs &middot; median <b>4.5</b> &middot; longest <b class='hot'>9</b><span class='r-song'>Harry Hood</span></span></a></li>
+<li data-date='2026-07-07' data-year='2026' data-longest='190' data-search="2026-07-07 kohl center madison, wi 2026 summer tour chalk dust torture ghost back on the train free mike&#x27;s song the man who stepped into yesterday avenu malkenu weekapaug groove a wave of hope character zero run like an antelope fuego life saving gun sand ruby waves suzy greenberg slave to the traffic light say it to me s.a.n.t.o.s."><a class='row' href='./2026-07-07.html'><span class='r-date'>2026-07-07</span><span class='r-where'><span class='r-venue'>Kohl Center</span><span class='r-place'>Madison, WI</span></span><span class='r-stats'><b>18</b> songs &middot; median <b>4</b> &middot; longest <b class='hot'>190</b><span class='r-song'>Avenu Malkenu</span></span></a></li>
+</ol>
+<p class="empty" id="empty" hidden>No shows match that search.</p>
+<footer><span>Data: Phish.net API v5</span><span>Updated 2026-07-25</span></footer>
+</div><script>
+(function(){
+  var list=document.getElementById('list');
+  if(!list) return;
+  var rows=Array.prototype.slice.call(list.children);
+  var q=document.getElementById('q'), sort=document.getElementById('sort'),
+      shown=document.getElementById('shown'), empty=document.getElementById('empty'),
+      chips=Array.prototype.slice.call(document.querySelectorAll('.chip')),
+      year='';
+  function apply(){
+    var terms=q.value.toLowerCase().split(/\s+/).filter(Boolean), n=0;
+    rows.forEach(function(r){
+      var hay=r.getAttribute('data-search'), ok=terms.every(function(t){
+        return hay.indexOf(t)>-1;
+      });
+      if(ok&&year) ok=r.getAttribute('data-year')===year;
+      r.hidden=!ok;
+      if(ok) n++;
+    });
+    shown.textContent=n;
+    empty.hidden=n>0;
+  }
+  function order(){
+    var k=sort.value;
+    rows.slice().sort(function(a,b){
+      if(k==='gap') return b.getAttribute('data-longest')-a.getAttribute('data-longest');
+      var x=a.getAttribute('data-date'), y=b.getAttribute('data-date');
+      return k==='oldest' ? x.localeCompare(y) : y.localeCompare(x);
+    }).forEach(function(r){ list.appendChild(r); });
+  }
+  q.addEventListener('input', apply);
+  sort.addEventListener('change', order);
+  chips.forEach(function(c){
+    c.addEventListener('click', function(){
+      year = c.classList.contains('on') ? '' : c.getAttribute('data-year');
+      chips.forEach(function(o){ o.classList.toggle('on', o.getAttribute('data-year')===year); });
+      apply();
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+    if(e.key==='Escape' && document.activeElement===q){ q.value=''; apply(); q.blur(); }
+  });
+  q.disabled=false; sort.disabled=false;
+  chips.forEach(function(c){ c.disabled=false; });
+  apply();
+})();
+</script></body></html>

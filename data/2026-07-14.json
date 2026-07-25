@@ -1,0 +1,163 @@
+{
+  "date": "2026-07-14",
+  "venue": "Enmarket Arena, Savannah, GA",
+  "venue_name": "Enmarket Arena",
+  "city": "Savannah",
+  "state": "GA",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Split Open and Melt was unfinished and included Birds of a Feather teases from Trey. Trey teased Wilson in It's Ice. Fire was performed for the first time since July 25, 2023 (132 shows) and had lyrics changed to \"move over Rover, and let Johnny take over.\"</p>",
+  "permalink": "https://phish.net/setlists/phish-july-14-2026-enmarket-arena-savannah-ga-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "David Bowie",
+      "slug": "david-bowie",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Gumbo",
+      "slug": "gumbo",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-06-03",
+      "prev_venue": "Gerald R. Ford Amphitheater",
+      "prev_place": "Vail, CO"
+    },
+    {
+      "set": "SET 1",
+      "song": "Birds of a Feather",
+      "slug": "birds-of-a-feather",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "The Old Home Place",
+      "slug": "the-old-home-place",
+      "gap": 28,
+      "jamchart": false,
+      "prev_date": "2025-09-13",
+      "prev_venue": "Coca-Cola Amphitheater",
+      "prev_place": "Birmingham, AL"
+    },
+    {
+      "set": "SET 1",
+      "song": "Steam",
+      "slug": "steam",
+      "gap": 13,
+      "jamchart": false,
+      "prev_date": "2026-06-20",
+      "prev_venue": "Kleinhans Music Hall",
+      "prev_place": "Buffalo, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "The Curtain With",
+      "slug": "the-curtain-with",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Horn",
+      "slug": "horn",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-06-14",
+      "prev_venue": "Lake Superior Big Top Chautauqua",
+      "prev_place": "Bayfield, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Split Open and Melt",
+      "slug": "split-open-and-melt",
+      "gap": 13,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Sand",
+      "slug": "sand",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "It's Ice",
+      "slug": "its-ice",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-02",
+      "prev_venue": "Red Butte Garden Amphitheater",
+      "prev_place": "Salt Lake City, UT"
+    },
+    {
+      "set": "SET 2",
+      "song": "About to Run",
+      "slug": "about-to-run",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Piper",
+      "slug": "piper",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Walls of the Cave",
+      "slug": "walls-of-the-cave",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "ENCORE",
+      "song": "The Squirming Coil",
+      "slug": "the-squirming-coil",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Fire",
+      "slug": "fire",
+      "gap": 132,
+      "jamchart": false,
+      "prev_date": "2023-07-25",
+      "prev_venue": "TD Pavilion at the Mann",
+      "prev_place": "Philadelphia, PA"
+    }
+  ]
+}

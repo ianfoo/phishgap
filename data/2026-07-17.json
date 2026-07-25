@@ -1,0 +1,173 @@
+{
+  "date": "2026-07-17",
+  "venue": "Coastal Credit Union Music Park at Walnut Creek, Raleigh, NC",
+  "venue_name": "Coastal Credit Union Music Park at Walnut Creek",
+  "city": "Raleigh",
+  "state": "NC",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Trey changed the lyrics to Fuego to \"inside Oswego,\" referencing the 27th anniversary of the Phish festival Camp Oswego (July 17, 1999). The Lizards was unfinished. Trey attempted to sing some of Fee on megaphone and quickly tossed it away when it stopped working, calling it \"that piece of shit.\"</p>",
+  "permalink": "https://phish.net/setlists/phish-july-17-2026-coastal-credit-union-music-park-at-walnut-creek-raleigh-nc-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Buried Alive",
+      "slug": "buried-alive",
+      "gap": 13,
+      "jamchart": false,
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Character Zero",
+      "slug": "character-zero",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 1",
+      "song": "Llama",
+      "slug": "llama",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Mercury",
+      "slug": "mercury",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Sample in a Jar",
+      "slug": "sample-in-a-jar",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Destiny Unbound",
+      "slug": "destiny-unbound",
+      "gap": 43,
+      "jamchart": false,
+      "prev_date": "2025-07-12",
+      "prev_venue": "North Charleston Coliseum",
+      "prev_place": "North Charleston, SC"
+    },
+    {
+      "set": "SET 1",
+      "song": "Guyute",
+      "slug": "guyute",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-06-13",
+      "prev_venue": "The Orpheum Theatre",
+      "prev_place": "Minneapolis, MN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Golgi Apparatus",
+      "slug": "golgi-apparatus",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Harry Hood",
+      "slug": "harry-hood",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-08",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Fuego",
+      "slug": "fuego",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "The Lizards",
+      "slug": "the-lizards",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "A Wave of Hope",
+      "slug": "a-wave-of-hope",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Fee",
+      "slug": "fee",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Meatstick",
+      "slug": "meatstick",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "ENCORE",
+      "song": "The Mango Song",
+      "slug": "the-mango-song",
+      "gap": 45,
+      "jamchart": false,
+      "prev_date": "2025-07-09",
+      "prev_venue": "Jerome Schottenstein Center",
+      "prev_place": "Columbus, OH"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Izabella",
+      "slug": "izabella",
+      "gap": 25,
+      "jamchart": false,
+      "prev_date": "2025-09-20",
+      "prev_venue": "Hampton Coliseum",
+      "prev_place": "Hampton, VA"
+    }
+  ]
+}

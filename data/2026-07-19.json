@@ -1,0 +1,163 @@
+{
+  "date": "2026-07-19",
+  "venue": "Merriweather Post Pavilion, Columbia, MD",
+  "venue_name": "Merriweather Post Pavilion",
+  "city": "Columbia",
+  "state": "MD",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Ass Handed was performed for the first time since July 22, 2023 (138 shows). Trey teased The Little Drummer Boy in Oblivion, Let It Grow in Carini, and A Love Supreme and Strawberry Letter 23 in Ruby Waves.</p>",
+  "permalink": "https://phish.net/setlists/phish-july-19-2026-merriweather-post-pavilion-columbia-md-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Undermind",
+      "slug": "undermind",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Back on the Train",
+      "slug": "back-on-the-train",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 1",
+      "song": "Ass Handed",
+      "slug": "ass-handed",
+      "gap": 138,
+      "jamchart": false,
+      "prev_date": "2023-07-22",
+      "prev_venue": "The Pavilion at Star Lake",
+      "prev_place": "Burgettstown, PA"
+    },
+    {
+      "set": "SET 1",
+      "song": "The Moma Dance",
+      "slug": "the-moma-dance",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-08",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 1",
+      "song": "Fast Enough for You",
+      "slug": "fast-enough-for-you",
+      "gap": 54,
+      "jamchart": false,
+      "prev_date": "2025-06-22",
+      "prev_venue": "SNHU Arena",
+      "prev_place": "Manchester, NH"
+    },
+    {
+      "set": "SET 1",
+      "song": "NICU",
+      "slug": "nicu",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Oblivion",
+      "slug": "oblivion",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-10",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Possum",
+      "slug": "possum",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-08",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Carini",
+      "slug": "carini",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-11",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 2",
+      "song": "No Men In No Man's Land",
+      "slug": "no-men-in-no-mans-land",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-08",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Beneath a Sea of Stars Part 1",
+      "slug": "beneath-a-sea-of-stars-part-1",
+      "gap": 16,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Ruby Waves",
+      "slug": "ruby-waves",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Backwards Down the Number Line",
+      "slug": "backwards-down-the-number-line",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-10",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "ENCORE",
+      "song": "I Am the Walrus",
+      "slug": "i-am-the-walrus",
+      "gap": 15,
+      "jamchart": false,
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "ENCORE",
+      "song": "First Tube",
+      "slug": "first-tube",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-08",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    }
+  ]
+}
