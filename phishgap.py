@@ -512,7 +512,7 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
-       flex-wrap:wrap;gap:.5rem}
+       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
   body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
     opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
@@ -557,6 +557,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .show .tour{font-size:.62rem;font-weight:400;letter-spacing:.14em}
   .show .tour::before{font-size:1rem;margin:0 .5rem}
   .where{margin-top:.2rem;font-size:.72rem;letter-spacing:.05em}
+  /* The buttons stand twice as tall as a line of footer text, so sharing a row
+     with it inflated that row and opened a gap between the two text lines.
+     They get their own row down here instead. */
+  .theme{order:1;flex-basis:100%}
   /* All three badges have to hold one line down to a 320px phone. */
   .links{margin-top:.95rem;gap:.3rem}
   .badge{font-size:.58rem;letter-spacing:.07em;padding:.3rem .45rem;gap:.3rem}
@@ -847,7 +851,7 @@ header{padding-bottom:.9rem}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
-       flex-wrap:wrap;gap:.5rem}
+       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
   body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
     opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
@@ -867,6 +871,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .lbl{font-size:.53rem;letter-spacing:.1em}
   .show{font-size:.72rem;letter-spacing:.05em}
   .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
 }
 """
 
