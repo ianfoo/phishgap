@@ -65,9 +65,9 @@
       "slug": "nicu",
       "gap": 11,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -159,5 +159,7 @@
       "prev_venue": "Kohl Center",
       "prev_place": "Madison, WI"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:47:36+00:00",
+  "provisional": false
 }

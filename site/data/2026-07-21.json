@@ -15,9 +15,9 @@
       "slug": "turtle-in-the-clouds",
       "gap": 45,
       "jamchart": false,
-      "prev_date": "2026-05-30",
-      "prev_venue": "The Wilma Theatre",
-      "prev_place": "Missoula, MT"
+      "prev_date": "2025-07-13",
+      "prev_venue": "North Charleston Coliseum",
+      "prev_place": "North Charleston, SC"
     },
     {
       "set": "SET 1",
@@ -25,9 +25,9 @@
       "slug": "bug",
       "gap": 13,
       "jamchart": false,
-      "prev_date": "2026-06-17",
-      "prev_venue": "The Frederik Meijer Gardens Amphitheater",
-      "prev_place": "Grand Rapids, MI"
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -105,9 +105,9 @@
       "slug": "whats-the-use",
       "gap": 14,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -169,5 +169,7 @@
       "prev_venue": "Kohl Center",
       "prev_place": "Madison, WI"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:47:40+00:00",
+  "provisional": false
 }

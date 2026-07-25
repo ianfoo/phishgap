@@ -35,9 +35,9 @@
       "slug": "taste",
       "gap": 6,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -45,9 +45,9 @@
       "slug": "the-wedge",
       "gap": 8,
       "jamchart": false,
-      "prev_date": "2026-06-02",
-      "prev_venue": "Red Butte Garden Amphitheater",
-      "prev_place": "Salt Lake City, UT"
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -55,9 +55,9 @@
       "slug": "pebbles-and-marbles",
       "gap": 10,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -65,9 +65,9 @@
       "slug": "divided-sky",
       "gap": 13,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -85,9 +85,9 @@
       "slug": "drift-while-youre-sleeping",
       "gap": 8,
       "jamchart": false,
-      "prev_date": "2026-06-10",
-      "prev_venue": "Helzberg Hall at the Kauffman Center for the Performing Arts",
-      "prev_place": "Kansas City, MO"
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -95,9 +95,9 @@
       "slug": "sightless-escape",
       "gap": 43,
       "jamchart": false,
-      "prev_date": "2025-11-23",
-      "prev_venue": "Akron Civic Theatre",
-      "prev_place": "Akron, OH"
+      "prev_date": "2025-07-11",
+      "prev_venue": "North Charleston Coliseum",
+      "prev_place": "North Charleston, SC"
     },
     {
       "set": "SET 2",
@@ -125,9 +125,9 @@
       "slug": "farmhouse",
       "gap": 6,
       "jamchart": false,
-      "prev_date": "2026-05-29",
-      "prev_venue": "The Wilma Theatre",
-      "prev_place": "Missoula, MT"
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -159,5 +159,7 @@
       "prev_venue": "Sphere",
       "prev_place": "Las Vegas, NV"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:45:14+00:00",
+  "provisional": false
 }

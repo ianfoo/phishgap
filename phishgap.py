@@ -145,8 +145,16 @@ def get(path, apikey, cache_dir=DEFAULT_CACHE, refresh=False, **params):
                       file=sys.stderr)
                 time.sleep(pause)
             except urllib.error.URLError as exc:
-                raise ApiError("Could not reach api.phish.net: %s"
-                               % exc.reason) from None
+                # Wifi dropping out mid-run used to abandon a tour-length fetch
+                # and leave half the histories unfilled, so this retries too.
+                if attempt == MAX_TRIES:
+                    raise ApiError("Could not reach api.phish.net: %s"
+                                   % exc.reason) from None
+                pause = min(30.0, 2.0 ** attempt)
+                print("%s, retrying in %.0fs (%d/%d)"
+                      % (exc.reason, pause, attempt, MAX_TRIES),
+                      file=sys.stderr)
+                time.sleep(pause)
         if cache_dir:
             with open(cache_file, "w", encoding="utf-8") as fh:
                 fh.write(blob)
@@ -239,6 +247,7 @@ def add_previous(report, apikey, **kw):
     Costs one call per song, so it is opt-in behind --previous.
     """
     missed = []
+    artist = report.get("artist")
     for s in report["songs"]:
         try:
             hist = get("setlists/slug/%s" % s["slug"], apikey, **kw)
@@ -247,7 +256,14 @@ def add_previous(report, apikey, **kw):
             # render as a show whose songs quietly have no history.
             missed.append("%s (%s)" % (s["song"], exc))
             continue
-        hist = [h for h in hist if h.get("showdate")]
+        # A song's history spans every band that has played it: /slug/ghost
+        # returns 242 Phish rows, 81 Trey Anastasio and one Page McConnell.
+        # Unfiltered, the last performance of a Phish song came back as a Trey
+        # solo show at the Capitol Theatre. The same filter keeps the same-date
+        # lookup below from landing on another band's row, and makes a debut
+        # mean the first time *this* band played it.
+        hist = [h for h in hist if h.get("showdate")
+                and (not artist or h.get("artist_name") == artist)]
         hist.sort(key=lambda h: h["showdate"])
         idx = next((i for i, h in enumerate(hist)
                     if h["showdate"] == report["date"]), None)
@@ -1000,17 +1016,31 @@ def archived(site_dir, date):
             return None
 
 
+def _coverage(report):
+    """Songs, and how many of them know when they were last played.
+
+    Song count alone is too coarse a measure of a better report: a re-fetch
+    interrupted by a network drop returns the whole setlist with some of the
+    per-song history missing, and would pass a count-only comparison.
+    """
+    songs = report.get("songs") or []
+    return len(songs), sum(1 for s in songs if s.get("prev_date") or s.get("debut"))
+
+
 def is_fuller(report, prior):
     """Whether a re-fetched show is worth replacing the archived one with.
 
     A re-check exists to complete a setlist that was archived mid-entry, so it
-    must never do the reverse and trade a full setlist for a thinner one.
+    must never do the reverse and trade a fuller report for a thinner one.
     """
-    was, now = len(prior.get("songs") or []) if prior else 0, len(report["songs"])
+    if not prior:
+        return True
+    was, now = _coverage(prior), _coverage(report)
     if now >= was:
         return True
-    print("keeping archived %s: %d songs beats the %d just fetched"
-          % (report["date"], was, now), file=sys.stderr)
+    print("keeping archived %s: %d songs/%d with history beats the %d/%d just "
+          "fetched" % (report["date"], was[0], was[1], now[0], now[1]),
+          file=sys.stderr)
     return False
 
 
@@ -1526,11 +1556,13 @@ def main():
                     raise
                 print("skipping %s: %s" % (date, exc), file=sys.stderr)
                 continue
+            if args.previous:
+                add_previous(report, key, **kw)
+            # After add_previous, not before: the comparison counts how many
+            # songs know their history, which is only true once it has run.
             prior = archived(args.site, date) if args.site else None
             if not is_fuller(report, prior):
                 continue
-            if args.previous:
-                add_previous(report, key, **kw)
             if args.site:
                 settle(report, prior, _utcnow())
             reports.append(report)

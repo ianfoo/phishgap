@@ -15,9 +15,9 @@
       "slug": "acdc-bag",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-05-31",
-      "prev_venue": "Jackson Hole Center for the Arts - Center Theater",
-      "prev_place": "Jackson, WY"
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -35,9 +35,9 @@
       "slug": "theme-from-the-bottom",
       "gap": 11,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -65,9 +65,9 @@
       "slug": "reba",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -75,9 +75,9 @@
       "slug": "dirt",
       "gap": 5,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -95,9 +95,9 @@
       "slug": "everythings-right",
       "gap": 11,
       "jamchart": false,
-      "prev_date": "2026-06-03",
-      "prev_venue": "Gerald R. Ford Amphitheater",
-      "prev_place": "Vail, CO"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -125,9 +125,9 @@
       "slug": "my-friend-my-friend",
       "gap": 3,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -145,9 +145,9 @@
       "slug": "carini",
       "gap": 10,
       "jamchart": false,
-      "prev_date": "2026-05-29",
-      "prev_venue": "The Wilma Theatre",
-      "prev_place": "Missoula, MT"
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "ENCORE",
@@ -155,9 +155,9 @@
       "slug": "a-life-beyond-the-dream",
       "gap": 3,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "ENCORE",
@@ -165,9 +165,11 @@
       "slug": "tweezer-reprise",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:44:46+00:00",
+  "provisional": false
 }

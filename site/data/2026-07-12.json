@@ -25,9 +25,9 @@
       "slug": "evolve",
       "gap": 12,
       "jamchart": false,
-      "prev_date": "2026-06-03",
-      "prev_venue": "Gerald R. Ford Amphitheater",
-      "prev_place": "Vail, CO"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -35,9 +35,9 @@
       "slug": "rift",
       "gap": 12,
       "jamchart": false,
-      "prev_date": "2026-06-17",
-      "prev_venue": "The Frederik Meijer Gardens Amphitheater",
-      "prev_place": "Grand Rapids, MI"
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -45,9 +45,9 @@
       "slug": "bathtub-gin",
       "gap": 10,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -55,9 +55,9 @@
       "slug": "maze",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-20",
-      "prev_venue": "Kleinhans Music Hall",
-      "prev_place": "Buffalo, NY"
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -65,9 +65,9 @@
       "slug": "mountains-in-the-mist",
       "gap": 5,
       "jamchart": false,
-      "prev_date": "2026-06-24",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 1",
@@ -75,9 +75,9 @@
       "slug": "stash",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -105,9 +105,9 @@
       "slug": "light",
       "gap": 11,
       "jamchart": false,
-      "prev_date": "2026-06-20",
-      "prev_venue": "Kleinhans Music Hall",
-      "prev_place": "Buffalo, NY"
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "SET 2",
@@ -135,9 +135,9 @@
       "slug": "more",
       "gap": 9,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "ENCORE",
@@ -145,9 +145,9 @@
       "slug": "wilson",
       "gap": 5,
       "jamchart": false,
-      "prev_date": "2026-06-20",
-      "prev_venue": "Kleinhans Music Hall",
-      "prev_place": "Buffalo, NY"
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     },
     {
       "set": "ENCORE",
@@ -155,9 +155,11 @@
       "slug": "fluffhead",
       "gap": 4,
       "jamchart": false,
-      "prev_date": "2026-06-23",
-      "prev_venue": "The Capitol Theatre",
-      "prev_place": "Port Chester, NY"
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
     }
-  ]
+  ],
+  "count_since": "2026-07-25T17:44:56+00:00",
+  "provisional": false
 }
