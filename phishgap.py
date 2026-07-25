@@ -894,8 +894,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             # that actually decides the verdict read as jargon on the page --
             # its ends are interpolated values that appear nowhere in the
             # song's real gaps. Both are still archived in the JSON.
-            typical = ("<span class='typ'%s>med %s</span>"
-                       % (explain, _stat(s["gap_median"])))
+            typical = "<span class='typ'>med %s</span>" % _stat(s["gap_median"])
         elif s.get("recent_plays") is not None:
             # No norm to compare against, so say why: this is how thin its
             # recent record is.
@@ -937,8 +936,10 @@ def render_html(report, bar_scale="linear", index_href=None,
             bar = ("<td class='bar'%s><span class='track'>"
                    "<span class='fill %s' style='width:%.2f%%'></span>%s"
                    "</span>%s</td>" % (explain, klass, pct, tick, band))
-        cells = "<td class='n'>%s</td><td class='song%s'>%s</td>%s" % (
-            gap_cell, " jc" if s["jamchart"] else "",
+        # Both statistics cells carry the explanation, so the hover target is
+        # the whole of them rather than a range bar that can be five pixels wide.
+        cells = "<td class='n'%s>%s</td><td class='song%s'>%s</td>%s" % (
+            explain, gap_cell, " jc" if s["jamchart"] else "",
             html.escape(s["song"]), bar)
         if show_last:
             if s["prev_date"]:
