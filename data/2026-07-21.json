@@ -17,7 +17,14 @@
       "jamchart": false,
       "prev_date": "2025-07-13",
       "prev_venue": "North Charleston Coliseum",
-      "prev_place": "North Charleston, SC"
+      "prev_place": "North Charleston, SC",
+      "plays": 21,
+      "hist_n": 19,
+      "gap_median": 8,
+      "gap_mean": 13.105263157894736,
+      "gap_low": 3.3999999999999995,
+      "gap_high": 21.39999999999999,
+      "verdict": "overdue"
     },
     {
       "set": "SET 1",
@@ -27,7 +34,14 @@
       "jamchart": false,
       "prev_date": "2026-04-25",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 103,
+      "hist_n": 20,
+      "gap_median": 10.0,
+      "gap_mean": 10.6,
+      "gap_low": 7.85,
+      "gap_high": 14.149999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -37,7 +51,14 @@
       "jamchart": false,
       "prev_date": "2026-05-01",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 55,
+      "hist_n": 20,
+      "gap_median": 17.0,
+      "gap_mean": 23.1,
+      "gap_low": 9.7,
+      "gap_high": 31.94999999999998,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -47,7 +68,14 @@
       "jamchart": false,
       "prev_date": "2026-05-02",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 105,
+      "hist_n": 20,
+      "gap_median": 14.0,
+      "gap_mean": 14.65,
+      "gap_low": 7.85,
+      "gap_high": 20.15,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -57,7 +85,14 @@
       "jamchart": false,
       "prev_date": "2026-04-17",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 20,
+      "hist_n": 18,
+      "gap_median": 10.5,
+      "gap_mean": 12.166666666666666,
+      "gap_low": 3.55,
+      "gap_high": 19.349999999999998,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -67,7 +102,14 @@
       "jamchart": false,
       "prev_date": "2026-07-08",
       "prev_venue": "Kohl Center",
-      "prev_place": "Madison, WI"
+      "prev_place": "Madison, WI",
+      "plays": 52,
+      "hist_n": 20,
+      "gap_median": 5.0,
+      "gap_mean": 5.55,
+      "gap_low": 3.85,
+      "gap_high": 7.149999999999999,
+      "verdict": "overdue"
     },
     {
       "set": "SET 1",
@@ -77,7 +119,14 @@
       "jamchart": false,
       "prev_date": "2026-07-15",
       "prev_venue": "Enmarket Arena",
-      "prev_place": "Savannah, GA"
+      "prev_place": "Savannah, GA",
+      "plays": 242,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 4.55,
+      "gap_low": 3.0,
+      "gap_high": 6.149999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -87,7 +136,14 @@
       "jamchart": false,
       "prev_date": "2026-07-14",
       "prev_venue": "Enmarket Arena",
-      "prev_place": "Savannah, GA"
+      "prev_place": "Savannah, GA",
+      "plays": 167,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 4.5,
+      "gap_low": 1.85,
+      "gap_high": 7.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -97,7 +153,14 @@
       "jamchart": false,
       "prev_date": "2026-07-11",
       "prev_venue": "Ruoff Music Center",
-      "prev_place": "Noblesville, IN"
+      "prev_place": "Noblesville, IN",
+      "plays": 76,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 4.0,
+      "gap_low": 1.85,
+      "gap_high": 6.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -107,7 +170,14 @@
       "jamchart": false,
       "prev_date": "2026-04-24",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 76,
+      "hist_n": 20,
+      "gap_median": 9.5,
+      "gap_mean": 9.6,
+      "gap_low": 4.85,
+      "gap_high": 13.0,
+      "verdict": "overdue"
     },
     {
       "set": "SET 2",
@@ -117,7 +187,14 @@
       "jamchart": false,
       "prev_date": "2026-07-12",
       "prev_venue": "Ruoff Music Center",
-      "prev_place": "Noblesville, IN"
+      "prev_place": "Noblesville, IN",
+      "plays": 139,
+      "hist_n": 20,
+      "gap_median": 5.5,
+      "gap_mean": 5.75,
+      "gap_low": 2.0,
+      "gap_high": 9.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -127,7 +204,14 @@
       "jamchart": false,
       "prev_date": "2026-07-12",
       "prev_venue": "Ruoff Music Center",
-      "prev_place": "Noblesville, IN"
+      "prev_place": "Noblesville, IN",
+      "plays": 281,
+      "hist_n": 20,
+      "gap_median": 5.0,
+      "gap_mean": 5.05,
+      "gap_low": 2.0,
+      "gap_high": 8.149999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -137,7 +221,14 @@
       "jamchart": false,
       "prev_date": "2026-07-10",
       "prev_venue": "Ruoff Music Center",
-      "prev_place": "Noblesville, IN"
+      "prev_place": "Noblesville, IN",
+      "plays": 102,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 4.25,
+      "gap_low": 2.85,
+      "gap_high": 5.149999999999999,
+      "verdict": "overdue"
     },
     {
       "set": "SET 2",
@@ -147,7 +238,14 @@
       "jamchart": false,
       "prev_date": "2026-07-08",
       "prev_venue": "Kohl Center",
-      "prev_place": "Madison, WI"
+      "prev_place": "Madison, WI",
+      "plays": 190,
+      "hist_n": 20,
+      "gap_median": 6.0,
+      "gap_mean": 6.35,
+      "gap_low": 2.0,
+      "gap_high": 9.449999999999996,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -157,7 +255,14 @@
       "jamchart": false,
       "prev_date": "2026-07-12",
       "prev_venue": "Ruoff Music Center",
-      "prev_place": "Noblesville, IN"
+      "prev_place": "Noblesville, IN",
+      "plays": 56,
+      "hist_n": 20,
+      "gap_median": 7.5,
+      "gap_mean": 7.85,
+      "gap_low": 4.0,
+      "gap_high": 10.149999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -167,7 +272,14 @@
       "jamchart": false,
       "prev_date": "2026-07-07",
       "prev_venue": "Kohl Center",
-      "prev_place": "Madison, WI"
+      "prev_place": "Madison, WI",
+      "plays": 57,
+      "hist_n": 20,
+      "gap_median": 5.5,
+      "gap_mean": 5.8,
+      "gap_low": 3.0,
+      "gap_high": 10.0,
+      "verdict": "expected"
     }
   ],
   "count_since": "2026-07-25T17:47:40+00:00",
