@@ -315,14 +315,16 @@ LIGHT = {
     "paper": "#f2ece0", "ink": "#17150f", "ink-soft": "#413c31",
     "rule": "#c9bfa9", "rule-soft": "rgba(201,191,169,.45)",
     "hot": "#c8371b", "cool": "#4f6046", "dim": "#877e6e",
-    "track": "rgba(23,21,15,.085)", "hover": "rgba(200,55,27,.055)",
+    "track": "rgba(23,21,15,.085)", "band": "#7d7360",
+    "hover": "rgba(200,55,27,.055)",
     "grain-blend": "multiply", "grain-opacity": ".45",
 }
 DARK = {
     "paper": "#131210", "ink": "#ece5d5", "ink-soft": "#c4bcaa",
     "rule": "#413a30", "rule-soft": "rgba(236,229,213,.13)",
     "hot": "#ff6b45", "cool": "#93b184", "dim": "#948b7c",
-    "track": "rgba(236,229,213,.1)", "hover": "rgba(255,107,69,.07)",
+    "track": "rgba(236,229,213,.1)", "band": "#a89c85",
+    "hover": "rgba(255,107,69,.07)",
     "grain-blend": "screen", "grain-opacity": ".2",
 }
 
@@ -522,7 +524,15 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 .bar{padding-right:1.2rem}
 .bar .track{display:block;position:relative;width:100%;height:7px;
    background:var(--track)}
-.bar .fill{display:block;height:7px;background:var(--cool);min-width:2px}
+/* Where this song's gaps usually fall, on its own bar under the track and on
+   the same scale: a fill ending short of it reads premature, above it expected,
+   past its right end overdue. It started as a wash over the track, but no one
+   colour can read against both the pale track and the solid fill -- dark enough
+   to show on the track, it barely tinted the fill. Solid and separate instead,
+   so both are plainly their own colour. */
+.bar .band{display:block;height:4px;margin-top:4px;background:var(--band)}
+.bar .fill{display:block;position:relative;height:7px;background:var(--cool);
+   min-width:2px}
 .bar .fill.big{background:var(--hot)}
 /* Both the fill and this sit on the show's scale, so a staple's median pins to
    the far left and a bustout visibly overshoots it. Full-strength ink with a
@@ -870,6 +880,13 @@ def render_html(report, bar_scale="linear", index_href=None,
         klass = "big" if (g or 0) >= 50 else "small"
         # How this song usually behaves: printed small under the number, and
         # marked on the bar so an overshoot is visible rather than arithmetic.
+        # Free for anyone who hovers, no clutter for anyone who does not.
+        explain = ""
+        if s.get("gap_low") is not None and g is not None:
+            explain = (" title='%s show%s; usually %s to %s'"
+                       % (_stat(g), "" if g == 1 else "s",
+                          _stat(round(s["gap_low"])), _stat(round(s["gap_high"]))))
+
         typical = ""
         if s.get("gap_median") is not None:
             # The median alone. The mean sits within 20% of it for two thirds
@@ -877,8 +894,8 @@ def render_html(report, bar_scale="linear", index_href=None,
             # that actually decides the verdict read as jargon on the page --
             # its ends are interpolated values that appear nowhere in the
             # song's real gaps. Both are still archived in the JSON.
-            typical = ("<span class='typ'>med %s</span>"
-                       % _stat(s["gap_median"]))
+            typical = ("<span class='typ'%s>med %s</span>"
+                       % (explain, _stat(s["gap_median"])))
         elif s.get("recent_plays") is not None:
             # No norm to compare against, so say why: this is how thin its
             # recent record is.
@@ -900,16 +917,26 @@ def render_html(report, bar_scale="linear", index_href=None,
             # of the track and is indistinguishable from the fill's origin, so
             # it is only drawn where it can actually say something. The numbers
             # under the gap carry it the rest of the time.
+            # The range the verdict is judged against, shaded on the track.
+            band = ""
+            if s.get("gap_low") is not None:
+                lo = _bar_pct(s["gap_low"], biggest, bar_scale)
+                hi = _bar_pct(s["gap_high"], biggest, bar_scale)
+                if hi - lo >= 2.0:
+                    band = ("<span class='band' style='margin-left:%.2f%%;"
+                            "width:%.2f%%'></span>"
+                            % (lo, min(hi - lo, 100.0 - lo)))
             tick = ""
             if s.get("gap_median") is not None:
                 at = _bar_pct(s["gap_median"], biggest, bar_scale)
                 if at >= 4.0:
-                    tick = ("<span class='tick' style='left:%.2f%%' "
-                            "title='usually %s'></span>"
-                            % (min(at, 100.0), _stat(s["gap_median"])))
-            bar = ("<td class='bar'><span class='track'>"
+                    # No title here: the whole cell carries one, and a 2px
+                    # hover target is a joke.
+                    tick = ("<span class='tick' style='left:%.2f%%'></span>"
+                            % min(at, 100.0))
+            bar = ("<td class='bar'%s><span class='track'>"
                    "<span class='fill %s' style='width:%.2f%%'></span>%s"
-                   "</span></td>" % (klass, pct, tick))
+                   "</span>%s</td>" % (explain, klass, pct, tick, band))
         cells = "<td class='n'>%s</td><td class='song%s'>%s</td>%s" % (
             gap_cell, " jc" if s["jamchart"] else "",
             html.escape(s["song"]), bar)
