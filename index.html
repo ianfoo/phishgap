@@ -96,7 +96,7 @@ header{padding-bottom:.9rem}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
-       flex-wrap:wrap;gap:.5rem}
+       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
   body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
     opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
@@ -116,6 +116,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .lbl{font-size:.53rem;letter-spacing:.1em}
   .show{font-size:.72rem;letter-spacing:.05em}
   .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
 }
 </style><script>
 (function(){
