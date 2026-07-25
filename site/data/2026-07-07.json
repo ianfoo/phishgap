@@ -1,0 +1,193 @@
+{
+  "date": "2026-07-07",
+  "venue": "Kohl Center, Madison, WI",
+  "venue_name": "Kohl Center",
+  "city": "Madison",
+  "state": "WI",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Chalk Dust Torture and Life Saving Gun were unfinished. Page teased Long Tall Glasses in Back on the Train. Avenu Malkenu was performed for the first time since April 21, 2022 (191 shows).</p>",
+  "permalink": "https://phish.net/setlists/phish-july-07-2026-kohl-center-madison-wi-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Chalk Dust Torture",
+      "slug": "chalk-dust-torture",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-06-19",
+      "prev_venue": "Massey Hall",
+      "prev_place": "Toronto, Ontario"
+    },
+    {
+      "set": "SET 1",
+      "song": "Ghost",
+      "slug": "ghost",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Back on the Train",
+      "slug": "back-on-the-train",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Free",
+      "slug": "free",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Mike's Song",
+      "slug": "mikes-song",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "The Man Who Stepped Into Yesterday",
+      "slug": "the-man-who-stepped-into-yesterday",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Avenu Malkenu",
+      "slug": "avenu-malkenu",
+      "gap": 190,
+      "jamchart": false,
+      "prev_date": "2022-04-21",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Weekapaug Groove",
+      "slug": "weekapaug-groove",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "A Wave of Hope",
+      "slug": "a-wave-of-hope",
+      "gap": 2,
+      "jamchart": false,
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Character Zero",
+      "slug": "character-zero",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Run Like an Antelope",
+      "slug": "run-like-an-antelope",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Fuego",
+      "slug": "fuego",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Life Saving Gun",
+      "slug": "life-saving-gun",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Sand",
+      "slug": "sand",
+      "gap": 1,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Ruby Waves",
+      "slug": "ruby-waves",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Suzy Greenberg",
+      "slug": "suzy-greenberg",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Slave to the Traffic Light",
+      "slug": "slave-to-the-traffic-light",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Say It To Me S.A.N.T.O.S.",
+      "slug": "say-it-to-me-santos",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-06-20",
+      "prev_venue": "Kleinhans Music Hall",
+      "prev_place": "Buffalo, NY"
+    }
+  ]
+}

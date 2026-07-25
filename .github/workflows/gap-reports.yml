@@ -1,0 +1,77 @@
+name: gap reports
+
+on:
+  schedule:
+    # 15:00 UTC (~11am ET): late enough that last night's setlist is posted.
+    # Most days find no show and the run is over in seconds.
+    - cron: "0 15 * * *"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "How many days back to look for shows"
+        default: "21"
+  # A template or style change should republish the whole site.
+  push:
+    branches: [main]
+    paths:
+      - phishgap.py
+      - .github/workflows/gap-reports.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gap-reports
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Adds any show the archive is missing, then re-renders every page from
+      # the archive, which costs no API calls.
+      - name: Add new shows and render the site
+        env:
+          PHISHNET_API_KEY: ${{ secrets.PHISHNET_API_KEY }}
+        run: |
+          python phishgap.py --site site --previous --rebuild \
+            --catch-up "${{ github.event.inputs.days || 21 }}"
+
+      - name: Commit the data archive
+        id: archive
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "no new shows"
+          else
+            git commit -m "Archive gap reports for new shows"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Skipped on a quiet scheduled day, so the branch does not collect a
+      # commit a day whose only change is the generated-on date in the footer.
+      - name: Publish to gh-pages
+        if: steps.archive.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: |
+          git fetch origin gh-pages
+          git worktree add ../pages gh-pages
+          find ../pages -mindepth 1 -maxdepth 1 -not -name .git -exec rm -rf {} +
+          cp -R site/. ../pages/
+          cd ../pages
+          git add -A
+          if git diff --cached --quiet; then
+            echo "site unchanged"
+          else
+            git commit -m "Publish $(date -u +%F)"
+            git push origin gh-pages
+          fi

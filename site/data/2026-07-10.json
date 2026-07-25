@@ -1,0 +1,163 @@
+{
+  "date": "2026-07-10",
+  "venue": "Ruoff Music Center, Noblesville, IN",
+  "venue_name": "Ruoff Music Center",
+  "city": "Noblesville",
+  "state": "IN",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Plasma and Down with Disease were unfinished. Trey teased We're Off to See the Wizard in Roggae.</p>",
+  "permalink": "https://phish.net/setlists/phish-july-10-2026-ruoff-music-center-noblesville-in-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Blaze On",
+      "slug": "blaze-on",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-06-02",
+      "prev_venue": "Red Butte Garden Amphitheater",
+      "prev_place": "Salt Lake City, UT"
+    },
+    {
+      "set": "SET 1",
+      "song": "Plasma",
+      "slug": "plasma",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Roggae",
+      "slug": "roggae",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Tube",
+      "slug": "tube",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Wolfman's Brother",
+      "slug": "wolfmans-brother",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Limb By Limb",
+      "slug": "limb-by-limb",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Hey Stranger",
+      "slug": "hey-stranger",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-05-30",
+      "prev_venue": "The Wilma Theatre",
+      "prev_place": "Missoula, MT"
+    },
+    {
+      "set": "SET 1",
+      "song": "Bouncing Around the Room",
+      "slug": "bouncing-around-the-room",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Oblivion",
+      "slug": "oblivion",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-06-02",
+      "prev_venue": "Red Butte Garden Amphitheater",
+      "prev_place": "Salt Lake City, UT"
+    },
+    {
+      "set": "SET 2",
+      "song": "Down with Disease",
+      "slug": "down-with-disease",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "You Enjoy Myself",
+      "slug": "you-enjoy-myself",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Backwards Down the Number Line",
+      "slug": "backwards-down-the-number-line",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Loving Cup",
+      "slug": "loving-cup",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-01-31",
+      "prev_venue": "Moon Palace",
+      "prev_place": "Cancun, Quintana Roo"
+    },
+    {
+      "set": "ENCORE",
+      "song": "What's Going Through Your Mind",
+      "slug": "whats-going-through-your-mind",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Rocky Top",
+      "slug": "rocky-top",
+      "gap": 30,
+      "jamchart": false,
+      "prev_date": "2025-07-23",
+      "prev_venue": "Forest Hills Stadium",
+      "prev_place": "Forest Hills, NY"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# The site's pages are published from the gh-pages branch, and site/data is the
+# archive that regenerates them, so only the archive is tracked here.
+/site/*.html
+/site/.nojekyll
+
+# One-off files for handing to someone directly
+/gaps-*.html
+/gaps-*.pdf

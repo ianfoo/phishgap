@@ -1,0 +1,9 @@
+[project]
+name = "phishgap"
+version = "0.1.0"
+description = "Calculate gaps for songs performed at Phish shows using Phish.net as a data source"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "weasyprint",
+]

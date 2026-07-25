@@ -1,0 +1,163 @@
+{
+  "date": "2026-07-12",
+  "venue": "Ruoff Music Center, Noblesville, IN",
+  "venue_name": "Ruoff Music Center",
+  "city": "Noblesville",
+  "state": "IN",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Trey teased The Secret of Life (The Dead Milkmen) in Stash.</p>",
+  "permalink": "https://phish.net/setlists/phish-july-12-2026-ruoff-music-center-noblesville-in-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "46 Days",
+      "slug": "46-days",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-04-23",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Evolve",
+      "slug": "evolve",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-06-03",
+      "prev_venue": "Gerald R. Ford Amphitheater",
+      "prev_place": "Vail, CO"
+    },
+    {
+      "set": "SET 1",
+      "song": "Rift",
+      "slug": "rift",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-06-17",
+      "prev_venue": "The Frederik Meijer Gardens Amphitheater",
+      "prev_place": "Grand Rapids, MI"
+    },
+    {
+      "set": "SET 1",
+      "song": "Bathtub Gin",
+      "slug": "bathtub-gin",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Maze",
+      "slug": "maze",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-20",
+      "prev_venue": "Kleinhans Music Hall",
+      "prev_place": "Buffalo, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Mountains in the Mist",
+      "slug": "mountains-in-the-mist",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Stash",
+      "slug": "stash",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Simple",
+      "slug": "simple",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-04-18",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Pillow Jets",
+      "slug": "pillow-jets",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Light",
+      "slug": "light",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-06-20",
+      "prev_venue": "Kleinhans Music Hall",
+      "prev_place": "Buffalo, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Cream",
+      "slug": "cream",
+      "gap": 17,
+      "jamchart": false,
+      "prev_date": "2025-12-31",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Also Sprach Zarathustra",
+      "slug": "also-sprach-zarathustra",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "More",
+      "slug": "more",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Wilson",
+      "slug": "wilson",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-06-20",
+      "prev_venue": "Kleinhans Music Hall",
+      "prev_place": "Buffalo, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Fluffhead",
+      "slug": "fluffhead",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    }
+  ]
+}

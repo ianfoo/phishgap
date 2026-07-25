@@ -1,0 +1,173 @@
+{
+  "date": "2026-07-08",
+  "venue": "Kohl Center, Madison, WI",
+  "venue_name": "Kohl Center",
+  "city": "Madison",
+  "state": "WI",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>Mike teased Twenty Years Later in Cities.</p>",
+  "permalink": "https://phish.net/setlists/phish-july-08-2026-kohl-center-madison-wi-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Sigma Oasis",
+      "slug": "sigma-oasis",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "The Moma Dance",
+      "slug": "the-moma-dance",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Runaway Jim",
+      "slug": "runaway-jim",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Cities",
+      "slug": "cities",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-04-25",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Leaves",
+      "slug": "leaves",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-04-30",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Julius",
+      "slug": "julius",
+      "gap": 1,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Cavern",
+      "slug": "cavern",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-06-20",
+      "prev_venue": "Kleinhans Music Hall",
+      "prev_place": "Buffalo, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Kill Devil Falls",
+      "slug": "kill-devil-falls",
+      "gap": 1,
+      "jamchart": false,
+      "prev_date": "2026-06-03",
+      "prev_venue": "Gerald R. Ford Amphitheater",
+      "prev_place": "Vail, CO"
+    },
+    {
+      "set": "SET 2",
+      "song": "Prince Caspian",
+      "slug": "prince-caspian",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Twist",
+      "slug": "twist",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-06-14",
+      "prev_venue": "Lake Superior Big Top Chautauqua",
+      "prev_place": "Bayfield, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "No Men In No Man's Land",
+      "slug": "no-men-in-no-mans-land",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Possum",
+      "slug": "possum",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-06-23",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "SET 2",
+      "song": "Monsters",
+      "slug": "monsters",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-06-19",
+      "prev_venue": "Massey Hall",
+      "prev_place": "Toronto, Ontario"
+    },
+    {
+      "set": "SET 2",
+      "song": "Harry Hood",
+      "slug": "harry-hood",
+      "gap": 9,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Waste",
+      "slug": "waste",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "First Tube",
+      "slug": "first-tube",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-06-24",
+      "prev_venue": "The Capitol Theatre",
+      "prev_place": "Port Chester, NY"
+    }
+  ]
+}

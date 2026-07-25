@@ -1,0 +1,273 @@
+{
+  "date": "2026-07-22",
+  "venue": "Madison Square Garden, New York, NY",
+  "venue_name": "Madison Square Garden",
+  "city": "New York",
+  "state": "NY",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "<p>This show was Phish's 92nd performance at Madison Square Garden, featured a setlist comprised entirely of songs from the 1992 era of the band, included the return of long dormant antics from that time (trampolines in Mike's Song and bicycle kicks during I Am Hydrogen), and featured Trey wearing a sleeveless shirt (a common occurrence in 1992). This show also featured multiple bustouts: Glide (last played <a href=\"https://phish.net/setlists/phish-august-31-2021-shoreline-amphitheatre-mountain-view-ca-usa.html\">August 31, 2021</a>, or 225 shows), Cold as Ice (last played <a href=\"https://phish.net/setlists/phish-may-18-1992-the-flynn-theatre-burlington-vt-usa.html\">May 18, 1992</a>, or 1,468 shows), Love You (last played <a href=\"https://phish.net/setlists/phish-july-16-2016-gorge-amphitheatre-george-wa-usa.html\">July 16, 2016</a>, or 382 shows), Hold Your Head Up (last played <a href=\"https://phish.net/setlists/phish-july-29-2023-madison-square-garden-new-york-ny-usa.html\">July 29, 2023</a>, or 135 shows), and The Vibration of Life (last played <a href=\"https://phish.net/setlists/phish-november-19-1996-municipal-auditorium-kansas-city-mo-usa.html\">November 19, 1996</a>, or 1,027 shows). Hold Your Head Up featured Fish on vacuum and a \"GOOAAAALLL\" announcement from Trey. Reba did not contain the whistling ending. My Friend, My Friend did not include the \"Myfe\"ending and contained The Well teases. Page teased the theme from <i>Speed Racer</i> in The Lizards. Harry Hood was aborted and quickly restarted.</p>",
+  "permalink": "https://phish.net/setlists/phish-july-22-2026-madison-square-garden-new-york-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Glide",
+      "slug": "glide",
+      "gap": 225,
+      "jamchart": false,
+      "prev_date": "2021-08-31",
+      "prev_venue": "Shoreline Amphitheatre",
+      "prev_place": "Mountain View, CA"
+    },
+    {
+      "set": "SET 1",
+      "song": "Runaway Jim",
+      "slug": "runaway-jim",
+      "gap": 2,
+      "jamchart": false,
+      "prev_date": "2026-07-18",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD"
+    },
+    {
+      "set": "SET 1",
+      "song": "Foam",
+      "slug": "foam",
+      "gap": 19,
+      "jamchart": false,
+      "prev_date": "2026-04-16",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 1",
+      "song": "Axilla",
+      "slug": "axilla",
+      "gap": 82,
+      "jamchart": false,
+      "prev_date": "2024-08-18",
+      "prev_venue": "The Woodlands",
+      "prev_place": "Dover, DE"
+    },
+    {
+      "set": "SET 1",
+      "song": "Stash",
+      "slug": "stash",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-12",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Cold as Ice",
+      "slug": "cold-as-ice",
+      "gap": 1468,
+      "jamchart": false,
+      "prev_date": "1992-05-18",
+      "prev_venue": "The Flynn Theatre",
+      "prev_place": "Burlington, VT"
+    },
+    {
+      "set": "SET 1",
+      "song": "Love You",
+      "slug": "love-you",
+      "gap": 382,
+      "jamchart": false,
+      "prev_date": "2016-07-16",
+      "prev_venue": "Gorge Amphitheatre",
+      "prev_place": "George, WA"
+    },
+    {
+      "set": "SET 1",
+      "song": "Hold Your Head Up",
+      "slug": "hold-your-head-up",
+      "gap": 135,
+      "jamchart": false,
+      "prev_date": "2023-07-29",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY"
+    },
+    {
+      "set": "SET 1",
+      "song": "Sparkle",
+      "slug": "sparkle",
+      "gap": 41,
+      "jamchart": false,
+      "prev_date": "2025-07-20",
+      "prev_venue": "United Center",
+      "prev_place": "Chicago, IL"
+    },
+    {
+      "set": "SET 1",
+      "song": "AC/DC Bag",
+      "slug": "acdc-bag",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-11",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Reba",
+      "slug": "reba",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-11",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 1",
+      "song": "Possum",
+      "slug": "possum",
+      "gap": 1,
+      "jamchart": false,
+      "prev_date": "2026-07-19",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD"
+    },
+    {
+      "set": "SET 1",
+      "song": "David Bowie",
+      "slug": "david-bowie",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-14",
+      "prev_venue": "Enmarket Arena",
+      "prev_place": "Savannah, GA"
+    },
+    {
+      "set": "SET 1",
+      "song": "The Vibration of Life",
+      "slug": "the-vibration-of-life",
+      "gap": 1027,
+      "jamchart": false,
+      "prev_date": "1996-11-19",
+      "prev_venue": "Municipal Auditorium",
+      "prev_place": "Kansas City, MO"
+    },
+    {
+      "set": "SET 2",
+      "song": "Mike's Song",
+      "slug": "mikes-song",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "I Am Hydrogen",
+      "slug": "i-am-hydrogen",
+      "gap": 18,
+      "jamchart": false,
+      "prev_date": "2026-04-17",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "SET 2",
+      "song": "Weekapaug Groove",
+      "slug": "weekapaug-groove",
+      "gap": 10,
+      "jamchart": false,
+      "prev_date": "2026-07-07",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI"
+    },
+    {
+      "set": "SET 2",
+      "song": "Bouncing Around the Room",
+      "slug": "bouncing-around-the-room",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-07-10",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 2",
+      "song": "My Friend, My Friend",
+      "slug": "my-friend-my-friend",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-11",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN"
+    },
+    {
+      "set": "SET 2",
+      "song": "Split Open and Melt",
+      "slug": "split-open-and-melt",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-14",
+      "prev_venue": "Enmarket Arena",
+      "prev_place": "Savannah, GA"
+    },
+    {
+      "set": "SET 2",
+      "song": "The Lizards",
+      "slug": "the-lizards",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-07-17",
+      "prev_venue": "Coastal Credit Union Music Park at Walnut Creek",
+      "prev_place": "Raleigh, NC"
+    },
+    {
+      "set": "SET 2",
+      "song": "Harry Hood",
+      "slug": "harry-hood",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-07-17",
+      "prev_venue": "Coastal Credit Union Music Park at Walnut Creek",
+      "prev_place": "Raleigh, NC"
+    },
+    {
+      "set": "ENCORE",
+      "song": "The Horse",
+      "slug": "the-horse",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Silent in the Morning",
+      "slug": "silent-in-the-morning",
+      "gap": 11,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Big Black Furry Creature from Mars",
+      "slug": "big-black-furry-creature-from-mars",
+      "gap": 88,
+      "jamchart": false,
+      "prev_date": "2024-08-09",
+      "prev_venue": "Bethel Woods Center for the Arts",
+      "prev_place": "Bethel, NY"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Run Like an Antelope",
+      "slug": "run-like-an-antelope",
+      "gap": 2,
+      "jamchart": false,
+      "prev_date": "2026-07-18",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD"
+    }
+  ]
+}
