@@ -123,6 +123,12 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    white-space:nowrap}
 .verdict{display:block;margin-top:.2rem;font-size:.62rem;letter-spacing:.1em;
    text-transform:uppercase;white-space:nowrap}
+/* The mean only fits once the gap column is wide enough to hold it. A column
+   sized in percent cannot hold text sized in rem: below about this width the
+   nowrap line outgrows its box, and text-align cannot save it -- an overlong
+   line starts at the box's start edge and spills out the end, straight into
+   the song title. Screen only: the print column measures out fine. */
+@media screen and (max-width:1039px){.wide{display:none}}
 .verdict.overdue{color:var(--hot)}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
@@ -140,9 +146,12 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 .bar .fill{display:block;height:7px;background:var(--cool);min-width:2px}
 .bar .fill.big{background:var(--hot)}
 /* Both the fill and this sit on the show's scale, so a staple's median pins to
-   the far left and a bustout visibly overshoots it. */
-.bar .tick{position:absolute;top:-3px;bottom:-3px;width:1px;
-   background:var(--ink);opacity:.5}
+   the far left and a bustout visibly overshoots it. Full-strength ink with a
+   paper halo, so it stays a hairline but reads clearly where it crosses the
+   fill rather than dissolving into it -- and the halo inverts with the theme
+   for free. */
+.bar .tick{position:absolute;top:-5px;bottom:-5px;width:2px;
+   background:var(--ink);box-shadow:0 0 0 1px var(--paper)}
 .last{font-size:.85rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Stacked on wide layouts, run together on narrow ones -- see the
@@ -183,9 +192,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   td.song{grid-area:song}
   td.last{grid-area:meta}
   td.bar{display:none}
-  /* No bar here to carry the tick, so the words do all the work. The mean is
-     the first thing to go: the column is only 3.8rem wide. */
-  .wide{display:none}
+  /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.7rem;margin-top:.2rem}
   .verdict{font-size:.6rem}
   .verdict.bustout{font-size:.62rem}
@@ -221,6 +228,23 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
   .lbl{font-size:.53rem;letter-spacing:.1em}
+}
+/* Wide layouts have a big empty corner to the right of the wordmark, and the
+   show identity is about as tall as the wordmark is, so the two balance as
+   columns. The masthead keeps the strongest position, top left; the show block
+   gets the hard right edge of the page rather than being tucked into a corner,
+   and the hero rule under both ties them together. */
+   Scoped to `screen`: a printed report wants its masthead stacked, and the
+   page box measures 538pt, which would fall the wrong side of this threshold
+   by unit accident rather than by intent. */
+@media screen and (min-width:700px){
+  header{display:grid;grid-template-columns:auto 1fr;column-gap:2.5rem;
+         align-items:start;
+         grid-template-areas:"crumb crumb" "title show" "title where"}
+  .crumb{grid-area:crumb}
+  h1{grid-area:title;margin-bottom:0}
+  .show{grid-area:show;justify-content:flex-end;text-align:right}
+  .where{grid-area:where;text-align:right;margin-top:.35rem}
 }
 @media (prefers-reduced-motion:reduce){.bar .fill{animation:none}}
 @page{size:letter;margin:14mm 13mm 12mm}
