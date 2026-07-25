@@ -51,6 +51,13 @@ MIN_INTERVAL = 0.6
 MAX_TRIES = 5
 _last_fetch = [0.0]
 
+# --catch-up re-fetches shows this recent even when they are already archived.
+# There is no hour that is safely after both an east coast and a west coast
+# show, so any schedule can catch a setlist mid-entry; without a recheck window
+# that partial fill would be archived and then skipped for good. This also
+# picks up phish.net corrections made in the days after a show.
+RECHECK_DAYS = 3
+
 # phish.net encodes sets as 1..4 then e / e2 / e3
 SET_ORDER = {"1": 0, "2": 1, "3": 2, "4": 3, "e": 4, "e2": 5, "e3": 6}
 SET_LABEL = {"1": "SET 1", "2": "SET 2", "3": "SET 3", "4": "SET 4",
@@ -963,6 +970,28 @@ def saved_reports(site_dir):
     return out
 
 
+def _is_fuller(report, site_dir):
+    """Whether a re-fetched show is worth replacing the archived one with.
+
+    A re-check exists to complete a setlist that was archived mid-entry, so it
+    must never do the reverse and trade a full setlist for a thinner one.
+    """
+    _, blob = site_paths(site_dir, report["date"])
+    if not os.path.isfile(blob):
+        return True
+    with open(blob, encoding="utf-8") as fh:
+        try:
+            prior = json.load(fh)
+        except ValueError:
+            return True
+    was, now = len(prior.get("songs") or []), len(report["songs"])
+    if now >= was:
+        return True
+    print("keeping archived %s: %d songs beats the %d just fetched"
+          % (report["date"], was, now), file=sys.stderr)
+    return False
+
+
 def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     """Add reports to the site and rebuild the index around them.
 
@@ -1371,24 +1400,30 @@ def main():
             os.path.abspath(args.html) == os.path.abspath(args.pdf):
         sys.exit("error: --html and --pdf point at the same file")
 
-    reports, key, dates = [], None, list(args.showdate)
+    reports, key, dates, recheck = [], None, list(args.showdate), set()
     kw = {"cache_dir": args.cache_dir, "refresh": args.refresh}
     try:
         if args.catch_up:
             key = load_key(args.apikey)
             played = recent_shows(key, args.catch_up, artist=args.artist, **kw)
             have = set() if args.force else archived_dates(args.site)
-            fresh = [d for d in played if d not in have and d not in dates]
-            print("catch-up: %d show%s played in the last %d days, %d to fetch"
+            cutoff = (datetime.date.today()
+                      - datetime.timedelta(days=RECHECK_DAYS)).isoformat()
+            recheck = {d for d in played if d >= cutoff and d in have}
+            fresh = [d for d in played
+                     if (d not in have or d in recheck) and d not in dates]
+            print("catch-up: %d show%s played in the last %d days, "
+                  "%d new, %d re-checked"
                   % (len(played), "" if len(played) == 1 else "s",
-                     args.catch_up, len(fresh)), file=sys.stderr)
+                     args.catch_up, len(fresh) - len(recheck), len(recheck)),
+                  file=sys.stderr)
             dates += fresh
 
         if args.from_json:
             with open(args.from_json, encoding="utf-8") as fh:
                 reports.append(json.load(fh))
         for date in dates:
-            if args.site and not args.force:
+            if args.site and not args.force and date not in recheck:
                 _, blob = site_paths(args.site, date)
                 if os.path.exists(blob):
                     print("%s is already in the site (--force to re-fetch)"
@@ -1403,6 +1438,8 @@ def main():
                 if not args.site:
                     raise
                 print("skipping %s: %s" % (date, exc), file=sys.stderr)
+                continue
+            if date in recheck and not _is_fuller(report, args.site):
                 continue
             if args.previous:
                 add_previous(report, key, **kw)
