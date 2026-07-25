@@ -513,8 +513,11 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
    it; WeasyPrint keeps backgrounds anyway. */
-.verdict.bustout{display:inline-block;background:var(--hot);color:var(--paper);
-   padding:.16rem .36rem;font-size:.66rem;font-weight:600;letter-spacing:.12em;
+/* A filled edge reads tighter than text does at the same distance, so the chip
+   needs more room above it than the plain tags to sit on the same rhythm. */
+.verdict.bustout{display:inline-block;margin-top:.5rem;background:var(--hot);
+   color:var(--paper);padding:.16rem .36rem;font-size:.66rem;font-weight:600;
+   letter-spacing:.12em;line-height:1.1;
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .bar{padding-right:1.2rem}
 .bar .track{display:block;position:relative;width:100%;height:7px;
