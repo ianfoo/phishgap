@@ -35,6 +35,37 @@ Each show lands in `site/<date>.html`, its data is archived in
 with search, per-year filters, and sorting. Dates the site already has are
 skipped unless `--force`, so runs are additive.
 
+### Song pages
+
+Every song in a report links to its own page at `site/song/<slug>.html`: every
+Phish performance of it newest first, with search, sorting, and the song's gap
+history drawn against its own longest. The archive for those lives in
+`site/data/songs/<slug>.json`, and it is nearly free — `--previous` already
+fetches each song's complete history to find its previous performance, then
+threw the rest away.
+
+Three passes fill in what a single show's fetch cannot know. Each is skippable,
+resumable, and only asks for what it does not already hold:
+
+```sh
+./phishgap.py --site site --seed-songs      # a history per song the archive names
+./phishgap.py --site site --seed-scores     # fouldomain's top-rated versions
+./phishgap.py --site site --seed-setlists   # what each performance followed
+```
+
+`--seed-songs` costs one call per song. `--seed-scores` fetches [fouldomain's](https://fouldomain.com/)
+ratings, which also carry phish.net's own show rating — phish.net's API does not
+expose it. `--seed-setlists` is the expensive one: a song's history says where it
+was played but not what came before it, so this fetches the full setlist of every
+show in the archive, about two thousand calls the first time and none after, since
+a new show's setlist is fetched anyway. It writes in batches and records what it
+has done in `site/data/neighbours.json`, so an interrupted run picks up where it
+stopped.
+
+Ratings and jam charts arrive late — a version is scored from audio analysis, so
+it has none until a recording circulates, and jam chart entries are curated
+months afterwards. Both are treated as optional everywhere they appear.
+
 Rather than naming dates, let it find them:
 
 ```sh
@@ -98,6 +129,10 @@ re-checks recent shows for corrections. On a day with no show it finds nothing
 and publishes nothing. It needs one repository secret, `PHISHNET_API_KEY`.
 Pushing a change to `phishgap.py` also triggers it, so a template edit
 republishes every page.
+
+Song pages are the bulk of the built site — one per song rather than one per
+show — so a template edit rewrites all of them at once. Worth knowing before
+changing something every page shares.
 
 ## Notes
 

@@ -11,7 +11,11 @@ wheels/
 
 # The site's pages are published from the gh-pages branch, and site/data is the
 # archive that regenerates them, so only the archive is tracked here.
+# /site/*.html does not reach a subdirectory, so the song pages need saying:
+# there are one per song rather than one per show, and they are the bulk of the
+# built site.
 /site/*.html
+/site/song/
 /site/.nojekyll
 
 # One-off files for handing to someone directly

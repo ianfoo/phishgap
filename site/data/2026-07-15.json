@@ -35,7 +35,7 @@
       "prev_date": "2026-04-24",
       "prev_venue": "Sphere",
       "prev_place": "Las Vegas, NV",
-      "plays": 54,
+      "plays": 53,
       "recent_plays": 13,
       "gap_median": 28,
       "gap_mean": 28.46153846153846,
@@ -120,7 +120,7 @@
       "prev_date": "2026-04-25",
       "prev_venue": "Sphere",
       "prev_place": "Las Vegas, NV",
-      "plays": 162,
+      "plays": 160,
       "recent_plays": 40,
       "gap_median": 7.0,
       "gap_mean": 9.25,
@@ -188,12 +188,12 @@
       "prev_date": "2026-05-01",
       "prev_venue": "Sphere",
       "prev_place": "Las Vegas, NV",
-      "plays": 75,
-      "recent_plays": 36,
+      "plays": 72,
+      "recent_plays": 34,
       "gap_median": 9.0,
-      "gap_mean": 10.5,
-      "gap_low": 5.25,
-      "gap_high": 18.75,
+      "gap_mean": 11.117647058823529,
+      "gap_low": 6.0,
+      "gap_high": 19.05,
       "verdict": "expected"
     },
     {
@@ -222,7 +222,7 @@
       "prev_date": "2026-04-16",
       "prev_venue": "Sphere",
       "prev_place": "Las Vegas, NV",
-      "plays": 52,
+      "plays": 51,
       "recent_plays": 31,
       "gap_median": 11,
       "gap_mean": 12.516129032258064,
@@ -239,11 +239,11 @@
       "prev_date": "2026-07-07",
       "prev_venue": "Kohl Center",
       "prev_place": "Madison, WI",
-      "plays": 241,
-      "recent_plays": 91,
+      "plays": 236,
+      "recent_plays": 89,
       "gap_median": 4,
-      "gap_mean": 4.1098901098901095,
-      "gap_low": 2.0,
+      "gap_mean": 4.202247191011236,
+      "gap_low": 3.0,
       "gap_high": 6.0,
       "verdict": "expected"
     },
@@ -265,6 +265,7 @@
       "verdict": "premature"
     }
   ],
+  "pnet_rating": 4.418,
   "count_since": "2026-07-25T17:45:14+00:00",
   "provisional": false
 }

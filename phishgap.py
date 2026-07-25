@@ -24,12 +24,14 @@ re-request. Use --refresh to bypass.
 
 import argparse
 import contextlib
+import collections
 import datetime
 import hashlib
 import html
 import json
 import math
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -99,21 +101,24 @@ def load_key(explicit=None):
         "~/.config/phishgap/apikey. Request a key at https://phish.net/api")
 
 
-def get(path, apikey, cache_dir=DEFAULT_CACHE, refresh=False, **params):
-    """GET <API_ROOT>/<path>.json, cached on disk. -> list of row dicts."""
-    params["apikey"] = apikey
-    url = "%s/%s.json?%s" % (API_ROOT, path.strip("/"),
-                             urllib.parse.urlencode(params))
+def _http_json(url, label, cache_dir=DEFAULT_CACHE, refresh=False,
+               ttl=CACHE_TTL, secret=None):
+    """Fetch and parse one JSON URL, cached on disk, paced and backed off.
 
+    `label` is what appears in errors, since a URL with a key in it must never
+    be printed. `secret`, when given, is masked out of the cache key for the
+    same reason. Shared by both APIs this reads, which is also why the pacing
+    is global: politeness to one host should not be spent on the other.
+    """
     blob = None
     if cache_dir:
         os.makedirs(cache_dir, exist_ok=True)
         # key on the URL minus the apikey so the key never lands on disk
-        stable = url.replace(urllib.parse.quote(apikey), "KEY")
+        stable = url.replace(urllib.parse.quote(secret), "KEY") if secret else url
         cache_file = os.path.join(
             cache_dir, hashlib.sha256(stable.encode()).hexdigest()[:20] + ".json")
         if not refresh and os.path.isfile(cache_file):
-            if time.time() - os.path.getmtime(cache_file) < CACHE_TTL:
+            if time.time() - os.path.getmtime(cache_file) < ttl:
                 with open(cache_file, encoding="utf-8") as fh:
                     blob = fh.read()
 
@@ -133,7 +138,7 @@ def get(path, apikey, cache_dir=DEFAULT_CACHE, refresh=False, **params):
             except urllib.error.HTTPError as exc:
                 retryable = exc.code == 429 or 500 <= exc.code < 600
                 if not retryable or attempt == MAX_TRIES:
-                    raise ApiError("HTTP %s from %s" % (exc.code, path)) from None
+                    raise ApiError("HTTP %s from %s" % (exc.code, label)) from None
                 # Honour Retry-After when the server sends one, else back off.
                 try:
                     pause = float(exc.headers.get("Retry-After") or 0)
@@ -141,15 +146,16 @@ def get(path, apikey, cache_dir=DEFAULT_CACHE, refresh=False, **params):
                     pause = 0.0
                 pause = pause or min(30.0, 2.0 ** attempt)
                 print("HTTP %s from %s, retrying in %.0fs (%d/%d)"
-                      % (exc.code, path, pause, attempt, MAX_TRIES),
+                      % (exc.code, label, pause, attempt, MAX_TRIES),
                       file=sys.stderr)
                 time.sleep(pause)
             except urllib.error.URLError as exc:
                 # Wifi dropping out mid-run used to abandon a tour-length fetch
                 # and leave half the histories unfilled, so this retries too.
                 if attempt == MAX_TRIES:
-                    raise ApiError("Could not reach api.phish.net: %s"
-                                   % exc.reason) from None
+                    raise ApiError("Could not reach %s: %s"
+                                   % (urllib.parse.urlsplit(url).netloc,
+                                      exc.reason)) from None
                 pause = min(30.0, 2.0 ** attempt)
                 print("%s, retrying in %.0fs (%d/%d)"
                       % (exc.reason, pause, attempt, MAX_TRIES),
@@ -160,12 +166,78 @@ def get(path, apikey, cache_dir=DEFAULT_CACHE, refresh=False, **params):
                 fh.write(blob)
 
     try:
-        payload = json.loads(blob)
+        return json.loads(blob)
     except ValueError:
-        raise ApiError("Non-JSON response from %s" % path) from None
+        raise ApiError("Non-JSON response from %s" % label) from None
+
+
+def get(path, apikey, cache_dir=DEFAULT_CACHE, refresh=False, **params):
+    """GET <API_ROOT>/<path>.json, cached on disk. -> list of row dicts."""
+    params["apikey"] = apikey
+    url = "%s/%s.json?%s" % (API_ROOT, path.strip("/"),
+                             urllib.parse.urlencode(params))
+    payload = _http_json(url, path, cache_dir=cache_dir, refresh=refresh,
+                         secret=apikey)
     if payload.get("error"):
         raise ApiError(payload.get("error_message") or "API reported an error")
     return payload.get("data") or []
+
+
+# fouldomain scores every circulating performance out of 100 and carries
+# phish.net's own show rating besides, which phish.net's API does not expose --
+# its /reviews rows have a `score`, but that is votes on the review, running
+# 0-42 where the rating is out of 5. Recalculated nightly at their end, so a
+# day's cache is as fresh as the data ever gets.
+FOUL_ROOT = "https://fouldomain.com/api/public"
+FOUL_TTL = 24 * 3600
+BEST_LIMIT = 25
+
+# "Top 25 versions" is only a distinction when a song has more than 25 to rank.
+# Sparks has been played 15 times, so its whole history comes back as its own
+# best, and a score of 35 would have been captioned "highly rated". The score
+# is absolute across every Phish performance, so the caption goes by the score
+# rather than by the rank: Tweezer's 25th is 86 and earns it, Sparks' second is
+# 47 and does not, while both still carry the score and a way to hear them.
+RATED_HIGH = 80
+
+# Notes longer than this fold, so that one entry cannot take half the screen.
+# Two lines at the width they are set to is about this many characters, and the
+# median note is 178: roughly half of them fold, and the short ones are spared
+# an affordance they do not need.
+JAM_CLAMP = 200
+
+# Grouping a song's history by year gives a heading every 7.9 rows across the
+# archive -- but 16% of them head a single row, and on Weigh it is 76%. A year
+# heading is the only thing on the page repeating what every row it heads
+# already says, which is why it reads as furniture when it covers one row and
+# as rhythm when it covers eighteen.
+#
+# Eras carry something no row does, and there are always three or four of them.
+# Bounded by date rather than year because the hiatuses fall mid-year: the last
+# show before the first was 2000-10-07, and 2.0 ended at Coventry.
+ERAS = (
+    ("1.0", "", "2000-10-07"),
+    ("2.0", "2002-12-31", "2004-08-15"),
+    ("3.0", "2009-03-06", "2020-02-23"),
+    ("4.0", "2021-07-28", "9999"),
+)
+
+
+def era(iso):
+    for label, start, end in ERAS:
+        if start <= iso <= end:
+            return label
+    # A date in a hiatus belongs to whichever era it sits between; nothing in
+    # the archive lands here, but a gap year should not go unlabelled.
+    return next((l for l, s, _ in reversed(ERAS) if iso >= s), ERAS[0][0])
+
+
+def foul(path, cache_dir=DEFAULT_CACHE, refresh=False, **params):
+    """GET one fouldomain endpoint. -> parsed payload."""
+    url = "%s/%s?%s" % (FOUL_ROOT, path.strip("/"),
+                        urllib.parse.urlencode(params))
+    return _http_json(url, "fouldomain/%s" % path, cache_dir=cache_dir,
+                      refresh=refresh, ttl=FOUL_TTL)
 
 
 # ------------------------------------------------------------------ model ---
@@ -241,10 +313,32 @@ def recent_shows(apikey, days, artist="Phish", **kw):
     return sorted(dates)
 
 
-def add_previous(report, apikey, **kw):
+def own_history(rows, artist):
+    """One band's own performances of a song, oldest first.
+
+    A song's history spans every band that has played it: /slug/ghost returns
+    242 Phish rows, 81 Trey Anastasio and one Page McConnell. Unfiltered, the
+    last performance of a Phish song came back as a Trey solo show at the
+    Capitol Theatre. The same filter keeps the same-date lookup in
+    add_previous from landing on another band's row, makes a debut mean the
+    first time *this* band played it, and keeps song pages from listing TAB
+    shows. Across the archive it drops 4,361 rows of 32,880.
+    """
+    rows = [r for r in rows if r.get("showdate")
+            and (not artist or r.get("artist_name") == artist)]
+    rows.sort(key=lambda r: (r["showdate"], int(r.get("position") or 0)))
+    return rows
+
+
+def add_previous(report, apikey, site_dir=None, **kw):
     """Optional second pass: date/venue of each song's prior performance.
 
     Costs one call per song, so it is opt-in behind --previous.
+
+    The response is the song's whole performance history, so with a site to
+    write into, that history is archived on the way past. The refresh
+    invariant falls out for free: a song's history only changes when the band
+    plays it, and when they do, that show's fetch comes back through here.
     """
     missed = []
     artist = report.get("artist")
@@ -256,24 +350,26 @@ def add_previous(report, apikey, **kw):
             # render as a show whose songs quietly have no history.
             missed.append("%s (%s)" % (s["song"], exc))
             continue
-        # A song's history spans every band that has played it: /slug/ghost
-        # returns 242 Phish rows, 81 Trey Anastasio and one Page McConnell.
-        # Unfiltered, the last performance of a Phish song came back as a Trey
-        # solo show at the Capitol Theatre. The same filter keeps the same-date
-        # lookup below from landing on another band's row, and makes a debut
-        # mean the first time *this* band played it.
-        hist = [h for h in hist if h.get("showdate")
-                and (not artist or h.get("artist_name") == artist)]
-        hist.sort(key=lambda h: h["showdate"])
+        # One row per show from here down. The response has one row per setlist
+        # slot, and a song can come round more than once a night -- five
+        # Tweezers at Merriweather in 2014 -- which would otherwise count as
+        # five plays, and file four gaps of 0 into the distribution that
+        # decides whether tonight's gap is unusual.
+        hist = by_show(own_history(hist, artist))
+        if site_dir:
+            save_song_history(site_dir, s["slug"], s["song"], hist, artist)
         idx = next((i for i, h in enumerate(hist)
                     if h["showdate"] == report["date"]), None)
-        if s["gap"] is None and idx is not None:
-            g = hist[idx].get("gap")
-            s["gap"] = int(g) if str(g).lstrip("-").isdigit() else None
+        if idx is not None:
+            # by_show has already found the night's real gap, wherever among
+            # the repeats phish.net happened to file it.
+            g = _gap(hist[idx])
+            if g is not None:
+                s["gap"] = g
         if idx == 0:
             s["debut"] = True          # this show IS the first performance
         # The history is already in hand for the previous-performance lookup,
-        # so the song's own gap distribution costs nothing more. Rows before
+        # so the song's own gap distribution costs nothing more. Shows before
         # this one only, and never the debut, which has no gap to speak of.
         s.update(_classify(s["gap"], hist[1:idx if idx else 0], report["date"],
                            plays=None if idx is None else idx + 1))
@@ -348,6 +444,8 @@ def _dark_under(root):
             "%(r)s .hero{border-top-width:2px;border-top-color:#6b6353}\n"
             # Favicons drawn as solid black on transparency vanish here.
             "%(r)s .badge img.flip{filter:invert(1)}\n"
+            # Same icon, same problem, worn as a background by the song pages.
+            "%(r)s .ext.i-pin::after{filter:invert(1)}\n"
             % {"r": root, "v": _vars(DARK)})
 
 
@@ -523,7 +621,11 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .bar{padding-right:1.2rem}
 .bar .track{display:block;position:relative;width:100%;height:7px;
-   background:var(--track)}
+   background-color:var(--track);
+   background-image:linear-gradient(to right,transparent calc(var(--med,-1%) - 1px),
+     var(--band) calc(var(--med,-1%) - 1px),var(--band) var(--med,-1%),
+     transparent var(--med,-1%));
+   background-repeat:no-repeat}
 /* Where this song's gaps usually fall, on its own bar under the track and on
    the same scale: a fill ending short of it reads premature, above it expected,
    past its right end overdue. It started as a wash over the track, but no one
@@ -547,6 +649,15 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    max-width block, which puts these back inline with separators. */
 .last .date,.last .venue,.last .place{display:block}
 .venue{color:var(--dim);font-size:.78rem;line-height:1.2rem}
+.rating{margin:.45rem 0 0;font-size:.66rem;letter-spacing:.1em;
+   text-transform:uppercase;color:var(--dim)}
+.rating b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:.95rem;color:var(--ink);letter-spacing:0;margin-left:.15rem}
+.rating span{opacity:.75}
+/* The title carries the link to the song's own page; underlining every one of
+   them would stripe the table, so it colours on hover instead. */
+td.song a{color:inherit;text-decoration:none}
+td.song a:hover{color:var(--hot)}
 .place{color:var(--dim);font-size:.78rem;line-height:1.2rem;white-space:nowrap}
 .none{color:var(--dim);font-style:italic}
 .notes{margin:2.2rem 0 0;padding:1rem 1.1rem;border-left:3px solid var(--rule);
@@ -670,7 +781,7 @@ SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <header>{crumb}<h1>Gap <em>Report</em></h1>
 <p class="show"><span class="date">{date}</span>{tour}</p>
-<p class="where">{venue}</p></header>
+<p class="where">{venue}</p>{rating}</header>
 <section class="hero">{hero}</section>
 <p class="links">{links}</p>
 {sections}{notes}
@@ -837,7 +948,7 @@ def _bar_pct(gap, biggest, scale="linear"):
 
 
 def render_html(report, bar_scale="linear", index_href=None,
-                prev_date=None, next_date=None):
+                prev_date=None, next_date=None, songs=()):
     allg = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(allg) if allg else 0
     avg = _stat(sum(allg) / len(allg)) if allg else "n/a"
@@ -938,9 +1049,20 @@ def render_html(report, bar_scale="linear", index_href=None,
                    "</span>%s</td>" % (explain, klass, pct, tick, band))
         # Both statistics cells carry the explanation, so the hover target is
         # the whole of them rather than a range bar that can be five pixels wide.
+        # The title is the way in to the song's own history, but only once that
+        # page exists: a report archived before song pages did has songs the
+        # band has not played since, and those get a page when they next come
+        # round rather than a link to nowhere now.
+        title = html.escape(s["song"])
+        if s["slug"] in songs:
+            # Anchored at this very performance, so the link answers "where
+            # does tonight's version sit against all the others" rather than
+            # dropping you at the top of a six-hundred-row page to go looking.
+            title = "<a href='./song/%s.html#%s'>%s</a>" % (
+                html.escape(s["slug"], quote=True),
+                html.escape(report["date"], quote=True), title)
         cells = "<td class='n'%s>%s</td><td class='song%s'>%s</td>%s" % (
-            explain, gap_cell, " jc" if s["jamchart"] else "",
-            html.escape(s["song"]), bar)
+            explain, gap_cell, " jc" if s["jamchart"] else "", title, bar)
         if show_last:
             if s["prev_date"]:
                 # No <br>: the spans are blocks on wide layouts and inline on
@@ -992,10 +1114,18 @@ def render_html(report, bar_scale="linear", index_href=None,
     tour = ("<span class='tour'>%s</span>" % html.escape(tour)
             if tour and "not part of a tour" not in tour.lower() else "")
 
+    # phish.net's own rating for the night, which their API does not expose --
+    # fouldomain does, so it is theirs by way of someone else and says so.
+    # Absent for a show played last night, which simply has no line.
+    rating = ""
+    if report.get("pnet_rating") is not None:
+        rating = ("<p class='rating'>Phish.net rating <b>%.2f</b>"
+                  "<span> via fouldomain</span></p>" % report["pnet_rating"])
+
     return SHELL.format(
         css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
-        venue=html.escape(report["venue"]), hero=hero,
+        venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
         stamp=time.strftime("Generated %Y-%m-%d"))
@@ -1180,7 +1310,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
-<footer><span>Data: Phish.net API v5</span>{theme_ui}<span>{stamp}</span></footer>
+<footer><span><a href="./songs.html">All songs</a></span>{theme_ui}<span>{stamp}</span></footer>
 </div><script>{js}</script></body></html>
 """
 
@@ -1232,7 +1362,19 @@ def _date_aliases(iso):
         # is what lets a whole-number search for 8 find the 8th.
         d.strftime("%B %d %Y"),
         "%s %d" % (d.strftime("%B"), d.day),
+        # The weekday is on the song pages anyway, and putting it in the
+        # haystack makes "never miss a Sunday show" a search rather than a
+        # saying. "sun" is a prefix of "sunday", so one spelling covers both.
+        d.strftime("%A"),
     ))
+
+
+def weekday(iso):
+    """Sun, Mon, Tue... for a date the archive spells YYYY-MM-DD."""
+    try:
+        return datetime.date.fromisoformat(iso).strftime("%a")
+    except ValueError:
+        return ""
 
 
 def render_index(reports, page_href="./%s.html"):
@@ -1301,6 +1443,722 @@ def render_index(reports, page_href="./%s.html"):
         stamp=time.strftime("Updated %Y-%m-%d"))
 
 
+# ------------------------------------------------------------------- song ---
+
+# Alfa Slab One has one weight and it is a poster weight: right for a wordmark
+# and for a bare number, too heavy for a date string, which has twice the
+# characters and three pieces of punctuation. Aleo carries the dates and the
+# song title; the gap figures and the hero numbers stay in the slab.
+SONG_FONTS = ("https://fonts.googleapis.com/css2?family=Alfa+Slab+One"
+              "&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600"
+              "&display=swap")
+
+SONG_CSS = (PALETTE_CSS + THEME_CSS + """
+*{box-sizing:border-box}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:15px;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto}
+.crumb{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:1.1rem;
+   font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
+.crumb a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+h1{font-family:'Aleo',Georgia,serif;font-weight:600;
+   font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.02;margin:0 0 .5rem;
+   letter-spacing:-.01em}
+.show{margin:0;font-size:.78rem;font-weight:600;letter-spacing:.07em;
+   text-transform:uppercase;color:var(--ink-soft)}
+.hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
+   border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
+.card:first-child{border-left:0;padding-left:0}
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.1rem;line-height:1;
+   letter-spacing:-.01em}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;
+   color:var(--dim);margin-top:.4rem}
+.lbl .abbr{display:none}
+/* The best version gets a line rather than a fifth card: it is a date, a
+   place, a score and two links, none of which fit a card built for one
+   number. */
+.best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .7rem;
+   margin:.9rem 0 0;padding:.6rem .8rem;border-left:3px solid var(--hot);
+   background:var(--hover);font-size:.8rem}
+.best .cap{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+   color:var(--dim)}
+.best .when{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem}
+.best .score{font-family:'Alfa Slab One',Georgia,serif;color:var(--hot);
+   font-size:1.1rem;line-height:1}
+.best .where{color:var(--dim)}
+.best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+.badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
+   padding:.35rem .5rem;border:1px solid var(--rule);color:var(--dim);
+   text-decoration:none;font-size:.66rem;letter-spacing:.08em;
+   text-transform:uppercase}
+.badge img{display:block;width:13px;height:13px}
+.badge:hover{color:var(--ink);border-color:var(--ink-soft)}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
+   margin:1.9rem 0 .9rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.9rem;
+   padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
+   background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
+   outline-offset:1px}
+.sort{font:inherit;font-size:.7rem;padding:.4rem .3rem;background:transparent;
+   color:var(--ink);border:1px solid var(--rule);border-radius:0}
+.count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-left:auto}
+.count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:.95rem;color:var(--ink)}
+.perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.perfs>li{border-bottom:1px solid var(--rule-soft)}
+.perfs>li.yr{border-bottom:0}
+.yr h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;
+   font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:1rem;letter-spacing:.04em;margin:1.6rem 0 .3rem;
+   padding-bottom:.3rem;border-bottom:1px solid var(--rule);color:var(--ink)}
+.yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.6rem;
+   letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.yr:first-child h2{margin-top:.4rem}
+/* Column labels. The date and the venue say what they are; the bar and the
+   number on the far right did not, and were left to be guessed at. */
+.head{padding-bottom:.35rem;border-bottom:1px solid var(--rule);
+   font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+   color:var(--dim)}
+.head .nhead{color:var(--dim)}
+.head .ghead{grid-column:4/-1;text-align:right}
+/* Every row is its own grid, so an `auto` last column sizes to its own content
+   and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
+   2x" 71, which put the numbers at three different left edges down the page.
+   Fixed width, sized for the longest of them. */
+.row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
+   column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
+.row:hover{background:var(--hover)}
+.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
+   line-height:1.3rem;white-space:nowrap}
+.r-date a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.r-date a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* One copy of each favicon for the whole page, worn by class. */
+.ext::after{content:"";display:inline-block;width:10px;height:10px;
+   margin-left:.3rem;vertical-align:baseline;opacity:.65;
+   background-position:center;background-repeat:no-repeat;
+   background-size:contain}
+.ext:hover::after{opacity:1}
+.i-pnet::after{background-image:url("data:image/png;base64,__PNET__")}
+.i-pin::after{background-image:url("data:image/png;base64,__PIN__")}
+.i-foul::after{background-image:url("data:image/png;base64,__FOUL__")}
+.dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
+   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);line-height:1.1rem}
+.r-venue{font-size:.8rem;font-weight:600;letter-spacing:.04em;
+   text-transform:uppercase;line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.72rem;line-height:1.15rem}
+.r-gap{text-align:right;line-height:1.3rem}
+.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.05rem}
+.gap.big{color:var(--hot)}
+.gap.none{color:var(--dim)}
+.set{display:block;font-size:.6rem;letter-spacing:.14em;color:var(--dim);
+   text-transform:uppercase}
+/* What it followed and what it led into, stacked. Sized in ch so the column
+   holds a couple of words of song title and truncates the rest rather than
+   pushing the gap figures around. */
+.nb{font-size:.68rem;line-height:1.25rem;color:var(--dim);min-width:0}
+.nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nb-in::before{content:"\2190\00a0";opacity:.55}
+.nb-out::before{content:"\2192\00a0";opacity:.55}
+/* Where a transition mark is shown it points on its own; the plain arrow is
+   only for rows that have none, so no line ever reads "-> ->". */
+.nb .seg::before{content:none}
+.bar{align-self:center}
+.bar .track{display:block;position:relative;width:100%;height:7px;
+   background-color:var(--track);
+   background-image:linear-gradient(to right,transparent calc(var(--med,-1%) - 1px),
+     var(--band) calc(var(--med,-1%) - 1px),var(--band) var(--med,-1%),
+     transparent var(--med,-1%));
+   background-repeat:no-repeat}
+.bar .fill{display:block;height:7px;max-width:100%;background:var(--cool)}
+.bar .fill.big{background:var(--hot)}
+/* Only the rated versions carry these, which is 25 rows out of however many
+   hundred -- and only they are known to have audio, since a version cannot be
+   scored until a recording of it circulates. */
+.mark{display:block;margin-top:.3rem;font-size:.62rem;letter-spacing:.1em;
+   text-transform:uppercase;color:var(--dim)}
+.mark b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:.8rem;color:var(--dim);letter-spacing:0}
+.mark.high b{color:var(--hot)}
+.mark a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.mark a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* phish.net's note on the version, set under the venue rather than across the
+   row: spanning every column put it against the page's left edge, where it
+   read as something stuck on afterwards rather than as part of the entry.
+   Roman, not italic -- these run to 950 characters at the long end, and a
+   paragraph of italic prose is tiring well before that. */
+.jam,.note{margin:.4rem 0 0;font-size:.76rem;line-height:1.5;
+   color:var(--ink-soft);max-width:62ch}
+.tag{display:inline-block;margin-right:.45rem;font-size:.58rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+details.jam,details.note{cursor:pointer}
+details.jam summary,details.note summary{display:block;list-style:none}
+details.jam summary::-webkit-details-marker,
+details.note summary::-webkit-details-marker{display:none}
+.clip{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+   overflow:hidden}
+details[open] .clip{-webkit-line-clamp:none;display:block}
+/* The affordance sits outside the clamped box, or it would be clipped away by
+   the very rule that makes it necessary. */
+details.jam summary::after,
+details.note summary::after{content:"More";display:inline-block;margin-top:.2rem;
+   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule)}
+details.jam[open] summary::after,
+details.note[open] summary::after{content:"Less"}
+details.jam summary:hover::after,
+details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot)}
+details.jam summary:focus-visible,
+details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+   font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+   color:var(--dim);display:flex;justify-content:space-between;
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim)}
+@media screen{
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
+    opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+}
+/* Same lesson as the reports and the index: below this width the columns stop
+   being columns, so nothing has to be squeezed or hidden. */
+@media screen and (max-width:620px){
+  .head{display:none}
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
+  .nb{margin-top:.2rem}
+  .nb span{white-space:normal;overflow:visible}
+  .r-date{display:flex;align-items:baseline;gap:.5rem}
+  .dow{display:inline}
+  .r-gap{text-align:left}
+  .gap{font-size:1rem}
+  .set{display:inline;margin-left:.5rem}
+  .bar{margin:.25rem 0}
+  .card{flex:1 1 45%;padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.53rem;letter-spacing:.1em}
+  /* "Median gap, last 10 years" is the clear label and the default one; the
+     column is simply not wide enough for it here. */
+  .lbl .full{display:none}
+  .lbl .abbr{display:inline}
+  .show{font-size:.7rem;letter-spacing:.05em}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+""".replace("__PNET__", ICON_PNET)
+   .replace("__PIN__", ICON_PIN)
+   .replace("__FOUL__", ICON_FOUL))
+
+SONG_JS = """
+(function(){
+  var list=document.getElementById('list');
+  if(!list) return;
+  var kids=Array.prototype.slice.call(list.children),
+      rows=kids.filter(function(n){ return !n.classList.contains('yr'); }),
+      heads=kids.filter(function(n){ return n.classList.contains('yr'); }),
+      q=document.getElementById('q'), sort=document.getElementById('sort'),
+      shown=document.getElementById('shown'), empty=document.getElementById('empty');
+  function matcher(t){
+    if(!/^\\d+$/.test(t)) return function(hay){ return hay.indexOf(t)>-1; };
+    var re=new RegExp('(^|[^0-9])'+t+'([^0-9]|$)');
+    return function(hay){ return re.test(hay); };
+  }
+  function apply(){
+    var terms=q.value.toLowerCase().split(/\\s+/).filter(Boolean).map(matcher),
+        n=0, live={};
+    rows.forEach(function(r){
+      var hay=r.getAttribute('data-search'), ok=terms.every(function(t){
+        return t(hay);
+      });
+      r.hidden=!ok;
+      if(ok){ n++; live[r.getAttribute('data-era')]=1; }
+    });
+    // A year heading with nothing left under it is worse than no heading, so
+    // it goes when its rows do -- and stays gone whenever the order is not
+    // chronological, because then it is not describing what follows it.
+    var byDate=sort.value==='newest'||sort.value==='oldest';
+    heads.forEach(function(h){
+      h.hidden=!byDate||!live[h.getAttribute('data-era')];
+    });
+    shown.textContent=n;
+    empty.hidden=n>0;
+  }
+  var headFor={};
+  heads.forEach(function(h){ headFor[h.getAttribute('data-era')]=h; });
+  function order(){
+    var k=sort.value;
+    var sorted=rows.slice().sort(function(a,b){
+      if(k==='rating') return (b.getAttribute('data-score')||-1)-(a.getAttribute('data-score')||-1);
+      if(k==='gap') return (b.getAttribute('data-gap')||-1)-(a.getAttribute('data-gap')||-1);
+      var x=a.getAttribute('data-date'), y=b.getAttribute('data-date');
+      return k==='oldest' ? x.localeCompare(y) : y.localeCompare(x);
+    });
+    sorted.forEach(function(r){ list.appendChild(r); });
+    if(k==='newest'||k==='oldest'){
+      // Walk the list as it now runs and put each heading before the first row
+      // of its era. Reading the era order off the original array instead put
+      // every heading at the foot of its group when sorted oldest, because the
+      // array is newest-first and never gets re-sorted itself.
+      var placed={};
+      sorted.forEach(function(r){
+        var e=r.getAttribute('data-era');
+        if(placed[e]) return;
+        placed[e]=1;
+        if(headFor[e]) list.insertBefore(headFor[e], r);
+      });
+    } else {
+      // Hidden either way, but parked at the end rather than left stranded
+      // between rows they no longer describe.
+      heads.forEach(function(h){ list.appendChild(h); });
+    }
+    apply();
+  }
+  q.addEventListener('input', apply);
+  sort.addEventListener('change', order);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+    if(e.key==='Escape' && document.activeElement===q){ q.value=''; apply(); q.blur(); }
+  });
+  q.disabled=false; sort.disabled=false;
+  apply();
+})();
+"""
+
+SONG_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{song} &mdash; Phish Gap Reports</title>
+<meta name="description" content="{blurb}">
+<meta property="og:title" content="{song}">
+<meta property="og:description" content="{blurb}">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<nav class="crumb"><a href="../index.html">All reports</a><a href="../songs.html">All songs</a></nav>
+<header><h1>{song}</h1>
+<p class="show">{subtitle}</p></header>
+<section class="hero">{hero}</section>
+{best}
+<p class="links">{links}</p>
+<div class="tools">
+<input id="q" class="search" type="search" autocomplete="off" disabled
+       placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
+<label class="count" for="sort">Sort
+<select id="sort" class="sort" disabled>
+<option value="newest">Newest</option><option value="oldest">Oldest</option>
+<option value="rating">Highest rated</option><option value="gap">Longest gap</option>
+</select></label>
+<span class="count"><b id="shown">{count}</b> of {count} shows</span>
+</div>
+{head}
+<ol class="perfs" id="list">
+{rows}
+</ol>
+<p class="empty" id="empty" hidden>No performances match that search.</p>
+<footer><span>Data: Phish.net &middot; ratings <a href="https://fouldomain.com/"
+ target="_blank" rel="noopener noreferrer">fouldomain</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+</div><script>{js}</script></body></html>
+"""
+
+SONG_LINKS = (
+    ("phish.net", "https://phish.net/song/%s", ICON_PNET, False),
+    ("phish.in", "https://phish.in/songs/%s", ICON_PIN, True),
+)
+
+
+def _ext(url, label, cls):
+    """An outbound link, wearing the favicon of wherever it lands.
+
+    The icon arrives by class rather than as an inlined <img>. It is the same
+    2.5 KB of base64 either way, but on a page with a link on every one of You
+    Enjoy Myself's 628 rows the difference is 2.6 MB against 240 KB.
+    """
+    return ("<a class='ext %s' href='%s' target='_blank'"
+            " rel='noopener noreferrer'>%s</a>"
+            % (cls, html.escape(url, quote=True), label))
+
+
+def render_song(doc, archived=(), stamp=None):
+    """One song's whole performance history, newest first."""
+    perfs = list(reversed(doc["performances"]))
+    song = doc["song"]
+    best = doc.get("best") or []
+    rated = {v["date"]: v for v in best}
+    gaps = [p["gap"] for p in perfs[:-1] if p["gap"] is not None]
+    biggest = max(gaps) if gaps else 0
+
+    # The all-time and recent medians sit side by side because they disagree so
+    # often: You Enjoy Myself is 1 against 6, Llama 2 against 11. Showing only
+    # the all-time figure would describe a band that stopped existing in 1999.
+    cutoff = _years_before(perfs[0]["date"], RECENT_YEARS) if perfs else ""
+    recent = [p["gap"] for p in perfs[1:] if p["gap"] is not None
+              and p["date"] >= cutoff]
+    lbl10 = ("Median Gap, <span class='full'>Last %d Years</span>"
+             "<span class='abbr'>%d Yr</span>" % (RECENT_YEARS, RECENT_YEARS))
+    hero = "".join(
+        "<div class='card'><div class='num%s'>%s</div>"
+        "<div class='lbl'>%s</div></div>" % (cls, val, lbl)
+        for val, lbl, cls in (
+            (len(perfs), "Times Played", ""),
+            (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
+            (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
+            (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
+        ))
+
+    top = best[0] if best else ""
+    if top:
+        where = ", ".join(x for x in (top["venue"], top["city"]) if x)
+        top = ("<p class='best'><span class='cap'>Best version</span>"
+               "<span class='when'>%s</span><span class='where'>%s</span>"
+               "<span class='score'>%s</span>"
+               "<span class='cap'>%s &middot; %s</span></p>"
+               % (top["date"], html.escape(where), top["score"],
+                  _ext("https://phish.in/%s" % top["date"], "Listen", "i-pin"),
+                  _ext(top["link"] or "https://fouldomain.com/", "Details", "i-foul")))
+
+    # Each era heading counts its own shows, which is the thing a year heading
+    # never told you: McGrupp reads 101 / 1 / 13 / 9 and you can watch the song
+    # nearly die and come back.
+    tally = collections.Counter(era(p["date"]) for p in perfs)
+    span = {}
+    for p in perfs:
+        e = era(p["date"])
+        lo, hi = span.get(e, (p["date"], p["date"]))
+        span[e] = (min(lo, p["date"]), max(hi, p["date"]))
+
+    rows, seen_era = [], None
+    for i, p in enumerate(perfs):
+        date, g = p["date"], p["gap"]
+        # The oldest row is the debut, and what phish.net files as its gap is
+        # shows since the band's own first show -- Blaze On's 1,682 counts the
+        # thirty years before it existed. A different measurement wearing the
+        # same name: it does not belong in the column, in the song's longest
+        # gap, or on a bar scaled to gaps that mean the other thing.
+        debut = i == len(perfs) - 1
+        this = era(date)
+        if this != seen_era:
+            seen_era = this
+            lo, hi = span[this]
+            rows.append(
+                "<li class='yr' data-era='%s'><h2>%s<span>%d show%s</span>"
+                "<span>%s&ndash;%s</span></h2></li>"
+                % (this, this, tally[this], "" if tally[this] == 1 else "s",
+                   lo[:4], hi[:4]))
+        note = p.get("note") or ""
+        hay = " ".join([date, _date_aliases(date), p["venue"], p["city"],
+                        p["state"], p.get("jam") or "",
+                        p.get("note") or ""]).lower()
+        # A performance we have a report for links to it; everything else goes
+        # to phish.net, wearing their favicon so the trip off-site is visible
+        # before it is taken rather than after.
+        if date in archived:
+            link = "<a href='../%s.html'>%s</a>" % (date, date)
+        else:
+            link = _ext("https://phish.net/setlist/?d=%s" % date, date, "i-pnet")
+        place = ", ".join(x for x in (p["city"], p["state"]) if x)
+        big = (g or 0) >= 50 and not debut
+        bar = "<span class='bar'></span>"
+        if g and biggest and not debut:
+            bar = ("<span class='bar'><span class='track'><span class='fill%s'"
+                   " style='width:%.1f%%'></span></span></span>"
+                   % (" big" if big else "",
+                      min(_bar_pct(g, biggest), 100.0)))
+        mark = ""
+        if date in rated:
+            v = rated[date]
+            mark = ("<span class='mark%s'>%s <b>%s</b> &middot; %s</span>"
+                    % (" high" if v["score"] >= RATED_HIGH else "",
+                       "Highly rated" if v["score"] >= RATED_HIGH else "Rated",
+                       v["score"],
+                       _ext("https://phish.in/%s" % date, "Listen", "i-pin")))
+        # What it came out of and went into, reading the way a setlist reads:
+        # the mark sits between the two songs it joins. Absent for a set opener
+        # or closer, which genuinely has nothing on that side.
+        # Always emitted, even empty: every row places the same number of grid
+        # children, or a set opener with nothing before it shifts its own bar
+        # and gap one column left of everybody else's.
+        # One symbol per line. Where phish.net recorded a transition it stands
+        # in setlist position and does the pointing itself -- "Everything's
+        # Right ->" above, "-> Golden Age" below; a plain arrow only where
+        # there was no mark to show. Both at once read as "-> ->".
+        bits = []
+        if p.get("prev"):
+            bits.append("<span class='nb-in%s'>%s%s</span>"
+                        % (" seg" if p.get("in") else "",
+                           html.escape(p["prev"]),
+                           " %s" % html.escape(p["in"]) if p.get("in") else ""))
+        if p.get("next"):
+            bits.append("<span class='nb-out%s'>%s%s</span>"
+                        % (" seg" if p.get("out") else "",
+                           "%s " % html.escape(p["out"]) if p.get("out") else "",
+                           html.escape(p["next"])))
+        nb = "<span class='nb'>%s</span>" % "".join(bits)
+        times = ("<span class='set'>%s &middot; %d&times;</span>"
+                 % (SET_LABEL.get(p["set"], "Set %s" % p["set"]), p["times"])
+                 if p.get("times") else
+                 "<span class='set'>%s</span>"
+                 % SET_LABEL.get(p["set"], "Set %s" % p["set"]))
+        # Folded only when long enough to be worth folding. <details> does the
+        # work, so a note is still fully readable with scripting off -- and the
+        # text is stored once, clamped by CSS rather than truncated in the
+        # markup, so searching still reaches the hidden half.
+        # phish.net's footnote first -- it is terse and about the performance --
+        # then the jamchart prose, which is longer and about the playing. Each
+        # labelled, because unlabelled they read as one run-on paragraph.
+        jam = ""
+        for cls, tag, text in (("note", "Note", p.get("note")),
+                               ("jam", "Jam chart", p.get("jam"))):
+            if not text:
+                continue
+            body = ("<span class='tag'>%s</span>%s"
+                    % (tag, html.escape(html.unescape(text))))
+            jam += ("<details class='%s'><summary><span class='clip'>%s</span>"
+                    "</summary></details>" % (cls, body)
+                    if len(text) > JAM_CLAMP
+                    else "<p class='%s'>%s</p>" % (cls, body))
+        rows.append(
+            "<li id='%s' data-date='%s' data-era='%s' data-gap='%s'"
+            " data-score='%s' data-search=\"%s\"><div class='row'>"
+            "<span class='r-date'>%s<span class='dow'>%s</span></span>"
+            "<span><span class='r-venue'>%s</span>"
+            "<span class='r-place'>%s</span>%s%s</span>%s%s"
+            "<span class='r-gap'><span class='gap%s'>%s</span>%s</span>"
+            "</div></li>"
+            % (date, date, this, -1 if (g is None or debut) else g,
+               rated[date]["score"] if date in rated else "",
+               html.escape(hay, quote=True), link, weekday(date),
+               html.escape(p["venue"]), html.escape(place), mark, jam, nb, bar,
+               " none" if (g is None or debut) else (" big" if big else ""),
+               "Debut" if debut else
+               ("{:,}".format(g) if g is not None else "&mdash;"), times))
+
+    # Every bar on this page is the same song against the same scale, so the
+    # median sits at one position for all of them -- drawn as a gridline in the
+    # track rather than as a tick repeated on six hundred rows, which is the
+    # year-heading mistake in another costume. The report pages mark it per row
+    # because there each row is a different song with a different norm.
+    med = _median(gaps) if gaps else None
+    medmark = ""
+    if med and biggest and _bar_pct(med, biggest) >= 2:
+        medmark = ("<style>.perfs{--med:%.2f%%}</style>"
+                   % _bar_pct(med, biggest))
+
+    head = ("<div class='row head'><span>Date</span><span>Venue</span>"
+            "<span class='nhead'>Before / after</span>"
+            "<span class='ghead'>Gap%s</span></div>"
+            % (" &middot; mark at median %s" % _stat(med) if medmark else ""))
+
+    first, last = (perfs[-1]["date"], perfs[0]["date"]) if perfs else ("", "")
+    subtitle = " &middot; ".join(x for x in (
+        "Debut %s" % first if first else "",
+        "Last played %s" % last if last and last != first else "",
+        "%d performance%s" % (len(perfs), "" if len(perfs) == 1 else "s"),
+    ) if x)
+    blurb = "Every Phish performance of %s: %d show%s" % (
+        song, len(perfs), "" if len(perfs) == 1 else "s")
+    if first:
+        blurb += ", %s to %s" % (first, last)
+    if best:
+        blurb += ". Best version %s (%s)" % (best[0]["date"], best[0]["score"])
+
+    links = "".join(
+        "<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
+        "<img class='%s' src='data:image/png;base64,%s' alt='' width='13'"
+        " height='13'><span>%s</span></a>"
+        % (url % doc["slug"], "flip" if flip else "", icon, label)
+        for label, url, icon, flip in SONG_LINKS)
+
+    return SONG_SHELL.format(
+        css=SONG_CSS, js=SONG_JS, fonts=SONG_FONTS, theme_js=THEME_JS,
+        theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
+        hero=hero, best=top, links=links, count=len(perfs),
+        head=medmark + head,
+        rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
+        # Dated by the data rather than by the clock. A build stamp changed
+        # every page on every run, which is exactly the churn that made
+        # rebuilds expensive -- and it was answering "when did this run?"
+        # when the useful question is "how current is this?"
+        stamp=stamp or ("Current through %s" % last if last else "No performances"))
+
+
+# ------------------------------------------------------------- song index ---
+
+# The show index's vocabulary, with the first column widened for titles and set
+# in the same face the song pages use for theirs. One stylesheet's worth of
+# rules rather than a second one drifting away from the first.
+SONGS_CSS = INDEX_CSS + """
+.row{grid-template-columns:1fr 9rem auto}
+.r-song{display:block;font-family:'Aleo',Georgia,serif;font-weight:600;
+   font-size:1.05rem;line-height:1.3rem;color:inherit}
+.r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
+.r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
+.r-stats .score{color:var(--hot)}
+@media screen and (max-width:620px){
+  .row{grid-template-columns:1fr}
+  .r-when{white-space:normal}
+}
+"""
+
+SONGS_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Songs &mdash; Phish Gap Reports</title>
+<meta name="description" content="{blurb}">
+<meta property="og:title" content="Phish Gap Reports &mdash; Songs">
+<meta property="og:description" content="{blurb}">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<header><h1>Gap <em>Reports</em></h1>
+<p class="show">{subtitle}</p></header>
+<section class="hero">{hero}</section>
+<div class="tools">
+<input id="q" class="search" type="search" autocomplete="off" disabled
+       placeholder="Search songs&hellip;" aria-label="Search songs">
+<label class="count" for="sort">Sort
+<select id="sort" class="sort" disabled>
+<option value="played">Most played</option><option value="az">A&ndash;Z</option>
+<option value="recent">Recently played</option><option value="gap">Longest gap</option>
+<option value="rated">Highest rated</option></select></label>
+<span class="count"><b id="shown">{count}</b> of {count} songs</span>
+</div>
+<ol class="reports" id="list">
+{rows}
+</ol>
+<p class="empty" id="empty" hidden>No songs match that search.</p>
+<footer><span><a href="./index.html">All reports</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+</div><script>{js}</script></body></html>
+"""
+
+SONGS_JS = """
+(function(){
+  var list=document.getElementById('list');
+  if(!list) return;
+  var rows=Array.prototype.slice.call(list.children),
+      q=document.getElementById('q'), sort=document.getElementById('sort'),
+      shown=document.getElementById('shown'), empty=document.getElementById('empty');
+  function matcher(t){
+    if(!/^\\d+$/.test(t)) return function(hay){ return hay.indexOf(t)>-1; };
+    var re=new RegExp('(^|[^0-9])'+t+'([^0-9]|$)');
+    return function(hay){ return re.test(hay); };
+  }
+  function apply(){
+    var terms=q.value.toLowerCase().split(/\\s+/).filter(Boolean).map(matcher), n=0;
+    rows.forEach(function(r){
+      var ok=terms.every(function(t){ return t(r.getAttribute('data-search')); });
+      r.hidden=!ok; if(ok) n++;
+    });
+    shown.textContent=n; empty.hidden=n>0;
+  }
+  function num(r,k){ var v=r.getAttribute(k); return v===''?-1:+v; }
+  function order(){
+    var k=sort.value;
+    rows.slice().sort(function(a,b){
+      if(k==='az') return a.getAttribute('data-song').localeCompare(b.getAttribute('data-song'));
+      if(k==='recent') return b.getAttribute('data-last').localeCompare(a.getAttribute('data-last'));
+      if(k==='gap') return num(b,'data-longest')-num(a,'data-longest');
+      if(k==='rated') return num(b,'data-score')-num(a,'data-score');
+      return num(b,'data-played')-num(a,'data-played');
+    }).forEach(function(r){ list.appendChild(r); });
+  }
+  q.addEventListener('input', apply);
+  sort.addEventListener('change', order);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+    if(e.key==='Escape' && document.activeElement===q){ q.value=''; apply(); q.blur(); }
+  });
+  q.disabled=false; sort.disabled=false;
+  apply();
+})();
+"""
+
+
+def render_songs(docs, stamp=None):
+    """One page listing every song the archive holds a history for."""
+    rows, entries = [], []
+    for doc in docs:
+        perfs = doc.get("performances") or []
+        if not perfs:
+            continue
+        gaps = [p["gap"] for p in perfs[1:] if p["gap"] is not None]
+        best = (doc.get("best") or [None])[0]
+        entries.append({
+            "song": doc["song"], "slug": doc["slug"], "played": len(perfs),
+            "last": perfs[-1]["date"], "first": perfs[0]["date"],
+            "median": _median(gaps) if gaps else None,
+            "longest": max(gaps) if gaps else None,
+            "score": best["score"] if best else None,
+            "best_date": best["date"] if best else "",
+        })
+    entries.sort(key=lambda e: -e["played"])
+
+    for e in entries:
+        stats = "<b>%d</b> show%s" % (e["played"], "" if e["played"] == 1 else "s")
+        if e["median"] is not None:
+            stats += " &middot; median <b>%s</b>" % _stat(e["median"])
+        if e["longest"] is not None:
+            stats += " &middot; longest <b class='hot'>%s</b>" % _stat(e["longest"])
+        if e["score"] is not None:
+            stats += " &middot; best <b class='score'>%s</b>" % e["score"]
+        rows.append(
+            "<li data-song=\"%s\" data-played='%d' data-last='%s'"
+            " data-longest='%s' data-score='%s' data-search=\"%s\">"
+            "<a class='row' href='./song/%s.html'>"
+            "<span class='r-song'>%s</span>"
+            "<span class='r-when'>last <b>%s</b></span>"
+            "<span class='r-stats'>%s</span></a></li>"
+            % (html.escape(e["song"], quote=True), e["played"], e["last"],
+               e["longest"] if e["longest"] is not None else "",
+               e["score"] if e["score"] is not None else "",
+               html.escape(e["song"].lower(), quote=True),
+               html.escape(e["slug"], quote=True), html.escape(e["song"]),
+               e["last"], stats))
+
+    total = sum(e["played"] for e in entries)
+    top = max(entries, key=lambda e: e["score"] or -1) if entries else None
+    hero = "".join(
+        "<div class='card'><div class='num%s'>%s</div>"
+        "<div class='lbl'>%s</div></div>" % (cls, val, lbl)
+        for val, lbl, cls in (
+            (len(entries), "Songs", ""),
+            ("{:,}".format(total), "Performances", ""),
+            (_stat(max((e["longest"] or 0) for e in entries)) if entries else "n/a",
+             "Longest Gap", " hot"),
+            (top["score"] if top and top["score"] else "n/a", "Best Version", ""),
+        ))
+    subtitle = ("%d song%s &middot; %s performances"
+                % (len(entries), "" if len(entries) == 1 else "s",
+                   "{:,}".format(total)))
+    blurb = ("Every song in the archive: %d of them, %s performances."
+             % (len(entries), "{:,}".format(total)))
+    return SONGS_SHELL.format(
+        css=SONGS_CSS, js=SONGS_JS, fonts=SONG_FONTS, theme_js=THEME_JS,
+        theme_ui=THEME_UI, hero=hero, count=len(entries),
+        rows="\n".join(rows), subtitle=subtitle,
+        blurb=html.escape(blurb, quote=True),
+        stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
+
+
 # ------------------------------------------------------------------- site ---
 
 def site_paths(site_dir, date):
@@ -1308,11 +2166,18 @@ def site_paths(site_dir, date):
             os.path.join(site_dir, "data", "%s.json" % date))
 
 
+# A report is named for its date and nothing else is. data/ also holds indexes
+# now -- neighbours.json among them -- and globbing every .json in there read
+# one as a show whose date key was missing, which is a KeyError at build time
+# rather than anything as polite as a skip.
+REPORT_NAME = re.compile(r"^\d{4}-\d{2}-\d{2}\.json$")
+
+
 def archived_dates(site_dir):
     data_dir = os.path.join(site_dir, "data")
     if not os.path.isdir(data_dir):
         return set()
-    return {n[:-5] for n in os.listdir(data_dir) if n.endswith(".json")}
+    return {n[:-5] for n in os.listdir(data_dir) if REPORT_NAME.match(n)}
 
 
 def saved_reports(site_dir):
@@ -1320,7 +2185,7 @@ def saved_reports(site_dir):
     data_dir = os.path.join(site_dir, "data")
     out = []
     for name in sorted(os.listdir(data_dir) if os.path.isdir(data_dir) else []):
-        if not name.endswith(".json"):
+        if not REPORT_NAME.match(name):
             continue
         with open(os.path.join(data_dir, name), encoding="utf-8") as fh:
             try:
@@ -1340,6 +2205,463 @@ def archived(site_dir, date):
             return json.load(fh)
         except ValueError:
             return None
+
+
+# What a song page needs off each performance row. The full payload carries
+# setlist notes, jamchart prose, tour ids and permalinks besides, several times
+# the weight, and all of it either reconstructible or already in the show's own
+# report. Trimmed, the archive's 165 songs come to 3.4 MB; untrimmed they would
+# not be worth the disk.
+def _gap(row):
+    gap = row.get("gap")
+    return int(gap) if str(gap).lstrip("-").isdigit() else None
+
+
+def by_show(rows):
+    """One row per show, out of a history that has one row per setlist slot.
+
+    A song can come round more than once in a night -- Hold Your Head Up
+    bookends the Fishman song, Tweezer came back twice at SNHU Arena in 2025 --
+    and phish.net records each appearance. That is 717 of the archive's 28,519
+    rows, across 79 of its 165 songs, and a page listing performances rather
+    than setlist slots wants them collapsed: three rows reading 2025-06-22,
+    2025-06-22, 2025-06-22 look like a bug even when they are the truth.
+
+    The night's gap is the largest of them. Only the standalone performance has
+    a gap to speak of -- the repeats sit at 0, having missed no shows since the
+    one an hour earlier -- and taking the maximum finds it wherever it sits.
+    phish.net is not consistent about that: on 2025-06-22 Tweezer's 5 is on the
+    third of the three rows, and on 2025-09-19 it is on the first.
+
+    Everything else comes off the first appearance, which is the one the set
+    and position describe. `times` records how many there were, and is left off
+    the ordinary single-performance night.
+
+    Copies rather than the rows themselves: add_previous goes on to measure the
+    song's gap distribution off the same list, and a collapse it did not ask
+    for should not reach it from here.
+    """
+    out, seen = [], {}
+    for row in rows:
+        date = row.get("showdate")
+        first = seen.get(date)
+        if first is None:
+            first = seen[date] = dict(row)
+            out.append(first)
+            continue
+        first["_times"] = first.get("_times", 1) + 1
+        if (_gap(row) or 0) > (_gap(first) or 0):
+            first["gap"] = row.get("gap")
+        # The annotated version of the night is not always the first one out of
+        # the gate, so the flag and the note come off whichever appearance
+        # earned them rather than off whichever came first.
+        if str(row.get("isjamchart")) == "1":
+            first["isjamchart"] = "1"
+        for field in ("jamchart_description", "footnote"):
+            if not (first.get(field) or "").strip():
+                first[field] = row.get(field)
+    return out
+
+
+def _performance(row):
+    out = {
+        "date": row.get("showdate"),
+        "venue": row.get("venue") or "",
+        "city": row.get("city") or "",
+        "state": row.get("state") or "",
+        "gap": _gap(row),
+        "set": str(row.get("set") or ""),
+    }
+    if row.get("_times"):
+        out["times"] = row["_times"]
+    # phish.net's own note on why this version is worth hearing, which is the
+    # closest thing the API has to a rating: there is no per-performance score
+    # anywhere in v5 -- reviews attach to shows, not to songs within them.
+    # 15.7% of performances are jamcharted and every one of them carries prose,
+    # median 178 characters. Kept verbatim, entities and all; the renderer
+    # unescapes and re-escapes rather than trusting it as markup.
+    if str(row.get("isjamchart")) == "1":
+        out["jamchart"] = True
+    jam = (row.get("jamchart_description") or "").strip()
+    if jam:
+        out["jam"] = jam
+    # phish.net's footnote on the performance itself -- "Unfinished.", "Lyrics
+    # altered to reference a hot tub." Terser and more factual than the jamchart
+    # prose, on 8.6% of performances, and riding along in the same response.
+    note = (row.get("footnote") or "").strip()
+    if note:
+        out["note"] = note
+    # How the song left: 9,373 performances go out on a ">" and 1,513 on a true
+    # "->". Stored now because it costs nothing; what it segued *into* needs the
+    # whole setlist and does not.
+    mark = (row.get("trans_mark") or "").strip()
+    if mark and mark != ",":
+        out["out"] = mark
+    return out
+
+
+def best_versions(song, **kw):
+    """fouldomain's top-rated versions of one song, best first.
+
+    Matched on the song's title, not its slug: `song=you-enjoy-myself` comes
+    back empty where `song=You Enjoy Myself` returns ten. How many come back
+    varies by song -- 25 for Tweezer, 10 for You Enjoy Myself -- so this takes
+    what it is given rather than promising a count.
+
+    A version only has a score once a recording of it circulates, because
+    nearly half the weighting is audio analysis. That makes this a poor thing
+    to block a report on, so every caller treats failure as "no scores yet".
+    """
+    # Ten come back unasked; the endpoint caps at 25 however much more you ask
+    # for, and 25 marks on a 654-row page is still only the notable 4%.
+    tracks = (foul("best-versions", song=song, limit=BEST_LIMIT,
+                   **kw) or {}).get("tracks") or []
+    out, seen = [], set()
+    for t in tracks:
+        date = t.get("date")
+        # The same night can appear twice when the song was played twice; the
+        # page has one row per show to hang these on, so the better score wins.
+        if not date or t.get("score") is None:
+            continue
+        if date in seen:
+            continue
+        seen.add(date)
+        out.append({"date": date, "score": t.get("score"),
+                    "venue": t.get("venue") or "", "city": t.get("city") or "",
+                    "state": t.get("state") or "", "link": t.get("link") or ""})
+    out.sort(key=lambda v: (-v["score"], v["date"]))
+    return out
+
+
+def add_ratings(report, **kw):
+    """Attach the show's ratings, or leave the report exactly as it was.
+
+    One call, and a failed or empty one costs nothing: a show played last night
+    has no rating yet either way, so the page simply does not carry the line.
+    """
+    try:
+        report.update(show_ratings(report["date"], **kw))
+    except ApiError as exc:
+        print("warning: no ratings for %s: %s" % (report["date"], exc),
+              file=sys.stderr)
+    return report
+
+
+def show_ratings(date, **kw):
+    """phish.net's rating for a show, and fouldomain's own score for it.
+
+    phish.net's rating is theirs; we are taking it second-hand because their
+    API does not offer it. Attributed as such wherever it is shown.
+    """
+    data = foul("show", date=date, **kw) or {}
+    out = {}
+    if data.get("pnetRating") is not None:
+        out["pnet_rating"] = data["pnetRating"]
+    if data.get("showScore") is not None:
+        out["foul_score"] = data["showScore"]
+    return out
+
+
+def write_if_changed(path, text):
+    """Write only when the bytes differ. -> True if it wrote.
+
+    There are one of these pages per song rather than per show, and a rebuild
+    renders all of them. Writing every time meant a template edit -- or a run
+    that changed nothing at all -- pushed the whole set to gh-pages again as
+    new blobs. Nothing downstream can tell an unchanged rewrite from a real
+    one, so the cheapest place to notice is here.
+    """
+    if os.path.isfile(path):
+        with open(path, encoding="utf-8") as fh:
+            if fh.read() == text:
+                return False
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    return True
+
+
+def song_path(site_dir, slug):
+    return os.path.join(site_dir, "data", "songs", "%s.json" % slug)
+
+
+def archived_songs(site_dir):
+    """Slugs whose history the site already holds."""
+    songs_dir = os.path.join(site_dir, "data", "songs")
+    if not os.path.isdir(songs_dir):
+        return set()
+    return {n[:-5] for n in os.listdir(songs_dir) if n.endswith(".json")}
+
+
+def save_song_history(site_dir, slug, song, rows, artist=None, best=None):
+    """Archive one song's complete performance history, oldest first.
+
+    Oldest first because that is the order the gaps were earned in, and
+    because a show being added then appends at the end of the file instead of
+    shifting every line in it -- this archive lives in git and is rewritten
+    once per song per show.
+
+    One performance per line for the same reason. json.dump(indent=2) spends
+    107 KB on You Enjoy Myself's 654 performances where this spends 78 KB, and
+    turns a one-show diff into six changed lines rather than one.
+    """
+    path = song_path(site_dir, slug)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    # No fetched-at stamp: it would rewrite every file on every run whether or
+    # not the history moved, and the last row already says when it last moved.
+    # Scores are fetched separately and can fail on their own, so a history
+    # rewritten while fouldomain is down keeps the ones it already had rather
+    # than dropping them and waiting for the next seed.
+    held = song_history(site_dir, slug) or {}
+    if best is None:
+        best = held.get("best") or []
+    # Neighbours cost a call per show to work out and are not in this response,
+    # so a history rewritten from the API carries forward the ones it had
+    # rather than making the twenty-minute backfill run again.
+    keep = {p["date"]: {k: p[k] for k in ("prev", "in", "next") if k in p}
+            for p in held.get("performances") or []}
+    perfs = [_performance(r) for r in by_show(rows)]
+    for p in perfs:
+        p.update(keep.get(p["date"]) or {})
+    return write_song_file(site_dir, slug,
+                           {"song": song, "slug": slug, "artist": artist or ""},
+                           perfs, best)
+
+
+def write_song_file(site_dir, slug, head, perfs, best):
+    """The archive file itself, given rows already in their stored shape."""
+    path = song_path(site_dir, slug)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    lines = lambda rows: ",\n".join(
+        "  " + json.dumps(r, separators=(", ", ": ")) for r in rows)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("{\n%s,\n \"best\": [\n%s\n ],\n \"performances\": [\n%s\n ]\n}\n"
+                 % (",\n".join(" %s: %s" % (json.dumps(k), json.dumps(v))
+                               for k, v in head.items()),
+                    lines(best), lines(perfs)))
+    return path
+
+
+def song_history(site_dir, slug):
+    """The archived history for `slug`, or None."""
+    path = song_path(site_dir, slug)
+    if not os.path.isfile(path):
+        return None
+    with open(path, encoding="utf-8") as fh:
+        try:
+            return json.load(fh)
+        except ValueError:
+            print("warning: skipping unreadable %s" % path, file=sys.stderr)
+            return None
+
+
+def setlist_neighbours(rows, artist=None):
+    """What each song followed and led into, per slug, for one show.
+
+    Scoped to the set: a set opener has nothing before it, and saying it
+    followed the last song of the previous set would be a lie about a gap of
+    twenty minutes. A song played more than once in a night keeps the first
+    appearance, which is the row the archive keeps too.
+
+    The mark between two songs belongs to the earlier of them -- phish.net
+    stores it as the trailing punctuation -- so the way *into* a song is the
+    previous row's mark, not its own.
+    """
+    rows = [r for r in rows
+            if r.get("song") and (not artist or r.get("artist_name") == artist)]
+    rows.sort(key=lambda r: (SET_ORDER.get(str(r.get("set")), 9),
+                             int(r.get("position") or 0)))
+    out = {}
+    for i, r in enumerate(rows):
+        slug = r.get("slug") or r.get("song")
+        if slug in out:
+            continue
+        same = lambda j: (0 <= j < len(rows)
+                          and str(rows[j].get("set")) == str(r.get("set")))
+        nb = {}
+        if same(i - 1):
+            nb["prev"] = rows[i - 1].get("song") or ""
+            mark = (rows[i - 1].get("trans_mark") or "").strip()
+            if mark and mark != ",":
+                nb["in"] = mark
+        if same(i + 1):
+            nb["next"] = rows[i + 1].get("song") or ""
+        if nb:
+            out[slug] = nb
+    return out
+
+
+NEIGHBOUR_INDEX = "neighbours.json"
+NEIGHBOUR_FLUSH = 150
+
+
+def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
+    """Backfill what came before and after each archived performance.
+
+    One setlist call per distinct show -- about 1,975 of them the first time,
+    and nothing thereafter: build() already fetches the setlist of every show
+    it reports on, so a new show's neighbours come out of the cache.
+
+    Flushed in batches and indexed by date, because twenty minutes of fetching
+    should not have to start over because a laptop lid closed.
+    """
+    index = os.path.join(site_dir, "data", NEIGHBOUR_INDEX)
+    done = set()
+    if os.path.isfile(index) and not force:
+        with open(index, encoding="utf-8") as fh:
+            try:
+                done = set(json.load(fh).get("dates") or [])
+            except ValueError:
+                pass
+
+    songs = {}
+    for slug in sorted(archived_songs(site_dir)):
+        doc = song_history(site_dir, slug)
+        if doc:
+            songs[slug] = doc
+    dates = sorted({p["date"] for d in songs.values()
+                    for p in d["performances"]} - done)
+    if not dates:
+        print("neighbours: nothing to fetch", file=sys.stderr)
+        return 0
+
+    print("neighbours: %d show%s to fetch (%d already held)"
+          % (len(dates), "" if len(dates) == 1 else "s", len(done)),
+          file=sys.stderr)
+    pending, fetched, missed = {}, 0, []
+
+    def flush():
+        for slug, byday in pending.items():
+            doc = songs.get(slug)
+            if not doc:
+                continue
+            for p in doc["performances"]:
+                nb = byday.get(p["date"])
+                if nb:
+                    p.update(nb)
+            write_song_file(site_dir, slug,
+                            {k: doc.get(k, "") for k in ("song", "slug", "artist")},
+                            doc["performances"], doc.get("best") or [])
+        pending.clear()
+        with open(index, "w", encoding="utf-8") as fh:
+            json.dump({"dates": sorted(done)}, fh, indent=1)
+
+    for i, date in enumerate(dates, 1):
+        try:
+            rows = get("setlists/showdate/%s" % date, apikey, **kw)
+        except ApiError as exc:
+            missed.append("%s (%s)" % (date, exc))
+            continue
+        for slug, nb in setlist_neighbours(rows, artist).items():
+            if slug in songs:
+                pending.setdefault(slug, {})[date] = nb
+        done.add(date)
+        fetched += 1
+        if i % NEIGHBOUR_FLUSH == 0:
+            flush()
+            print("  %d/%d shows" % (i, len(dates)), file=sys.stderr)
+    flush()
+    if missed:
+        print("warning: no setlist for %d show%s: %s"
+              % (len(missed), "" if len(missed) == 1 else "s",
+                 "; ".join(missed[:5])), file=sys.stderr)
+    print("neighbours: %d show%s fetched" % (fetched, "" if fetched == 1 else "s"),
+          file=sys.stderr)
+    return fetched
+
+
+def seed_scores(site_dir, songs=None, **kw):
+    """Fill in fouldomain's top-rated versions for archived songs.
+
+    One call per song. Songs that already have scores are skipped unless named
+    explicitly, because the top of a forty-year song's ranking does not move
+    when the band plays it once more -- a new performance essentially never
+    enters its own all-time best list on the night.
+    """
+    have = archived_songs(site_dir)
+    todo = sorted(songs if songs is not None
+                  else (s for s in have
+                        if not (song_history(site_dir, s) or {}).get("best")))
+    if not todo:
+        return 0
+    print("scores: %d song%s to ask fouldomain about"
+          % (len(todo), "" if len(todo) == 1 else "s"), file=sys.stderr)
+    written, missed = 0, []
+    for i, slug in enumerate(todo, 1):
+        doc = song_history(site_dir, slug)
+        if not doc:
+            continue
+        try:
+            best = best_versions(doc["song"], **kw)
+        except ApiError as exc:
+            missed.append("%s (%s)" % (doc["song"], exc))
+            continue
+        write_song_file(site_dir, slug,
+                        {k: doc.get(k, "") for k in ("song", "slug", "artist")},
+                        doc["performances"], best)
+        written += 1
+        top = best[0] if best else None
+        print("  [%d/%d] %-34s %2d rated%s"
+              % (i, len(todo), doc["song"], len(best),
+                 "  best %s (%s)" % (top["date"], top["score"]) if top else ""),
+              file=sys.stderr)
+    if missed:
+        print("warning: no scores for %d song%s: %s"
+              % (len(missed), "" if len(missed) == 1 else "s",
+                 "; ".join(missed[:5])), file=sys.stderr)
+    return written
+
+
+def seed_songs(site_dir, apikey, artist="Phish", force=False, **kw):
+    """Backfill histories for every song the saved reports already name.
+
+    Ordinarily a song's history arrives with the show that played it, which
+    means the corpus fills in over tours rather than all at once. This pays
+    the calls up front instead, so every song in the archive has a page today.
+    Songs already held are skipped unless --force, which makes a second run
+    cost nothing.
+    """
+    wanted = {}
+    for report in saved_reports(site_dir):
+        for s in report["songs"]:
+            wanted.setdefault(s["slug"], s["song"])
+    have = set() if force else archived_songs(site_dir)
+    todo = sorted(slug for slug in wanted if slug not in have)
+    print("seeding: %d song%s named by the archive, %d already held, %d to fetch"
+          % (len(wanted), "" if len(wanted) == 1 else "s",
+             len(wanted) - len(todo), len(todo)), file=sys.stderr)
+
+    missed, written = [], 0
+    for i, slug in enumerate(todo, 1):
+        try:
+            rows = get("setlists/slug/%s" % slug, apikey, **kw)
+        except ApiError as exc:
+            missed.append("%s (%s)" % (wanted[slug], exc))
+            continue
+        rows = own_history(rows, artist)
+        if not rows:
+            # Every song here came out of a report for this artist, so an empty
+            # history means the slug moved rather than that the song is new.
+            missed.append("%s (no %s performances)" % (wanted[slug], artist))
+            continue
+        save_song_history(site_dir, slug, wanted[slug], rows, artist)
+        written += 1
+        shows = len(by_show(rows))
+        print("  [%d/%d] %-34s %4d show%s%s"
+              % (i, len(todo), wanted[slug], shows, " " if shows == 1 else "s",
+                 "" if shows == len(rows)
+                 else "  (+%d same-night repeat%s)"
+                      % (len(rows) - shows,
+                         "" if len(rows) - shows == 1 else "s")),
+              file=sys.stderr)
+    if missed:
+        print("warning: no history for %d song%s: %s"
+              % (len(missed), "" if len(missed) == 1 else "s",
+                 "; ".join(missed)), file=sys.stderr)
+    print("seeded %d song histor%s into %s"
+          % (written, "y" if written == 1 else "ies",
+             os.path.join(site_dir, "data", "songs")), file=sys.stderr)
+    return written
 
 
 def _coverage(report):
@@ -1445,26 +2767,53 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     for date in fresh:
         stale |= {d for d in around.get(date, ()) if d}
 
+    songs = archived_songs(site_dir)
     for report in known:
         date = report["date"]
         if not (rebuild or date in stale):
             continue
         page, _ = site_paths(site_dir, date)
         prev, nxt = around.get(date, (None, None))
-        with open(page, "w", encoding="utf-8") as fh:
-            fh.write(render_html(report, bar_scale=bar_scale,
-                                 index_href="./index.html",
-                                 prev_date=prev, next_date=nxt))
-        print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
-              file=sys.stderr)
+        if write_if_changed(page, render_html(
+                report, bar_scale=bar_scale, index_href="./index.html",
+                prev_date=prev, next_date=nxt, songs=songs)):
+            print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
+                  file=sys.stderr)
+
+    # Song pages last, so they can link to whichever reports now exist. They
+    # are cheap to write and the archive is the only input, so a rebuild does
+    # the lot; otherwise only the songs this run touched.
+    have = archived_dates(site_dir)
+    played = {s["slug"] for r in reports for s in r["songs"]}
+    wrote, considered, docs = 0, 0, []
+    for slug in sorted(archived_songs(site_dir)):
+        doc = song_history(site_dir, slug)
+        if not doc or not doc.get("performances"):
+            continue
+        docs.append(doc)
+        if not (rebuild or slug in played):
+            continue
+        considered += 1
+        page = os.path.join(site_dir, "song", "%s.html" % slug)
+        if write_if_changed(page, render_song(doc, archived=have)):
+            wrote += 1
+    if considered:
+        print("song pages: %d rendered, %d changed"
+              % (considered, wrote), file=sys.stderr)
+
+    if docs:
+        songs_page = os.path.join(site_dir, "songs.html")
+        if write_if_changed(songs_page, render_songs(docs)):
+            print("wrote %s (%d songs)" % (songs_page, len(docs)),
+                  file=sys.stderr)
 
     index = os.path.join(site_dir, "index.html")
-    with open(index, "w", encoding="utf-8") as fh:
-        fh.write(render_index(known))
+    changed = write_if_changed(index, render_index(known))
     # Serve the directory verbatim on GitHub Pages, Jekyll out of the way.
     open(os.path.join(site_dir, ".nojekyll"), "a").close()
-    print("wrote %s (%d report%s)"
-          % (index, len(known), "" if len(known) == 1 else "s"), file=sys.stderr)
+    print("%s %s (%d report%s)"
+          % ("wrote" if changed else "unchanged", index, len(known),
+             "" if len(known) == 1 else "s"), file=sys.stderr)
     return index
 
 
@@ -1806,6 +3155,18 @@ def main():
     ap.add_argument("--rebuild", action="store_true",
                     help="with --site, re-render every archived report "
                          "(use after a template change; no API calls)")
+    ap.add_argument("--seed-songs", action="store_true",
+                    help="with --site, fetch a performance history for every "
+                         "song the archive already names (one call per song, "
+                         "skipping songs already held)")
+    ap.add_argument("--seed-setlists", action="store_true",
+                    help="with --site, fetch the full setlist of every show in "
+                         "the archive to record what each performance followed "
+                         "and led into (one call per show, resumable)")
+    ap.add_argument("--seed-scores", action="store_true",
+                    help="with --site, fetch fouldomain's top-rated versions "
+                         "for archived songs that have none yet; --force "
+                         "re-asks for every song")
     ap.add_argument("--catch-up", nargs="?", type=int, const=21, metavar="DAYS",
                     help="with --site, add every show played in the last DAYS "
                          "(default 21) that the site does not have yet, and "
@@ -1836,11 +3197,14 @@ def main():
     if one_file and len(args.showdate) > 1:
         sys.exit("error: --%s names a single file; use --site DIR to render "
                  "several dates at once" % one_file)
-    if (args.rebuild or args.force or args.catch_up) and not args.site:
-        sys.exit("error: --rebuild, --force and --catch-up need --site DIR")
+    if (args.rebuild or args.force or args.catch_up or args.seed_songs
+            or args.seed_scores or args.seed_setlists) and not args.site:
+        sys.exit("error: --rebuild, --force, --catch-up, --seed-songs, "
+                 "--seed-scores and --seed-setlists need --site DIR")
     if args.recheck and not args.catch_up:
         sys.exit("error: --recheck only means something with --catch-up")
-    if not (args.showdate or args.from_json or args.rebuild or args.catch_up):
+    if not (args.showdate or args.from_json or args.rebuild or args.catch_up
+            or args.seed_songs or args.seed_scores or args.seed_setlists):
         sys.exit("error: give at least one show date (YYYY-MM-DD)")
     if args.html and args.pdf and \
             os.path.abspath(args.html) == os.path.abspath(args.pdf):
@@ -1891,7 +3255,9 @@ def main():
                 print("skipping %s: %s" % (date, exc), file=sys.stderr)
                 continue
             if args.previous:
-                add_previous(report, key, **kw)
+                add_previous(report, key, site_dir=args.site, **kw)
+            if args.site or args.html or args.pdf:
+                add_ratings(report, **kw)
             # After add_previous, not before: the comparison counts how many
             # songs know their history, which is only true once it has run.
             prior = archived(args.site, date) if args.site else None
@@ -1900,6 +3266,21 @@ def main():
             if args.site:
                 settle(report, prior, _utcnow())
             reports.append(report)
+
+        if args.seed_songs:
+            # After the fetch loop, so anything new tonight is already archived
+            # by add_previous and does not get asked for twice.
+            key = key or load_key(args.apikey)
+            seed_songs(args.site, key, artist=args.artist, force=args.force,
+                       **kw)
+        if args.seed_setlists:
+            key = key or load_key(args.apikey)
+            seed_setlists(args.site, key, artist=args.artist,
+                          force=args.force, **kw)
+        if args.seed_songs or args.seed_scores:
+            seed_scores(args.site,
+                        songs=sorted(archived_songs(args.site))
+                        if args.force and args.seed_scores else None, **kw)
     except ApiError as exc:
         sys.exit("error: %s" % exc)
 
