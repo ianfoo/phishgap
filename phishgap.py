@@ -275,11 +275,8 @@ def add_previous(report, apikey, **kw):
         # The history is already in hand for the previous-performance lookup,
         # so the song's own gap distribution costs nothing more. Rows before
         # this one only, and never the debut, which has no gap to speak of.
-        s.update(_classify(
-            s["gap"],
-            [int(h["gap"]) for h in hist[1:idx if idx else 0]
-             if str(h.get("gap")).lstrip("-").isdigit()],
-            plays=None if idx is None else idx + 1))
+        s.update(_classify(s["gap"], hist[1:idx if idx else 0], report["date"],
+                           plays=None if idx is None else idx + 1))
         prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
         if prior:
             s["prev_date"] = prior.get("showdate")
@@ -485,9 +482,9 @@ h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:.9rem;
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* The gap column carries the number plus the song's typical figures under it,
    so it is wider than the number alone would need. */
-col.c-gap{width:17%}
+col.c-gap{width:19%}
 col.c-song{width:24%}
-col.c-bar{width:14%}
+col.c-bar{width:12%}
 col.c-last{width:45%}
 table.no-last col.c-song{width:35%}
 table.no-last col.c-bar{width:52%}
@@ -504,13 +501,21 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
      white-space:nowrap}
 .gap.big{color:var(--hot)}
 .gap.small{color:var(--cool)}
-/* The number carries the gap; these carry how the song usually behaves. */
-.typ{display:block;margin-top:.2rem;font-size:.6rem;letter-spacing:.05em;
-   color:var(--dim);white-space:nowrap}
-.verdict{display:block;margin-top:.15rem;font-size:.52rem;letter-spacing:.1em;
+/* The number carries the gap; these carry how the song usually behaves. Sized
+   into the same family as the venue text under a date, which is the smallest
+   thing on the page that is comfortably readable. */
+.typ{display:block;margin-top:.25rem;font-size:.75rem;color:var(--dim);
+   white-space:nowrap}
+.verdict{display:block;margin-top:.2rem;font-size:.62rem;letter-spacing:.1em;
    text-transform:uppercase;white-space:nowrap}
 .verdict.overdue{color:var(--hot)}
 .verdict.premature{color:var(--cool)}
+/* A bustout is the headline of a show, not a footnote to it: stamped rather
+   than merely coloured. print-color-adjust keeps the fill when a browser prints
+   it; WeasyPrint keeps backgrounds anyway. */
+.verdict.bustout{display:inline-block;background:var(--hot);color:var(--paper);
+   padding:.16rem .36rem;font-size:.66rem;font-weight:600;letter-spacing:.12em;
+   print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .bar{padding-right:1.2rem}
 .bar .track{display:block;position:relative;width:100%;height:7px;
    background:var(--track)}
@@ -552,7 +557,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   table,tbody,tr,td{display:block}
   colgroup,thead{display:none}
   /* Wide enough for a comma'd four-digit gap in the Georgia fallback. */
-  tr{display:grid;grid-template-columns:3.8rem 1fr;column-gap:.7rem;
+  tr{display:grid;grid-template-columns:4.7rem 1fr;column-gap:.7rem;
      grid-template-areas:"gap song" "gap meta";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   td{border:0;padding:0}
@@ -562,8 +567,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   td.bar{display:none}
   /* No bar here to carry the tick, so the words do all the work. The mean is
      the first thing to go: the column is only 3.8rem wide. */
-  .avg{display:none}
-  .typ{font-size:.55rem;margin-top:.15rem}
+  .wide{display:none}
+  .typ{font-size:.7rem;margin-top:.2rem}
+  .verdict{font-size:.6rem}
+  .verdict.bustout{font-size:.62rem}
   .gap{font-size:1.2rem}
   .song{font-size:.95rem;line-height:1.25rem}
   .last{font-size:.72rem;line-height:1.15rem}
@@ -602,6 +609,12 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 @media print{
   body{padding:0;font-size:10.5pt;background:#fff}
   .crumb,.links{display:none}
+  /* rem still resolves against the 16px root here while the body drops to
+     10.5pt, so these do not shrink with the column and the widest of them ran
+     into the song title. Sized in points to match the page. */
+  .typ{font-size:7.5pt}
+  .verdict{font-size:6.5pt}
+  .verdict.bustout{font-size:7pt;padding:1pt 2.5pt}
   .wrap{max-width:none}
   h1{font-size:34pt}
   h2{margin-top:16pt;break-after:avoid}
@@ -665,18 +678,33 @@ def _show_links(date):
 # gets numbers but no verdict. A song played four times cannot be overdue.
 MIN_HISTORY = 8
 
-# How many recent performances the "typical" gap is measured over. All-time is
-# useless as a baseline: the 1990s dominate it, when the band played far more
-# shows a year out of a smaller catalog, so its gaps are much shorter. Llama's
-# all-time median gap is 2 against 10 across its last 20; Guelah Papyrus 3
-# against 26. Judged against all of history nearly every modern performance
-# looks overdue -- 59% of them in this archive, which makes the word useless.
-RECENT_PLAYS = 20
+# The "typical" gap is measured over this many years before the show, never
+# over all of history. Forty years of a working band is several different bands:
+# the 1990s dominate any all-time figure, when they played far more shows a year
+# out of a smaller catalog, so all-time gaps are much shorter and 59% of this
+# archive came out overdue -- a word that means nothing if it fits three songs
+# in five.
+#
+# Counting performances instead of years does not fix it, because a window of
+# 20 performances is two years for a staple and twenty-four for a rarity: Kung's
+# last 20 reach back to 1995, and every one of Big Ball Jam's is inside 1994.
+# Their medians are true statements about a band that no longer exists. Bounding
+# by time means a song has to have been in rotation lately to be judged at all.
+RECENT_YEARS = 10
 
-# Gaps outside the middle 70% of that window get a verdict. Measured over the
-# 2026 tour, p25/p75 called 37% of songs overdue, still too many to mean much;
-# this yields 14% premature, 61% expected, 25% overdue.
+# Gaps outside the middle 70% of that window get a verdict. Over the 2026 tour
+# quartiles called 37% of songs overdue, too many to carry weight; this yields
+# 13% premature, 67% expected, 20% overdue, with 9% of songs unrated for want of
+# recent performances -- which is the honest answer for a bustout.
 BAND = (.15, .85)
+
+# A song out of rotation and gone this long is a bustout rather than an
+# unrateable blank. It also has to have been played MIN_HISTORY times at some
+# point: Sightless Escape at four plays ever, or Cream at one, are rare new
+# songs, and calling their return a bustout would be nonsense. 100 sits where
+# phish.net's own setlist notes use the word -- they called Kung at 258 and
+# Sparks at 357 bustouts on 2026-07-24, and did not use it for Weigh at 88.
+BUSTOUT_GAP = 100
 
 
 def _quantile(vals, q):
@@ -692,29 +720,51 @@ def _quantile(vals, q):
     return ordered[low] + (ordered[high] - ordered[low]) * (pos - low)
 
 
-def _classify(gap, prior_gaps, plays=None):
+def _years_before(iso, years):
+    d = datetime.date.fromisoformat(iso)
+    try:
+        return d.replace(year=d.year - years).isoformat()
+    except ValueError:                      # 29 February
+        return d.replace(year=d.year - years, day=28).isoformat()
+
+
+def _classify(gap, prior, on_date, plays=None):
     """Where this gap sits against how the song has behaved lately.
+
+    `prior` is the song's performances before this one, each a row with a
+    showdate and a gap. Only those within RECENT_YEARS of the show count, so
+    the answer describes the rotation the band was in at the time rather than
+    the one they were in decades earlier -- see the note on that constant.
 
     Percentiles rather than mean and standard deviation, because gap
     distributions are savagely right-skewed: a rotation staple with a median of
     6 carries a handful of 200s, and a standard deviation over that would call
-    almost anything expected. Measured over the last RECENT_PLAYS performances
-    so the answer describes the band's current rotation rather than its 1990s
-    one -- see the note on that constant.
+    almost anything expected.
+
+    A song without enough recent performances to judge gets no verdict, because
+    there is no current norm to be early or late against. If it has also been
+    gone a long time, that is a bustout, which is the more useful thing to say
+    about it anyway.
     """
-    recent = prior_gaps[-RECENT_PLAYS:]
-    stats = {"plays": plays, "hist_n": len(recent),
-             "gap_median": None, "gap_mean": None, "gap_low": None,
-             "gap_high": None, "verdict": None}
-    if not recent:
-        return stats
-    stats["gap_median"] = _median(recent)
-    stats["gap_mean"] = sum(recent) / len(recent)
-    stats["gap_low"] = _quantile(recent, BAND[0])
-    stats["gap_high"] = _quantile(recent, BAND[1])
-    if gap is not None and len(recent) >= MIN_HISTORY:
-        stats["verdict"] = ("premature" if gap < stats["gap_low"] else
-                            "overdue" if gap > stats["gap_high"] else "expected")
+    cutoff = _years_before(on_date, RECENT_YEARS)
+    recent = [int(h["gap"]) for h in prior
+              if h.get("showdate", "") >= cutoff
+              and str(h.get("gap")).lstrip("-").isdigit()]
+    stats = {"plays": plays, "recent_plays": len(recent), "gap_median": None,
+             "gap_mean": None, "gap_low": None, "gap_high": None,
+             "verdict": None}
+    if len(recent) >= MIN_HISTORY:
+        stats["gap_median"] = _median(recent)
+        stats["gap_mean"] = sum(recent) / len(recent)
+        stats["gap_low"] = _quantile(recent, BAND[0])
+        stats["gap_high"] = _quantile(recent, BAND[1])
+        if gap is not None:
+            stats["verdict"] = (
+                "premature" if gap < stats["gap_low"] else
+                "overdue" if gap > stats["gap_high"] else "expected")
+    elif (gap is not None and gap >= BUSTOUT_GAP
+            and (plays or 0) > MIN_HISTORY):
+        stats["verdict"] = "bustout"
     return stats
 
 
@@ -801,11 +851,18 @@ def render_html(report, bar_scale="linear", index_href=None,
         # marked on the bar so an overshoot is visible rather than arithmetic.
         typical = ""
         if s.get("gap_median") is not None:
-            typical = ("<span class='typ'>med %s<span class='avg'> &middot; avg "
+            typical = ("<span class='typ'>med %s<span class='wide'> &middot; avg "
                        "%s</span></span>" % (_stat(s["gap_median"]),
                                              _stat(s["gap_mean"])))
+        elif s.get("recent_plays") is not None:
+            # No norm to compare against, so say why: this is how thin its
+            # recent record is.
+            typical = ("<span class='typ'>%d<span class='wide'> play%s</span>"
+                       " in %d yr</span>"
+                       % (s["recent_plays"],
+                          "" if s["recent_plays"] == 1 else "s", RECENT_YEARS))
         tag = ""
-        if s.get("verdict") in ("premature", "overdue"):
+        if s.get("verdict") in ("premature", "overdue", "bustout"):
             tag = "<span class='verdict %s'>%s</span>" % (s["verdict"],
                                                           s["verdict"])
         if g is None:
