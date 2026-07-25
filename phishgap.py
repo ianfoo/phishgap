@@ -736,11 +736,20 @@ INDEX_JS = """
       shown=document.getElementById('shown'), empty=document.getElementById('empty'),
       chips=Array.prototype.slice.call(document.querySelectorAll('.chip')),
       year='';
+  // A bare number means that number: searching 8 should find the 8th, not the
+  // 18th. Anything else is a plain substring, which is what makes partial
+  // venue and song typing work.
+  function matcher(t){
+    if(!/^\\d+$/.test(t)) return function(hay){ return hay.indexOf(t)>-1; };
+    var re=new RegExp('(^|[^0-9])'+t+'([^0-9]|$)');
+    return function(hay){ return re.test(hay); };
+  }
   function apply(){
-    var terms=q.value.toLowerCase().split(/\\s+/).filter(Boolean), n=0;
+    var terms=q.value.toLowerCase().split(/\\s+/).filter(Boolean).map(matcher),
+        n=0;
     rows.forEach(function(r){
       var hay=r.getAttribute('data-search'), ok=terms.every(function(t){
-        return hay.indexOf(t)>-1;
+        return t(hay);
       });
       if(ok&&year) ok=r.getAttribute('data-year')===year;
       r.hidden=!ok;
@@ -835,6 +844,31 @@ def summarize(report):
     }
 
 
+def _date_aliases(iso):
+    """The other ways somebody might type a date into the search box.
+
+    The archive only ever spells dates YYYY-MM-DD, so searching 7/24 or
+    "july 24" would otherwise come up empty. Cheaper to widen the haystack
+    than to teach the query parser about date formats.
+    """
+    try:
+        d = datetime.date.fromisoformat(iso)
+    except ValueError:
+        return ""
+    return " ".join((
+        "%02d/%02d/%d" % (d.month, d.day, d.year),
+        "%d/%d/%d" % (d.month, d.day, d.year),
+        "%d/%d/%02d" % (d.month, d.day, d.year % 100),
+        "%02d/%02d" % (d.month, d.day),
+        "%d/%d" % (d.month, d.day),
+        "%d-%d" % (d.month, d.day),
+        # Both day spellings: "jul" still matches "july", and the unpadded one
+        # is what lets a whole-number search for 8 find the 8th.
+        d.strftime("%B %d %Y"),
+        "%s %d" % (d.strftime("%B"), d.day),
+    ))
+
+
 def render_index(reports, page_href="./%s.html"):
     """A single self-contained index page over every saved report."""
     entries = sorted((summarize(r) for r in reports),
@@ -843,7 +877,8 @@ def render_index(reports, page_href="./%s.html"):
     rows = []
     for e in entries:
         # Everything worth searching, flattened into one lowercase haystack.
-        hay = " ".join([e["date"], e["venue"], e["place"], e["tour"]]
+        hay = " ".join([e["date"], _date_aliases(e["date"]),
+                        e["venue"], e["place"], e["tour"]]
                        + e["titles"]).lower()
         stats = "<b>%d</b> songs" % e["songs"]
         if e["longest"] is not None:
