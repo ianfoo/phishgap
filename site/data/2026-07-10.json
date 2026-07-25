@@ -17,7 +17,14 @@
       "jamchart": false,
       "prev_date": "2026-04-25",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 100,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 4.05,
+      "gap_low": 2.0,
+      "gap_high": 5.149999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -27,7 +34,14 @@
       "jamchart": false,
       "prev_date": "2026-05-01",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 45,
+      "hist_n": 20,
+      "gap_median": 7.5,
+      "gap_mean": 9.4,
+      "gap_low": 4.0,
+      "gap_high": 15.599999999999994,
+      "verdict": "premature"
     },
     {
       "set": "SET 1",
@@ -37,7 +51,14 @@
       "jamchart": false,
       "prev_date": "2026-04-24",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 120,
+      "hist_n": 20,
+      "gap_median": 8.5,
+      "gap_mean": 9.7,
+      "gap_low": 3.85,
+      "gap_high": 15.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -47,7 +68,14 @@
       "jamchart": false,
       "prev_date": "2026-04-23",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 207,
+      "hist_n": 20,
+      "gap_median": 5.0,
+      "gap_mean": 4.95,
+      "gap_low": 1.0,
+      "gap_high": 9.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -57,7 +85,14 @@
       "jamchart": false,
       "prev_date": "2026-04-16",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 254,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 3.45,
+      "gap_low": 1.85,
+      "gap_high": 5.0,
+      "verdict": "overdue"
     },
     {
       "set": "SET 1",
@@ -67,7 +102,14 @@
       "jamchart": false,
       "prev_date": "2026-04-17",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 163,
+      "hist_n": 20,
+      "gap_median": 10.0,
+      "gap_mean": 14.7,
+      "gap_low": 6.0,
+      "gap_high": 26.09999999999998,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -77,7 +119,14 @@
       "jamchart": false,
       "prev_date": "2026-04-17",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 19,
+      "hist_n": 17,
+      "gap_median": 6,
+      "gap_mean": 7.529411764705882,
+      "gap_low": 4.0,
+      "gap_high": 11.2,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -87,7 +136,14 @@
       "jamchart": false,
       "prev_date": "2026-05-01",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 498,
+      "hist_n": 20,
+      "gap_median": 6.5,
+      "gap_mean": 7.0,
+      "gap_low": 3.85,
+      "gap_high": 9.299999999999997,
+      "verdict": "premature"
     },
     {
       "set": "SET 2",
@@ -97,7 +153,14 @@
       "jamchart": false,
       "prev_date": "2026-04-18",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 27,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 4.3,
+      "gap_low": 3.0,
+      "gap_high": 5.149999999999999,
+      "verdict": "overdue"
     },
     {
       "set": "SET 2",
@@ -107,7 +170,14 @@
       "jamchart": false,
       "prev_date": "2026-04-16",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 341,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 3.4,
+      "gap_low": 0.0,
+      "gap_high": 5.149999999999999,
+      "verdict": "overdue"
     },
     {
       "set": "SET 2",
@@ -117,7 +187,14 @@
       "jamchart": false,
       "prev_date": "2026-04-16",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 653,
+      "hist_n": 20,
+      "gap_median": 5.5,
+      "gap_mean": 5.6,
+      "gap_low": 2.0,
+      "gap_high": 9.149999999999999,
+      "verdict": "overdue"
     },
     {
       "set": "SET 2",
@@ -127,7 +204,14 @@
       "jamchart": false,
       "prev_date": "2026-04-23",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 149,
+      "hist_n": 20,
+      "gap_median": 5.5,
+      "gap_mean": 5.85,
+      "gap_low": 3.0,
+      "gap_high": 8.149999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -137,7 +221,14 @@
       "jamchart": false,
       "prev_date": "2026-01-31",
       "prev_venue": "Moon Palace",
-      "prev_place": "Cancun, Quintana Roo"
+      "prev_place": "Cancun, Quintana Roo",
+      "plays": 157,
+      "hist_n": 20,
+      "gap_median": 11.5,
+      "gap_mean": 12.75,
+      "gap_low": 6.0,
+      "gap_high": 21.0,
+      "verdict": "expected"
     },
     {
       "set": "ENCORE",
@@ -147,7 +238,14 @@
       "jamchart": false,
       "prev_date": "2026-04-24",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 18,
+      "hist_n": 16,
+      "gap_median": 4.0,
+      "gap_mean": 4.625,
+      "gap_low": 3.25,
+      "gap_high": 6.75,
+      "verdict": "expected"
     },
     {
       "set": "ENCORE",
@@ -157,7 +255,14 @@
       "jamchart": false,
       "prev_date": "2025-07-23",
       "prev_venue": "Forest Hills Stadium",
-      "prev_place": "Forest Hills, NY"
+      "prev_place": "Forest Hills, NY",
+      "plays": 208,
+      "hist_n": 20,
+      "gap_median": 14.5,
+      "gap_mean": 25.7,
+      "gap_low": 5.7,
+      "gap_high": 38.15,
+      "verdict": "expected"
     }
   ],
   "count_since": "2026-07-25T17:44:37+00:00",

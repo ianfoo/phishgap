@@ -272,6 +272,14 @@ def add_previous(report, apikey, **kw):
             s["gap"] = int(g) if str(g).lstrip("-").isdigit() else None
         if idx == 0:
             s["debut"] = True          # this show IS the first performance
+        # The history is already in hand for the previous-performance lookup,
+        # so the song's own gap distribution costs nothing more. Rows before
+        # this one only, and never the debut, which has no gap to speak of.
+        s.update(_classify(
+            s["gap"],
+            [int(h["gap"]) for h in hist[1:idx if idx else 0]
+             if str(h.get("gap")).lstrip("-").isdigit()],
+            plays=None if idx is None else idx + 1))
         prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
         if prior:
             s["prev_date"] = prior.get("showdate")
@@ -475,10 +483,12 @@ h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:.9rem;
    letter-spacing:.1em;text-transform:uppercase;margin:2.4rem 0 .3rem;
    padding-bottom:.3rem;border-bottom:1px solid var(--rule)}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
-col.c-gap{width:13%}
+/* The gap column carries the number plus the song's typical figures under it,
+   so it is wider than the number alone would need. */
+col.c-gap{width:17%}
 col.c-song{width:24%}
-col.c-bar{width:16%}
-col.c-last{width:47%}
+col.c-bar{width:14%}
+col.c-last{width:45%}
 table.no-last col.c-song{width:35%}
 table.no-last col.c-bar{width:52%}
 th{font-size:.62rem;text-transform:uppercase;letter-spacing:.15em;
@@ -494,10 +504,22 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
      white-space:nowrap}
 .gap.big{color:var(--hot)}
 .gap.small{color:var(--cool)}
+/* The number carries the gap; these carry how the song usually behaves. */
+.typ{display:block;margin-top:.2rem;font-size:.6rem;letter-spacing:.05em;
+   color:var(--dim);white-space:nowrap}
+.verdict{display:block;margin-top:.15rem;font-size:.52rem;letter-spacing:.1em;
+   text-transform:uppercase;white-space:nowrap}
+.verdict.overdue{color:var(--hot)}
+.verdict.premature{color:var(--cool)}
 .bar{padding-right:1.2rem}
-.bar .track{display:block;width:100%;height:7px;background:var(--track)}
+.bar .track{display:block;position:relative;width:100%;height:7px;
+   background:var(--track)}
 .bar .fill{display:block;height:7px;background:var(--cool);min-width:2px}
 .bar .fill.big{background:var(--hot)}
+/* Both the fill and this sit on the show's scale, so a staple's median pins to
+   the far left and a bustout visibly overshoots it. */
+.bar .tick{position:absolute;top:-3px;bottom:-3px;width:1px;
+   background:var(--ink);opacity:.5}
 .last{font-size:.85rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Stacked on wide layouts, run together on narrow ones -- see the
@@ -538,6 +560,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   td.song{grid-area:song}
   td.last{grid-area:meta}
   td.bar{display:none}
+  /* No bar here to carry the tick, so the words do all the work. The mean is
+     the first thing to go: the column is only 3.8rem wide. */
+  .avg{display:none}
+  .typ{font-size:.55rem;margin-top:.15rem}
   .gap{font-size:1.2rem}
   .song{font-size:.95rem;line-height:1.25rem}
   .last{font-size:.72rem;line-height:1.15rem}
@@ -635,6 +661,63 @@ def _show_links(date):
         for label, url, icon, flip in SHOW_LINKS)
 
 
+# Below this many prior performances a song has no meaningful "typical", so it
+# gets numbers but no verdict. A song played four times cannot be overdue.
+MIN_HISTORY = 8
+
+# How many recent performances the "typical" gap is measured over. All-time is
+# useless as a baseline: the 1990s dominate it, when the band played far more
+# shows a year out of a smaller catalog, so its gaps are much shorter. Llama's
+# all-time median gap is 2 against 10 across its last 20; Guelah Papyrus 3
+# against 26. Judged against all of history nearly every modern performance
+# looks overdue -- 59% of them in this archive, which makes the word useless.
+RECENT_PLAYS = 20
+
+# Gaps outside the middle 70% of that window get a verdict. Measured over the
+# 2026 tour, p25/p75 called 37% of songs overdue, still too many to mean much;
+# this yields 14% premature, 61% expected, 25% overdue.
+BAND = (.15, .85)
+
+
+def _quantile(vals, q):
+    """Linear-interpolated quantile of an unsorted list."""
+    if not vals:
+        return None
+    ordered = sorted(vals)
+    if len(ordered) == 1:
+        return float(ordered[0])
+    pos = (len(ordered) - 1) * q
+    low = int(pos)
+    high = min(low + 1, len(ordered) - 1)
+    return ordered[low] + (ordered[high] - ordered[low]) * (pos - low)
+
+
+def _classify(gap, prior_gaps, plays=None):
+    """Where this gap sits against how the song has behaved lately.
+
+    Percentiles rather than mean and standard deviation, because gap
+    distributions are savagely right-skewed: a rotation staple with a median of
+    6 carries a handful of 200s, and a standard deviation over that would call
+    almost anything expected. Measured over the last RECENT_PLAYS performances
+    so the answer describes the band's current rotation rather than its 1990s
+    one -- see the note on that constant.
+    """
+    recent = prior_gaps[-RECENT_PLAYS:]
+    stats = {"plays": plays, "hist_n": len(recent),
+             "gap_median": None, "gap_mean": None, "gap_low": None,
+             "gap_high": None, "verdict": None}
+    if not recent:
+        return stats
+    stats["gap_median"] = _median(recent)
+    stats["gap_mean"] = sum(recent) / len(recent)
+    stats["gap_low"] = _quantile(recent, BAND[0])
+    stats["gap_high"] = _quantile(recent, BAND[1])
+    if gap is not None and len(recent) >= MIN_HISTORY:
+        stats["verdict"] = ("premature" if gap < stats["gap_low"] else
+                            "overdue" if gap > stats["gap_high"] else "expected")
+    return stats
+
+
 def _median(vals):
     ordered = sorted(vals)
     n = len(ordered)
@@ -714,15 +797,39 @@ def render_html(report, bar_scale="linear", index_href=None,
             current, rows = s["set"], []
         g = s["gap"]
         klass = "big" if (g or 0) >= 50 else "small"
+        # How this song usually behaves: printed small under the number, and
+        # marked on the bar so an overshoot is visible rather than arithmetic.
+        typical = ""
+        if s.get("gap_median") is not None:
+            typical = ("<span class='typ'>med %s<span class='avg'> &middot; avg "
+                       "%s</span></span>" % (_stat(s["gap_median"]),
+                                             _stat(s["gap_mean"])))
+        tag = ""
+        if s.get("verdict") in ("premature", "overdue"):
+            tag = "<span class='verdict %s'>%s</span>" % (s["verdict"],
+                                                          s["verdict"])
         if g is None:
-            gap_cell = "<span class='gap none'>&mdash;</span>"
+            gap_cell = "<span class='gap none'>&mdash;</span>" + typical + tag
             bar = "<td class='bar'></td>"
         else:
-            gap_cell = "<span class='gap %s'>%s</span>" % (klass, "{:,}".format(g))
+            gap_cell = ("<span class='gap %s'>%s</span>%s%s"
+                        % (klass, "{:,}".format(g), typical, tag))
             pct = _bar_pct(g, biggest, bar_scale)
+            # Both the tick and the fill sit on the show's scale. On a night
+            # with a 1,170 bustout in it, a staple's median of 10 lands at 0.9%
+            # of the track and is indistinguishable from the fill's origin, so
+            # it is only drawn where it can actually say something. The numbers
+            # under the gap carry it the rest of the time.
+            tick = ""
+            if s.get("gap_median") is not None:
+                at = _bar_pct(s["gap_median"], biggest, bar_scale)
+                if at >= 4.0:
+                    tick = ("<span class='tick' style='left:%.2f%%' "
+                            "title='usually %s'></span>"
+                            % (min(at, 100.0), _stat(s["gap_median"])))
             bar = ("<td class='bar'><span class='track'>"
-                   "<span class='fill %s' style='width:%.2f%%'></span>"
-                   "</span></td>" % (klass, pct))
+                   "<span class='fill %s' style='width:%.2f%%'></span>%s"
+                   "</span></td>" % (klass, pct, tick))
         cells = "<td class='n'>%s</td><td class='song%s'>%s</td>%s" % (
             gap_cell, " jc" if s["jamchart"] else "",
             html.escape(s["song"]), bar)

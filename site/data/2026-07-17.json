@@ -17,7 +17,14 @@
       "jamchart": false,
       "prev_date": "2026-04-18",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 177,
+      "hist_n": 20,
+      "gap_median": 14.0,
+      "gap_mean": 13.65,
+      "gap_low": 5.85,
+      "gap_high": 19.15,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -27,7 +34,14 @@
       "jamchart": false,
       "prev_date": "2026-07-07",
       "prev_venue": "Kohl Center",
-      "prev_place": "Madison, WI"
+      "prev_place": "Madison, WI",
+      "plays": 267,
+      "hist_n": 20,
+      "gap_median": 4.0,
+      "gap_mean": 4.85,
+      "gap_low": 2.85,
+      "gap_high": 8.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -37,7 +51,14 @@
       "jamchart": false,
       "prev_date": "2026-05-02",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 329,
+      "hist_n": 20,
+      "gap_median": 11.5,
+      "gap_mean": 12.85,
+      "gap_low": 4.85,
+      "gap_high": 19.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -47,7 +68,14 @@
       "jamchart": false,
       "prev_date": "2026-04-25",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 47,
+      "hist_n": 20,
+      "gap_median": 12.0,
+      "gap_mean": 11.6,
+      "gap_low": 4.85,
+      "gap_high": 16.299999999999997,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -57,7 +85,14 @@
       "jamchart": false,
       "prev_date": "2026-05-01",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 317,
+      "hist_n": 20,
+      "gap_median": 11.0,
+      "gap_mean": 10.75,
+      "gap_low": 4.85,
+      "gap_high": 16.15,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -67,7 +102,14 @@
       "jamchart": false,
       "prev_date": "2025-07-12",
       "prev_venue": "North Charleston Coliseum",
-      "prev_place": "North Charleston, SC"
+      "prev_place": "North Charleston, SC",
+      "plays": 57,
+      "hist_n": 20,
+      "gap_median": 21.5,
+      "gap_mean": 27.65,
+      "gap_low": 8.7,
+      "gap_high": 49.04999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -77,7 +119,14 @@
       "jamchart": false,
       "prev_date": "2026-04-23",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 137,
+      "hist_n": 20,
+      "gap_median": 27.0,
+      "gap_mean": 27.25,
+      "gap_low": 11.7,
+      "gap_high": 48.15,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -87,7 +136,14 @@
       "jamchart": false,
       "prev_date": "2026-04-30",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 485,
+      "hist_n": 20,
+      "gap_median": 10.5,
+      "gap_mean": 11.3,
+      "gap_low": 5.0,
+      "gap_high": 15.149999999999999,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -97,7 +153,14 @@
       "jamchart": false,
       "prev_date": "2026-07-08",
       "prev_venue": "Kohl Center",
-      "prev_place": "Madison, WI"
+      "prev_place": "Madison, WI",
+      "plays": 448,
+      "hist_n": 20,
+      "gap_median": 3.0,
+      "gap_mean": 3.05,
+      "gap_low": 1.85,
+      "gap_high": 4.299999999999997,
+      "verdict": "overdue"
     },
     {
       "set": "SET 2",
@@ -107,7 +170,14 @@
       "jamchart": false,
       "prev_date": "2026-07-07",
       "prev_venue": "Kohl Center",
-      "prev_place": "Madison, WI"
+      "prev_place": "Madison, WI",
+      "plays": 104,
+      "hist_n": 20,
+      "gap_median": 5.5,
+      "gap_mean": 5.1,
+      "gap_low": 2.7,
+      "gap_high": 8.0,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -117,7 +187,14 @@
       "jamchart": false,
       "prev_date": "2026-04-24",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 336,
+      "hist_n": 20,
+      "gap_median": 11.5,
+      "gap_mean": 13.65,
+      "gap_low": 7.550000000000001,
+      "gap_high": 19.299999999999997,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -127,7 +204,14 @@
       "jamchart": false,
       "prev_date": "2026-07-07",
       "prev_venue": "Kohl Center",
-      "prev_place": "Madison, WI"
+      "prev_place": "Madison, WI",
+      "plays": 42,
+      "hist_n": 20,
+      "gap_median": 5.0,
+      "gap_mean": 5.2,
+      "gap_low": 3.85,
+      "gap_high": 8.0,
+      "verdict": "expected"
     },
     {
       "set": "ENCORE",
@@ -137,7 +221,14 @@
       "jamchart": false,
       "prev_date": "2026-04-23",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 291,
+      "hist_n": 20,
+      "gap_median": 27.0,
+      "gap_mean": 29.45,
+      "gap_low": 8.85,
+      "gap_high": 46.15,
+      "verdict": "expected"
     },
     {
       "set": "ENCORE",
@@ -147,7 +238,14 @@
       "jamchart": false,
       "prev_date": "2026-05-02",
       "prev_venue": "Sphere",
-      "prev_place": "Las Vegas, NV"
+      "prev_place": "Las Vegas, NV",
+      "plays": 81,
+      "hist_n": 20,
+      "gap_median": 12.0,
+      "gap_mean": 16.4,
+      "gap_low": 8.0,
+      "gap_high": 31.299999999999997,
+      "verdict": "premature"
     },
     {
       "set": "ENCORE",
@@ -157,7 +255,14 @@
       "jamchart": false,
       "prev_date": "2025-07-09",
       "prev_venue": "Jerome Schottenstein Center",
-      "prev_place": "Columbus, OH"
+      "prev_place": "Columbus, OH",
+      "plays": 110,
+      "hist_n": 20,
+      "gap_median": 25.0,
+      "gap_mean": 27.35,
+      "gap_low": 9.85,
+      "gap_high": 43.3,
+      "verdict": "overdue"
     },
     {
       "set": "ENCORE",
@@ -167,7 +272,14 @@
       "jamchart": false,
       "prev_date": "2025-09-20",
       "prev_venue": "Hampton Coliseum",
-      "prev_place": "Hampton, VA"
+      "prev_place": "Hampton, VA",
+      "plays": 23,
+      "hist_n": 20,
+      "gap_median": 13.0,
+      "gap_mean": 48.35,
+      "gap_low": 5.7,
+      "gap_high": 42.94999999999998,
+      "verdict": "expected"
     }
   ],
   "count_since": "2026-07-25T17:45:22+00:00",
