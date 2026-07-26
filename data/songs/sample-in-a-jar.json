@@ -346,6 +346,6 @@
   {"date": "2025-09-13", "venue": "Coca-Cola Amphitheater", "city": "Birmingham", "state": "AL", "gap": 15, "set": "1", "prev": "Cities", "in": ">", "next": "Theme from the Bottom"},
   {"date": "2026-05-01", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 21, "set": "1", "next": "Boogie On Reggae Woman"},
   {"date": "2026-07-17", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 8, "set": "1", "out": ">", "prev": "Mercury", "in": ">", "next": "Destiny Unbound"},
-  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "2", "out": "->"}
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "2", "out": ">"}
  ]
 }
