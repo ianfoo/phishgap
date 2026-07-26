@@ -654,7 +654,15 @@ th.n,td.n{text-align:right;padding-right:1.1rem;white-space:nowrap}
 td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    vertical-align:middle;line-height:1.35rem}
 .song{font-weight:600;font-size:1rem}
-.jc::after{content:"\\2022";color:var(--hot);margin-left:.4em;font-size:1.1em}
+/* Outlined, not filled: a bustout is the headline of a night and gets the
+   solid stamp, while this is an invitation to read something elsewhere. Inside
+   the link, so the whole title-and-chip is one target and lights up together. */
+.jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
+   border:1px solid var(--hot);color:var(--hot);font-size:.58rem;
+   font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+   line-height:1.15;vertical-align:.12em;white-space:nowrap}
+td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
+   print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.3rem;line-height:1;
      white-space:nowrap}
 .gap.big{color:var(--hot)}
@@ -1138,6 +1146,12 @@ def render_html(report, bar_scale="linear", index_href=None,
         # band has not played since, and those get a page when they next come
         # round rather than a link to nowhere now.
         title = html.escape(s["song"])
+        # phish.net wrote something about this one. The prose itself lives on
+        # the song page, so this says so and points there rather than repeating
+        # it here: a report is one night's gaps, and a paragraph per song would
+        # bury them. A dot used to mark these, which told nobody anything.
+        if s["jamchart"]:
+            title += "<span class='jc-chip'>Jam chart</span>"
         if s["slug"] in songs:
             # Anchored at this very performance, so the link answers "where
             # does tonight's version sit against all the others" rather than
@@ -1145,8 +1159,8 @@ def render_html(report, bar_scale="linear", index_href=None,
             title = "<a href='./song/%s.html#%s'>%s</a>" % (
                 html.escape(s["slug"], quote=True),
                 html.escape(report["date"], quote=True), title)
-        cells = "<td class='n'%s>%s</td><td class='song%s'>%s</td>%s" % (
-            explain, gap_cell, " jc" if s["jamchart"] else "", title, bar)
+        cells = "<td class='n'%s>%s</td><td class='song'>%s</td>%s" % (
+            explain, gap_cell, title, bar)
         if show_last:
             if s["prev_date"]:
                 # No <br>: the spans are blocks on wide layouts and inline on
