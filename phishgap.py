@@ -779,7 +779,7 @@ SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
-<header>{crumb}<h1>Gap <em>Report</em></h1>
+<header>{crumb}<h1><a href="./index.html">Gap <em>Report</em></a></h1>
 <p class="show"><span class="date">{date}</span>{tour}</p>
 <p class="where">{venue}</p>{rating}</header>
 <section class="hero">{hero}</section>
@@ -1146,10 +1146,28 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:15px;line-height:1.5}
 .wrap{max-width:960px;margin:0 auto}
+/* Which of the two lists you are looking at, and the way to the other one.
+   Above the wordmark because that is where a reader looks for it, and because
+   the footer link that used to be the only route was found by nobody. */
+.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.68rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
+   border-bottom:1px solid var(--rule)}
+.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
    letter-spacing:-.02em}
 h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home, as a wordmark does, without looking like a link. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
+/* A hero card that is also a way in. Only some of them are. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card .lbl{border-bottom:1px solid var(--rule);display:inline-block;
+   padding-bottom:.15rem}
+a.card:hover .lbl{color:var(--ink);border-bottom-color:var(--hot)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
       text-transform:uppercase;color:var(--ink-soft)}
@@ -1299,6 +1317,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
+<nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a></nav>
 <header><h1>Gap <em>Reports</em></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
@@ -1421,14 +1440,18 @@ def render_index(reports, page_href="./%s.html"):
         % (y, y) for y in years)
 
     every = [g for e in entries for g in ([e["longest"]] if e["longest"] else [])]
+    # The songs card doubles as the way to the song index, since a reader who
+    # has just noticed how many songs are logged is the reader who wants it.
     hero = "".join(
-        "<div class='card'><div class='num%s'>%s</div>"
-        "<div class='lbl'>%s</div></div>" % (cls, val, lbl)
-        for val, lbl, cls in (
-            (len(entries), "Reports", ""),
-            (_stat(max(every)) if every else "n/a", "Longest Gap", " hot"),
-            ("{:,}".format(sum(e["songs"] for e in entries)), "Songs Logged", ""),
-            (len({e["venue"] for e in entries if e["venue"]}), "Venues", ""),
+        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
+        + "<div class='num%s'>%s</div><div class='lbl'>%s</div>" % (cls, val, lbl)
+        + ("</a>" if href else "</div>")
+        for val, lbl, cls, href in (
+            (len(entries), "Reports", "", ""),
+            (_stat(max(every)) if every else "n/a", "Longest Gap", " hot", ""),
+            ("{:,}".format(sum(e["songs"] for e in entries)), "Songs Logged", "",
+             "./songs.html"),
+            (len({e["venue"] for e in entries if e["venue"]}), "Venues", "", ""),
         ))
 
     plural = "" if len(entries) == 1 else "s"
@@ -1780,7 +1803,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
-<nav class="crumb"><a href="../index.html">All reports</a><a href="../songs.html">All songs</a></nav>
+<nav class="crumb"><a href="../index.html">Shows</a><a href="../songs.html">Songs</a></nav>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
@@ -2066,7 +2089,8 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
-<header><h1>Gap <em>Reports</em></h1>
+<nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a></nav>
+<header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
 <div class="tools">
