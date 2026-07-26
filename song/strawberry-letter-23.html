@@ -5,7 +5,8 @@
 <meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every Phish performance of Strawberry Letter 23: 13 shows, 2017-07-22 to 2025-07-25. Best version 2022-07-30 (84)"><meta property="og:site_name" content="Phish Gap Reports"><meta property="og:title" content="Strawberry Letter 23"><meta property="og:description" content="Every Phish performance of Strawberry Letter 23: 13 shows, 2017-07-22 to 2025-07-25. Best version 2022-07-30 (84)"><meta property="og:url" content="https://ianfoo.github.io/phishgap/song/strawberry-letter-23.html"><meta property="og:image" content="https://ianfoo.github.io/phishgap/card/song-strawberry-letter-23.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every Phish performance of Strawberry Letter 23: 13 shows, 2017-07-22 to 2025-07-25. Best version 2022-07-30 (84)"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="../fonts.css" rel="stylesheet">
 <style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
@@ -42,7 +43,9 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-h1{font-family:'Aleo',Georgia,serif;font-weight:600;
+/* One of the three slots the display face is allowed: the wordmark, a show's
+   date, and a song's name. Nowhere else. */
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.02;margin:0 0 .5rem;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
@@ -68,12 +71,16 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
    number. */
-.best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .7rem;
-   margin:.9rem 0 0;padding:.6rem .8rem;border-left:3px solid var(--hot);
-   background:var(--hover);font-size:.875rem}
+/* A stub, not a callout. The tinted panel with a coloured left border was the
+   one object on the site that looked like a framework component; it reads in
+   the same field language as the row above it now -- label, value, no fill. */
+.best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;
+   margin:.7rem 0 0;padding:0 0 .7rem;border-bottom:1px solid var(--rule);
+   font-size:.875rem}
 .best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
-.best .when{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem}
+.best .field{display:flex;flex-direction:column;gap:.3rem}
+.best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 .best .score{font-family:'Alfa Slab One',Georgia,serif;color:var(--hot);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
@@ -133,10 +140,15 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .perfs>li,.perfs>li.yr{scroll-margin-top:3.6rem}
 .perfs>li{border-bottom:1px solid var(--rule-soft)}
 .perfs>li.yr{border-bottom:0}
-.yr h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;
-   font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:1rem;letter-spacing:0;margin:1.6rem 0 .3rem;
-   padding-bottom:.3rem;border-bottom:1px solid var(--rule);color:var(--ink)}
+/* The same tab the set headings take, so a section boundary looks the same
+   wherever it falls. */
+.yr h2{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .7rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   margin:1.6rem 0 .3rem;padding:0;border:0;color:var(--ink)}
+.yr h2 .tab{background:var(--ink);color:var(--paper);padding:.25rem .55rem;
+   letter-spacing:.14em;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.yr h2::after{content:"";flex:1;border-bottom:1px solid var(--ink)}
 .yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .yr:first-child h2{margin-top:.4rem}
@@ -154,7 +166,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
    column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
 .row:hover{background:var(--hover)}
-.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    line-height:1.3rem;white-space:nowrap}
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -271,7 +283,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
 .stuck.on{transform:none}
 .stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
   gap:.7rem}
-.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
+.stuck .name{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stuck .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--dim);margin-left:auto;white-space:nowrap}
@@ -377,7 +389,7 @@ footer a{color:var(--dim)}
 performance of this song and the one before it.</p></header>
 <section class="hero"><div class='card'><div class='lbl'>Times Played</div><div class='num'>13</div></div><div class='card'><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div><div class='num'>27.5</div></div><div class='card'><div class='lbl'>Median Gap, All-Time</div><div class='num'>23.5</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>48</div></div></section>
 <div class="rule2"></div>
-<p class='best'><span class='cap'>Best version</span><a class='when' href='#2022-07-30'>2022-07-30</a><span class='where'>Merriweather Post Pavilion, Columbia</span><span class='score'>84</span><span class='cap'><a class='ext i-pin' href='https://phish.in/2022-07-30' target='_blank' rel='noopener noreferrer'>Listen</a> &middot; <a class='ext i-foul' href='https://fouldomain.com/tracks/37102' target='_blank' rel='noopener noreferrer'>Details</a></span></p>
+<p class='best'><span class='field'><span class='cap'>Best version</span><a class='when' href='#2022-07-30'>2022-07-30</a></span><span class='field'><span class='cap'>Venue</span><span class='where'>Merriweather Post Pavilion, Columbia</span></span><span class='field'><span class='cap'>Score</span><span class='score'>84</span></span><span class='field'><span class='cap'>Hear it</span><span class='cap'><a class='ext i-pin' href='https://phish.in/2022-07-30' target='_blank' rel='noopener noreferrer'>Listen</a> &middot; <a class='ext i-foul' href='https://fouldomain.com/tracks/37102' target='_blank' rel='noopener noreferrer'>Details</a></span></span></p>
 <p class="links"><a class='badge' href='https://phish.net/song/strawberry-letter-23' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,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' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://phish.in/songs/strawberry-letter-23' target='_blank' rel='noopener noreferrer'><img class='flip' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.in</span></a></p>
 <div class="tools">
 <input id="q" class="search" type="search" autocomplete="off" disabled
