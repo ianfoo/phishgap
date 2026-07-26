@@ -1551,11 +1551,20 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .r-date a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* One copy of each favicon for the whole page, worn by class. */
-.ext::after{content:"";display:inline-block;width:10px;height:10px;
-   margin-left:.3rem;vertical-align:baseline;opacity:.65;
+/* One copy of each favicon for the whole page, worn by class.
+   No blanket opacity: these icons do not agree about their own. phish.net's is
+   fully opaque, phish.in's averages an alpha of 130 and fouldomain's 137, so a
+   single .65 on top of all three dimmed the translucent ones to about a third.
+   Black at a third reads fine on cream and disappears on near-black, which is
+   why phish.in's went missing in the dark and only in the dark. Each is dimmed
+   to taste against what it actually ships, and 12px rather than 10 because
+   they are detailed marks being drawn very small. */
+.ext::after{content:"";display:inline-block;width:12px;height:12px;
+   margin-left:.3rem;vertical-align:-1px;
    background-position:center;background-repeat:no-repeat;
    background-size:contain}
+.i-pnet::after{opacity:.6}
+.i-pin::after,.i-foul::after{opacity:.95}
 .ext:hover::after{opacity:1}
 .i-pnet::after{background-image:url("data:image/png;base64,__PNET__")}
 .i-pin::after{background-image:url("data:image/png;base64,__PIN__")}
@@ -1650,8 +1659,11 @@ footer a{color:var(--dim)}
     opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
 }
 /* Same lesson as the reports and the index: below this width the columns stop
-   being columns, so nothing has to be squeezed or hidden. */
-@media screen and (max-width:620px){
+   being columns, so nothing has to be squeezed or hidden. Higher than the 620
+   the other pages use, because this row carries five columns to their three --
+   at 760px the fixed four left the venue about 14rem and "Bethel Woods Center
+   for the Arts" came out over four lines. */
+@media screen and (max-width:820px){
   .head{display:none}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.2rem}
@@ -2023,12 +2035,19 @@ def render_song(doc, archived=(), stamp=None):
 # in the same face the song pages use for theirs. One stylesheet's worth of
 # rules rather than a second one drifting away from the first.
 SONGS_CSS = INDEX_CSS + """
-.row{grid-template-columns:1fr 9rem auto}
+/* Fixed, not auto. Every row is its own grid, so a column sized to its own
+   contents put "485 shows - median 2 - longest 31 - best 90" and "325 shows -
+   median 3 - longest 202 - best 79" at different widths, and the last-played
+   column shifted row to row down the page. */
+.row{grid-template-columns:1fr 8.5rem 21.5rem}
 .r-song{display:block;font-family:'Aleo',Georgia,serif;font-weight:600;
    font-size:1.05rem;line-height:1.3rem;color:inherit}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
 .r-stats .score{color:var(--hot)}
+/* The song the top score belongs to, under its label. */
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.1em;color:var(--ink-soft);
+   text-transform:none;font-size:.68rem}
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr}
   .r-when{white-space:normal}
@@ -2051,13 +2070,13 @@ SONGS_SHELL = """<!DOCTYPE html>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
 <div class="tools">
-<input id="q" class="search" type="search" autocomplete="off" disabled
-       placeholder="Search songs&hellip;" aria-label="Search songs">
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="played">Most played</option><option value="az">A&ndash;Z</option>
 <option value="recent">Recently played</option><option value="gap">Longest gap</option>
 <option value="rated">Highest rated</option></select></label>
+<input id="q" class="search" type="search" autocomplete="off" disabled
+       placeholder="Search songs&hellip;" aria-label="Search songs">
 <span class="count"><b id="shown">{count}</b> of {count} songs</span>
 </div>
 <ol class="reports" id="list">
@@ -2155,20 +2174,27 @@ def render_songs(docs, stamp=None):
 
     total = sum(e["played"] for e in entries)
     top = max(entries, key=lambda e: e["score"] or -1) if entries else None
+    # "Performances" on a page listing songs can be read as the band's, and
+    # 27,966 of those would be some tour. The count is of songs played, so it
+    # says so -- and the best version is some particular song's, so it names it
+    # rather than leaving a bare 97 to be a superlative about nothing.
     hero = "".join(
         "<div class='card'><div class='num%s'>%s</div>"
         "<div class='lbl'>%s</div></div>" % (cls, val, lbl)
         for val, lbl, cls in (
             (len(entries), "Songs", ""),
-            ("{:,}".format(total), "Performances", ""),
+            ("{:,}".format(total), "Song Performances", ""),
             (_stat(max((e["longest"] or 0) for e in entries)) if entries else "n/a",
              "Longest Gap", " hot"),
-            (top["score"] if top and top["score"] else "n/a", "Best Version", ""),
+            (top["score"] if top and top["score"] else "n/a",
+             "Best Rated Version%s" % ("<span class='of'>%s</span>"
+                                       % html.escape(top["song"])
+                                       if top and top["score"] else ""), ""),
         ))
-    subtitle = ("%d song%s &middot; %s performances"
+    subtitle = ("%d song%s, played %s time%s"
                 % (len(entries), "" if len(entries) == 1 else "s",
-                   "{:,}".format(total)))
-    blurb = ("Every song in the archive: %d of them, %s performances."
+                   "{:,}".format(total), "" if total == 1 else "s"))
+    blurb = ("Every song in the archive: %d of them, played %s times."
              % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
         css=SONGS_CSS, js=SONGS_JS, fonts=SONG_FONTS, theme_js=THEME_JS,
