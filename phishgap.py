@@ -681,7 +681,7 @@ header{padding-bottom:.9rem}
 .crumb .all{grid-column:2;justify-self:center}
 .crumb .next{grid-column:3;justify-self:end}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
+   font-size:clamp(2rem,7vw,4rem);line-height:1.06;margin:0 0 .7rem;
    letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
 /* The wordmark goes home without dressing as a link. Without this it fell to
@@ -718,7 +718,7 @@ h1 a:hover em{color:var(--ink)}
 
 /* Letterpress: a thick rule with a hairline under it. Three to a page at most
    -- a double rule that turns up six times is wallpaper. */
-.rule2{height:5px;background:linear-gradient(to bottom,
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
    var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
 /* The tear line between one set and the next. Never between rows. */
 .perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
@@ -1427,7 +1427,7 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
+   font-size:clamp(2rem,7vw,4rem);line-height:1.06;margin:0 0 .7rem;
    letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
 /* The wordmark goes home, as a wordmark does, without looking like a link. */
@@ -1445,7 +1445,7 @@ header{padding-bottom:.9rem}
 
 /* Letterpress: a thick rule with a hairline under it. Three to a page at most
    -- a double rule that turns up six times is wallpaper. */
-.rule2{height:5px;background:linear-gradient(to bottom,
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
    var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
 /* The tear line between one set and the next. Never between rows. */
 .perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
@@ -1816,14 +1816,14 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.02;margin:0 0 .5rem;
+   font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.14;margin:0 0 .5rem;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
 
 /* Letterpress: a thick rule with a hairline under it. Three to a page at most
    -- a double rule that turns up six times is wallpaper. */
-.rule2{height:5px;background:linear-gradient(to bottom,
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
    var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
 /* The tear line between one set and the next. Never between rows. */
 .perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
