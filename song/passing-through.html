@@ -94,7 +94,11 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
    scripting off and survive a reload. */
-.eras{display:flex;flex-wrap:wrap;gap:.3rem}
+.eras{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+/* Captioned, because "4.0 42" beside a sort control reads as a filter with an
+   unexplained number, and nobody outside the fandom knows 4.0 is an era. */
+.eras-cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-right:.15rem}
 .era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.42rem .55rem;border:1px solid var(--rule);color:var(--dim);
@@ -286,8 +290,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim)}
 @media screen{
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
-    opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+  /* Under the ink, not over it: as a fixed overlay this sat below the
+     sticky header and the to-top button, which then showed cleaner paper
+     than the page around them, and it multiplied over 10px type. */
+  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -369,7 +375,7 @@ performance of this song and the one before it.</p></header>
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
 <button id="clear" class="clear" type="button" hidden>Clear</button>
-<span class="eras"><a class='era-chip' href='#era-4-0'>4.0<b>2</b></a><a class='era-chip' href='#era-3-0'>3.0<b>4</b></a></span>
+<span class="eras"><span class="eras-cap">Eras</span><a class='era-chip' href='#era-4-0'>4.0<b>2</b></a><a class='era-chip' href='#era-3-0'>3.0<b>4</b></a></span>
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="newest">Newest</option><option value="oldest">Oldest</option>
