@@ -895,13 +895,13 @@ SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
-<header>{crumb}<h1><a href="./index.html">Gap <em>Report</em></a></h1>
+<header>{crumb}<h1><a href="../index.html">Gap <em>Report</em></a></h1>
 <p class="show"><span class="date">{date}</span>{tour}</p>
 <p class="where">{venue}</p>{rating}</header>
 <section class="hero">{hero}</section>
 <p class="links">{links}</p>
 {sections}{notes}
-<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<footer><span><a href="../method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 </div>{row_js}</body></html>
 """
@@ -1196,7 +1196,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             # Anchored at this very performance, so the link answers "where
             # does tonight's version sit against all the others" rather than
             # dropping you at the top of a six-hundred-row page to go looking.
-            title = "<a href='./song/%s.html#%s'>%s</a>" % (
+            title = "<a href='../song/%s.html#%s'>%s</a>" % (
                 html.escape(s["slug"], quote=True),
                 html.escape(report["date"], quote=True), title)
         cells = "<td class='n'%s>%s</td><td class='song'>%s</td>%s" % (
@@ -1238,7 +1238,10 @@ def render_html(report, bar_scale="linear", index_href=None,
     if index_href:
         step = ("<a class='%s' rel='%s' href='./%s.html' "
                 "aria-label='%s show, %s'>%s</a>")
-        crumb = "<nav class='crumb'>%s<a class='all' href='%s'>All reports</a>%s</nav>" % (
+        crumb = ("<nav class='crumb'>%s<a class='all' href='%s'>All reports</a>%s"
+                 "<a class='side' href='../songs.html'>Songs</a>"
+                 "<a class='side' href='../method.html'>How this is worked out</a>"
+                 "</nav>") % (
             step % ("prev", "prev", prev_date, "Previous", prev_date,
                     "&larr; " + prev_date) if prev_date else "",
             html.escape(index_href, quote=True),
@@ -1276,7 +1279,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         row_js=ROW_JS,
         share=share_meta("Gap Report &mdash; %s" % html.escape(report["date"]),
                          html.escape(blurb, quote=True),
-                         "%s.html" % report["date"], card=card),
+                         "%s/%s.html" % (SHOW_DIR, report["date"]), card=card),
         # Dated by the report's own data, not by the clock. A build stamp made
         # every page differ from yesterday's copy of itself, so a nightly run
         # republished all of them to say nothing had happened. count_since is
@@ -1494,7 +1497,8 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
-<nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a></nav>
+<nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
+<a href="./method.html">How this is worked out</a></nav>
 <header><h1>Gap <em>Reports</em></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
@@ -1580,7 +1584,7 @@ def weekday(iso):
         return ""
 
 
-def render_index(reports, page_href="./%s.html", card=None):
+def render_index(reports, page_href="./show/%s.html", card=None):
     """A single self-contained index page over every saved report."""
     entries = sorted((summarize(r) for r in reports),
                      key=lambda e: e["date"], reverse=True)
@@ -1806,6 +1810,9 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .i-pnet::after{background-image:url("data:image/png;base64,__PNET__")}
 .i-pin::after{background-image:url("data:image/png;base64,__PIN__")}
 .i-foul::after{background-image:url("data:image/png;base64,__FOUL__")}
+.dek{margin:.55rem 0 0;font-size:.78rem;line-height:1.5;color:var(--dim);
+   max-width:56ch}
+.crumb .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
    font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);line-height:1.1rem}
@@ -2083,12 +2090,14 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body id="top"><div class="wrap">
-<nav class="crumb"><a href="../index.html">Shows</a><a href="../songs.html">Songs</a></nav>
+<nav class="crumb"><a class="mark" href="../index.html">Gap Reports</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div></div>
 <header><h1>{song}</h1>
-<p class="show">{subtitle}</p></header>
+<p class="show">{subtitle}</p>
+<p class="dek">Gap &mdash; the number of shows the band played between one
+performance of this song and the one before it.</p></header>
 <section class="hero">{hero}</section>
 {best}
 <p class="links">{links}</p>
@@ -2214,7 +2223,7 @@ def render_song(doc, archived=(), stamp=None, card=None):
         # to phish.net, wearing their favicon so the trip off-site is visible
         # before it is taken rather than after.
         if date in archived:
-            link = "<a href='../%s.html'>%s</a>" % (date, date)
+            link = "<a href='../show/%s.html'>%s</a>" % (date, date)
         else:
             link = _ext("https://phish.net/setlist/?d=%s" % date, date, "i-pnet")
         place = ", ".join(x for x in (p["city"], p["state"]) if x)
@@ -2396,7 +2405,8 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
-<nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a></nav>
+<nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
+<a href="./method.html">How this is worked out</a></nav>
 <header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
@@ -2567,7 +2577,8 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a></nav>
+<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a class="here">How this is worked out</a></nav>
 <header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
 <p class="show">How this is worked out</p></header>
 <div class="prose">{body}</div>
@@ -2860,8 +2871,15 @@ def songs_card(docs):
 
 # ------------------------------------------------------------------- site ---
 
+SHOW_DIR = "show"
+
+
 def site_paths(site_dir, date):
-    return (os.path.join(site_dir, "%s.html" % date),
+    # Reports live in their own directory rather than the site root. At
+    # fourteen of them the root was tidy enough; at 259 it was the whole site,
+    # and any future top-level page would have had to pick a name no show could
+    # ever be called.
+    return (os.path.join(site_dir, SHOW_DIR, "%s.html" % date),
             os.path.join(site_dir, "data", "%s.json" % date))
 
 
@@ -2870,6 +2888,32 @@ def site_paths(site_dir, date):
 # one as a show whose date key was missing, which is a KeyError at build time
 # rather than anything as polite as a skip.
 REPORT_NAME = re.compile(r"^\d{4}-\d{2}-\d{2}\.json$")
+
+
+# The only two report URLs that were ever shared before reports moved into
+# show/. Everything else on the site is linked, not remembered, so it follows
+# the move for free; these two are out in a chat somewhere and cannot.
+MOVED = ("2026-07-24", "2026-07-25")
+
+REDIRECT = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=./show/{date}.html">
+<link rel="canonical" href="{site}/show/{date}.html">
+<title>Gap Report &mdash; {date}</title>
+<style>body{{font-family:ui-monospace,monospace;margin:4rem auto;max-width:32rem;
+padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
+<body><p>This report has moved to
+<a href="./show/{date}.html">show/{date}.html</a>.</p></body></html>
+"""
+
+
+def write_redirects(site_dir):
+    """Leave a forwarding note where the two shared links used to point."""
+    for date in MOVED:
+        if not os.path.isfile(site_paths(site_dir, date)[1]):
+            continue
+        write_if_changed(os.path.join(site_dir, "%s.html" % date),
+                         REDIRECT.format(date=date, site=SITE_URL))
 
 
 def archived_dates(site_dir):
@@ -3554,7 +3598,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         page, _ = site_paths(site_dir, date)
         prev, nxt = around.get(date, (None, None))
         if write_if_changed(page, render_html(
-                report, bar_scale=bar_scale, index_href="./index.html",
+                report, bar_scale=bar_scale, index_href="../index.html",
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates)):
             print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
@@ -3592,6 +3636,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
             print("wrote %s (%d songs)" % (songs_page, len(docs)),
                   file=sys.stderr)
         want_card("songs", songs_card(docs))
+
+    write_redirects(site_dir)
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):

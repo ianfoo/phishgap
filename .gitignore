@@ -16,6 +16,7 @@ wheels/
 # built site.
 /site/*.html
 /site/song/
+/site/show/
 /site/card/
 /site/.nojekyll
 
