@@ -24,7 +24,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
-      "verdict": null
+      "verdict": "bustout"
     },
     {
       "set": "SET 1",

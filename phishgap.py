@@ -524,6 +524,27 @@ THEME_CSS = """
 @media print{.theme{display:none}}
 """
 
+ROW_JS = """<script>
+(function(){
+  // On a phone the song title is a very small target for a link that is the
+  // only one in its row, so the row follows it. Delegated rather than wrapped,
+  // because an overlay covering the row would swallow the hover the gap
+  // figure's tooltip needs. With scripting off the title still works.
+  var t=document.querySelector('table');
+  if(!t) return;
+  document.addEventListener('click', function(e){
+    if(e.target.closest('a')) return;
+    var tr=e.target.closest('tr');
+    if(!tr) return;
+    var a=tr.querySelector('td.song a');
+    if(!a) return;
+    var sel=window.getSelection();
+    if(sel && !sel.isCollapsed) return;   // let people copy a venue name
+    a.click();
+  });
+})();
+</script>"""
+
 THEME_UI = ("<span class='theme' role='group' aria-label='Colour theme'>"
             + "".join("<button type='button' data-theme='%s' disabled>%s</button>"
                       % (v, v.title()) for v in ("auto", "light", "dark"))
@@ -708,13 +729,6 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
      var(--band) calc(var(--med,-1%) - 1px),var(--band) var(--med,-1%),
      transparent var(--med,-1%));
    background-repeat:no-repeat}
-/* Where this song's gaps usually fall, on its own bar under the track and on
-   the same scale: a fill ending short of it reads premature, above it expected,
-   past its right end overdue. It started as a wash over the track, but no one
-   colour can read against both the pale track and the solid fill -- dark enough
-   to show on the track, it barely tinted the fill. Solid and separate instead,
-   so both are plainly their own colour. */
-.bar .band{display:block;height:4px;margin-top:4px;background:var(--band)}
 .bar .fill{display:block;position:relative;height:7px;background:var(--cool);
    min-width:2px}
 .bar .fill.big{background:var(--hot)}
@@ -755,6 +769,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
   tr:hover td{background:var(--hover)}
+  /* The whole row leads to the song page on a phone, so it should look like
+     it does. Desktop keeps the title as the target -- there the pointer is
+     precise and a row-wide cursor over a table of figures reads as noise. */
+  @media (max-width:620px){tbody tr:has(td.song a){cursor:pointer}}
 }
 /* Narrow viewports: the four-column table becomes a list of stacked rows.
    A hidden `bar` cell used to leave the table's last column empty -- the
@@ -867,8 +885,9 @@ SHELL = """<!DOCTYPE html>
 <section class="hero">{hero}</section>
 <p class="links">{links}</p>
 {sections}{notes}
-<footer><span>Data: Phish.net API v5</span>{theme_ui}<span>{stamp}</span></footer>
-</div></body></html>
+<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+</div>{row_js}</body></html>
 """
 
 
@@ -990,8 +1009,16 @@ def _classify(gap, prior, on_date, plays=None):
             stats["verdict"] = (
                 "premature" if gap < stats["gap_low"] else
                 "overdue" if gap > stats["gap_high"] else "expected")
-    elif (gap is not None and gap >= BUSTOUT_GAP
-            and (plays or 0) > MIN_HISTORY):
+    elif gap is not None and gap >= BUSTOUT_GAP:
+        # The gap alone decides it. This used also to require more than
+        # MIN_HISTORY performances, meaning to screen out a new song whose
+        # return is not a bustout because it never went anywhere -- but a gap
+        # counts shows, so a gap of 485 already proves the song has been in the
+        # catalogue for 485 shows. Nothing new can reach the threshold: Cream's
+        # largest gap ever is 17. All the test actually screened out was songs
+        # that are *rare*, which is the whole population the word is for --
+        # Back in the U.S.S.R., four plays between 1994 and 2026, returning
+        # after 485 shows, was being called nothing at all.
         stats["verdict"] = "bustout"
     return stats
 
@@ -1119,15 +1146,11 @@ def render_html(report, bar_scale="linear", index_href=None,
             # of the track and is indistinguishable from the fill's origin, so
             # it is only drawn where it can actually say something. The numbers
             # under the gap carry it the rest of the time.
-            # The range the verdict is judged against, shaded on the track.
-            band = ""
-            if s.get("gap_low") is not None:
-                lo = _bar_pct(s["gap_low"], biggest, bar_scale)
-                hi = _bar_pct(s["gap_high"], biggest, bar_scale)
-                if hi - lo >= 2.0:
-                    band = ("<span class='band' style='margin-left:%.2f%%;"
-                            "width:%.2f%%'></span>"
-                            % (lo, min(hi - lo, 100.0 - lo)))
+            # The percentile band the verdict is judged against used to be
+            # shaded here. It was dropped from the text long ago as jargon and
+            # this was the last of it: a mark that appeared on some rows and
+            # not others, explained nowhere, and on a phone was a few pixels
+            # wide. The median tick says the useful half of it.
             tick = ""
             if s.get("gap_median") is not None:
                 at = _bar_pct(s["gap_median"], biggest, bar_scale)
@@ -1138,7 +1161,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                             % min(at, 100.0))
             bar = ("<td class='bar'%s><span class='track'>"
                    "<span class='fill %s' style='width:%.2f%%'></span>%s"
-                   "</span>%s</td>" % (explain, klass, pct, tick, band))
+                   "</span></td>" % (explain, klass, pct, tick))
         # Both statistics cells carry the explanation, so the hover target is
         # the whole of them rather than a range bar that can be five pixels wide.
         # The title is the way in to the song's own history, but only once that
@@ -1226,6 +1249,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
+        row_js=ROW_JS,
         share=share_meta("Gap Report &mdash; %s" % html.escape(report["date"]),
                          html.escape(blurb, quote=True),
                          "%s.html" % report["date"], card=card),
@@ -1464,7 +1488,8 @@ INDEX_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
-<footer><span><a href="./songs.html">All songs</a></span>{theme_ui}<span>{stamp}</span></footer>
+<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<span>{stamp}</span></footer>
 </div><script>{js}</script></body></html>
 """
 
@@ -1829,6 +1854,36 @@ details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot
 details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
 .empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+/* The header a reader keeps once the real one has scrolled away. Landing on a
+   row from a report's link otherwise drops you into an unlabelled list of
+   dates with no way to tell what page you are on. It carries the song and the
+   figure the page exists for, and nothing else. */
+.stuck{position:fixed;top:0;left:0;right:0;z-index:20;
+  background:var(--paper);border-bottom:1px solid var(--rule);
+  transform:translateY(-101%);transition:transform .22s ease;
+  padding:.5rem clamp(1rem,5vw,3rem)}
+.stuck.on{transform:none}
+.stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
+  gap:.7rem}
+.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stuck .n{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin-left:auto;white-space:nowrap}
+.stuck .n b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+  font-size:.9rem;color:var(--ink);letter-spacing:0}
+@media (prefers-reduced-motion:reduce){.stuck{transition:none}}
+/* Where a link dropped you. Bright for a moment, then gone -- it answers
+   "which row?" and then stops being ink on the page. */
+@keyframes landed{from{background:var(--hover);box-shadow:inset 3px 0 0 var(--hot)}
+  to{background:transparent;box-shadow:inset 3px 0 0 transparent}}
+.perfs>li.landed{animation:landed 3.4s ease-out both}
+@media (prefers-reduced-motion:reduce){
+  .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--rule);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
@@ -1957,6 +2012,33 @@ SONG_JS = """
   });
   q.disabled=false; sort.disabled=false;
   apply();
+
+  // The condensed header appears once the real one is off screen, and the
+  // real one is the thing to watch rather than a scroll offset -- no
+  // magic number, and it stays right when the header wraps to more lines.
+  var stuck=document.getElementById('stuck'), head=document.querySelector('header'),
+      totop=document.getElementById('totop');
+  function perch(on){
+    if(stuck) stuck.classList.toggle('on', on);
+    if(totop) totop.hidden=!on;
+  }
+  if(head && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(e){ perch(!e[0].isIntersecting); },
+      {rootMargin:'-8px 0px 0px 0px'}).observe(head);
+  }
+
+  // A link from a report lands on one row; say which, then stop saying it.
+  function land(){
+    var id=location.hash.slice(1);
+    if(!id) return;
+    var li=document.getElementById(id);
+    if(!li || li.classList.contains('yr')) return;
+    li.classList.remove('landed');
+    void li.offsetWidth;            // restart the animation on a repeat visit
+    li.classList.add('landed');
+  }
+  window.addEventListener('hashchange', land);
+  land();
 })();
 """
 
@@ -1968,8 +2050,11 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}</head><body id="top"><div class="wrap">
 <nav class="crumb"><a href="../index.html">Shows</a><a href="../songs.html">Songs</a></nav>
+<div class="stuck" id="stuck" aria-hidden="true"><div class="in">
+<span class="name">{song}</span>
+<span class="n">{stuckstat}</span></div></div>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
@@ -1992,8 +2077,8 @@ SONG_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
-<footer><span>Data: Phish.net &middot; ratings <a href="https://fouldomain.com/"
- target="_blank" rel="noopener noreferrer">fouldomain</a></span>{theme_ui}
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
+<footer><span><a href="../method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 </div><script>{js}</script></body></html>
 """
@@ -2046,11 +2131,14 @@ def render_song(doc, archived=(), stamp=None, card=None):
     top = best[0] if best else ""
     if top:
         where = ", ".join(x for x in (top["venue"], top["city"]) if x)
+        # The date is a link to its own row. Without it the only way to read
+        # that version's notes was to remember the date, tap an era chip and
+        # scroll for it.
         top = ("<p class='best'><span class='cap'>Best version</span>"
-               "<span class='when'>%s</span><span class='where'>%s</span>"
+               "<a class='when' href='#%s'>%s</a><span class='where'>%s</span>"
                "<span class='score'>%s</span>"
                "<span class='cap'>%s &middot; %s</span></p>"
-               % (top["date"], html.escape(where), top["score"],
+               % (top["date"], top["date"], html.escape(where), top["score"],
                   _ext("https://phish.in/%s" % top["date"], "Listen", "i-pin"),
                   _ext(top["link"] or "https://fouldomain.com/", "Details", "i-foul")))
 
@@ -2230,6 +2318,8 @@ def render_song(doc, archived=(), stamp=None, card=None):
         hero=hero, best=top, links=links, count=len(perfs), eras=chips,
         share=share_meta(html.escape(song), html.escape(blurb, quote=True),
                          "song/%s.html" % doc["slug"], card=card),
+        stuckstat="<b>%d</b> shows &middot; median gap <b>%s</b>"
+                  % (len(perfs), _stat(_median(gaps)) if gaps else "&mdash;"),
         head=medmark + head,
         rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
         # Dated by the data rather than by the clock. A build stamp changed
@@ -2292,7 +2382,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
-<footer><span><a href="./index.html">All reports</a></span>{theme_ui}
+<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 </div><script>{js}</script></body></html>
 """
@@ -2416,6 +2506,120 @@ def render_songs(docs, stamp=None, card=None):
         share=share_meta("Phish Gap Reports &mdash; Songs",
                          html.escape(blurb, quote=True), "songs.html", card=card),
         stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
+
+
+# ----------------------------------------------------------------- method ---
+
+METHOD_CSS = INDEX_CSS + """
+.prose{max-width:68ch;margin:0 0 2.4rem}
+.prose h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:1.15rem;margin:2.2rem 0 .5rem;letter-spacing:.01em}
+.prose p{margin:0 0 .9rem;font-size:.85rem;line-height:1.65;color:var(--ink-soft)}
+.prose b{color:var(--ink)}
+.prose .verdict{display:inline-block;margin:0 .15rem;font-size:.62rem;
+   letter-spacing:.1em;text-transform:uppercase}
+.prose .overdue{color:var(--hot)}
+.prose .premature{color:var(--cool)}
+.prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;
+   font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.prose .num{font-family:'Alfa Slab One',Georgia,serif;font-size:1rem;
+   color:var(--ink)}
+"""
+
+METHOD_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How this is worked out &mdash; Phish Gap Reports</title>
+<meta property="og:type" content="article">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a></nav>
+<header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
+<p class="show">How this is worked out</p></header>
+<div class="prose">{body}</div>
+<footer><span><a href="./index.html">All reports</a></span>{theme_ui}
+<span>Data: Phish.net &middot; ratings fouldomain</span></footer>
+</div></body></html>
+"""
+
+
+def render_method():
+    """The page the footers point at when a number wants explaining."""
+    body = """
+<h2>What a gap is</h2>
+<p>The number beside a song is how many shows the band played between this
+performance and the one before it. A gap of <b class="num">0</b> means they
+played it again the very next night; <b class="num">485</b> means four hundred
+and eighty-five shows went by. The figure comes from Phish.net, which computes
+it; nothing here is counted a second time.</p>
+
+<h2>The median, and why ten years</h2>
+<p>Under each gap is that song's usual one &mdash; the median of its gaps over
+the <b>ten years</b> before the show, not over all of history. Forty years of a
+working band is several different bands. The 1990s dominate any all-time
+figure, when they played far more shows a year out of a smaller catalogue, so
+all-time gaps run much shorter and better than half of everything came out
+overdue &mdash; a word that means nothing if it fits three songs in five.</p>
+<p>Counting a fixed number of past performances instead does not fix it: twenty
+performances is two years for a staple and twenty-four for a rarity. Kung's
+last twenty reach back to 1995. Bounding by time instead means a song has to
+have been in rotation lately to be judged at all.</p>
+<p>The median rather than the average, because gap distributions are savagely
+right-skewed: a staple with a median of 6 carries a handful of 200s, and an
+average over that would call almost anything ordinary.</p>
+
+<h2>The verdicts</h2>
+<p>A gap outside the middle 70% of that ten-year window gets called. Below it,
+<span class="verdict premature">premature</span>; above it,
+<span class="verdict overdue">overdue</span>; inside, nothing is said, which is
+most songs. The band's ends are interpolated values that appear nowhere in the
+song's actual gaps, which is why they are not printed &mdash; the mark on the
+bar is the median, the one figure that is real.</p>
+<p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
+yields roughly 13% premature, 67% expected and 20% overdue.</p>
+
+<h2>Songs with no verdict</h2>
+<p>A song needs <b>eight</b> performances inside that ten-year window before
+any of this is said about it. Below that there is no current norm to be early
+or late against, so it gets its numbers and no adjective. Roughly one song in
+eleven falls here, which is the honest answer for something the band has nearly
+stopped playing.</p>
+
+<h2>Bustouts</h2>
+<p>A gap of <b class="num">100</b> or more is a
+<span class="verdict bust">bustout</span> regardless of everything above. A
+hundred sits where Phish.net's own setlist notes use the word. The gap alone
+decides it: a gap counts shows, so a large one already proves the song has been
+in the catalogue a long while &mdash; nothing newly written can reach the
+threshold.</p>
+
+<h2>Ratings and jam charts</h2>
+<p>Version scores and the Phish.net show rating both come by way of
+<b>fouldomain</b>, which is the only place the latter is exposed
+programmatically. Scores are computed from a mix of community signal and audio
+analysis, so a version has none until a recording of it circulates &mdash;
+days or weeks after the show, sometimes never. Jam chart entries are Phish.net's
+own, written months after the fact. Both are treated as optional everywhere
+they appear, which is why a report published the morning after a show carries
+neither.</p>
+
+<h2>When a report appears</h2>
+<p>Nothing in the data says whether a setlist is finished. There is no show
+time to reason from, and the format is not promised &mdash; a rained-out show
+can stop mid-second-set with no encore, so counting sets proves nothing.
+Stability stands in for completeness instead: once a song count has not moved
+for two hours it is taken for the whole show. Until then the report is held
+back, because a half-entered setlist would publish wrong totals.</p>
+"""
+    blurb = ("How the gaps, the medians and the verdicts on this site are "
+             "worked out.")
+    return METHOD_SHELL.format(
+        css=METHOD_CSS, fonts=SONG_FONTS, theme_js=THEME_JS, theme_ui=THEME_UI,
+        body=body.strip(),
+        share=share_meta("How this is worked out", html.escape(blurb, quote=True),
+                         "method.html"))
 
 
 # ------------------------------------------------------------------ cards ---
@@ -3033,6 +3237,48 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
     return fetched
 
 
+# How far back to keep asking about a show that still has no rating. Measured
+# on this archive: every show four days old or more had one, the two newer than
+# that had none, so the answer arrives somewhere in between. --recheck's three
+# days would have missed a rating landing on the fourth, and re-fetching whole
+# shows to find out is a poor trade when the rating is one call on its own.
+RATING_CHASE_DAYS = 21
+
+
+def sweep_ratings(site_dir, days=RATING_CHASE_DAYS, **kw):
+    """Re-ask about archived shows that still have no rating.
+
+    Ratings show up days after a show, long after its setlist has settled and
+    the report stopped being re-fetched. This asks only about the shows still
+    missing one, only for as long as one might plausibly arrive, and only of
+    fouldomain -- phish.net is not touched.
+    """
+    cutoff = (_utcnow().date() - datetime.timedelta(days=days)).isoformat()
+    todo = [r for r in saved_reports(site_dir)
+            if r["date"] >= cutoff and r.get("pnet_rating") is None]
+    if not todo:
+        return []
+    print("ratings: %d recent show%s still without one"
+          % (len(todo), "" if len(todo) == 1 else "s"), file=sys.stderr)
+    found = []
+    for report in todo:
+        got = {}
+        try:
+            got = show_ratings(report["date"], **kw)
+        except ApiError as exc:
+            print("  %s: %s" % (report["date"], exc), file=sys.stderr)
+        if not got:
+            continue
+        report.update(got)
+        _, blob = site_paths(site_dir, report["date"])
+        with open(blob, "w", encoding="utf-8") as fh:
+            json.dump(report, fh, indent=2)
+        found.append(report["date"])
+        print("  %s rated %.2f" % (report["date"], got["pnet_rating"]),
+              file=sys.stderr)
+    return found
+
+
 def seed_scores(site_dir, songs=None, **kw):
     """Fill in fouldomain's top-rated versions for archived songs.
 
@@ -3304,6 +3550,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
             print("wrote %s (%d songs)" % (songs_page, len(docs)),
                   file=sys.stderr)
         want_card("songs", songs_card(docs))
+
+    method = os.path.join(site_dir, "method.html")
+    if write_if_changed(method, render_method()):
+        print("wrote %s" % method, file=sys.stderr)
 
     index = os.path.join(site_dir, "index.html")
     changed = write_if_changed(index, render_index(known, card="index"))
@@ -3667,6 +3917,12 @@ def main():
                     help="with --site, fetch a performance history for every "
                          "song the archive already names (one call per song, "
                          "skipping songs already held)")
+    ap.add_argument("--sweep-ratings", nargs="?", type=int,
+                    const=RATING_CHASE_DAYS, metavar="DAYS",
+                    help="with --site, re-ask fouldomain about archived shows "
+                         "from the last DAYS (default %d) that still have no "
+                         "rating; one call per show and none to phish.net"
+                         % RATING_CHASE_DAYS)
     ap.add_argument("--seed-setlists", action="store_true",
                     help="with --site, fetch the full setlist of every show in "
                          "the archive to record what each performance followed "
@@ -3706,13 +3962,16 @@ def main():
         sys.exit("error: --%s names a single file; use --site DIR to render "
                  "several dates at once" % one_file)
     if (args.rebuild or args.force or args.catch_up or args.seed_songs
-            or args.seed_scores or args.seed_setlists) and not args.site:
+            or args.seed_scores or args.seed_setlists
+            or args.sweep_ratings) and not args.site:
         sys.exit("error: --rebuild, --force, --catch-up, --seed-songs, "
-                 "--seed-scores and --seed-setlists need --site DIR")
+                 "--seed-scores, --seed-setlists and --sweep-ratings "
+                 "need --site DIR")
     if args.recheck and not args.catch_up:
         sys.exit("error: --recheck only means something with --catch-up")
     if not (args.showdate or args.from_json or args.rebuild or args.catch_up
-            or args.seed_songs or args.seed_scores or args.seed_setlists):
+            or args.seed_songs or args.seed_scores or args.seed_setlists
+            or args.sweep_ratings):
         sys.exit("error: give at least one show date (YYYY-MM-DD)")
     if args.html and args.pdf and \
             os.path.abspath(args.html) == os.path.abspath(args.pdf):
@@ -3781,6 +4040,8 @@ def main():
             key = key or load_key(args.apikey)
             seed_songs(args.site, key, artist=args.artist, force=args.force,
                        **kw)
+        if args.sweep_ratings:
+            sweep_ratings(args.site, days=args.sweep_ratings, **kw)
         if args.seed_setlists:
             key = key or load_key(args.apikey)
             seed_setlists(args.site, key, artist=args.artist,
