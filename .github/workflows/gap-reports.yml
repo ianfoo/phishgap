@@ -39,6 +39,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Pillow slices the batched preview-card screenshot; the browser that
+      # takes it is already on the runner image. Without both, pages still
+      # build and publish -- they just point at previews nobody drew.
+      - name: Install what the preview cards need
+        run: python -m pip install --quiet pillow
+
       # Adds any show the archive is missing, then re-renders every page from
       # the archive, which costs no API calls.
       - name: Add new shows and render the site

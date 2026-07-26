@@ -16,6 +16,7 @@ wheels/
 # built site.
 /site/*.html
 /site/song/
+/site/card/
 /site/.nojekyll
 
 # One-off files for handing to someone directly

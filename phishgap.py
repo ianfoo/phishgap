@@ -261,7 +261,7 @@ SITE_URL = "https://ianfoo.github.io/phishgap"
 OG_IMAGE = "og.png"
 
 
-def share_meta(title, description, path="", image=OG_IMAGE):
+def share_meta(title, description, path="", image=OG_IMAGE, card=None):
     """The tags iMessage, Signal, Discord and the rest read off a link.
 
     All of them fall back to Open Graph, so that carries the weight; the
@@ -270,6 +270,10 @@ def share_meta(title, description, path="", image=OG_IMAGE):
     text, which is a poor advertisement for a page of graphs.
     """
     url = "%s/%s" % (SITE_URL, path.lstrip("./")) if path else SITE_URL + "/"
+    # A page's own card when one is being made for it, the house card when not
+    # -- a preview naming the wrong show is worse than a generic one.
+    if card:
+        image = "%s/%s.png" % (CARD_DIR, card)
     return "".join((
         '<link rel="icon" href="%s">' % FAVICON_HREF,
         '<meta name="theme-color" content="#c8371b">',
@@ -1018,7 +1022,7 @@ def _bar_pct(gap, biggest, scale="linear"):
 
 
 def render_html(report, bar_scale="linear", index_href=None,
-                prev_date=None, next_date=None, songs=()):
+                prev_date=None, next_date=None, songs=(), card=None):
     allg = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(allg) if allg else 0
     avg = _stat(sum(allg) / len(allg)) if allg else "n/a"
@@ -1205,7 +1209,8 @@ def render_html(report, bar_scale="linear", index_href=None,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
         share=share_meta("Gap Report &mdash; %s" % html.escape(report["date"]),
-                         html.escape(blurb, quote=True), "%s.html" % report["date"]),
+                         html.escape(blurb, quote=True),
+                         "%s.html" % report["date"], card=card),
         # Dated by the report's own data, not by the clock. A build stamp made
         # every page differ from yesterday's copy of itself, so a nightly run
         # republished all of them to say nothing had happened. count_since is
@@ -1503,7 +1508,7 @@ def weekday(iso):
         return ""
 
 
-def render_index(reports, page_href="./%s.html"):
+def render_index(reports, page_href="./%s.html", card=None):
     """A single self-contained index page over every saved report."""
     entries = sorted((summarize(r) for r in reports),
                      key=lambda e: e["date"], reverse=True)
@@ -1575,7 +1580,8 @@ def render_index(reports, page_href="./%s.html"):
         hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         subtitle=subtitle,
-        share=share_meta("Phish Gap Reports", html.escape(blurb, quote=True)),
+        share=share_meta("Phish Gap Reports", html.escape(blurb, quote=True),
+                         card=card),
         # The newest show it lists, for the same reason.
         stamp="Updated %s" % (entries[0]["date"] if entries else "&mdash;"))
 
@@ -1987,7 +1993,7 @@ def _ext(url, label, cls):
             % (cls, html.escape(url, quote=True), label))
 
 
-def render_song(doc, archived=(), stamp=None):
+def render_song(doc, archived=(), stamp=None, card=None):
     """One song's whole performance history, newest first."""
     perfs = list(reversed(doc["performances"]))
     song = doc["song"]
@@ -2200,7 +2206,7 @@ def render_song(doc, archived=(), stamp=None):
         theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(perfs), eras=chips,
         share=share_meta(html.escape(song), html.escape(blurb, quote=True),
-                         "song/%s.html" % doc["slug"]),
+                         "song/%s.html" % doc["slug"], card=card),
         head=medmark + head,
         rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
         # Dated by the data rather than by the clock. A build stamp changed
@@ -2311,7 +2317,7 @@ SONGS_JS = """
 """
 
 
-def render_songs(docs, stamp=None):
+def render_songs(docs, stamp=None, card=None):
     """One page listing every song the archive holds a history for."""
     rows, entries = [], []
     for doc in docs:
@@ -2385,8 +2391,180 @@ def render_songs(docs, stamp=None):
         theme_ui=THEME_UI, hero=hero, count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
         share=share_meta("Phish Gap Reports &mdash; Songs",
-                         html.escape(blurb, quote=True), "songs.html"),
+                         html.escape(blurb, quote=True), "songs.html", card=card),
         stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
+
+
+# ------------------------------------------------------------------ cards ---
+
+CARD_W, CARD_H = 1200, 630
+CARD_DIR = "card"
+# How many cards go into one browser launch. Each launch costs about 2.7s of
+# startup and a font fetch, so doing them one at a time put eight minutes on a
+# full rebuild; stacked and sliced, the same 185 take about twenty seconds.
+# Chrome will not screenshot past roughly 16,000px, which is 26 of these.
+CARDS_PER_SHOT = 24
+
+
+def chrome_exe():
+    """The Chrome-family browser to shoot cards with, or None."""
+    exe = next((c for c in CHROME_CANDIDATES
+                if os.path.isfile(c) or shutil.which(c)), None)
+    return exe if not exe or os.path.isfile(exe) else shutil.which(exe)
+
+
+CARD_CSS = """
+*{box-sizing:border-box;margin:0}
+body{background:#e9e3d6;font-family:'IBM Plex Mono',ui-monospace,monospace}
+.card{width:%(w)dpx;height:%(h)dpx;background:#f2ece0;color:#17150f;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 84px;position:relative;overflow:hidden}
+.kind{font-size:25px;letter-spacing:.22em;text-transform:uppercase;color:#877e6e}
+/* Kept clear of the mark, which starts around x=870: without a ceiling a
+   middling title like "You Enjoy Myself" ran under it and the last word went
+   muddy. Wrapping is better than colliding. */
+h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;line-height:.94;
+   letter-spacing:-.02em;margin-top:16px;word-break:break-word;max-width:770px}
+h1 em{font-style:normal;color:#c8371b}
+.sub{font-size:30px;letter-spacing:.08em;text-transform:uppercase;color:#413c31;
+  margin-top:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rule{height:7px;background:#17150f;margin-top:38px}
+.stats{display:flex;gap:58px;margin-top:30px;font-size:23px;letter-spacing:.13em;
+  text-transform:uppercase;color:#877e6e}
+.stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:52px;
+  letter-spacing:0;color:#17150f;display:block;margin-bottom:4px;white-space:nowrap}
+.stats .hot{color:#c8371b}
+.mark{position:absolute;right:-64px;top:-72px;width:392px;height:392px;opacity:.12}
+.brand{position:absolute;left:84px;bottom:40px;font-size:21px;letter-spacing:.2em;
+  text-transform:uppercase;color:#877e6e}
+""" % {"w": CARD_W, "h": CARD_H}
+
+CARDS_SHELL = """<!DOCTYPE html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>%s</style></head><body>__CARDS__</body></html>""" % CARD_CSS
+
+
+def card_markup(kind, title, subtitle, stats, size=96):
+    """One 1200x630 card: what it is, what it is called, and three figures."""
+    figures = "".join(
+        "<span><b class='%s'>%s</b>%s</span>" % (cls, val, lbl)
+        for val, lbl, cls in stats)
+    return ("<div class='card'>%s"
+            "<div class='kind'>%s</div>"
+            "<h1 style='font-size:%dpx'>%s</h1>"
+            "<div class='sub'>%s</div><div class='rule'></div>"
+            "<div class='stats'>%s</div>"
+            "<div class='brand'>ianfoo.github.io/phishgap</div></div>"
+            % (FAVICON.replace("<svg", "<svg class='mark'", 1), kind, size,
+               title, subtitle, figures))
+
+
+def shoot_cards(exe, jobs, site_dir):
+    """Render a batch of cards in one browser launch, then slice them apart.
+
+    -> the number written. Any failure is reported and returns 0, because a
+    missing card costs a page its preview image and nothing else.
+    """
+    try:
+        from PIL import Image
+    except ImportError:
+        print("cards: Pillow not installed, skipping previews", file=sys.stderr)
+        return 0
+    out_dir = os.path.join(site_dir, CARD_DIR)
+    os.makedirs(out_dir, exist_ok=True)
+    written = 0
+    for start in range(0, len(jobs), CARDS_PER_SHOT):
+        batch = jobs[start:start + CARDS_PER_SHOT]
+        # replace, not format: the stylesheet above is full of braces
+        page = CARDS_SHELL.replace("__CARDS__", "".join(m for _, m in batch))
+        with tempfile.TemporaryDirectory() as tmp:
+            src = os.path.join(tmp, "cards.html")
+            shot = os.path.join(tmp, "cards.png")
+            with open(src, "w", encoding="utf-8") as fh:
+                fh.write(page)
+            cmd = [exe, "--headless", "--disable-gpu", "--hide-scrollbars",
+                   "--force-device-scale-factor=1",
+                   "--window-size=%d,%d" % (CARD_W, CARD_H * len(batch)),
+                   "--screenshot=" + shot,
+                   # Generous, because the whole batch waits on one font fetch.
+                   "--virtual-time-budget=6000",
+                   "file://" + urllib.parse.quote(src)]
+            try:
+                with _muted_stderr():
+                    subprocess.run(cmd, check=True, timeout=180,
+                                   stdout=subprocess.DEVNULL,
+                                   stderr=subprocess.DEVNULL)
+                sheet = Image.open(shot)
+            except (subprocess.SubprocessError, OSError) as exc:
+                print("cards: %s" % exc, file=sys.stderr)
+                return written
+            for i, (name, _) in enumerate(batch):
+                top = i * CARD_H
+                if top + CARD_H > sheet.height:
+                    break
+                sheet.crop((0, top, CARD_W, top + CARD_H)).save(
+                    os.path.join(out_dir, "%s.png" % name), optimize=True)
+                written += 1
+    return written
+
+
+def report_card(report):
+    """A show: what it was, where, and the night's headline gap."""
+    gaps = [s["gap"] for s in report["songs"] if s["gap"] is not None]
+    biggest = max(gaps) if gaps else None
+    song = next((s["song"] for s in report["songs"] if s["gap"] == biggest), "")
+    where = report.get("venue") or ""
+    return card_markup(
+        "Gap Report", html.escape(report["date"]), html.escape(where.upper()),
+        (("%d" % len(report["songs"]), "Songs", ""),
+         (_stat(_median(gaps)) if gaps else "&mdash;", "Median gap", ""),
+         (_stat(biggest) if gaps else "&mdash;",
+          html.escape(song[:22]) or "Longest gap", "hot")),
+        size=104)
+
+
+def _card_size(title):
+    """Three steps rather than a cliff, so titles do not lurch between sizes."""
+    n = len(title)
+    return 104 if n <= 15 else 84 if n <= 26 else 68
+
+
+def song_card(doc):
+    """A song: how often, how long between, and its best version."""
+    perfs = doc["performances"]
+    gaps = [p["gap"] for p in perfs[1:] if p["gap"] is not None]
+    best = (doc.get("best") or [None])[0]
+    span = ("%s &ndash; %s" % (perfs[0]["date"][:4], perfs[-1]["date"][:4])
+            if perfs else "")
+    title = html.escape(doc["song"])
+    return card_markup(
+        "Every performance", title, span,
+        (("%d" % len(perfs), "Times played", ""),
+         (_stat(_median(gaps)) if gaps else "&mdash;", "Median gap", ""),
+         (("%s" % best["score"]) if best else "&mdash;",
+          "Best version" if best else "Longest gap", "hot")),
+        size=_card_size(doc["song"]))
+
+
+def index_card(reports):
+    entries = [summarize(r) for r in reports]
+    longest = max((e["longest"] or 0) for e in entries) if entries else 0
+    return card_markup(
+        "Phish", "Gap <em>Reports</em>", "How long since they last played it",
+        (("%d" % len(entries), "Shows", ""),
+         ("{:,}".format(sum(e["songs"] for e in entries)), "Songs logged", ""),
+         (_stat(longest) if longest else "&mdash;", "Longest gap", "hot")))
+
+
+def songs_card(docs):
+    total = sum(len(d["performances"]) for d in docs)
+    best = max((v["score"] for d in docs for v in (d.get("best") or [])),
+               default=None)
+    return card_markup(
+        "Every song", "Gap <em>Reports</em>", "One page per song, all the way back",
+        (("%d" % len(docs), "Songs", ""),
+         ("{:,}".format(total), "Song performances", ""),
+         (("%s" % best) if best else "&mdash;", "Best rated version", "hot")))
 
 
 # ------------------------------------------------------------------- site ---
@@ -2997,6 +3175,29 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     for date in fresh:
         stale |= {d for d in around.get(date, ()) if d}
 
+    # A page and its preview card are made together, so a link shared the
+    # moment a show lands already has a picture on it. No browser to draw them
+    # with means no cards, and every page falls back to the house one rather
+    # than pointing at a file that will never exist.
+    # Drawing them needs a browser; naming them does not. A build without one
+    # leaves the cards to the next build that has one, and the pages stay
+    # byte-identical either way.
+    exe = chrome_exe()
+    jobs = []
+
+    def needs_card(name, page_changed):
+        """A card is due when its page moved, or when it simply is not there.
+
+        The second half is what makes the pair self-healing: a run that wrote
+        pages but died before drawing them, or a card deleted by hand, is put
+        right on the next build rather than leaving a page pointing at a
+        preview that does not exist.
+        """
+        if not exe:
+            return False
+        return page_changed or not os.path.isfile(
+            os.path.join(site_dir, CARD_DIR, "%s.png" % name))
+
     songs = archived_songs(site_dir)
     for report in known:
         date = report["date"]
@@ -3006,9 +3207,15 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         prev, nxt = around.get(date, (None, None))
         if write_if_changed(page, render_html(
                 report, bar_scale=bar_scale, index_href="./index.html",
-                prev_date=prev, next_date=nxt, songs=songs)):
+                prev_date=prev, next_date=nxt, songs=songs,
+                card=date)):
             print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
                   file=sys.stderr)
+            changed_page = True
+        else:
+            changed_page = False
+        if needs_card(date, changed_page):
+            jobs.append((date, report_card(report)))
 
     # Song pages last, so they can link to whichever reports now exist. They
     # are cheap to write and the archive is the only input, so a rebuild does
@@ -3025,20 +3232,33 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
             continue
         considered += 1
         page = os.path.join(site_dir, "song", "%s.html" % slug)
-        if write_if_changed(page, render_song(doc, archived=have)):
-            wrote += 1
+        name = "song-%s" % slug
+        moved = write_if_changed(page, render_song(doc, archived=have,
+                                                   card=name))
+        wrote += 1 if moved else 0
+        if needs_card(name, moved):
+            jobs.append((name, song_card(doc)))
     if considered:
         print("song pages: %d rendered, %d changed"
               % (considered, wrote), file=sys.stderr)
 
     if docs:
         songs_page = os.path.join(site_dir, "songs.html")
-        if write_if_changed(songs_page, render_songs(docs)):
+        moved = write_if_changed(songs_page, render_songs(docs, card="songs"))
+        if moved:
             print("wrote %s (%d songs)" % (songs_page, len(docs)),
                   file=sys.stderr)
+        if needs_card("songs", moved):
+            jobs.append(("songs", songs_card(docs)))
 
     index = os.path.join(site_dir, "index.html")
-    changed = write_if_changed(index, render_index(known))
+    changed = write_if_changed(index, render_index(known, card="index"))
+    if needs_card("index", changed):
+        jobs.append(("index", index_card(known)))
+    if jobs:
+        made = shoot_cards(exe, jobs, site_dir)
+        print("preview cards: %d of %d drawn" % (made, len(jobs)),
+              file=sys.stderr)
     # Serve the directory verbatim on GitHub Pages, Jekyll out of the way.
     open(os.path.join(site_dir, ".nojekyll"), "a").close()
     print("%s %s (%d report%s)"

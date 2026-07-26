@@ -6,4 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "weasyprint",
+    # Slices the batched preview-card screenshot into one image per page.
+    "pillow",
 ]
