@@ -116,6 +116,11 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:.95rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+/* Anything a link can land on stops clear of the condensed header, which is
+   fixed and 42px tall -- without this the browser puts the target's top edge
+   at the top of the viewport, which is exactly where the header is, and the
+   row you tapped to look at arrives half hidden underneath it. */
+.perfs>li,.perfs>li.yr{scroll-margin-top:3.6rem}
 .perfs>li{border-bottom:1px solid var(--rule-soft)}
 .perfs>li.yr{border-bottom:0}
 .yr h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;
