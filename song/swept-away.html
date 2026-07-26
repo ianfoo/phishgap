@@ -6,25 +6,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--grain-blend:multiply;--grain-opacity:.45;}
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
-:root:not([data-theme="light"]) .hero{border-top-width:2px;border-top-color:#6b6353}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
 :root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 :root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
 }
 @media screen{
-:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
-:root[data-theme="dark"] .hero{border-top-width:2px;border-top-color:#6b6353}
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
 :root[data-theme="dark"] .badge img.flip{filter:invert(1)}
 :root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
 }
 
 .theme{display:inline-flex;gap:.3rem;align-items:center}
 .theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
-   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
 .theme button:hover:not(:disabled){color:var(--ink)}
 .theme button.on{background:var(--ink);color:var(--paper);
@@ -49,15 +47,23 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
-.hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
-   border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+   border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
    letter-spacing:-.01em}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
-   color:var(--dim);margin-top:.4rem}
+   color:var(--dim);margin-bottom:.35rem}
 .lbl .abbr{display:none}
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
@@ -75,7 +81,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
-   padding:.35rem .5rem;border:1px solid var(--rule);color:var(--dim);
+   padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
@@ -83,13 +89,13 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
    margin:1.9rem 0 .9rem}
 .search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
-   padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
+   padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
    background:transparent;color:var(--ink)}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
    outline-offset:1px}
 .sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-   color:var(--ink);border:1px solid var(--rule);border-radius:0}
+   color:var(--ink);border:1px solid var(--edge);border-radius:0}
 .count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
@@ -101,7 +107,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    color:var(--dim);margin-right:.15rem}
 .era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   padding:.42rem .55rem;border:1px solid var(--rule);color:var(--dim);
+   padding:.42rem .55rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none}
 .era-chip b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
@@ -109,7 +115,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .era-chip:hover b{color:var(--hot)}
 /* Shown only once there is something to clear. */
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   padding:.45rem .6rem;border:1px solid var(--rule);background:transparent;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
 .clear:hover{color:var(--hot);border-color:var(--hot)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
@@ -281,7 +287,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
 .totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
   z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
-  justify-content:center;background:var(--paper);border:1px solid var(--rule);
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
 .totop:hover{color:var(--hot);border-color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
@@ -364,11 +370,13 @@ footer a{color:var(--dim)}
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">Swept Away</span>
 <span class="n"><b>33</b> shows &middot; median gap <b>6.5</b></span></div></div>
+<div class="rule2"></div>
 <header><h1>Swept Away</h1>
 <p class="show">Debut 1996-10-16 &middot; Last played 2021-08-28 &middot; 33 performances</p>
 <p class="dek">Gap &mdash; the number of shows the band played between one
 performance of this song and the one before it.</p></header>
-<section class="hero"><div class='card'><div class='num'>33</div><div class='lbl'>Times Played</div></div><div class='card'><div class='num'>47</div><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div></div><div class='card'><div class='num'>6.5</div><div class='lbl'>Median Gap, All-Time</div></div><div class='card'><div class='num hot'>192</div><div class='lbl'>Longest Gap</div></div></section>
+<section class="hero"><div class='card'><div class='lbl'>Times Played</div><div class='num'>33</div></div><div class='card'><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div><div class='num'>47</div></div><div class='card'><div class='lbl'>Median Gap, All-Time</div><div class='num'>6.5</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>192</div></div></section>
+<div class="rule2"></div>
 
 <p class="links"><a class='badge' href='https://phish.net/song/swept-away' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,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' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://phish.in/songs/swept-away' target='_blank' rel='noopener noreferrer'><img class='flip' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.in</span></a></p>
 <div class="tools">
@@ -385,9 +393,9 @@ performance of this song and the one before it.</p></header>
 </div>
 <style>.perfs{--med:3.39%}</style><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap &middot; mark at median 6.5</span></div>
 <ol class="perfs" id="list">
-<li class='yr' id='era-4-0' data-era='4.0'><h2>4.0<span>1 show</span><span>2021&ndash;2021</span></h2></li>
+<li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>1 show</span><span>2021&ndash;2021</span></h2></li>
 <li id='2021-08-28' data-date='2021-08-28' data-era='4.0' data-gap='35' data-score='' data-search="2021-08-28 08/28/2021 8/28/2021 8/28/21 08/28 8/28 8-28 august 28 2021 august 28 saturday gorge amphitheatre george wa  "><div class='row'><span class='r-date'><a href='../show/2021-08-28.html'>2021-08-28</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Gorge Amphitheatre</span><span class='r-place'>George, WA</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill' style='width:18.2%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>35</span><span class='set'>SET 1</span></span></div></li>
-<li class='yr' id='era-3-0' data-era='3.0'><h2>3.0<span>7 shows</span><span>2009&ndash;2019</span></h2></li>
+<li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>7 shows</span><span>2009&ndash;2019</span></h2></li>
 <li id='2019-07-14' data-date='2019-07-14' data-era='3.0' data-gap='29' data-score='' data-search="2019-07-14 07/14/2019 7/14/2019 7/14/19 07/14 7/14 7-14 july 14 2019 july 14 sunday alpine valley music theatre east troy wi  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2019-07-14' target='_blank' rel='noopener noreferrer'>2019-07-14</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Alpine Valley Music Theatre</span><span class='r-place'>East Troy, WI</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill' style='width:15.1%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>29</span><span class='set'>SET 2</span></span></div></li>
 <li id='2018-12-28' data-date='2018-12-28' data-era='3.0' data-gap='47' data-score='' data-search="2018-12-28 12/28/2018 12/28/2018 12/28/18 12/28 12/28 12-28 december 28 2018 december 28 friday madison square garden new york ny  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2018-12-28' target='_blank' rel='noopener noreferrer'>2018-12-28</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill' style='width:24.5%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>47</span><span class='set'>SET 2</span></span></div></li>
 <li id='2017-08-01' data-date='2017-08-01' data-era='3.0' data-gap='192' data-score='' data-search="2017-08-01 08/01/2017 8/1/2017 8/1/17 08/01 8/1 8-1 august 01 2017 august 1 tuesday madison square garden new york ny  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2017-08-01' target='_blank' rel='noopener noreferrer'>2017-08-01</a><span class='dow'>Tue</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill big' style='width:100.0%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>192</span><span class='set'>SET 2</span></span></div></li>
@@ -395,7 +403,7 @@ performance of this song and the one before it.</p></header>
 <li id='2011-06-10' data-date='2011-06-10' data-era='3.0' data-gap='52' data-score='' data-search="2011-06-10 06/10/2011 6/10/2011 6/10/11 06/10 6/10 6-10 june 10 2011 june 10 friday susquehanna bank center camden nj  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2011-06-10' target='_blank' rel='noopener noreferrer'>2011-06-10</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Susquehanna Bank Center</span><span class='r-place'>Camden, NJ</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill big' style='width:27.1%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>52</span><span class='set'>SET 2</span></span></div></li>
 <li id='2010-06-20' data-date='2010-06-20' data-era='3.0' data-gap='8' data-score='' data-search="2010-06-20 06/20/2010 6/20/2010 6/20/10 06/20 6/20 6-20 june 20 2010 june 20 sunday saratoga performing arts center saratoga springs ny  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2010-06-20' target='_blank' rel='noopener noreferrer'>2010-06-20</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Saratoga Performing Arts Center</span><span class='r-place'>Saratoga Springs, NY</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill' style='width:4.2%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>8</span><span class='set'>SET 2</span></span></div></li>
 <li id='2009-12-31' data-date='2009-12-31' data-era='3.0' data-gap='145' data-score='' data-search="2009-12-31 12/31/2009 12/31/2009 12/31/09 12/31 12/31 12-31 december 31 2009 december 31 thursday american airlines arena miami fl  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2009-12-31' target='_blank' rel='noopener noreferrer'>2009-12-31</a><span class='dow'>Thu</span></span><span><span class='r-venue'>American Airlines Arena</span><span class='r-place'>Miami, FL</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill big' style='width:75.5%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>145</span><span class='set'>SET 1</span></span></div></li>
-<li class='yr' id='era-1-0' data-era='1.0'><h2>1.0<span>25 shows</span><span>1996&ndash;2000</span></h2></li>
+<li class='yr' id='era-1-0' data-era='1.0'><h2><span class='tab'>1.0</span><span>25 shows</span><span>1996&ndash;2000</span></h2></li>
 <li id='2000-07-01' data-date='2000-07-01' data-era='1.0' data-gap='85' data-score='' data-search="2000-07-01 07/01/2000 7/1/2000 7/1/00 07/01 7/1 7-1 july 01 2000 july 1 saturday meadows music theatre hartford ct  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2000-07-01' target='_blank' rel='noopener noreferrer'>2000-07-01</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Meadows Music Theatre</span><span class='r-place'>Hartford, CT</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill big' style='width:44.3%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>85</span><span class='set'>SET 2</span></span></div></li>
 <li id='1999-06-30' data-date='1999-06-30' data-era='1.0' data-gap='63' data-score='' data-search="1999-06-30 06/30/1999 6/30/1999 6/30/99 06/30 6/30 6-30 june 30 1999 june 30 wednesday sandstone amphitheatre bonner springs ks  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-06-30' target='_blank' rel='noopener noreferrer'>1999-06-30</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Sandstone Amphitheatre</span><span class='r-place'>Bonner Springs, KS</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill big' style='width:32.8%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>63</span><span class='set'>SET 2</span></span></div></li>
 <li id='1998-06-30' data-date='1998-06-30' data-era='1.0' data-gap='10' data-score='' data-search="1998-06-30 06/30/1998 6/30/1998 6/30/98 06/30 6/30 6-30 june 30 1998 june 30 tuesday the grey hall copenhagen capital region  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1998-06-30' target='_blank' rel='noopener noreferrer'>1998-06-30</a><span class='dow'>Tue</span></span><span><span class='r-venue'>The Grey Hall</span><span class='r-place'>Copenhagen, Capital Region</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='fill' style='width:5.2%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>10</span><span class='set'>SET 2</span></span></div></li>
