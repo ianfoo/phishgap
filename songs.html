@@ -98,7 +98,9 @@ header{padding-bottom:.9rem}
      align-items:baseline;padding:.7rem .25rem;text-decoration:none;
      color:inherit;border-bottom:1px solid var(--rule-soft)}
 .row:hover{background:var(--hover)}
-.r-date{font-family:'Alfa Slab One',Georgia,serif;font-size:1.05rem;
+/* Same rule, same reason: this is the one place the site still spoke two
+   languages, since the song pages had already moved. */
+.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
         line-height:1.3rem;white-space:nowrap}
 .r-venue{font-size:.85rem;font-weight:600;letter-spacing:.04em;
          text-transform:uppercase;line-height:1.3rem}
@@ -121,7 +123,11 @@ header{padding-bottom:.9rem}
 .r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
            font-size:.95rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot)}
-.r-song{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
+/* The song that held the longest gap, under the figures it belongs to. Named
+   for what it is: ".r-song" also means "the song this row is about" on the
+   song index, which inherits this stylesheet, and one grid-column rule meant
+   for this was enough to wreck that. */
+.r-top{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
@@ -147,10 +153,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\00b7";
     color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
   .r-stats .st b{min-width:0!important;text-align:left}
-  .r-song{text-align:left}
-  .r-song{display:inline}
-  .r-song::before{content:" ("}
-  .r-song::after{content:")"}
+  .r-top{text-align:left;display:inline}
+  .r-top::before{content:" ("}
+  .r-top::after{content:")"}
   .card{flex:1 1 45%;padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
