@@ -23,6 +23,7 @@ re-request. Use --refresh to bypass.
 """
 
 import argparse
+import base64
 import contextlib
 import collections
 import datetime
@@ -238,6 +239,53 @@ def foul(path, cache_dir=DEFAULT_CACHE, refresh=False, **params):
                         urllib.parse.urlencode(params))
     return _http_json(url, "fouldomain/%s" % path, cache_dir=cache_dir,
                       refresh=refresh, ttl=FOUL_TTL)
+
+
+# ---------------------------------------------------------------- fonts ---
+
+# Bagnard, Sebastien Sanfilippo, SIL Open Font License 1.1. Self-hosted rather
+# than served from Google: the point of changing face at all was to stop
+# wearing the same two the whole internet wears, and the licence ships beside
+# it in font/OFL.txt as the OFL requires.
+#
+# One stylesheet for the site rather than the face inlined into every page --
+# 13 KB inlined across 640 pages is 8 MB re-downloaded page to page, where one
+# linked file is fetched once and cached for the whole visit. The single-file
+# --html output keeps its own inlined fonts, since that one is still meant to
+# survive being handed to somebody.
+FONT_DIR = "font"
+DISPLAY_FACE = "Bagnard"
+FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         "site", FONT_DIR, "Bagnard.otf")
+
+
+def inline_font_css():
+    """The face as a data URI, for output that has no stylesheet beside it.
+
+    The hosted pages link one shared sheet, which is the whole reason for
+    having a sheet. A file handed to somebody in a chat has no beside, so that
+    one carries the face itself -- 13 KB of it -- or falls back to Georgia if
+    the font is not where it should be.
+    """
+    try:
+        with open(FONT_FILE, "rb") as fh:
+            blob = base64.b64encode(fh.read()).decode()
+    except OSError:
+        return ""
+    return ("<style>@font-face{font-family:'%s';font-weight:400;"
+            "font-display:swap;src:url(data:font/otf;base64,%s) "
+            "format('opentype')}</style>" % (DISPLAY_FACE, blob))
+FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
+   Licence text: ./%(dir)s/OFL.txt */
+@font-face{font-family:'%(face)s';src:url('./%(dir)s/Bagnard.otf') format('opentype');
+  font-weight:400;font-style:normal;font-display:swap}
+""" % {"face": DISPLAY_FACE, "dir": FONT_DIR}
+
+# Plex Mono is the only thing still coming from Google: it is doing real work
+# at 10-14px and swapping it would cost legibility for no identity gain.
+WEB_FONTS = ("https://fonts.googleapis.com/css2"
+             "?family=Alfa+Slab+One"
+             "&family=IBM+Plex+Mono:wght@400;500;600&display=swap")
 
 
 # ------------------------------------------------------------------ share ---
@@ -632,7 +680,7 @@ header{padding-bottom:.9rem}
 .crumb .prev{grid-column:1;justify-self:start}
 .crumb .all{grid-column:2;justify-self:center}
 .crumb .next{grid-column:3;justify-self:end}
-h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
    letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
@@ -649,7 +697,7 @@ h1 a:hover em{color:var(--ink)}
    the wordmark, the section headings and bare figures, and Aleo sets anything
    you read as data -- a date or a title. A date is eight digits and two
    hyphens, which is more punctuation than Alfa Slab One wants to carry. */
-.show .date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.5rem;
+.show .date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;
    line-height:1;color:var(--ink)}
 .show .tour{font-size:1rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--dim)}
@@ -936,7 +984,8 @@ SHELL = """<!DOCTYPE html>
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="{fonts}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <div class="rule2"></div>
 <header>{crumb}<h1><a href="../index.html">Gap <em>Report</em></a></h1>
@@ -1123,7 +1172,7 @@ def _bar_pct(gap, biggest, scale="linear"):
 
 def render_html(report, bar_scale="linear", index_href=None,
                 prev_date=None, next_date=None, songs=(), card=None,
-                archived_show=()):
+                archived_show=(), sheet="../fonts.css"):
     allg = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(allg) if allg else 0
     avg = _stat(sum(allg) / len(allg)) if allg else "n/a"
@@ -1339,11 +1388,13 @@ def render_html(report, bar_scale="linear", index_href=None,
                   "<span> via fouldomain</span></p>" % report["pnet_rating"])
 
     return SHELL.format(
-        css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI,
+        css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
+        sheet=('<link href="%s" rel="stylesheet">' % sheet if sheet
+               else inline_font_css()),
         row_js=ROW_JS,
         share=share_meta("Gap Report &mdash; %s" % html.escape(report["date"]),
                          html.escape(blurb, quote=True),
@@ -1375,7 +1426,7 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
-h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
    letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
@@ -1435,7 +1486,7 @@ header{padding-bottom:.9rem}
 .row:hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
-.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
         line-height:1.3rem;white-space:nowrap}
 .r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
          text-transform:uppercase;line-height:1.3rem}
@@ -1568,7 +1619,8 @@ INDEX_SHELL = """<!DOCTYPE html>
 <meta property="og:type" content="website">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
@@ -1731,6 +1783,7 @@ def render_index(reports, page_href="./show/%s.html", card=None):
 
     return INDEX_SHELL.format(
         css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
+        fonts=WEB_FONTS, sheet="./fonts.css",
         hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         subtitle=subtitle,
@@ -1746,9 +1799,7 @@ def render_index(reports, page_href="./show/%s.html", card=None):
 # and for a bare number, too heavy for a date string, which has twice the
 # characters and three pieces of punctuation. Aleo carries the dates and the
 # song title; the gap figures and the hero numbers stay in the slab.
-SONG_FONTS = ("https://fonts.googleapis.com/css2?family=Alfa+Slab+One"
-              "&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600"
-              "&display=swap")
+SONG_FONTS = WEB_FONTS
 
 SONG_CSS = (PALETTE_CSS + THEME_CSS + """
 *{box-sizing:border-box}
@@ -1762,7 +1813,9 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-h1{font-family:'Aleo',Georgia,serif;font-weight:600;
+/* One of the three slots the display face is allowed: the wordmark, a show's
+   date, and a song's name. Nowhere else. */
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.02;margin:0 0 .5rem;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
@@ -1788,12 +1841,16 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
    number. */
-.best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .7rem;
-   margin:.9rem 0 0;padding:.6rem .8rem;border-left:3px solid var(--hot);
-   background:var(--hover);font-size:.875rem}
+/* A stub, not a callout. The tinted panel with a coloured left border was the
+   one object on the site that looked like a framework component; it reads in
+   the same field language as the row above it now -- label, value, no fill. */
+.best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;
+   margin:.7rem 0 0;padding:0 0 .7rem;border-bottom:1px solid var(--rule);
+   font-size:.875rem}
 .best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
-.best .when{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem}
+.best .field{display:flex;flex-direction:column;gap:.3rem}
+.best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 .best .score{font-family:'Alfa Slab One',Georgia,serif;color:var(--hot);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
@@ -1853,10 +1910,15 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .perfs>li,.perfs>li.yr{scroll-margin-top:3.6rem}
 .perfs>li{border-bottom:1px solid var(--rule-soft)}
 .perfs>li.yr{border-bottom:0}
-.yr h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;
-   font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:1rem;letter-spacing:0;margin:1.6rem 0 .3rem;
-   padding-bottom:.3rem;border-bottom:1px solid var(--rule);color:var(--ink)}
+/* The same tab the set headings take, so a section boundary looks the same
+   wherever it falls. */
+.yr h2{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .7rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   margin:1.6rem 0 .3rem;padding:0;border:0;color:var(--ink)}
+.yr h2 .tab{background:var(--ink);color:var(--paper);padding:.25rem .55rem;
+   letter-spacing:.14em;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.yr h2::after{content:"";flex:1;border-bottom:1px solid var(--ink)}
 .yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .yr:first-child h2{margin-top:.4rem}
@@ -1874,7 +1936,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
    column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
 .row:hover{background:var(--hover)}
-.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    line-height:1.3rem;white-space:nowrap}
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -1991,7 +2053,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
 .stuck.on{transform:none}
 .stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
   gap:.7rem}
-.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
+.stuck .name{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stuck .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--dim);margin-left:auto;white-space:nowrap}
@@ -2178,6 +2240,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body id="top"><div class="wrap">
 <nav class="crumb"><a class="mark" href="../index.html">Gap Reports</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
@@ -2266,10 +2329,15 @@ def render_song(doc, archived=(), stamp=None, card=None):
         # The date is a link to its own row. Without it the only way to read
         # that version's notes was to remember the date, tap an era chip and
         # scroll for it.
-        top = ("<p class='best'><span class='cap'>Best version</span>"
-               "<a class='when' href='#%s'>%s</a><span class='where'>%s</span>"
-               "<span class='score'>%s</span>"
-               "<span class='cap'>%s &middot; %s</span></p>"
+        top = ("<p class='best'>"
+               "<span class='field'><span class='cap'>Best version</span>"
+               "<a class='when' href='#%s'>%s</a></span>"
+               "<span class='field'><span class='cap'>Venue</span>"
+               "<span class='where'>%s</span></span>"
+               "<span class='field'><span class='cap'>Score</span>"
+               "<span class='score'>%s</span></span>"
+               "<span class='field'><span class='cap'>Hear it</span>"
+               "<span class='cap'>%s &middot; %s</span></span></p>"
                % (top["date"], top["date"], html.escape(where), top["score"],
                   _ext("https://phish.in/%s" % top["date"], "Listen", "i-pin"),
                   _ext(top["link"] or "https://fouldomain.com/", "Details", "i-foul")))
@@ -2446,7 +2514,7 @@ def render_song(doc, archived=(), stamp=None, card=None):
         for label, url, icon, flip in SONG_LINKS)
 
     return SONG_SHELL.format(
-        css=SONG_CSS, js=SONG_JS, fonts=SONG_FONTS, theme_js=THEME_JS,
+        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css", theme_js=THEME_JS,
         theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(perfs), eras=chips,
         share=share_meta(html.escape(song), html.escape(blurb, quote=True),
@@ -2474,7 +2542,7 @@ SONGS_CSS = INDEX_CSS + """
    column shifted row to row down the page. */
 .row{grid-template-columns:1fr 8.5rem 23.5rem}
 .r-stats{grid-template-columns:5.4rem 6.4rem 7.4rem 4.3rem}
-.r-song{display:block;font-family:'Aleo',Georgia,serif;font-weight:600;
+.r-song{display:block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;line-height:1.3rem;color:inherit}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
@@ -2496,6 +2564,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
@@ -2636,7 +2705,7 @@ def render_songs(docs, stamp=None, card=None):
     blurb = ("Every song in the archive: %d of them, played %s times."
              % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
-        css=SONGS_CSS, js=SONGS_JS, fonts=SONG_FONTS, theme_js=THEME_JS,
+        css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS,
         theme_ui=THEME_UI, hero=hero, count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
         share=share_meta("Phish Gap Reports &mdash; Songs",
@@ -2670,6 +2739,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">How this is worked out</a></nav>
@@ -2755,7 +2825,7 @@ back, because a half-entered setlist would publish wrong totals.</p>
     blurb = ("How the gaps, the medians and the verdicts on this site are "
              "worked out.")
     return METHOD_SHELL.format(
-        css=METHOD_CSS, fonts=SONG_FONTS, theme_js=THEME_JS, theme_ui=THEME_UI,
+        css=METHOD_CSS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS, theme_ui=THEME_UI,
         body=body.strip(),
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
                          "method.html"))
@@ -2815,11 +2885,11 @@ body{background:#e9e3d6;font-family:'IBM Plex Mono',ui-monospace,monospace}
 /* Kept clear of the mark, which starts around x=870: without a ceiling a
    middling title like "You Enjoy Myself" ran under it and the last word went
    muddy. Wrapping is better than colliding. */
-h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;line-height:.94;
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;line-height:.94;
    letter-spacing:-.01em;margin-top:16px;word-break:break-word;max-width:770px}
 /* Same rule as the pages: a card whose headline is a date or a song title
    sets it in Aleo, so a link and the page behind it speak the same way. */
-h1.data{font-family:'Aleo',Georgia,serif;font-weight:600;letter-spacing:-.01em}
+h1.data{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;letter-spacing:-.01em}
 h1 em{font-style:normal;color:#c8371b}
 .sub{font-size:30px;letter-spacing:.14em;text-transform:uppercase;color:#413c31;
   margin-top:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2835,7 +2905,8 @@ h1 em{font-style:normal;color:#c8371b}
 """ % {"w": CARD_W, "h": CARD_H}
 
 CARDS_SHELL = """<!DOCTYPE html><html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
 <style>%s</style></head><body>__CARDS__</body></html>""" % CARD_CSS
 
 
@@ -3696,7 +3767,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         if write_if_changed(page, render_html(
                 report, bar_scale=bar_scale, index_href="../index.html",
                 prev_date=prev, next_date=nxt, songs=songs,
-                card=date, archived_show=have_dates)):
+                card=date, archived_show=have_dates,
+                sheet="../fonts.css")):
             print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
                   file=sys.stderr)
         want_card(date, report_card(report))
@@ -3734,6 +3806,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         want_card("songs", songs_card(docs))
 
     write_redirects(site_dir)
+    write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
@@ -4248,7 +4321,8 @@ def main():
 
     report = reports[0]
     if args.html or args.pdf:
-        markup = render_html(report, bar_scale=args.bar_scale)
+        # No stylesheet beside a single file, so it carries the face itself.
+        markup = render_html(report, bar_scale=args.bar_scale, sheet=None)
         if args.html:
             with open(args.html, "w", encoding="utf-8") as fh:
                 fh.write(markup)

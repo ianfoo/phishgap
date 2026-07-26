@@ -19,6 +19,8 @@ wheels/
 /site/show/
 /site/card/
 /site/.nojekyll
+# Generated beside the pages; the face itself in site/font/ is tracked.
+/site/fonts.css
 
 # One-off files for handing to someone directly
 /gaps-*.html
