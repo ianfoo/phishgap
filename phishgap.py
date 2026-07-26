@@ -830,6 +830,9 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    background:var(--ink);box-shadow:0 0 0 1px var(--paper)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
+/* Named only where the column header is not doing it -- on a wide screen the
+   thead says "Last performed" and a second label would be saying it twice. */
+.last .cap{display:none}
 /* The date links when we hold that show. Underlined rather than coloured, so
    a column of them does not turn the right-hand side of the table orange. */
 .last .date a{color:inherit;text-decoration:none;
@@ -903,6 +906,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
   .last{font-size:.75rem;line-height:1.15rem}
+  .last .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+     text-transform:uppercase;color:var(--dim);margin-bottom:.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
   /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
@@ -1323,7 +1328,8 @@ def render_html(report, bar_scale="linear", index_href=None,
                 if stamp in archived_show:
                     stamp = ("<a href='./%s.html'>%s</a>"
                              % (html.escape(stamp, quote=True), stamp))
-                bits = ["<span class='date'>%s</span>" % stamp]
+                bits = ["<span class='cap'>Last performed</span>",
+                        "<span class='date'>%s</span>" % stamp]
                 for cls, text in (("venue", s["prev_venue"]),
                                   ("place", s.get("prev_place"))):
                     if text:
@@ -1331,7 +1337,8 @@ def render_html(report, bar_scale="linear", index_href=None,
                                     % (cls, html.escape(text)))
                 cells += "<td class='last'>%s</td>" % "".join(bits)
             elif s.get("debut"):
-                cells += "<td class='last'><span class='none'>debut</span></td>"
+                cells += ("<td class='last'><span class='cap'>Last performed"
+                          "</span><span class='none'>debut</span></td>")
             else:
                 cells += "<td class='last'></td>"
         rows.append("<tr>%s</tr>" % cells)
@@ -2020,6 +2027,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    paragraph of italic prose is tiring well before that. */
 .jam,.note{margin:.4rem 0 0;font-size:.75rem;line-height:1.5;
    color:var(--ink-soft);max-width:62ch}
+.jam a,.note a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--edge);word-break:break-word}
+.jam a:hover,.note a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .tag{display:inline-block;margin-right:.45rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 details.jam,details.note{cursor:pointer}
@@ -2296,6 +2306,35 @@ def _ext(url, label, cls):
             % (cls, html.escape(url, quote=True), label))
 
 
+# phish.net's prose occasionally carries a bare URL -- one in the archive so
+# far, pointing at a YouTube clip of the version being described. It was being
+# escaped and printed as text, which is the one place a reader would obviously
+# want to click.
+URL_IN_PROSE = re.compile(r"https?://[^\s<]+")
+
+
+def linkify(escaped):
+    """Turn bare URLs in already-escaped prose into links.
+
+    Runs on escaped text, so an ampersand in a query string is already
+    &amp; -- which is what an href wants anyway. Trailing punctuation belongs
+    to the sentence rather than the address: the one live example ends
+    ").", and a closing bracket only counts if the URL opened one.
+    """
+    def wrap(m):
+        url = m.group(0)
+        tail = ""
+        while url and url[-1] in ".,;:!?":
+            url, tail = url[:-1], url[-1] + tail
+        while url.endswith(")") and url.count("(") < url.count(")"):
+            url, tail = url[:-1], ")" + tail
+        if not url:
+            return m.group(0)
+        return ("<a href='%s' target='_blank' rel='noopener noreferrer'>%s</a>%s"
+                % (url, url, tail))
+    return URL_IN_PROSE.sub(wrap, escaped)
+
+
 def render_song(doc, archived=(), stamp=None, card=None):
     """One song's whole performance history, newest first."""
     perfs = list(reversed(doc["performances"]))
@@ -2442,7 +2481,7 @@ def render_song(doc, archived=(), stamp=None, card=None):
             if not text:
                 continue
             body = ("<span class='tag'>%s</span>%s"
-                    % (tag, html.escape(html.unescape(text))))
+                    % (tag, linkify(html.escape(html.unescape(text)))))
             jam += ("<details class='%s'><summary><span class='clip'>%s</span>"
                     "</summary></details>" % (cls, body)
                     if len(text) > JAM_CLAMP
