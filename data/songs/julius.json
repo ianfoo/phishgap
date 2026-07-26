@@ -273,6 +273,7 @@
   {"date": "2025-09-20", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 15, "set": "2", "prev": "Suzy Greenberg", "in": ">"},
   {"date": "2026-01-31", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 9, "set": "1", "prev": "Weekapaug Groove", "next": "My Friend, My Friend"},
   {"date": "2026-05-02", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 8, "set": "1", "prev": "Taste"},
-  {"date": "2026-07-08", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 1, "set": "1", "prev": "Leaves", "next": "Cavern"}
+  {"date": "2026-07-08", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 1, "set": "1", "prev": "Leaves", "next": "Cavern"},
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 11, "set": "2", "out": ">"}
  ]
 }

@@ -282,6 +282,7 @@
   {"date": "2025-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1", "jamchart": true, "jam": "This atypical version begins with low-key funk and then drifts into a more spacious minor jam which comes into focus as it gains a pulsing drive backed by synths before eventually growing more upbeat and ends unfinished > \"PYITE\".", "note": "Unfinished.", "out": ">", "prev": "Rift", "next": "Punch You in the Eye"},
   {"date": "2026-01-30", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 5, "set": "1", "prev": "Evolve", "next": "Tube"},
   {"date": "2026-04-16", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 1, "set": "1", "prev": "Evolve", "next": "Foam"},
-  {"date": "2026-07-10", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 10, "set": "1", "prev": "Tube", "next": "Limb By Limb"}
+  {"date": "2026-07-10", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 10, "set": "1", "prev": "Tube", "next": "Limb By Limb"},
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 10, "set": "1", "note": "Ended mid-song due to FOH outage."}
  ]
 }

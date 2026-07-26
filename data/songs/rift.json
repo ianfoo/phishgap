@@ -353,6 +353,7 @@
   {"date": "2025-09-19", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 10, "set": "1", "prev": "My Friend, My Friend", "in": ">", "next": "Gumbo"},
   {"date": "2025-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1", "prev": "Roggae", "next": "Wolfman's Brother"},
   {"date": "2026-04-16", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 8, "set": "1", "prev": "Theme from the Bottom", "next": "Scents and Subtle Sounds"},
-  {"date": "2026-07-12", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 12, "set": "1", "prev": "Evolve", "in": "->", "next": "Bathtub Gin"}
+  {"date": "2026-07-12", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 12, "set": "1", "prev": "Evolve", "in": "->", "next": "Bathtub Gin"},
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 8, "set": "1"}
  ]
 }

@@ -1,0 +1,14 @@
+{
+ "song": "Back in the U.S.S.R.",
+ "slug": "back-in-the-ussr",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1994-10-31", "venue": "Glens Falls Civic Center", "city": "Glens Falls", "state": "NY", "gap": 919, "set": "2", "note": "Phish debut.", "out": ">"},
+  {"date": "1994-12-06", "venue": "UCSB Events Center, University of California-Santa Barbara", "city": "Goleta", "state": "CA", "gap": 23, "set": "e"},
+  {"date": "2013-10-23", "venue": "Glens Falls Civic Center", "city": "Glens Falls", "state": "NY", "gap": 689, "set": "1"},
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 485, "set": "1"}
+ ]
+}
