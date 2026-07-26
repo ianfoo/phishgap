@@ -220,7 +220,12 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* The whole row leads to the song page on a phone, so it should look like
      it does. Desktop keeps the title as the target -- there the pointer is
      precise and a row-wide cursor over a table of figures reads as noise. */
-  @media (max-width:620px){tbody tr:has(td.song a){cursor:pointer}}
+  @media (max-width:620px){
+    tbody tr:has(td.song a){cursor:pointer}
+    /* The last-performed block is its own destination once the row stacks, so
+       it gets its own edge rather than reading as more of the row above it. */
+    td.last:has(a){padding-left:.55rem;border-left:2px solid var(--rule)}
+  }
 }
 /* Narrow viewports: the four-column table becomes a list of stacked rows.
    A hidden `bar` cell used to leave the table's last column empty -- the
@@ -393,7 +398,12 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(e.target.closest('a')) return;
     var tr=e.target.closest('tr');
     if(!tr) return;
-    var a=tr.querySelector('td.song a');
+    // Two questions live in one row: "where does tonight's version sit in this
+    // song's history" and "what else happened the last time they played it".
+    // The whole row used to answer only the first, which swallowed the second
+    // -- reaching for the previous show landed you on the current one.
+    var last=e.target.closest('td.last');
+    var a=(last && last.querySelector('a')) || tr.querySelector('td.song a');
     if(!a) return;
     var sel=window.getSelection();
     if(sel && !sel.isCollapsed) return;   // let people copy a venue name
