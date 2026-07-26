@@ -1,0 +1,15 @@
+{
+ "song": "Evening Song",
+ "slug": "evening-song",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2019-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1856, "set": "1", "note": "Debut."},
+  {"date": "2020-02-22", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 6, "set": "1"},
+  {"date": "2021-07-30", "venue": "Oak Mountain Amphitheatre", "city": "Pelham", "state": "AL", "gap": 3, "set": "2", "out": ">"},
+  {"date": "2022-07-23", "venue": "Bethel Woods Center for the Arts", "city": "Bethel", "state": "NY", "gap": 57, "set": "1"},
+  {"date": "2023-07-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 47, "set": "1", "out": ">"}
+ ]
+}

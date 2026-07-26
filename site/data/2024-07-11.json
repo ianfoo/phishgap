@@ -1,0 +1,33 @@
+{
+  "date": "2024-07-11",
+  "venue": "NBC Television Studios, Studio 6B, New York, NY",
+  "venue_name": "NBC Television Studios, Studio 6B",
+  "city": "New York",
+  "state": "NY",
+  "artist": "Phish",
+  "tour": "Not Part of a Tour",
+  "notes": "Phish was the musical guest on\u00a0<em>The Tonight Show.</em> In addition to performing Evolve, Phish was part of the cold open skit \"Phish in an Elevator\" where they, along with Jimmy Fallon and members of The Roots, sang part of Love in an Elevator (with \"Phish\" substituted for \"Love\") in an elevator.",
+  "permalink": "https://phish.net/setlists/phish-july-11-2024-nbc-television-studios-studio-6b-new-york-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Evolve",
+      "slug": "evolve",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2024-04-21",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV",
+      "plays": 15,
+      "recent_plays": 13,
+      "gap_median": 5,
+      "gap_mean": 10.23076923076923,
+      "gap_low": 4.0,
+      "gap_high": 15.799999999999997,
+      "verdict": "premature"
+    }
+  ],
+  "pnet_rating": 3.118,
+  "count_since": "2026-07-26T10:34:21+00:00",
+  "provisional": false
+}

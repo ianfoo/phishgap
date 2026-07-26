@@ -1,0 +1,26 @@
+{
+ "song": "Talk",
+ "slug": "talk",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1996-08-05", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 1054, "set": "2", "note": "Debut; Page on a smaller piano, Trey on acoustic guitar, Mike on acoustic bass, and Fish on a smaller drum set."},
+  {"date": "1996-08-16", "venue": "Plattsburgh Air Force Base", "city": "Plattsburgh", "state": "NY", "gap": 7, "set": "2", "note": "Acoustic mini-stage."},
+  {"date": "1996-10-17", "venue": "Bryce Jordan Center, Penn State University", "city": "State College", "state": "PA", "gap": 3, "set": "1"},
+  {"date": "1996-10-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "1"},
+  {"date": "1996-10-27", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 4, "set": "1", "note": "Trey on acoustic guitar."},
+  {"date": "1996-11-09", "venue": "The Palace of Auburn Hills", "city": "Auburn Hills", "state": "MI", "gap": 8, "set": "1", "note": "Trey on acoustic guitar."},
+  {"date": "1996-11-14", "venue": "Hilton Coliseum", "city": "Ames", "state": "IA", "gap": 3, "set": "1", "note": "Trey on acoustic guitar."},
+  {"date": "1996-12-30", "venue": "FleetCenter", "city": "Boston", "state": "MA", "gap": 17, "set": "1", "note": "Trey on acoustic guitar."},
+  {"date": "1997-02-22", "venue": "Teatro Olimpico", "city": "Rome", "state": "Lazio", "gap": 9, "set": "1", "note": "Trey on acoustic guitar."},
+  {"date": "1997-02-26", "venue": "SWF3 Studios", "city": "Baden-Baden", "state": "Baden-W\u00fcrttemberg", "gap": 0, "set": "1"},
+  {"date": "1997-06-14", "venue": "The S.F.X. Centre", "city": "Dublin", "state": "County Dublin", "gap": 9, "set": "1"},
+  {"date": "1997-06-24", "venue": "La Laiterie", "city": "Strasbourg", "state": "Grand Est", "gap": 6, "set": "1"},
+  {"date": "1998-08-06", "venue": "Lakewood Amphitheatre", "city": "Atlanta", "state": "GA", "gap": 84, "set": "2"},
+  {"date": "2003-02-25", "venue": "First Union Spectrum", "city": "Philadelphia", "state": "PA", "gap": 169, "set": "1"},
+  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 83, "set": "e", "note": "Acoustic."},
+  {"date": "2023-10-13", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 536, "set": "2", "jamchart": true, "jam": "Beautifully emerges -> from \"Hood's\"  jam and -> back to \"Hood\". Quite a way to make its first appearance in 14 years.", "out": "->"}
+ ]
+}

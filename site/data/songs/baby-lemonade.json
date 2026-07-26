@@ -1,0 +1,12 @@
+{
+ "song": "Baby Lemonade",
+ "slug": "baby-lemonade",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1992-03-11", "venue": "The Colonial Theatre", "city": "Keene", "state": "NH", "gap": 595, "set": "2", "note": "Phish debut; Fish on Bag-Vac.", "out": ">"},
+  {"date": "2021-12-31", "venue": "Rock Lititz", "city": "Lititz", "state": "PA", "gap": 1312, "set": "3", "out": ">"}
+ ]
+}

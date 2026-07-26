@@ -1,0 +1,30 @@
+{
+ "song": "Fuck Your Face",
+ "slug": "fuck-your-face",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1987-04-29", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 65, "set": "e", "note": "Debut."},
+  {"date": "2010-07-02", "venue": "Verizon Wireless Amphitheatre - Charlotte", "city": "Charlotte", "state": "NC", "gap": 1424, "set": "2", "out": ">"},
+  {"date": "2010-08-14", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 10, "set": "1"},
+  {"date": "2010-10-19", "venue": "Augusta Civic Center", "city": "Augusta", "state": "ME", "gap": 10, "set": "2", "times": 2, "out": ">"},
+  {"date": "2011-06-04", "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "gap": 20, "set": "1", "out": ">"},
+  {"date": "2012-06-28", "venue": "Klipsch Music Center", "city": "Noblesville", "state": "IN", "gap": 43, "set": "1"},
+  {"date": "2012-08-31", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 19, "set": "2"},
+  {"date": "2013-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 47, "set": "2"},
+  {"date": "2014-11-01", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 38, "set": "1"},
+  {"date": "2016-07-20", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 55, "set": "1"},
+  {"date": "2016-08-28", "venue": "Oak Ridge Farm", "city": "Arrington", "state": "VA", "gap": 4, "set": "1", "out": ">"},
+  {"date": "2016-10-24", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 11, "set": "1"},
+  {"date": "2017-08-05", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 29, "set": "1"},
+  {"date": "2018-08-04", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 20, "set": "1"},
+  {"date": "2019-07-02", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 45, "set": "2", "out": ">"},
+  {"date": "2019-07-13", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 7, "set": "1"},
+  {"date": "2021-10-26", "venue": "Santa Barbara Bowl", "city": "Santa Barbara", "state": "CA", "gap": 51, "set": "e", "out": ">"},
+  {"date": "2022-07-23", "venue": "Bethel Woods Center for the Arts", "city": "Bethel", "state": "NY", "gap": 28, "set": "e"},
+  {"date": "2023-07-11", "venue": "Orion Amphitheater", "city": "Huntsville", "state": "AL", "gap": 36, "set": "e"},
+  {"date": "2024-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 74, "set": "e", "out": ">"}
+ ]
+}

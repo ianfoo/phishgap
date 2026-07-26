@@ -1,0 +1,20 @@
+{
+ "song": "We Are Come to Outlive Our Brains",
+ "slug": "we-are-come-to-outlive-our-brains",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2018-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1819, "set": "2", "note": "Debut."},
+  {"date": "2018-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "1"},
+  {"date": "2019-02-21", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 4, "set": "1"},
+  {"date": "2019-06-12", "venue": "Chaifetz Arena, Saint Louis University", "city": "St. Louis", "state": "MO", "gap": 4, "set": "1"},
+  {"date": "2019-06-28", "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "gap": 10, "set": "2"},
+  {"date": "2019-07-03", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 4, "set": "2", "out": "->"},
+  {"date": "2019-09-01", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 10, "set": "1", "out": ">"},
+  {"date": "2019-12-06", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 6, "set": "1", "out": ">"},
+  {"date": "2021-08-06", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 17, "set": "1"},
+  {"date": "2023-08-31", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 109, "set": "1"}
+ ]
+}

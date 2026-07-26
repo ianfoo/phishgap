@@ -1,0 +1,12 @@
+{
+ "song": "The 9th Cube",
+ "slug": "the-9th-cube",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2021-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1898, "set": "2", "note": "Debut."},
+  {"date": "2023-10-10", "venue": "Ervin J. Nutter Center, Wright State University", "city": "Dayton", "state": "OH", "gap": 88, "set": "1"}
+ ]
+}

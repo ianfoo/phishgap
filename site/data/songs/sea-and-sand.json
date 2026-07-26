@@ -1,0 +1,14 @@
+{
+ "song": "Sea and Sand",
+ "slug": "sea-and-sand",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1995-10-31", "venue": "Rosemont Horizon", "city": "Rosemont", "state": "IL", "gap": 998, "set": "2", "note": "Phish debut; Dave Grippo on alto saxophone, Don Glasgo on trombone, Joey Sommerville on trumpet and Alan Parshley on French horn."},
+  {"date": "1995-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 33, "set": "3"},
+  {"date": "1998-07-20", "venue": "Ventura County Fairgrounds", "city": "Ventura", "state": "CA", "gap": 166, "set": "2"},
+  {"date": "2020-02-21", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 672, "set": "1"}
+ ]
+}

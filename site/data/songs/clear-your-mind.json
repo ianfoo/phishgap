@@ -1,0 +1,14 @@
+{
+ "song": "Clear Your Mind",
+ "slug": "clear-your-mind",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2021-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 0, "set": "2", "note": "Debut.", "out": ">"},
+  {"date": "2022-02-27", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 5, "set": "1", "out": ">"},
+  {"date": "2022-08-12", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 32, "set": "1", "out": ">"},
+  {"date": "2023-07-22", "venue": "The Pavilion at Star Lake", "city": "Burgettstown", "state": "PA", "gap": 30, "set": "1", "out": ">"}
+ ]
+}

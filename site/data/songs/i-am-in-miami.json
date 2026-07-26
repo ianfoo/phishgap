@@ -1,0 +1,12 @@
+{
+ "song": "I Am in Miami",
+ "slug": "i-am-in-miami",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2021-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 0, "set": "2", "note": "Debut."},
+  {"date": "2022-05-28", "venue": "The Wharf Amphitheater", "city": "Orange Beach", "state": "AL", "gap": 11, "set": "e"}
+ ]
+}

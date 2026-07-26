@@ -3,7 +3,31 @@
  "slug": "catapult",
  "artist": "Phish",
  "best": [
-
+  {"date": "2003-07-18", "score": 85, "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "link": "https://fouldomain.com/tracks/25474"},
+  {"date": "1994-07-16", "score": 83, "venue": "Summerstage at Sugarbush North", "city": "Fayston", "state": "VT", "link": "https://fouldomain.com/tracks/16297"},
+  {"date": "1992-04-17", "score": 82, "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "link": "https://fouldomain.com/tracks/10401"},
+  {"date": "1996-10-27", "score": 79, "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "link": "https://fouldomain.com/tracks/19655"},
+  {"date": "1999-07-18", "score": 75, "venue": "Oswego County Airport", "city": "Volney", "state": "NY", "link": "https://fouldomain.com/tracks/23170"},
+  {"date": "1994-06-22", "score": 73, "venue": "Veterans Memorial Auditorium", "city": "Columbus", "state": "OH", "link": "https://fouldomain.com/tracks/15868"},
+  {"date": "1994-06-29", "score": 73, "venue": "Walnut Creek Amphitheater", "city": "Raleigh", "state": "NC", "link": "https://fouldomain.com/tracks/15995"},
+  {"date": "2021-09-05", "score": 73, "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "link": "https://fouldomain.com/tracks/36293"},
+  {"date": "1999-12-31", "score": 70, "venue": "Big Cypress Seminole Indian Reservation", "city": "Big Cypress", "state": "FL", "link": "https://fouldomain.com/tracks/24059"},
+  {"date": "1994-10-15", "score": 69, "venue": "Oak Mountain Amphitheatre", "city": "Pelham", "state": "AL", "link": "https://fouldomain.com/tracks/16471"},
+  {"date": "1994-10-26", "score": 68, "venue": "Varsity Gym, Appalachian State University", "city": "Boone", "state": "NC", "link": "https://fouldomain.com/tracks/16639"},
+  {"date": "1994-12-08", "score": 66, "venue": "Spreckels Theatre", "city": "San Diego", "state": "CA", "link": "https://fouldomain.com/tracks/17235"},
+  {"date": "1994-05-12", "score": 61, "venue": "Buena Vista Theater", "city": "Tucson", "state": "AZ", "link": "https://fouldomain.com/tracks/15322"},
+  {"date": "2003-02-16", "score": 59, "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/25158"},
+  {"date": "1995-10-14", "score": 58, "venue": "Austin Music Hall", "city": "Austin", "state": "TX", "link": "https://fouldomain.com/tracks/18054"},
+  {"date": "1995-12-01", "score": 58, "venue": "Hersheypark Arena", "city": "Hershey", "state": "PA", "link": "https://fouldomain.com/tracks/18669"},
+  {"date": "1997-12-13", "score": 58, "venue": "Pepsi Arena", "city": "Albany", "state": "NY", "link": "https://fouldomain.com/tracks/1330"},
+  {"date": "1999-07-24", "score": 58, "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "link": "https://fouldomain.com/tracks/23231"},
+  {"date": "1994-11-30", "score": 56, "venue": "Campus Recreation Center, Evergreen College", "city": "Olympia", "state": "WA", "link": "https://fouldomain.com/tracks/17109"},
+  {"date": "2009-08-14", "score": 55, "venue": "The Comcast Theatre", "city": "Hartford", "state": "CT", "link": "https://fouldomain.com/tracks/26783"},
+  {"date": "1995-11-24", "score": 54, "venue": "Civic Arena", "city": "Pittsburgh", "state": "PA", "link": "https://fouldomain.com/tracks/18558"},
+  {"date": "1996-11-23", "score": 53, "venue": "Pacific Coliseum", "city": "Vancouver, British Columbia", "state": "", "link": "https://fouldomain.com/tracks/19997"},
+  {"date": "2000-06-29", "score": 51, "venue": "PNC Bank Arts Center", "city": "Holmdel", "state": "NJ", "link": "https://fouldomain.com/tracks/24440"},
+  {"date": "1994-10-23", "score": 49, "venue": "Band Shell, University of Florida", "city": "Gainesville", "state": "FL", "link": "https://fouldomain.com/tracks/16589"},
+  {"date": "1997-03-02", "score": 48, "venue": "Pumpehuset", "city": "Copenhagen", "state": "", "link": "https://fouldomain.com/tracks/286"}
  ],
  "performances": [
   {"date": "1992-04-17", "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "gap": 622, "set": "1", "jamchart": true, "jam": "-&gt; in from &quot;David Bowie.&quot; Performance debut of &quot;Catapult&quot; occurs in the trill section of &quot;DB.&quot; -&gt; back to &quot;Bowie.&quot;", "note": "Debut.", "out": "->"},
@@ -42,6 +66,6 @@
   {"date": "2014-07-27", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 206, "set": "2", "out": ">"},
   {"date": "2019-07-14", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 191, "set": "2", "out": ">"},
   {"date": "2021-09-05", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 41, "set": "2", "jamchart": true, "jam": "Emerges ->  from a \"Simple\" jam and digs into a deep, industrial groove, making this one of the more musically robust appearances to date. Then -> back to \"Simple\" for more of the same.", "out": "->"},
-  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 223, "set": "2", "out": "->"}
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 223, "set": "2", "out": "->", "prev": "Tweezer", "in": "->", "next": "Tweezer"}
  ]
 }

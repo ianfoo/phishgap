@@ -1,0 +1,17 @@
+{
+ "song": "Bye Bye Foot",
+ "slug": "bye-bye-foot",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1997-06-06", "venue": "Brad Sands's and Pete Carini's House", "city": "Charlotte", "state": "VT", "gap": 0, "set": "1"},
+  {"date": "1997-06-14", "venue": "The S.F.X. Centre", "city": "Dublin", "state": "County Dublin", "gap": 1118, "set": "1", "note": "Debut."},
+  {"date": "1997-06-20", "venue": "Divadlo Archa", "city": "Prague", "state": "Prague", "gap": 3, "set": "2", "out": ">"},
+  {"date": "1997-07-22", "venue": "Walnut Creek Amphitheater", "city": "Raleigh", "state": "NC", "gap": 16, "set": "1"},
+  {"date": "1997-08-10", "venue": "Deer Creek Music Center", "city": "Noblesville", "state": "IN", "gap": 12, "set": "1", "out": ">"},
+  {"date": "2019-11-29", "venue": "Dunkin' Donuts Center", "city": "Providence", "state": "RI", "gap": 707, "set": "1"},
+  {"date": "2021-10-23", "venue": "North Island Credit Union Amphitheatre", "city": "Chula Vista", "state": "CA", "gap": 43, "set": "1"}
+ ]
+}

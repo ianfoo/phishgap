@@ -1,0 +1,12 @@
+{
+ "song": "Human Nature",
+ "slug": "human-nature",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2024-07-20", "venue": "Xfinity Center", "city": "Mansfield", "state": "MA", "gap": 0, "set": "1", "note": "Phish debut.", "out": ">"},
+  {"date": "2024-08-11", "venue": "Bethel Woods Center for the Arts", "city": "Bethel", "state": "NY", "gap": 15, "set": "1"}
+ ]
+}

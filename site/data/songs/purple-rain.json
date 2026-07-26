@@ -3,7 +3,24 @@
  "slug": "purple-rain",
  "artist": "Phish",
  "best": [
-
+  {"date": "1993-12-30", "score": 70, "venue": "Cumberland County Civic Center", "city": "Portland", "state": "ME", "link": "https://fouldomain.com/tracks/14685"},
+  {"date": "1994-12-30", "score": 69, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/17344"},
+  {"date": "1993-07-25", "score": 68, "venue": "Waterloo Village", "city": "Stanhope", "state": "NJ", "link": "https://fouldomain.com/tracks/14086"},
+  {"date": "1994-05-07", "score": 67, "venue": "The Bomb Factory", "city": "Dallas", "state": "TX", "link": "https://fouldomain.com/tracks/15278"},
+  {"date": "1994-05-25", "score": 67, "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "link": "https://fouldomain.com/tracks/15541"},
+  {"date": "1993-08-03", "score": 65, "venue": "Bayfront Park Amphitheater", "city": "Miami", "state": "FL", "link": "https://fouldomain.com/tracks/14230"},
+  {"date": "1993-07-18", "score": 64, "venue": "IC Light Amphitheater", "city": "Pittsburgh", "state": "PA", "link": "https://fouldomain.com/tracks/13977"},
+  {"date": "1996-08-06", "score": 63, "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "link": "https://fouldomain.com/tracks/19307"},
+  {"date": "1993-07-21", "score": 61, "venue": "Orange County Fairgrounds", "city": "Middletown", "state": "NY", "link": "https://fouldomain.com/tracks/13993"},
+  {"date": "1993-07-24", "score": 58, "venue": "Great Woods Center for the Performing Arts", "city": "Mansfield", "state": "MA", "link": "https://fouldomain.com/tracks/14062"},
+  {"date": "1994-11-25", "score": 58, "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "link": "https://fouldomain.com/tracks/17056"},
+  {"date": "1995-10-21", "score": 58, "venue": "Pershing Auditorium", "city": "Lincoln", "state": "NE", "link": "https://fouldomain.com/tracks/18165"},
+  {"date": "1996-07-15", "score": 58, "venue": "La Marna", "city": "Sesto Calende", "state": "", "link": "https://fouldomain.com/tracks/19142"},
+  {"date": "1994-06-16", "score": 53, "venue": "State Theatre", "city": "Minneapolis", "state": "MN", "link": "https://fouldomain.com/tracks/15758"},
+  {"date": "1994-10-08", "score": 52, "venue": "Patriot Center, George Mason University", "city": "Fairfax", "state": "VA", "link": "https://fouldomain.com/tracks/16347"},
+  {"date": "1994-04-13", "score": 49, "venue": "Beacon Theatre", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/14883"},
+  {"date": "1993-07-16", "score": 47, "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "link": "https://fouldomain.com/tracks/13921"},
+  {"date": "1993-07-31", "score": 44, "venue": "Masquerade Music Park", "city": "Atlanta", "state": "GA", "link": "https://fouldomain.com/tracks/14181"}
  ],
  "performances": [
   {"date": "1993-07-16", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 790, "set": "2", "note": "Phish debut.", "out": ">"},
@@ -38,6 +55,6 @@
   {"date": "1996-08-06", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 12, "set": "2", "out": ">"},
   {"date": "1999-07-25", "venue": "Deer Creek Music Center", "city": "Noblesville", "state": "IN", "gap": 210, "set": "2", "note": "Fish forgot the words and subsequently thanked the crowd for supporting his vacuum cleaner habit.", "out": ">"},
   {"date": "2012-07-04", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 316, "set": "1", "note": "Lyrics changed to \"tucking in the Purple Rain.\"", "out": ">"},
-  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 535, "set": "e"}
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 535, "set": "e", "next": "Tweezer Reprise"}
  ]
 }

@@ -1,0 +1,14 @@
+{
+ "song": "Guy Forget",
+ "slug": "guy-forget",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2000-10-01", "venue": "Blockbuster Desert Sky Pavilion", "city": "Phoenix", "state": "AZ", "gap": 1356, "set": "2", "jamchart": true, "jam": "-&gt; from &quot;Piper&quot;. Terrific '00 style space groove including Trey on the mini keyboard for a spell. -&gt; to &quot;When the Circus Comes&quot;.", "note": "Debut.", "out": "->"},
+  {"date": "2011-09-04", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 199, "set": "2", "out": "->"},
+  {"date": "2023-08-05", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 425, "set": "2", "jamchart": true, "jam": "Mike begins \"Guy Forget\" out of pure improv (so-called \"type II\" jamming) and Trey catches on in seconds, and after only a few measures Fish starts singing \"Guy Forget,\" and Trey and then Fish rap/speak the only lyric of \"Guy Forget\" over upbeat improv.", "out": "->"},
+  {"date": "2024-08-03", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 37, "set": "2", "out": "->"}
+ ]
+}

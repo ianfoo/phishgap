@@ -1,0 +1,12 @@
+{
+ "song": "Shake Your Coconuts",
+ "slug": "shake-your-coconuts",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-07-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1768, "set": "1", "note": "Phish debut. Lyrics changed to reference the Baker's Dozen."},
+  {"date": "2020-02-20", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 100, "set": "1", "note": "Lyrics changed to \"It's Phish in Mexico time.\""}
+ ]
+}

@@ -94,6 +94,6 @@
   {"date": "2025-04-27", "venue": "Hollywood Bowl", "city": "Hollywood", "state": "CA", "gap": 38, "set": "2", "out": ">", "prev": "Kill Devil Falls", "in": ">", "next": "Also Sprach Zarathustra"},
   {"date": "2026-04-16", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 40, "set": "2", "prev": "Gotta Jibboo", "next": "You Enjoy Myself"},
   {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 16, "set": "2", "prev": "Ether Edge", "in": ">", "next": "Boogie On Reggae Woman"},
-  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "2"}
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "2", "prev": "Tweezer", "in": "->", "next": "Julius"}
  ]
 }

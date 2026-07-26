@@ -1,0 +1,36 @@
+{
+ "song": "Soul Shakedown Party",
+ "slug": "soul-shakedown-party",
+ "artist": "Phish",
+ "best": [
+  {"date": "2003-02-28", "score": 85, "venue": "Nassau Veterans Memorial Coliseum", "city": "Uniondale", "state": "NY", "link": "https://fouldomain.com/tracks/25298"},
+  {"date": "1997-02-17", "score": 73, "venue": "Paradiso", "city": "Amsterdam", "state": "", "link": "https://fouldomain.com/tracks/67"},
+  {"date": "2017-08-05", "score": 65, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/33963"},
+  {"date": "2014-10-22", "score": 52, "venue": "Santa Barbara Bowl", "city": "Santa Barbara", "state": "CA", "link": "https://fouldomain.com/tracks/31729"},
+  {"date": "2021-08-14", "score": 51, "venue": "Atlantic City Beach", "city": "Atlantic City", "state": "NJ", "link": "https://fouldomain.com/tracks/36109"},
+  {"date": "2016-07-03", "score": 49, "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "link": "https://fouldomain.com/tracks/32866"},
+  {"date": "2011-07-03", "score": 47, "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "link": "https://fouldomain.com/tracks/28873"},
+  {"date": "2009-12-30", "score": 43, "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "link": "https://fouldomain.com/tracks/27264"},
+  {"date": "2012-07-01", "score": 42, "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "link": "https://fouldomain.com/tracks/29642"},
+  {"date": "2011-09-02", "score": 41, "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "link": "https://fouldomain.com/tracks/29133"},
+  {"date": "2018-07-28", "score": 41, "venue": "The Forum", "city": "Inglewood", "state": "CA", "link": "https://fouldomain.com/tracks/34285"},
+  {"date": "2004-04-17", "score": 38, "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/25899"},
+  {"date": "1997-02-20", "score": 37, "venue": "Teatro Smeraldo", "city": "Milan", "state": "", "link": "https://fouldomain.com/tracks/108"}
+ ],
+ "performances": [
+  {"date": "1997-02-17", "venue": "Paradiso", "city": "Amsterdam", "state": "North Holland", "gap": 1101, "set": "1", "jamchart": true, "jam": "Debut.", "note": "Phish debut.", "out": ">"},
+  {"date": "1997-02-20", "venue": "Teatro Smeraldo", "city": "Milan", "state": "Lombardy", "gap": 2, "set": "1", "out": ">"},
+  {"date": "2003-02-28", "venue": "Nassau Veterans Memorial Coliseum", "city": "Uniondale", "state": "NY", "gap": 272, "set": "2", "jamchart": true, "jam": "Busted out for the first time since 2/20/97, \"Soul Shakedown Party\" made for the perfect landing spot after an epic \"Tweezer\" with an extended reggae groove which grew more spacious into -> \"David Bowie\".", "out": "->"},
+  {"date": "2004-04-17", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 33, "set": "1"},
+  {"date": "2009-12-30", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 64, "set": "1"},
+  {"date": "2011-07-03", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 71, "set": "1", "out": ">"},
+  {"date": "2011-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 10, "set": "2", "out": "->"},
+  {"date": "2012-07-01", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 22, "set": "1"},
+  {"date": "2014-10-22", "venue": "Santa Barbara Bowl", "city": "Santa Barbara", "state": "CA", "gap": 94, "set": "1"},
+  {"date": "2016-07-03", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 53, "set": "2"},
+  {"date": "2017-08-05", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 53, "set": "1"},
+  {"date": "2018-07-28", "venue": "The Forum", "city": "Inglewood", "state": "CA", "gap": 17, "set": "1"},
+  {"date": "2021-08-14", "venue": "Atlantic City Beach", "city": "Atlantic City", "state": "NJ", "gap": 87, "set": "1"},
+  {"date": "2025-02-01", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 163, "set": "1", "jamchart": true, "jam": "A celebration of the last night of the run on the beach, the band gives us one of their longest and most sustained reggae grooves they've ever performed. No frills, just the band locked in on a groove together."}
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "song": "All of These Dreams",
+ "slug": "all-of-these-dreams",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2002-12-19", "venue": "Ed Sullivan Theater", "city": "New York", "state": "NY", "gap": 0, "set": "1"},
+  {"date": "2003-01-03", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 1367, "set": "2", "note": "Debut."},
+  {"date": "2003-02-14", "venue": "Great Western Forum", "city": "Inglewood", "state": "CA", "gap": 2, "set": "2"},
+  {"date": "2003-02-21", "venue": "U.S. Bank Arena", "city": "Cincinnati", "state": "OH", "gap": 5, "set": "2"},
+  {"date": "2003-02-24", "venue": "Continental Airlines Arena", "city": "East Rutherford", "state": "NJ", "gap": 2, "set": "2"},
+  {"date": "2003-12-02", "venue": "FleetCenter", "city": "Boston", "state": "MA", "gap": 29, "set": "2"},
+  {"date": "2004-04-15", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 5, "set": "1"},
+  {"date": "2004-08-09", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 12, "set": "2"},
+  {"date": "2009-03-08", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 8, "set": "1"},
+  {"date": "2010-10-26", "venue": "Verizon Wireless Arena", "city": "Manchester", "state": "NH", "gap": 88, "set": "1"},
+  {"date": "2017-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 251, "set": "2"},
+  {"date": "2018-08-03", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 29, "set": "1", "out": ">"},
+  {"date": "2018-10-17", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 12, "set": "1", "out": ">"},
+  {"date": "2021-09-05", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 83, "set": "1"},
+  {"date": "2022-07-27", "venue": "Northwell Health at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 40, "set": "1"},
+  {"date": "2023-04-17", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 27, "set": "1"}
+ ]
+}

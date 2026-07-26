@@ -1,0 +1,19 @@
+{
+ "song": "I Been Around",
+ "slug": "i-been-around",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2009-08-16", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 1457, "set": "e", "note": "Debut."},
+  {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 10, "set": "2"},
+  {"date": "2010-10-16", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 45, "set": "e"},
+  {"date": "2014-07-27", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 149, "set": "2"},
+  {"date": "2017-08-06", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 119, "set": "1"},
+  {"date": "2018-11-01", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 40, "set": "1"},
+  {"date": "2019-12-06", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 41, "set": "1", "out": ">"},
+  {"date": "2021-08-27", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 25, "set": "1"},
+  {"date": "2022-07-14", "venue": "Xfinity Center", "city": "Mansfield", "state": "MA", "gap": 38, "set": "1"}
+ ]
+}

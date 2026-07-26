@@ -1,0 +1,12 @@
+{
+ "song": "Bliss",
+ "slug": "bliss",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2018-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1817, "set": "1", "note": "Phish debut; Trey on acoustic guitar."},
+  {"date": "2021-09-05", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 68, "set": "2", "out": ">"}
+ ]
+}

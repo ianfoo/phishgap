@@ -1,0 +1,25 @@
+{
+ "song": "Beauty of a Broken Heart",
+ "slug": "beauty-of-a-broken-heart",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2009-03-07", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 1429, "set": "1", "note": "Phish debut."},
+  {"date": "2009-08-02", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 20, "set": "1"},
+  {"date": "2009-08-15", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 7, "set": "1"},
+  {"date": "2009-10-30", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 2, "set": "1"},
+  {"date": "2009-11-22", "venue": "War Memorial at Oncenter", "city": "Syracuse", "state": "NY", "gap": 6, "set": "1"},
+  {"date": "2009-12-28", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 10, "set": "1"},
+  {"date": "2012-06-07", "venue": "DCU Center", "city": "Worcester", "state": "MA", "gap": 91, "set": "1"},
+  {"date": "2012-08-18", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 22, "set": "1"},
+  {"date": "2013-07-12", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 20, "set": "1"},
+  {"date": "2013-07-27", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 10, "set": "1"},
+  {"date": "2014-07-25", "venue": "PNC Music Pavilion", "city": "Charlotte", "state": "NC", "gap": 42, "set": "1"},
+  {"date": "2016-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 98, "set": "1"},
+  {"date": "2019-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 108, "set": "1"},
+  {"date": "2021-10-17", "venue": "Chase Center", "city": "San Francisco", "state": "CA", "gap": 31, "set": "1"},
+  {"date": "2023-10-08", "venue": "Bridgestone Arena", "city": "Nashville", "state": "TN", "gap": 97, "set": "1"}
+ ]
+}

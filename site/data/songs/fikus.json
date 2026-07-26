@@ -1,0 +1,16 @@
+{
+ "song": "Fikus",
+ "slug": "fikus",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1998-07-02", "venue": "The Grey Hall", "city": "Copenhagen", "state": "Capital Region", "gap": 1180, "set": "1", "note": "Debut."},
+  {"date": "1998-07-29", "venue": "Riverport Amphitheater", "city": "Maryland Heights", "state": "MO", "gap": 17, "set": "1"},
+  {"date": "1998-08-01", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 2, "set": "1"},
+  {"date": "1998-08-08", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 5, "set": "1"},
+  {"date": "1998-11-07", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 17, "set": "1"},
+  {"date": "2024-08-11", "venue": "Bethel Woods Center for the Arts", "city": "Bethel", "state": "NY", "gap": 800, "set": "1"}
+ ]
+}

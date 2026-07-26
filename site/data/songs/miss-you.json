@@ -1,0 +1,30 @@
+{
+ "song": "Miss You",
+ "slug": "miss-you",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2016-06-24", "venue": "Wrigley Field", "city": "Chicago", "state": "IL", "gap": 1715, "set": "1", "note": "Debut."},
+  {"date": "2016-07-20", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 16, "set": "2"},
+  {"date": "2016-10-15", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 9, "set": "2"},
+  {"date": "2016-10-18", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 2, "set": "2", "note": "Bob Weir on guitar and vocals."},
+  {"date": "2016-10-30", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 8, "set": "2", "out": ">"},
+  {"date": "2017-07-23", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 16, "set": "2"},
+  {"date": "2018-07-22", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 22, "set": "2", "out": ">"},
+  {"date": "2018-08-07", "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "gap": 9, "set": "2", "out": ">"},
+  {"date": "2018-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 7, "set": "1"},
+  {"date": "2018-10-28", "venue": "Allstate Arena", "city": "Rosemont", "state": "IL", "gap": 10, "set": "1"},
+  {"date": "2019-06-19", "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "gap": 17, "set": "2"},
+  {"date": "2019-06-25", "venue": "Darling's Waterfront Pavilion", "city": "Bangor", "state": "ME", "gap": 4, "set": "2"},
+  {"date": "2019-12-03", "venue": "Met Philadelphia", "city": "Philadelphia", "state": "PA", "gap": 20, "set": "2", "out": ">"},
+  {"date": "2021-09-01", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 31, "set": "2", "out": ">"},
+  {"date": "2021-12-31", "venue": "Rock Lititz", "city": "Lititz", "state": "PA", "gap": 17, "set": "2"},
+  {"date": "2022-05-29", "venue": "The Wharf Amphitheater", "city": "Orange Beach", "state": "AL", "gap": 11, "set": "2", "out": ">"},
+  {"date": "2022-07-23", "venue": "Bethel Woods Center for the Arts", "city": "Bethel", "state": "NY", "gap": 12, "set": "2", "out": ">"},
+  {"date": "2023-04-17", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 30, "set": "e"},
+  {"date": "2023-07-23", "venue": "St. Joseph's Health Amphitheater at Lakeview", "city": "Syracuse", "state": "NY", "gap": 15, "set": "2"},
+  {"date": "2024-07-31", "venue": "Chaifetz Arena, Saint Louis University", "city": "St. Louis", "state": "MO", "gap": 45, "set": "e", "out": ">"}
+ ]
+}

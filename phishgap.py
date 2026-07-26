@@ -353,7 +353,12 @@ def recent_shows(apikey, days, artist="Phish", **kw):
     today = _utcnow().date()
     start = today - datetime.timedelta(days=days)
     dates = set()
-    for year in sorted({start.year, today.year}):
+    # Every year the window touches, not just its two ends. A 21-day window
+    # spans at most two calendar years and the set of both read correctly; a
+    # backfill does not. Asking for 2020 and 2026 and calling it six years
+    # returned 60 shows, all of them from 2020, and silently skipped four
+    # years in the middle.
+    for year in range(start.year, today.year + 1):
         for row in get("shows/showyear/%d" % year, apikey, **kw):
             if artist and row.get("artist_name") != artist:
                 continue
@@ -460,7 +465,11 @@ def render_text(report):
 LIGHT = {
     "paper": "#f2ece0", "ink": "#17150f", "ink-soft": "#413c31",
     "rule": "#c9bfa9", "rule-soft": "rgba(201,191,169,.45)",
-    "hot": "#c8371b", "cool": "#4f6046", "dim": "#877e6e",
+    "hot": "#c8371b", "cool": "#4f6046", "dim": "#6b6456",
+    # The accent reads at 4.44:1 on paper -- fine for a 36px figure, under the
+    # bar for the 10px chips and verdicts it is also used on. Display keeps the
+    # brighter one; anything small takes the darker.
+    "hot-text": "#a92e14",
     "track": "rgba(23,21,15,.085)", "band": "#7d7360",
     "hover": "rgba(200,55,27,.055)",
     "grain-blend": "multiply", "grain-opacity": ".45",
@@ -468,7 +477,8 @@ LIGHT = {
 DARK = {
     "paper": "#131210", "ink": "#ece5d5", "ink-soft": "#c4bcaa",
     "rule": "#413a30", "rule-soft": "rgba(236,229,213,.13)",
-    "hot": "#ff6b45", "cool": "#93b184", "dim": "#948b7c",
+    "hot": "#ff6b45", "cool": "#93b184", "dim": "#9b9384",
+    "hot-text": "#ff6b45",
     "track": "rgba(236,229,213,.1)", "band": "#a89c85",
     "hover": "rgba(255,107,69,.07)",
     "grain-blend": "screen", "grain-opacity": ".2",
@@ -679,7 +689,7 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    solid stamp, while this is an invitation to read something elsewhere. Inside
    the link, so the whole title-and-chip is one target and lights up together. */
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
-   border:1px solid var(--hot);color:var(--hot);font-size:.58rem;
+   border:1px solid var(--hot);color:var(--hot-text);font-size:.58rem;
    font-weight:600;letter-spacing:.12em;text-transform:uppercase;
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
 td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
@@ -695,7 +705,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    white-space:nowrap}
 .verdict{display:block;margin-top:.2rem;font-size:.62rem;letter-spacing:.1em;
    text-transform:uppercase;white-space:nowrap}
-.verdict.overdue{color:var(--hot)}
+.verdict.overdue{color:var(--hot-text)}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
@@ -741,6 +751,11 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    background:var(--ink);box-shadow:0 0 0 1px var(--paper)}
 .last{font-size:.85rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
+/* The date links when we hold that show. Underlined rather than coloured, so
+   a column of them does not turn the right-hand side of the table orange. */
+.last .date a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.last .date a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Stacked on wide layouts, run together on narrow ones -- see the
    max-width block, which puts these back inline with separators. */
 .last .date,.last .venue,.last .place{display:block}
@@ -836,7 +851,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    show identity is about as tall as the wordmark is, so the two balance as
    columns. The masthead keeps the strongest position, top left; the show block
    gets the hard right edge of the page rather than being tucked into a corner,
-   and the hero rule under both ties them together. */
+   and the hero rule under both ties them together.
+
    Scoped to `screen`: a printed report wants its masthead stacked, and the
    page box measures 538pt, which would fall the wrong side of this threshold
    by unit accident rather than by intent. */
@@ -1061,7 +1077,8 @@ def _bar_pct(gap, biggest, scale="linear"):
 
 
 def render_html(report, bar_scale="linear", index_href=None,
-                prev_date=None, next_date=None, songs=(), card=None):
+                prev_date=None, next_date=None, songs=(), card=None,
+                archived_show=()):
     allg = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(allg) if allg else 0
     avg = _stat(sum(allg) / len(allg)) if allg else "n/a"
@@ -1189,7 +1206,14 @@ def render_html(report, bar_scale="linear", index_href=None,
                 # No <br>: the spans are blocks on wide layouts and inline on
                 # narrow ones, so CSS alone decides how they stack. Empty ones
                 # are dropped rather than left to grow a stray separator.
-                bits = ["<span class='date'>%s</span>" % s["prev_date"]]
+                # We very likely hold that show too -- 23 of 26 on a typical
+                # report -- and "what else happened the last time they played
+                # it" is the most natural click on the page. It was dead text.
+                stamp = s["prev_date"]
+                if stamp in archived_show:
+                    stamp = ("<a href='./%s.html'>%s</a>"
+                             % (html.escape(stamp, quote=True), stamp))
+                bits = ["<span class='date'>%s</span>" % stamp]
                 for cls, text in (("venue", s["prev_venue"]),
                                   ("place", s.get("prev_place"))):
                     if text:
@@ -1354,7 +1378,7 @@ header{padding-bottom:.9rem}
 .r-stats .st:nth-child(3) b{min-width:3.5rem}
 .r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
            font-size:.95rem;color:var(--ink)}
-.r-stats b.hot{color:var(--hot)}
+.r-stats b.hot{color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
    for what it is: ".r-song" also means "the song this row is about" on the
    song index, which inherits this stylesheet, and one grid-column rule meant
@@ -1608,8 +1632,11 @@ def render_index(reports, page_href="./%s.html", card=None):
         for val, lbl, cls, href in (
             (len(entries), "Reports", "", ""),
             (_stat(max(every)) if every else "n/a", "Longest Gap", " hot", ""),
-            ("{:,}".format(sum(e["songs"] for e in entries)), "Songs Logged", "",
-             "./songs.html"),
+            # Performances, not songs: this sums every song slot across every
+            # report. Labelled "Songs Logged" it read 4,593 and linked to a
+            # page saying 379, which is the same word counting two things.
+            ("{:,}".format(sum(e["songs"] for e in entries)),
+             "Song Performances", "", "./songs.html"),
             (len({e["venue"] for e in entries if e["venue"]}), "Venues", "", ""),
         ))
 
@@ -1826,7 +1853,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    text-transform:uppercase;color:var(--dim)}
 .mark b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:.8rem;color:var(--dim);letter-spacing:0}
-.mark.high b{color:var(--hot)}
+.mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .mark a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -2350,7 +2377,7 @@ SONGS_CSS = INDEX_CSS + """
    font-size:1.05rem;line-height:1.3rem;color:inherit}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
-.r-stats .score{color:var(--hot)}
+.r-stats .score{color:var(--hot-text)}
 /* The song the top score belongs to, under its label. */
 .lbl .of{display:block;margin-top:.2rem;letter-spacing:.1em;color:var(--ink-soft);
    text-transform:none;font-size:.68rem}
@@ -3090,7 +3117,7 @@ def save_song_history(site_dir, slug, song, rows, artist=None, best=None):
     # Neighbours cost a call per show to work out and are not in this response,
     # so a history rewritten from the API carries forward the ones it had
     # rather than making the twenty-minute backfill run again.
-    keep = {p["date"]: {k: p[k] for k in ("prev", "in", "next") if k in p}
+    keep = {p["date"]: {k: p[k] for k in ("prev", "in", "next", "nb") if k in p}
             for p in held.get("performances") or []}
     perfs = [_performance(r) for r in by_show(rows)]
     for p in perfs:
@@ -3170,68 +3197,77 @@ NEIGHBOUR_FLUSH = 150
 def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
     """Backfill what came before and after each archived performance.
 
-    One setlist call per distinct show -- about 1,975 of them the first time,
-    and nothing thereafter: build() already fetches the setlist of every show
-    it reports on, so a new show's neighbours come out of the cache.
+    One setlist call per distinct show. Every row a call covers is marked
+    asked, on the row itself rather than in an index of dates: a date index
+    cannot tell "asked, and this song opened the set" from "never asked", so
+    adding songs later left them with no neighbours on dates the index already
+    called done -- 88 songs added in one backfill came out at 0.3% covered.
 
-    Flushed in batches and indexed by date, because twenty minutes of fetching
-    should not have to start over because a laptop lid closed.
+    Flushed in batches, because twenty minutes of fetching should not have to
+    start over because a laptop lid closed.
     """
-    index = os.path.join(site_dir, "data", NEIGHBOUR_INDEX)
-    done = set()
-    if os.path.isfile(index) and not force:
-        with open(index, encoding="utf-8") as fh:
-            try:
-                done = set(json.load(fh).get("dates") or [])
-            except ValueError:
-                pass
-
     songs = {}
     for slug in sorted(archived_songs(site_dir)):
         doc = song_history(site_dir, slug)
         if doc:
             songs[slug] = doc
-    dates = sorted({p["date"] for d in songs.values()
-                    for p in d["performances"]} - done)
-    if not dates:
+
+    # One-time migration off the old date index: a song that already carries
+    # neighbours somewhere was walked while that index was being built, so its
+    # rows on those dates were genuinely asked about.
+    index = os.path.join(site_dir, "data", NEIGHBOUR_INDEX)
+    if os.path.isfile(index):
+        with open(index, encoding="utf-8") as fh:
+            try:
+                seen = set(json.load(fh).get("dates") or [])
+            except ValueError:
+                seen = set()
+        for doc in songs.values():
+            if not any(p.get("prev") or p.get("next") for p in doc["performances"]):
+                continue
+            for p in doc["performances"]:
+                if p["date"] in seen:
+                    p["nb"] = 1
+        os.remove(index)
+
+    todo = sorted({p["date"] for d in songs.values() for p in d["performances"]
+                   if force or not p.get("nb")})
+    if not todo:
         print("neighbours: nothing to fetch", file=sys.stderr)
         return 0
 
-    print("neighbours: %d show%s to fetch (%d already held)"
-          % (len(dates), "" if len(dates) == 1 else "s", len(done)),
-          file=sys.stderr)
+    print("neighbours: %d show%s to fetch"
+          % (len(todo), "" if len(todo) == 1 else "s"), file=sys.stderr)
     pending, fetched, missed = {}, 0, []
 
     def flush():
-        for slug, byday in pending.items():
-            doc = songs.get(slug)
-            if not doc:
-                continue
-            for p in doc["performances"]:
-                nb = byday.get(p["date"])
-                if nb:
-                    p.update(nb)
+        for slug in sorted(pending):
+            doc = songs[slug]
             write_song_file(site_dir, slug,
                             {k: doc.get(k, "") for k in ("song", "slug", "artist")},
                             doc["performances"], doc.get("best") or [])
         pending.clear()
-        with open(index, "w", encoding="utf-8") as fh:
-            json.dump({"dates": sorted(done)}, fh, indent=1)
 
-    for i, date in enumerate(dates, 1):
+    for i, date in enumerate(todo, 1):
         try:
             rows = get("setlists/showdate/%s" % date, apikey, **kw)
         except ApiError as exc:
             missed.append("%s (%s)" % (date, exc))
             continue
-        for slug, nb in setlist_neighbours(rows, artist).items():
-            if slug in songs:
-                pending.setdefault(slug, {})[date] = nb
-        done.add(date)
+        nb = setlist_neighbours(rows, artist)
+        for slug, doc in songs.items():
+            for p in doc["performances"]:
+                if p["date"] != date:
+                    continue
+                # Marked whether or not there was anything to say, so a set
+                # opener is not asked about again on every future run.
+                p["nb"] = 1
+                p.update(nb.get(slug) or {})
+                pending[slug] = True
         fetched += 1
         if i % NEIGHBOUR_FLUSH == 0:
             flush()
-            print("  %d/%d shows" % (i, len(dates)), file=sys.stderr)
+            print("  %d/%d shows" % (i, len(todo)), file=sys.stderr)
     flush()
     if missed:
         print("warning: no setlist for %d show%s: %s"
@@ -3510,6 +3546,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         return True
 
     songs = archived_songs(site_dir)
+    have_dates = {r["date"] for r in known}
     for report in known:
         date = report["date"]
         if not (rebuild or date in stale):
@@ -3519,7 +3556,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         if write_if_changed(page, render_html(
                 report, bar_scale=bar_scale, index_href="./index.html",
                 prev_date=prev, next_date=nxt, songs=songs,
-                card=date)):
+                card=date, archived_show=have_dates)):
             print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
                   file=sys.stderr)
         want_card(date, report_card(report))

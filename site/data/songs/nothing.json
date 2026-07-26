@@ -1,0 +1,19 @@
+{
+ "song": "Nothing",
+ "slug": "nothing",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2004-06-17", "venue": "KeySpan Park", "city": "Brooklyn", "state": "NY", "gap": 1409, "set": "1", "note": "Phish debut."},
+  {"date": "2004-06-23", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 5, "set": "2", "jamchart": true, "jam": "You wouldn't expect a song like \"Nothing\" to yield such a brooding jam, although considering the date, it may not be a complete surprise. Either way, this improvisational version is a unique experience, and concludes with a long tug-of-war segue -> \"46 Days\".", "out": "->"},
+  {"date": "2009-06-06", "venue": "Comcast Center", "city": "Mansfield", "state": "MA", "gap": 17, "set": "1"},
+  {"date": "2010-06-24", "venue": "Susquehanna Bank Center", "city": "Camden", "state": "NJ", "gap": 52, "set": "2", "out": ">"},
+  {"date": "2012-06-07", "venue": "DCU Center", "city": "Worcester", "state": "MA", "gap": 78, "set": "1"},
+  {"date": "2015-08-16", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 139, "set": "1"},
+  {"date": "2017-01-15", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 58, "set": "1"},
+  {"date": "2022-06-01", "venue": "Credit One Stadium", "city": "Charleston", "state": "SC", "gap": 158, "set": "e", "out": ">"},
+  {"date": "2024-10-26", "venue": "MVP Arena", "city": "Albany", "state": "NY", "gap": 117, "set": "1"}
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "song": "Cinnamon Girl",
+ "slug": "cinnamon-girl",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1989-03-01", "venue": "Gallagher's", "city": "Waitsfield", "state": "VT", "gap": 212, "set": "e", "note": "First known Phish performance; Trey on drums and Fish on trombone.", "out": ">"},
+  {"date": "1997-03-18", "venue": "The Flynn Theatre", "city": "Burlington", "state": "VT", "gap": 904, "set": "1"},
+  {"date": "1997-07-31", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 27, "set": "e"},
+  {"date": "2017-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 631, "set": "e"},
+  {"date": "2023-10-08", "venue": "Bridgestone Arena", "city": "Nashville", "state": "TN", "gap": 219, "set": "2", "out": ">"}
+ ]
+}

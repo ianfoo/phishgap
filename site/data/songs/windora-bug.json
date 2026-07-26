@@ -1,0 +1,14 @@
+{
+ "song": "Windora Bug",
+ "slug": "windora-bug",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1999-06-24", "venue": "The Barn", "city": "Outer Burlington", "state": "VT", "gap": 0, "set": "2"},
+  {"date": "2000-09-08", "venue": "Pepsi Arena", "city": "Albany", "state": "NY", "gap": 0, "set": "2", "note": "Phish debut."},
+  {"date": "2000-09-15", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 5, "set": "1"},
+  {"date": "2020-02-19", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 0, "set": "1"}
+ ]
+}

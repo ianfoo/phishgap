@@ -1,0 +1,32 @@
+{
+ "song": "Wombat",
+ "slug": "wombat",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2013-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 1628, "set": "2", "jamchart": true, "jam": "Debut with \"Abe Vigoda\" and the Abe Vigoda Dancers.", "note": "Debut; with Abe Vigoda and the Abe Vigoda Dancers."},
+  {"date": "2013-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "1"},
+  {"date": "2014-07-05", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 6, "set": "1"},
+  {"date": "2014-07-15", "venue": "CMAC Performing Arts Center", "city": "Canandaigua", "state": "NY", "gap": 6, "set": "1"},
+  {"date": "2014-07-18", "venue": "FirstMerit Bank Pavilion at Northerly Island", "city": "Chicago", "state": "IL", "gap": 2, "set": "2", "jamchart": true, "jam": "\"Wombat\" goes for its first big ride, leaving the formal song structure behind around 5:00 and breaking into some light and contemplative play. The pace picks up and the intensity gradually increases, before -> to \"CDT.\"", "out": ">"},
+  {"date": "2014-07-26", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 4, "set": "1"},
+  {"date": "2014-08-31", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 9, "set": "1"},
+  {"date": "2014-10-21", "venue": "Santa Barbara Bowl", "city": "Santa Barbara", "state": "CA", "gap": 3, "set": "2"},
+  {"date": "2014-11-02", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 9, "set": "2"},
+  {"date": "2016-07-19", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 53, "set": "1"},
+  {"date": "2016-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 6, "set": "2"},
+  {"date": "2016-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 15, "set": "1"},
+  {"date": "2017-07-18", "venue": "Ervin J. Nutter Center, Wright State University", "city": "Dayton", "state": "OH", "gap": 11, "set": "2", "jamchart": true, "jam": "\"Wombat\"'s second big ride shrugs off some dubious vocals to deliver a hard-charging \"Ghost\"-esque late night groove that morphs into delicious major key rocking out. Mike's work, in particular, is a joy to behold. Collapses into bubbly ambiance, then > into \"Chalk Dust Torture\".", "out": ">"},
+  {"date": "2018-07-22", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 26, "set": "1", "jamchart": true, "jam": "Trey showcases several of his new-for-2018 guitar tones in this jam that goes from growly funk vamping to a synth-laden space groove and a final rock peak all in < 11 minutes."},
+  {"date": "2018-08-10", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 11, "set": "1"},
+  {"date": "2018-09-01", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 4, "set": "1"},
+  {"date": "2019-06-28", "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "gap": 34, "set": "1", "out": ">"},
+  {"date": "2019-11-30", "venue": "Dunkin' Donuts Center", "city": "Providence", "state": "RI", "gap": 15, "set": "e"},
+  {"date": "2021-08-11", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 25, "set": "1"},
+  {"date": "2021-10-30", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 23, "set": "1", "jamchart": true, "jam": "The normally upbeat song/jam goes contemplative. The rest of the band creates a texture for Trey to solo over. All four members coalesce around 10:00 for a neat groove, which eventually fizzles out and > into \"Guyute\".", "out": ">"},
+  {"date": "2022-06-05", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 18, "set": "1"},
+  {"date": "2022-08-10", "venue": "Budweiser Stage", "city": "Toronto", "state": "Ontario", "gap": 19, "set": "1"}
+ ]
+}
