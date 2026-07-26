@@ -513,6 +513,7 @@
   {"date": "2025-09-14", "venue": "Coca-Cola Amphitheater", "city": "Birmingham", "state": "AL", "gap": 9, "set": "1", "prev": "Stash"},
   {"date": "2025-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "2", "prev": "Twist", "next": "First Tube"},
   {"date": "2026-04-23", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 8, "set": "2", "out": ">", "prev": "Backwards Down the Number Line", "next": "Possum"},
-  {"date": "2026-07-08", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 6, "set": "1", "prev": "Julius"}
+  {"date": "2026-07-08", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 6, "set": "1", "prev": "Julius"},
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 11, "set": "2", "out": "->"}
  ]
 }

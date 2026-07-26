@@ -355,6 +355,7 @@
   {"date": "2025-09-13", "venue": "Coca-Cola Amphitheater", "city": "Birmingham", "state": "AL", "gap": 2, "set": "2", "jamchart": true, "jam": "Out of the gates, the straightforward jam bristles with inspiration. Around the 7 minute mark, a shift towards softer textures builds towards a gorgeous, almost plaintive segment. As textural ambience seeps into the spaces between, the music then carefully builds back up to a sludgy, minor-key, wah-filled space rock-out to close, before a quick shift > \"Life Saving Gun\".", "note": "Unfinished.", "out": ">", "prev": "Sigma Oasis", "in": ">", "next": "Life Saving Gun"},
   {"date": "2025-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "2", "note": "Unfinished.", "out": "->", "prev": "Oblivion", "in": ">", "next": "Simple"},
   {"date": "2026-04-16", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 7, "set": "2", "prev": "Everything's Right", "next": "Twenty Years Later"},
-  {"date": "2026-07-10", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 10, "set": "2", "note": "Unfinished.", "out": ">", "prev": "Oblivion", "in": ">", "next": "You Enjoy Myself"}
+  {"date": "2026-07-10", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 10, "set": "2", "note": "Unfinished.", "out": ">", "prev": "Oblivion", "in": ">", "next": "You Enjoy Myself"},
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 10, "set": "2", "times": 2, "out": "->"}
  ]
 }
