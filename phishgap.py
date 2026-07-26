@@ -240,6 +240,52 @@ def foul(path, cache_dir=DEFAULT_CACHE, refresh=False, **params):
                       refresh=refresh, ttl=FOUL_TTL)
 
 
+# ------------------------------------------------------------------ share ---
+
+# A donut with a bite out of it: near enough to Phish's own iconography to be
+# recognised on a tab strip, far enough to be our own shape, and the bite is
+# the thing the site is about. One path, so it survives being drawn at 16px.
+FAVICON = (
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
+    "<circle cx='16' cy='16' r='10.5' fill='none' stroke='#c8371b'"
+    " stroke-width='8' stroke-dasharray='44 22' transform='rotate(-42 16 16)'/>"
+    "</svg>")
+# Fully percent-encoded, so the URI needs no HTML escaping on the way into an
+# attribute -- escaping it turned every angle bracket into an entity.
+FAVICON_HREF = "data:image/svg+xml,%s" % urllib.parse.quote(FAVICON, safe="/:=")
+
+# Where the site lives, for the absolute URLs link previews require: og:image
+# and og:url are fetched by a server that has no idea what page they came from,
+# so a relative path is no path at all.
+SITE_URL = "https://ianfoo.github.io/phishgap"
+OG_IMAGE = "og.png"
+
+
+def share_meta(title, description, path="", image=OG_IMAGE):
+    """The tags iMessage, Signal, Discord and the rest read off a link.
+
+    All of them fall back to Open Graph, so that carries the weight; the
+    twitter:card line is what makes the ones that look for it render a large
+    image rather than a thumbnail. Without og:image the card is a line of grey
+    text, which is a poor advertisement for a page of graphs.
+    """
+    url = "%s/%s" % (SITE_URL, path.lstrip("./")) if path else SITE_URL + "/"
+    return "".join((
+        '<link rel="icon" href="%s">' % FAVICON_HREF,
+        '<meta name="theme-color" content="#c8371b">',
+        '<meta name="description" content="%s">' % description,
+        '<meta property="og:site_name" content="Phish Gap Reports">',
+        '<meta property="og:title" content="%s">' % title,
+        '<meta property="og:description" content="%s">' % description,
+        '<meta property="og:url" content="%s">' % html.escape(url, quote=True),
+        '<meta property="og:image" content="%s/%s">' % (SITE_URL, image),
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+        '<meta property="og:image:alt" content="%s">' % description,
+        '<meta name="twitter:card" content="summary_large_image">',
+    ))
+
+
 # ------------------------------------------------------------------ model ---
 
 def build(showdate, apikey, artist="Phish", **kw):
@@ -544,6 +590,10 @@ h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
    letter-spacing:-.02em}
 h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home without dressing as a link. Without this it fell to
+   the browser default and came out blue and underlined. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
 /* Date and tour pair up: both short, so this line cannot wrap and the one
    separator on the page can be neither orphaned nor widowed. The venue is the
    variable-length part, so it gets a line to wrap inside, with no separator to
@@ -619,6 +669,22 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    color:var(--paper);padding:.16rem .36rem;font-size:.66rem;font-weight:600;
    letter-spacing:.12em;line-height:1.1;
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
+/* Our own tooltip, because the browser's waits about a second before showing
+   and this one exists to answer "what is that bar?" while the pointer is still
+   on it. No delay, no JavaScript; hidden from print, where nothing hovers. */
+@media screen{
+  td[data-tip]{position:relative}
+  td[data-tip]::after{content:attr(data-tip);position:absolute;left:.25rem;
+    bottom:calc(100% - .35rem);z-index:5;white-space:nowrap;
+    padding:.3rem .5rem;background:var(--ink);color:var(--paper);
+    font-size:.68rem;letter-spacing:.02em;line-height:1;
+    opacity:0;visibility:hidden;transition:opacity .09s ease-out}
+  td[data-tip]:hover::after,td[data-tip]:focus-visible::after{
+    opacity:1;visibility:visible}
+  /* The last column's tip would run off the right edge, so it hangs the other
+     way. */
+  td.bar[data-tip]::after{left:auto;right:1.2rem}
+}
 .bar{padding-right:1.2rem}
 .bar .track{display:block;position:relative;width:100%;height:7px;
    background-color:var(--track);
@@ -774,10 +840,7 @@ SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gap Report &mdash; {date}</title>
-<meta name="description" content="{blurb}">
-<meta property="og:title" content="Gap Report &mdash; {date}">
-<meta property="og:description" content="{blurb}">
-<meta property="og:type" content="article">
+<meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -797,7 +860,11 @@ SHELL = """<!DOCTYPE html>
 # hotlinked for the same reason the fonts hurt: a page saved out of a chat has
 # no network, and a badge with a broken image looks worse than no badge.
 ICON_PNET = "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"
-ICON_PIN = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEmElEQVR42sWX225bRRSGP9uTOCS1kzZOTNykhRTaphxaECVCgifgQXgUHodH4AohAQ1QiNqS0pybkHPs2LFjO+bmG2lkodDmplva8njvmbX+9f9rrZkNb/jK9I0DkE/uAOR81wO6QBtoAafAmc8ufYVkPAAUgUlgAhgHCgLJAedAEzgGdoFNYB+o++7SDFwDhoFS4ngMGOljAR2dAVVgB3gJrAuk+YpsZBNbZICvdDxn9D2gARwCJzpMGSoBo8AQsA38BCwKpP4KjA84PgO6QQAjgsgY2T5wpM5R96ZO68A7MjULdGSoeQELbwFXvUd1/hKo5YBv1XoT+BX4EXimsaDTU+A5sASsAHsaLgDv+rsta52+nMgZ3APgC+BL4EYEG4ApoAasAb8ByyKuGGXXyfuJ4xPzYxS4I60zwKoV0kkiLwG3nHfP8Y7+Wln/bAB/qWNPY58DHxpBNTGKObKikba58baR5pN514BPgYcGlNd+NuZTSPStGm1ZlLMaqRv9WWK44/yaBoc0eEXAOdmZBT7Wed0SLhpAE2gGSy4unpCmO5bmjtr+I7VpKcWMDsk4lusVbTzwN6s8HedVZW85MtBTrylpn5WNHXWv9WX1QNI3hnXQcc2g7z7xLrs+a+7EJF4DNrMODjRasR9UpGvdRf3XiNl/S6q7OmnJ5ntJDg1Z3pOCXQIWrLpaAH7QSVbHMybLvpNO+kpqxD7wEfC+c7cNogvc9N1dnS5LeVuWTi3Tq8BwAL7zzyww7biR6H+aACgY3UNgXgbOE6mCzj9Luupx0rJriXTnQC8Af2uoJIC8i6KeUyLPA9fN6nkjLAAvNN607O7JTFZWjnyXd35ZKc6ATjBjJ4Hbdqi46xV9FlwwqjxzslV2V3wqzXnX3zaY2GyOEtkqBnSuvMfBqG9otKRejWSXnHQ86nha0E0j/1Nj40ZeMdIdde+aO8POmdb+ekzCu+p63UkbNo24LUd5BoxyxPcrwB/uhKfAB9oqOndM4LvuEZtKOmFiLwFLAbivkwkTLeo2ZsQ3NEpSbivAz8AjDZeU56ZBdAR5YCKfJEnZFtAK8DQkGVvU8a730H/U/6FJ9wj43v2jLYCKQQzq9IlnhcfanhPgoID2gK1gq4ynn7ptdy3p/RnZaFhOT9y2F6yWigDGtdMGtnT82HHBIKeUZ1B5poIG4jGpJoBnlueSWT6ssy2p25SlEZNz3MTsydIy8LtsjemjbI/pCWQemAka6UrLoYbXZWDNOwjuUOrqSUseEmDcaqtKsO78stEWnXuuVPeB2Xgqbhvhni340L4em0nGxGr37YrxcNlLtumaIOJxLkh5SHbSWCmd+LBl3W7pvJ4cQBoXHDI7MnfgHQzgOOn9TedEUBl/a0ArJNqvqu9R3+nnoqsl3S+siKrUHwjgTEnXtF+wKe05fz8HfG3SLdhYVv8n6v6ra1RZnT03CTeSj5Z4aDkWzCLwC7CYAb7xxWqS3aev8WGTS8psSMprstDS8aiZXxRow/eNjP275aKG1F3mUyvb962ZJmem7wurq8y9jCV0npznL/2d9xofwiTg3uz1L00mm/d4vOqwAAAAAElFTkSuQmCC"
+# phish.in's mark ships around half-transparent -- a mean alpha of 130 where
+# phish.net's is fully opaque -- which reads as a grey smudge on cream and as
+# nothing at all on near-black, whichever way it is inverted. Alpha is the one
+# thing a CSS filter cannot raise, so the shape is made opaque here instead.
+ICON_PIN = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC"
 ICON_FOUL = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR42u2Xz2tcVRTHP+e+Nz+a2MTa4Ewy0zSpq7ZiFwWhCEIRoxWULhztdBItRbKwW3fdduHfUBDFYIM/diq6cS2KoNAWwSyqTjLMpLVEW9PJzLv36yIabcvUZGZUhJztvfe8zz3nnvM9D7Zt27q0y6WD6dqLo/t79eO6Pbgrvv6qi6n0ChB3c+jq6ZGdfs3tBQ3+VHlgaLU10E7HraHc/HLjHwMQWKOcO+qJcoH4CwhDIN8meyyV1jWv1BHg3FYBbLMbGy+MHQ8Rz4I1cfKGG4TggYvIhkETmXT6tV1vfb/Stwg0KuOPBZIpF5Kvvdkxk9apxcAf6IYdwEkK0FxrTwHv9QXgyqmJrK21SxjDuMxuk0+tZ+LO1ChCLoIgRyj2rQqySfu5gHZuxZlwe+ozucG7IlkuHKmVi9ObArj2UrFQr4yedcGPb/U2QmlH/Iz+8rbqM7lJmZ1wCo83pguH7gmg2cOpJPEvI5sMcpNdFbbXU8snR6c2fPr4aUkxDieFE9VScUdHgKutH3dj0UO9NJYgLDj3qMA0eziFNPHnavRgKq0nOgIkSfp0X/p00D5KxezSzfpBYOSO1UMdAeIQdvRNLLJt5wjRXe/ElHQEaGfsvBS+6/Xbhi0w11hNx1EdY+224MC3HQEKb9aqKHwUgvmeFE66YaCRtxeXTNrojGb6OTL/2T3LcHS+ftlMK13dXCTAApH7ZCPkkRYAFGhK9lV+rvHr33dCs0+Rnse4CQxtnsBCfn7p9dty7t2HjjCcRO6D4juLi5sWo5WZvZPNVhhUlJxxFvsgP4AQWNNMGczZ72IEuAgFefi8cKH2Rl9a8f1zP1zJv1u95MwuAjhjtcPWWxJVgNh0ve9yrBJR1e3ZT5ZbUcvPOuw+M9pgERYyJt1wRtXLHs5fqL3S94HE3sdD9RLA8snCvBfTgo9BRw3yMvuyZXwD/pd/bRhdV7jxJ+uVsfONcvGR/2QqVomoUR47vv1/sG3/e/sNrEkrwQ1sbIcAAAAASUVORK5CYII="
 
 # Last field flags an icon that is solid black on transparency, which needs
@@ -995,11 +1062,17 @@ def render_html(report, bar_scale="linear", index_href=None,
         # How this song usually behaves: printed small under the number, and
         # marked on the bar so an overshoot is visible rather than arithmetic.
         # Free for anyone who hovers, no clutter for anyone who does not.
+        # data-tip rather than title. The browser's own tooltip waits about a
+        # second before it appears, which is far too long for a mark whose
+        # whole job is answering "what is this?" -- by then the pointer has
+        # moved on. aria-label carries the same words to a screen reader,
+        # which title was doing incidentally.
         explain = ""
         if s.get("gap_low") is not None and g is not None:
-            explain = (" title='%s show%s; usually %s to %s'"
-                       % (_stat(g), "" if g == 1 else "s",
-                          _stat(round(s["gap_low"])), _stat(round(s["gap_high"]))))
+            tip = ("%s show%s; usually %s to %s"
+                   % (_stat(g), "" if g == 1 else "s",
+                      _stat(round(s["gap_low"])), _stat(round(s["gap_high"]))))
+            explain = " data-tip='%s' aria-label='%s'" % (tip, tip)
 
         typical = ""
         if s.get("gap_median") is not None:
@@ -1131,6 +1204,8 @@ def render_html(report, bar_scale="linear", index_href=None,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
+        share=share_meta("Gap Report &mdash; %s" % html.escape(report["date"]),
+                         html.escape(blurb, quote=True), "%s.html" % report["date"]),
         # Dated by the report's own data, not by the clock. A build stamp made
         # every page differ from yesterday's copy of itself, so a nightly run
         # republished all of them to say nothing had happened. count_since is
@@ -1152,8 +1227,8 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.68rem;
-   letter-spacing:.14em;text-transform:uppercase}
+.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.62rem;
+   letter-spacing:.16em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -1305,6 +1380,7 @@ INDEX_JS = """
     });
     shown.textContent=n;
     empty.hidden=n>0;
+    if(clear) clear.hidden=!q.value;
   }
   function order(){
     var k=sort.value;
@@ -1337,10 +1413,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Phish Gap Reports</title>
-<meta name="description" content="{blurb}">
-<meta property="og:title" content="Phish Gap Reports">
-<meta property="og:description" content="{blurb}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="website">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1501,7 +1574,8 @@ def render_index(reports, page_href="./%s.html"):
         css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
         hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
-        subtitle=subtitle, blurb=html.escape(blurb, quote=True),
+        subtitle=subtitle,
+        share=share_meta("Phish Gap Reports", html.escape(blurb, quote=True)),
         # The newest show it lists, for the same reason.
         stamp="Updated %s" % (entries[0]["date"] if entries else "&mdash;"))
 
@@ -1524,7 +1598,7 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      font-size:15px;line-height:1.5}
 .wrap{max-width:960px;margin:0 auto}
 .crumb{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:1.1rem;
-   font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
+   font-size:.62rem;letter-spacing:.16em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -1576,6 +1650,27 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    color:var(--ink);border:1px solid var(--rule);border-radius:0}
 .count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
+/* Jump to an era, with how many shows are in it. Anchors, so they work with
+   scripting off and survive a reload. */
+.eras{display:flex;flex-wrap:wrap;gap:.3rem}
+.era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
+   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.42rem .55rem;border:1px solid var(--rule);color:var(--dim);
+   text-decoration:none}
+.era-chip b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:.8rem;letter-spacing:0;color:var(--ink-soft)}
+.era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
+.era-chip:hover b{color:var(--hot)}
+/* Shown only once there is something to clear. */
+.clear{font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--rule);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+/* A venue is a filter waiting to happen: click it to see every other night
+   the song was played there. */
+.r-venue{cursor:pointer}
+.r-venue:hover{color:var(--hot)}
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:.95rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
@@ -1782,6 +1877,8 @@ SONG_JS = """
     });
     shown.textContent=n;
     empty.hidden=n>0;
+    // The way out of a filter appears only once there is one to leave.
+    if(clear) clear.hidden=!q.value;
   }
   var headFor={};
   heads.forEach(function(h){ headFor[h.getAttribute('data-era')]=h; });
@@ -1813,11 +1910,21 @@ SONG_JS = """
     }
     apply();
   }
+  var clear=document.getElementById('clear');
+  function setQuery(v){ q.value=v; apply(); }
   q.addEventListener('input', apply);
   sort.addEventListener('change', order);
+  // Clicking a venue asks the question you were about to type.
+  list.addEventListener('click', function(e){
+    var v=e.target.closest && e.target.closest('.r-venue');
+    if(!v) return;
+    setQuery(v.textContent.trim());
+    q.scrollIntoView({block:'nearest'});
+  });
+  if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
   document.addEventListener('keydown', function(e){
     if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
-    if(e.key==='Escape' && document.activeElement===q){ q.value=''; apply(); q.blur(); }
+    if(e.key==='Escape' && q.value){ setQuery(''); q.blur(); }
   });
   q.disabled=false; sort.disabled=false;
   apply();
@@ -1828,10 +1935,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{song} &mdash; Phish Gap Reports</title>
-<meta name="description" content="{blurb}">
-<meta property="og:title" content="{song}">
-<meta property="og:description" content="{blurb}">
-<meta property="og:type" content="article">
+<meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
@@ -1845,6 +1949,8 @@ SONG_SHELL = """<!DOCTYPE html>
 <div class="tools">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
+<button id="clear" class="clear" type="button" hidden>Clear</button>
+<span class="eras">{eras}</span>
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="newest">Newest</option><option value="oldest">Oldest</option>
@@ -1943,10 +2049,14 @@ def render_song(doc, archived=(), stamp=None):
             seen_era = this
             lo, hi = span[this]
             rows.append(
-                "<li class='yr' data-era='%s'><h2>%s<span>%d show%s</span>"
-                "<span>%s&ndash;%s</span></h2></li>"
-                % (this, this, tally[this], "" if tally[this] == 1 else "s",
-                   lo[:4], hi[:4]))
+                # The dot goes out of the id: "era-4.0" is a perfectly good
+                # fragment but not a valid selector, where the dot reads as a
+                # class -- querySelector throws on it and :target could never
+                # match without escaping.
+                "<li class='yr' id='era-%s' data-era='%s'><h2>%s"
+                "<span>%d show%s</span><span>%s&ndash;%s</span></h2></li>"
+                % (this.replace(".", "-"), this, this, tally[this],
+                   "" if tally[this] == 1 else "s", lo[:4], hi[:4]))
         note = p.get("note") or ""
         hay = " ".join([date, _date_aliases(date), p["venue"], p["city"],
                         p["state"], p.get("jam") or "",
@@ -2047,6 +2157,19 @@ def render_song(doc, archived=(), stamp=None):
         medmark = ("<style>.perfs{--med:%.2f%%}</style>"
                    % _bar_pct(med, biggest))
 
+    # One chip per era the song actually has, in page order. Anchors rather
+    # than filters: "jump to 1.0" should land you there with the rest still
+    # beneath you, which is what makes the spine worth having.
+    seen_order, chips = [], ""
+    for p in perfs:
+        e = era(p["date"])
+        if e not in seen_order:
+            seen_order.append(e)
+    chips = "".join(
+        "<a class='era-chip' href='#era-%s'>%s<b>%d</b></a>"
+        % (e.replace(".", "-"), e, tally[e])
+        for e in seen_order)
+
     head = ("<div class='row head'><span>Date</span><span>Venue</span>"
             "<span class='nhead'>Before / after</span>"
             "<span class='ghead'>Gap%s</span></div>"
@@ -2075,7 +2198,9 @@ def render_song(doc, archived=(), stamp=None):
     return SONG_SHELL.format(
         css=SONG_CSS, js=SONG_JS, fonts=SONG_FONTS, theme_js=THEME_JS,
         theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
-        hero=hero, best=top, links=links, count=len(perfs),
+        hero=hero, best=top, links=links, count=len(perfs), eras=chips,
+        share=share_meta(html.escape(song), html.escape(blurb, quote=True),
+                         "song/%s.html" % doc["slug"]),
         head=medmark + head,
         rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
         # Dated by the data rather than by the clock. A build stamp changed
@@ -2115,10 +2240,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Songs &mdash; Phish Gap Reports</title>
-<meta name="description" content="{blurb}">
-<meta property="og:title" content="Phish Gap Reports &mdash; Songs">
-<meta property="og:description" content="{blurb}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="website">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
@@ -2262,7 +2384,8 @@ def render_songs(docs, stamp=None):
         css=SONGS_CSS, js=SONGS_JS, fonts=SONG_FONTS, theme_js=THEME_JS,
         theme_ui=THEME_UI, hero=hero, count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
-        blurb=html.escape(blurb, quote=True),
+        share=share_meta("Phish Gap Reports &mdash; Songs",
+                         html.escape(blurb, quote=True), "songs.html"),
         stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
 
 
