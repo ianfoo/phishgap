@@ -36,5 +36,5 @@ else
     # Detached HEAD, so name both ends. A rejection here means the workflow
     # published while this ran; re-running picks up its commit and replays.
     git push origin HEAD:gh-pages
-    echo "published $(ls *.html | wc -l | tr -d ' ') pages, $(ls song/*.html 2>/dev/null | wc -l | tr -d ' ') song pages"
+    echo "published $(ls show/*.html 2>/dev/null | wc -l | tr -d ' ') reports, $(ls song/*.html 2>/dev/null | wc -l | tr -d ' ') song pages, $(ls *.html | wc -l | tr -d ' ') top-level"
 fi
