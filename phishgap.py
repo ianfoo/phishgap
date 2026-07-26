@@ -1128,7 +1128,13 @@ def render_html(report, bar_scale="linear", index_href=None,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
-        stamp=time.strftime("Generated %Y-%m-%d"))
+        # Dated by the report's own data, not by the clock. A build stamp made
+        # every page differ from yesterday's copy of itself, so a nightly run
+        # republished all of them to say nothing had happened. count_since is
+        # when this setlist last actually moved; a report rendered outside a
+        # site has none and falls back to the night it describes.
+        stamp="Updated %s" % (report.get("count_since")
+                              or report["date"])[:10])
 
 
 # ------------------------------------------------------------------ index ---
@@ -1440,7 +1446,8 @@ def render_index(reports, page_href="./%s.html"):
         hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         subtitle=subtitle, blurb=html.escape(blurb, quote=True),
-        stamp=time.strftime("Updated %Y-%m-%d"))
+        # The newest show it lists, for the same reason.
+        stamp="Updated %s" % (entries[0]["date"] if entries else "&mdash;"))
 
 
 # ------------------------------------------------------------------- song ---
@@ -1560,6 +1567,12 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    text-transform:uppercase;line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.72rem;line-height:1.15rem}
 .r-gap{text-align:right;line-height:1.3rem}
+/* The column header names this column, so the per-row label would be a second
+   answer to a question already answered -- but the header is the first thing
+   the narrow layout drops, and there the number was left to be guessed at.
+   Shown exactly where the header is not. */
+.glabel{display:none;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-right:.4rem}
 .gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.05rem}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
@@ -1570,8 +1583,11 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    pushing the gap figures around. */
 .nb{font-size:.68rem;line-height:1.25rem;color:var(--dim);min-width:0}
 .nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nb-in::before{content:"\2190\00a0";opacity:.55}
-.nb-out::before{content:"\2192\00a0";opacity:.55}
+/* Doubled backslashes: this is a Python string, and "\2190" is read as the
+   octal escape \21 followed by "90", which reaches the browser as a control
+   character and renders as a box. */
+.nb-in::before{content:"\\2190\\00a0";opacity:.55}
+.nb-out::before{content:"\\2192\\00a0";opacity:.55}
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
@@ -1643,8 +1659,10 @@ footer a{color:var(--dim)}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
   .dow{display:inline}
   .r-gap{text-align:left}
+  .glabel{display:inline}
   .gap{font-size:1rem}
   .set{display:inline;margin-left:.5rem}
+  .set::before{content:"\\00b7";margin-right:.5rem;color:var(--rule)}
   .bar{margin:.25rem 0}
   .card{flex:1 1 45%;padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
@@ -1939,7 +1957,8 @@ def render_song(doc, archived=(), stamp=None):
             "<span class='r-date'>%s<span class='dow'>%s</span></span>"
             "<span><span class='r-venue'>%s</span>"
             "<span class='r-place'>%s</span>%s%s</span>%s%s"
-            "<span class='r-gap'><span class='gap%s'>%s</span>%s</span>"
+            "<span class='r-gap'><span class='glabel'>Gap</span>"
+            "<span class='gap%s'>%s</span>%s</span>"
             "</div></li>"
             % (date, date, this, -1 if (g is None or debut) else g,
                rated[date]["score"] if date in rated else "",
