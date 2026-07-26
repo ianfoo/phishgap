@@ -2,9 +2,9 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Songs &mdash; Phish Gap Reports</title>
-<meta name="description" content="Every song in the archive: 169 of them, 27,966 performances.">
+<meta name="description" content="Every song in the archive: 169 of them, played 27,966 times.">
 <meta property="og:title" content="Phish Gap Reports &mdash; Songs">
-<meta property="og:description" content="Every song in the archive: 169 of them, 27,966 performances.">
+<meta property="og:description" content="Every song in the archive: 169 of them, played 27,966 times.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -121,12 +121,19 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .theme{order:1;flex-basis:100%}
 }
 
-.row{grid-template-columns:1fr 9rem auto}
+/* Fixed, not auto. Every row is its own grid, so a column sized to its own
+   contents put "485 shows - median 2 - longest 31 - best 90" and "325 shows -
+   median 3 - longest 202 - best 79" at different widths, and the last-played
+   column shifted row to row down the page. */
+.row{grid-template-columns:1fr 8.5rem 21.5rem}
 .r-song{display:block;font-family:'Aleo',Georgia,serif;font-weight:600;
    font-size:1.05rem;line-height:1.3rem;color:inherit}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
 .r-stats .score{color:var(--hot)}
+/* The song the top score belongs to, under its label. */
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.1em;color:var(--ink-soft);
+   text-transform:none;font-size:.68rem}
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr}
   .r-when{white-space:normal}
@@ -166,16 +173,16 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 })();
 </script></head><body><div class="wrap">
 <header><h1>Gap <em>Reports</em></h1>
-<p class="show">169 songs &middot; 27,966 performances</p></header>
-<section class="hero"><div class='card'><div class='num'>169</div><div class='lbl'>Songs</div></div><div class='card'><div class='num'>27,966</div><div class='lbl'>Performances</div></div><div class='card'><div class='num hot'>1,468</div><div class='lbl'>Longest Gap</div></div><div class='card'><div class='num'>97</div><div class='lbl'>Best Version</div></div></section>
+<p class="show">169 songs, played 27,966 times</p></header>
+<section class="hero"><div class='card'><div class='num'>169</div><div class='lbl'>Songs</div></div><div class='card'><div class='num'>27,966</div><div class='lbl'>Song Performances</div></div><div class='card'><div class='num hot'>1,468</div><div class='lbl'>Longest Gap</div></div><div class='card'><div class='num'>97</div><div class='lbl'>Best Rated Version<span class='of'>Ghost</span></div></div></section>
 <div class="tools">
-<input id="q" class="search" type="search" autocomplete="off" disabled
-       placeholder="Search songs&hellip;" aria-label="Search songs">
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="played">Most played</option><option value="az">A&ndash;Z</option>
 <option value="recent">Recently played</option><option value="gap">Longest gap</option>
 <option value="rated">Highest rated</option></select></label>
+<input id="q" class="search" type="search" autocomplete="off" disabled
+       placeholder="Search songs&hellip;" aria-label="Search songs">
 <span class="count"><b id="shown">169</b> of 169 songs</span>
 </div>
 <ol class="reports" id="list">
