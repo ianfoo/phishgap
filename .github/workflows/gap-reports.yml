@@ -45,6 +45,17 @@ jobs:
       - name: Install what the preview cards need
         run: python -m pip install --quiet pillow
 
+      # The previews already published, so a run only draws the ones whose
+      # contents actually changed. Without this a fresh checkout has no cards
+      # at all and redraws every one of them, which is minutes of browser time
+      # to reproduce images identical to the ones already served.
+      - name: Restore the published preview cards
+        run: |
+          git fetch --depth=1 origin gh-pages || exit 0
+          mkdir -p site/card
+          git archive origin/gh-pages card 2>/dev/null | tar -x -C site || true
+          echo "restored $(ls site/card 2>/dev/null | wc -l) cards"
+
       # Adds any show the archive is missing, then re-renders every page from
       # the archive, which costs no API calls.
       - name: Add new shows and render the site

@@ -603,7 +603,11 @@ h1 a:hover em{color:var(--ink)}
    variable-length part, so it gets a line to wrap inside, with no separator to
    strand at the break. */
 .show{margin:0;display:flex;flex-wrap:wrap;align-items:baseline}
-.show .date{font-family:'Alfa Slab One',Georgia,serif;font-size:1.5rem;
+/* Aleo, per the house rule: where a display face is used, the heavy one sets
+   the wordmark, the section headings and bare figures, and Aleo sets anything
+   you read as data -- a date or a title. A date is eight digits and two
+   hyphens, which is more punctuation than Alfa Slab One wants to carry. */
+.show .date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.5rem;
    line-height:1;color:var(--ink)}
 .show .tour{font-size:.95rem;font-weight:600;letter-spacing:.07em;
    text-transform:uppercase;color:var(--dim)}
@@ -847,7 +851,7 @@ SHELL = """<!DOCTYPE html>
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <header>{crumb}<h1><a href="./index.html">Gap <em>Report</em></a></h1>
 <p class="show"><span class="date">{date}</span>{tour}</p>
@@ -1288,7 +1292,9 @@ header{padding-bottom:.9rem}
      align-items:baseline;padding:.7rem .25rem;text-decoration:none;
      color:inherit;border-bottom:1px solid var(--rule-soft)}
 .row:hover{background:var(--hover)}
-.r-date{font-family:'Alfa Slab One',Georgia,serif;font-size:1.05rem;
+/* Same rule, same reason: this is the one place the site still spoke two
+   languages, since the song pages had already moved. */
+.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
         line-height:1.3rem;white-space:nowrap}
 .r-venue{font-size:.85rem;font-weight:600;letter-spacing:.04em;
          text-transform:uppercase;line-height:1.3rem}
@@ -1311,7 +1317,11 @@ header{padding-bottom:.9rem}
 .r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
            font-size:.95rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot)}
-.r-song{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
+/* The song that held the longest gap, under the figures it belongs to. Named
+   for what it is: ".r-song" also means "the song this row is about" on the
+   song index, which inherits this stylesheet, and one grid-column rule meant
+   for this was enough to wreck that. */
+.r-top{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
@@ -1337,10 +1347,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\\00b7";
     color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
   .r-stats .st b{min-width:0!important;text-align:left}
-  .r-song{text-align:left}
-  .r-song{display:inline}
-  .r-song::before{content:" ("}
-  .r-song::after{content:")"}
+  .r-top{text-align:left;display:inline}
+  .r-top::before{content:" ("}
+  .r-top::after{content:")"}
   .card{flex:1 1 45%;padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
@@ -1421,7 +1430,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <meta property="og:type" content="website">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a></nav>
 <header><h1>Gap <em>Reports</em></h1>
@@ -1527,7 +1536,7 @@ def render_index(reports, page_href="./%s.html", card=None):
         if e["longest"] is not None:
             stats += ("<span class='st'>median <b>%s</b></span>"
                       "<span class='st'>longest <b class='hot'>%s</b></span>"
-                      "<span class='r-song'>%s</span>"
+                      "<span class='r-top'>%s</span>"
                       % (_stat(e["median"]), _stat(e["longest"]),
                          html.escape(e["longest_song"])))
         rows.append(
@@ -2404,6 +2413,32 @@ CARD_DIR = "card"
 # full rebuild; stacked and sliced, the same 185 take about twenty seconds.
 # Chrome will not screenshot past roughly 16,000px, which is 26 of these.
 CARDS_PER_SHOT = 24
+# What each card was drawn from, so a card is redrawn when its own contents
+# change and not merely when the page around it does. A stylesheet edit
+# rewrites every page and no card: the two have nothing in common but a name.
+CARD_INDEX = "cards.json"
+
+
+def card_prints(site_dir):
+    path = os.path.join(site_dir, "data", CARD_INDEX)
+    if not os.path.isfile(path):
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        try:
+            return json.load(fh)
+        except ValueError:
+            return {}
+
+
+def save_card_prints(site_dir, prints):
+    path = os.path.join(site_dir, "data", CARD_INDEX)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(prints, fh, indent=1, sort_keys=True)
+
+
+def card_print(markup):
+    return hashlib.sha256(markup.encode("utf-8")).hexdigest()[:16]
 
 
 def chrome_exe():
@@ -2425,6 +2460,9 @@ body{background:#e9e3d6;font-family:'IBM Plex Mono',ui-monospace,monospace}
    muddy. Wrapping is better than colliding. */
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;line-height:.94;
    letter-spacing:-.02em;margin-top:16px;word-break:break-word;max-width:770px}
+/* Same rule as the pages: a card whose headline is a date or a song title
+   sets it in Aleo, so a link and the page behind it speak the same way. */
+h1.data{font-family:'Aleo',Georgia,serif;font-weight:600;letter-spacing:-.01em}
 h1 em{font-style:normal;color:#c8371b}
 .sub{font-size:30px;letter-spacing:.08em;text-transform:uppercase;color:#413c31;
   margin-top:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2440,23 +2478,23 @@ h1 em{font-style:normal;color:#c8371b}
 """ % {"w": CARD_W, "h": CARD_H}
 
 CARDS_SHELL = """<!DOCTYPE html><html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>%s</style></head><body>__CARDS__</body></html>""" % CARD_CSS
 
 
-def card_markup(kind, title, subtitle, stats, size=96):
+def card_markup(kind, title, subtitle, stats, size=96, data=False):
     """One 1200x630 card: what it is, what it is called, and three figures."""
     figures = "".join(
         "<span><b class='%s'>%s</b>%s</span>" % (cls, val, lbl)
         for val, lbl, cls in stats)
     return ("<div class='card'>%s"
             "<div class='kind'>%s</div>"
-            "<h1 style='font-size:%dpx'>%s</h1>"
+            "<h1 class='%s' style='font-size:%dpx'>%s</h1>"
             "<div class='sub'>%s</div><div class='rule'></div>"
             "<div class='stats'>%s</div>"
             "<div class='brand'>ianfoo.github.io/phishgap</div></div>"
-            % (FAVICON.replace("<svg", "<svg class='mark'", 1), kind, size,
-               title, subtitle, figures))
+            % (FAVICON.replace("<svg", "<svg class='mark'", 1), kind,
+               "data" if data else "", size, title, subtitle, figures))
 
 
 def shoot_cards(exe, jobs, site_dir):
@@ -2486,8 +2524,11 @@ def shoot_cards(exe, jobs, site_dir):
                    "--force-device-scale-factor=1",
                    "--window-size=%d,%d" % (CARD_W, CARD_H * len(batch)),
                    "--screenshot=" + shot,
-                   # Generous, because the whole batch waits on one font fetch.
-                   "--virtual-time-budget=6000",
+                   # Generous, because the whole batch waits on the webfonts
+                   # and display=swap will happily paint a fallback first --
+                   # at 6s the third family was still in flight and cards came
+                   # out in whatever the system offered.
+                   "--virtual-time-budget=15000",
                    "file://" + urllib.parse.quote(src)]
             try:
                 with _muted_stderr():
@@ -2520,7 +2561,7 @@ def report_card(report):
          (_stat(_median(gaps)) if gaps else "&mdash;", "Median gap", ""),
          (_stat(biggest) if gaps else "&mdash;",
           html.escape(song[:22]) or "Longest gap", "hot")),
-        size=104)
+        size=104, data=True)
 
 
 def _card_size(title):
@@ -2543,7 +2584,7 @@ def song_card(doc):
          (_stat(_median(gaps)) if gaps else "&mdash;", "Median gap", ""),
          (("%s" % best["score"]) if best else "&mdash;",
           "Best version" if best else "Longest gap", "hot")),
-        size=_card_size(doc["song"]))
+        size=_card_size(doc["song"]), data=True)
 
 
 def index_card(reports):
@@ -3183,20 +3224,25 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # leaves the cards to the next build that has one, and the pages stay
     # byte-identical either way.
     exe = chrome_exe()
-    jobs = []
+    jobs, prints = [], card_prints(site_dir)
 
-    def needs_card(name, page_changed):
-        """A card is due when its page moved, or when it simply is not there.
+    def want_card(name, markup):
+        """A card is due when what it says has changed, or it is not there.
 
-        The second half is what makes the pair self-healing: a run that wrote
-        pages but died before drawing them, or a card deleted by hand, is put
-        right on the next build rather than leaving a page pointing at a
-        preview that does not exist.
+        Not when its page changed: a page carries a stylesheet and a card does
+        not, so an edit to one rewrites all 169 pages and should redraw none of
+        the cards. The second half keeps the pair self-healing -- a run that
+        died before drawing, or a directory deleted by hand, is put right on the
+        next build rather than leaving pages pointing at previews that do not
+        exist.
         """
         if not exe:
             return False
-        return page_changed or not os.path.isfile(
-            os.path.join(site_dir, CARD_DIR, "%s.png" % name))
+        if card_print(markup) == prints.get(name) and os.path.isfile(
+                os.path.join(site_dir, CARD_DIR, "%s.png" % name)):
+            return False
+        jobs.append((name, markup))
+        return True
 
     songs = archived_songs(site_dir)
     for report in known:
@@ -3211,11 +3257,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 card=date)):
             print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
                   file=sys.stderr)
-            changed_page = True
-        else:
-            changed_page = False
-        if needs_card(date, changed_page):
-            jobs.append((date, report_card(report)))
+        want_card(date, report_card(report))
 
     # Song pages last, so they can link to whichever reports now exist. They
     # are cheap to write and the archive is the only input, so a rebuild does
@@ -3236,8 +3278,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         moved = write_if_changed(page, render_song(doc, archived=have,
                                                    card=name))
         wrote += 1 if moved else 0
-        if needs_card(name, moved):
-            jobs.append((name, song_card(doc)))
+        want_card(name, song_card(doc))
     if considered:
         print("song pages: %d rendered, %d changed"
               % (considered, wrote), file=sys.stderr)
@@ -3248,17 +3289,20 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         if moved:
             print("wrote %s (%d songs)" % (songs_page, len(docs)),
                   file=sys.stderr)
-        if needs_card("songs", moved):
-            jobs.append(("songs", songs_card(docs)))
+        want_card("songs", songs_card(docs))
 
     index = os.path.join(site_dir, "index.html")
     changed = write_if_changed(index, render_index(known, card="index"))
-    if needs_card("index", changed):
-        jobs.append(("index", index_card(known)))
+    want_card("index", index_card(known))
     if jobs:
         made = shoot_cards(exe, jobs, site_dir)
         print("preview cards: %d of %d drawn" % (made, len(jobs)),
               file=sys.stderr)
+        # Only what was actually drawn, so a batch that died partway is
+        # retried next run rather than recorded as done.
+        for name, markup in jobs[:made]:
+            prints[name] = card_print(markup)
+        save_card_prints(site_dir, prints)
     # Serve the directory verbatim on GitHub Pages, Jekyll out of the way.
     open(os.path.join(site_dir, ".nojekyll"), "a").close()
     print("%s %s (%d report%s)"
