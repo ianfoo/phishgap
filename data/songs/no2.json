@@ -1,0 +1,19 @@
+{
+ "song": "NO2",
+ "slug": "no2",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1994-06-25", "venue": "Nautica Stage", "city": "Cleveland", "state": "OH", "gap": 884, "set": "1", "note": "First known appearance.", "out": ">"},
+  {"date": "1994-07-08", "venue": "Great Woods Center for the Performing Arts", "city": "Mansfield", "state": "MA", "gap": 9, "set": "1", "note": "Fish on vacuum.", "out": ">"},
+  {"date": "1994-07-16", "venue": "Summerstage at Sugarbush North", "city": "Fayston", "state": "VT", "gap": 6, "set": "1", "note": "Fish on vacuum.", "out": ">"},
+  {"date": "1999-07-13", "venue": "Tweeter Center", "city": "Mansfield", "state": "MA", "gap": 357, "set": "1", "note": "For the first known time, NO2 included the instrumental ending originally included on The White Tape."},
+  {"date": "2009-12-31", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 221, "set": "2"},
+  {"date": "2010-08-12", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 24, "set": "e", "out": "->"},
+  {"date": "2015-08-15", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 202, "set": "2", "note": "Trey on megaphone.", "out": "->"},
+  {"date": "2015-09-06", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 7, "set": "e", "note": "Fish on Marimba Lumina.", "out": ">"},
+  {"date": "2021-10-28", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 193, "set": "2"}
+ ]
+}

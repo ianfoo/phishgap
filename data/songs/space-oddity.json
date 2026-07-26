@@ -1,0 +1,25 @@
+{
+ "song": "Space Oddity",
+ "slug": "space-oddity",
+ "artist": "Phish",
+ "best": [
+  {"date": "2026-04-16", "score": 80, "venue": "Sphere", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/50414"},
+  {"date": "2016-07-19", "score": 58, "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "link": "https://fouldomain.com/tracks/33050"},
+  {"date": "2016-06-24", "score": 57, "venue": "Wrigley Field", "city": "Chicago", "state": "IL", "link": "https://fouldomain.com/tracks/32722"},
+  {"date": "2016-08-26", "score": 55, "venue": "Oak Ridge Farm", "city": "Arrington", "state": "VA", "link": "https://fouldomain.com/tracks/33144"},
+  {"date": "2022-07-19", "score": 55, "venue": "TD Pavilion at the Mann", "city": "Philadelphia", "state": "PA", "link": "https://fouldomain.com/tracks/36936"},
+  {"date": "2016-07-08", "score": 49, "venue": "Xfinity Center", "city": "Mansfield", "state": "MA", "link": "https://fouldomain.com/tracks/32911"},
+  {"date": "2017-07-28", "score": 49, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/33866"},
+  {"date": "2016-10-31", "score": 39, "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/33520"}
+ ],
+ "performances": [
+  {"date": "2016-06-24", "venue": "Wrigley Field", "city": "Chicago", "state": "IL", "gap": 1716, "set": "e", "note": "Phish debut."},
+  {"date": "2016-07-08", "venue": "Xfinity Center", "city": "Mansfield", "state": "MA", "gap": 9, "set": "1"},
+  {"date": "2016-07-19", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 6, "set": "1"},
+  {"date": "2016-08-26", "venue": "Oak Ridge Farm", "city": "Arrington", "state": "VA", "gap": 4, "set": "1"},
+  {"date": "2016-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 17, "set": "e"},
+  {"date": "2017-07-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 18, "set": "e"},
+  {"date": "2022-07-19", "venue": "TD Pavilion at the Mann", "city": "Philadelphia", "state": "PA", "gap": 154, "set": "1"},
+  {"date": "2026-04-16", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 168, "set": "e"}
+ ]
+}

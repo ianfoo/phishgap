@@ -1,0 +1,18 @@
+{
+ "song": "Cool Amber and Mercury",
+ "slug": "cool-amber-and-mercury",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2018-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1819, "set": "2", "jamchart": true, "jam": "Debut.", "note": "Debut."},
+  {"date": "2018-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "2"},
+  {"date": "2019-06-11", "venue": "Chaifetz Arena, Saint Louis University", "city": "St. Louis", "state": "MO", "gap": 5, "set": "1"},
+  {"date": "2019-07-02", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 14, "set": "2", "out": ">"},
+  {"date": "2019-12-07", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 18, "set": "2", "jamchart": true, "jam": "Stretches slightly beyond its usual confines with a pleasant jam which finds a darker direction in the final minute before > \"Melt\".", "out": ">"},
+  {"date": "2021-08-04", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 15, "set": "1"},
+  {"date": "2021-08-29", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 11, "set": "1", "out": ">"},
+  {"date": "2023-10-10", "venue": "Ervin J. Nutter Center, Wright State University", "city": "Dayton", "state": "OH", "gap": 106, "set": "1", "jamchart": true, "jam": "In its first outing in over 100 shows, \"Cool Amber and Mercury\" makes a strong impression with arguably its most spirited appearance to date."}
+ ]
+}

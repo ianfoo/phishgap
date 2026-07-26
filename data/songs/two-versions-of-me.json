@@ -1,0 +1,18 @@
+{
+ "song": "Two Versions of Me",
+ "slug": "two-versions-of-me",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2003-07-12", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 1385, "set": "2", "note": "Debut."},
+  {"date": "2003-07-15", "venue": "USANA Amphitheatre", "city": "West Valley City", "state": "UT", "gap": 2, "set": "1"},
+  {"date": "2003-07-18", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 2, "set": "2"},
+  {"date": "2003-07-25", "venue": "Verizon Wireless Amphitheatre - Charlotte", "city": "Charlotte", "state": "NC", "gap": 5, "set": "1"},
+  {"date": "2003-08-02", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 6, "set": "1"},
+  {"date": "2003-11-28", "venue": "Nassau Veterans Memorial Coliseum", "city": "Uniondale", "state": "NY", "gap": 2, "set": "2"},
+  {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 65, "set": "1"},
+  {"date": "2021-10-28", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 436, "set": "2", "jamchart": true, "jam": "Tough to count the number of times this really cool Phish song has been celebrated, but this version counts. For once, '21 vocal delivery evinces bygone eras, and the music assumes that millennial, poorman's, stately melancholy. This might have been enough for us, but Trey strums the band (listen for terrific Page on piano) into a beautiful passage of remarkable - and timeless - improvisation, before the band, shirking too much trussed up beauty, breaks for a more pressurized calm in the form of NO2.", "out": "->"}
+ ]
+}

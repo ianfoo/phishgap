@@ -1,0 +1,35 @@
+{
+ "song": "Strawberry Letter 23",
+ "slug": "strawberry-letter-23",
+ "artist": "Phish",
+ "best": [
+  {"date": "2022-07-30", "score": 84, "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "link": "https://fouldomain.com/tracks/37102"},
+  {"date": "2017-07-22", "score": 54, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/33790"},
+  {"date": "2024-08-06", "score": 51, "venue": "Van Andel Arena", "city": "Grand Rapids", "state": "MI", "link": "https://fouldomain.com/tracks/38763"},
+  {"date": "2019-12-06", "score": 49, "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "link": "https://fouldomain.com/tracks/35613"},
+  {"date": "2021-08-03", "score": 49, "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "link": "https://fouldomain.com/tracks/35947"},
+  {"date": "2023-04-21", "score": 44, "venue": "Hollywood Bowl", "city": "Hollywood", "state": "CA", "link": "https://fouldomain.com/tracks/37610"},
+  {"date": "2018-10-19", "score": 43, "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "link": "https://fouldomain.com/tracks/34567"},
+  {"date": "2025-07-09", "score": 43, "venue": "Jerome Schottenstein Center", "city": "Columbus", "state": "OH", "link": "https://fouldomain.com/tracks/39536"},
+  {"date": "2022-06-04", "score": 40, "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "link": "https://fouldomain.com/tracks/36842"},
+  {"date": "2023-07-25", "score": 39, "venue": "TD Pavilion at the Mann", "city": "Philadelphia", "state": "PA", "link": "https://fouldomain.com/tracks/37847"},
+  {"date": "2021-10-28", "score": 35, "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/36466"},
+  {"date": "2019-06-28", "score": 31, "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "link": "https://fouldomain.com/tracks/35161"},
+  {"date": "2025-07-25", "score": 30, "venue": "Broadview Stage at SPAC", "city": "Saratoga Springs", "state": "NY", "link": "https://fouldomain.com/tracks/39742"}
+ ],
+ "performances": [
+  {"date": "2017-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1765, "set": "2", "note": "Phish debut.", "out": ">"},
+  {"date": "2018-10-19", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 42, "set": "1", "out": ">"},
+  {"date": "2019-06-28", "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "gap": 30, "set": "1", "out": ">"},
+  {"date": "2019-12-06", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 20, "set": "1", "out": ">"},
+  {"date": "2021-08-03", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 15, "set": "1", "out": ">"},
+  {"date": "2021-10-28", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 27, "set": "1", "out": ">"},
+  {"date": "2022-06-04", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 19, "set": "1"},
+  {"date": "2022-07-30", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 13, "set": "1", "jamchart": true, "jam": "Following \"Halfway to the Moon's\" jam breakout, \"Strawberry Letter 23\" takes the baton with its first real jaunt in an expectedly funky affair until closing quietly with a -> to a rare (first since '91) set-closing \"Lizards\".", "out": "->"},
+  {"date": "2023-04-21", "venue": "Hollywood Bowl", "city": "Hollywood", "state": "CA", "gap": 28, "set": "1"},
+  {"date": "2023-07-25", "venue": "TD Pavilion at the Mann", "city": "Philadelphia", "state": "PA", "gap": 13, "set": "1", "out": ">"},
+  {"date": "2024-08-06", "venue": "Van Andel Arena", "city": "Grand Rapids", "state": "MI", "gap": 48, "set": "1", "out": ">"},
+  {"date": "2025-07-09", "venue": "Jerome Schottenstein Center", "city": "Columbus", "state": "OH", "gap": 41, "set": "1", "out": ">"},
+  {"date": "2025-07-25", "venue": "Broadview Stage at SPAC", "city": "Saratoga Springs", "state": "NY", "gap": 10, "set": "1"}
+ ]
+}

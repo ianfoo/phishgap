@@ -1,0 +1,17 @@
+{
+ "song": "Spanish Moon",
+ "slug": "spanish-moon",
+ "artist": "Phish",
+ "best": [
+  {"date": "2010-10-31", "score": 65, "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "link": "https://fouldomain.com/tracks/28277"},
+  {"date": "2019-02-21", "score": 47, "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya, Quintana Roo", "state": "", "link": "https://fouldomain.com/tracks/34896"},
+  {"date": "2023-10-15", "score": 40, "venue": "United Center", "city": "Chicago", "state": "IL", "link": "https://fouldomain.com/tracks/38282"},
+  {"date": "2025-07-11", "score": 38, "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "link": "https://fouldomain.com/tracks/39553"}
+ ],
+ "performances": [
+  {"date": "2010-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 1517, "set": "2", "note": "Phish debut; Giovanni Hidalgo on percussion, Aaron Johnson on trombone, Stuart Bogie on saxophone, Ian Hendrickson-Smith on saxophone, Michael Leonhart on trumpet, and Eric Biondo on trumpet."},
+  {"date": "2019-02-21", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 306, "set": "2", "out": ">"},
+  {"date": "2023-10-15", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 171, "set": "2"},
+  {"date": "2025-07-11", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 67, "set": "1"}
+ ]
+}

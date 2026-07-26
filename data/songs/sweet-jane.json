@@ -1,0 +1,15 @@
+{
+ "song": "Sweet Jane",
+ "slug": "sweet-jane",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1998-08-08", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 1210, "set": "1", "note": "Phish debut."},
+  {"date": "1998-10-31", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 13, "set": "2"},
+  {"date": "2012-06-29", "venue": "Klipsch Music Center", "city": "Noblesville", "state": "IN", "gap": 354, "set": "1"},
+  {"date": "2017-07-23", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 193, "set": "e"},
+  {"date": "2020-02-22", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 100, "set": "e", "out": ">"}
+ ]
+}

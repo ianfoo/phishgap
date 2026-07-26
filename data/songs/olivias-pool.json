@@ -1,0 +1,21 @@
+{
+ "song": "Olivia's Pool",
+ "slug": "olivias-pool",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1997-06-06", "venue": "Brad Sands's and Pete Carini's House", "city": "Charlotte", "state": "VT", "gap": 0, "set": "1"},
+  {"date": "1997-06-13", "venue": "The S.F.X. Centre", "city": "Dublin", "state": "County Dublin", "gap": 1117, "set": "2", "note": "Debut.", "out": ">"},
+  {"date": "1997-06-16", "venue": "Royal Albert Hall", "city": "London", "state": "England", "gap": 2, "set": "1"},
+  {"date": "1997-06-25", "venue": "L\u2019Aeronef", "city": "Lille", "state": "Hauts-de-France", "gap": 6, "set": "1"},
+  {"date": "1997-07-10", "venue": "Espace Julien", "city": "Marseilles", "state": "PACA", "gap": 9, "set": "1"},
+  {"date": "1997-07-29", "venue": "Desert Sky Pavilion", "city": "Phoenix", "state": "AZ", "gap": 7, "set": "2"},
+  {"date": "1997-11-17", "venue": "McNichols Arena", "city": "Denver", "state": "CO", "gap": 17, "set": "2", "out": ">"},
+  {"date": "2019-07-14", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 694, "set": "1"},
+  {"date": "2021-10-29", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 52, "set": "1"},
+  {"date": "2022-08-06", "venue": "Atlantic City Beach", "city": "Atlantic City", "state": "NJ", "gap": 36, "set": "1", "out": ">"},
+  {"date": "2023-04-18", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 21, "set": "1", "out": ">"}
+ ]
+}

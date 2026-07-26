@@ -1,0 +1,43 @@
+{
+ "song": "Show of Life",
+ "slug": "show-of-life",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2010-06-11", "venue": "Toyota Park", "city": "Bridgeview", "state": "IL", "gap": 1470, "set": "2", "note": "Phish debut."},
+  {"date": "2010-06-19", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 6, "set": "2"},
+  {"date": "2010-06-26", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 5, "set": "e"},
+  {"date": "2010-08-06", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 8, "set": "2"},
+  {"date": "2010-08-17", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 8, "set": "e"},
+  {"date": "2010-10-16", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 7, "set": "2"},
+  {"date": "2010-10-26", "venue": "Verizon Wireless Arena", "city": "Manchester", "state": "NH", "gap": 6, "set": "e"},
+  {"date": "2010-10-30", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 2, "set": "2"},
+  {"date": "2011-06-01", "venue": "PNC Bank Arts Center", "city": "Holmdel", "state": "NJ", "gap": 11, "set": "e", "out": ">"},
+  {"date": "2011-06-11", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 7, "set": "e", "out": ">"},
+  {"date": "2011-07-01", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 7, "set": "e"},
+  {"date": "2011-08-05", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 3, "set": "2", "out": ">"},
+  {"date": "2011-08-10", "venue": "Lake Tahoe Outdoor Arena at Harveys", "city": "Stateline", "state": "NV", "gap": 4, "set": "e", "out": ">"},
+  {"date": "2011-08-17", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 4, "set": "e", "out": ">"},
+  {"date": "2011-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "2", "out": ">"},
+  {"date": "2012-06-10", "venue": "Bonnaroo Music & Arts Festival", "city": "Manchester", "state": "TN", "gap": 4, "set": "e", "out": ">"},
+  {"date": "2012-06-28", "venue": "Klipsch Music Center", "city": "Noblesville", "state": "IN", "gap": 9, "set": "e", "out": ">"},
+  {"date": "2012-07-04", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 5, "set": "2", "out": ">"},
+  {"date": "2012-08-18", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 6, "set": "e", "out": ">"},
+  {"date": "2012-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "e"},
+  {"date": "2013-07-06", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 4, "set": "e", "out": ">"},
+  {"date": "2013-07-27", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 13, "set": "e", "out": ">"},
+  {"date": "2013-09-01", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 9, "set": "2", "out": ">"},
+  {"date": "2013-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 16, "set": "e"},
+  {"date": "2016-07-03", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 84, "set": "2"},
+  {"date": "2016-10-25", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 25, "set": "e"},
+  {"date": "2018-08-07", "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "gap": 50, "set": "e"},
+  {"date": "2018-10-16", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 8, "set": "2", "jamchart": true, "jam": "Regardless of your impression of this song generally, this version deserves a listen. Featuring heartfelt, emotive play and strong communication and interplay, the band, especially Trey, is clearly \"in the zone\" here, and fans are rewarded with an exceptionally strong version, a cathartic relief following the insane \"Twenty Years Later\" which immediately preceded.", "out": ">"},
+  {"date": "2019-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 56, "set": "e", "out": ">"},
+  {"date": "2021-08-11", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 17, "set": "e", "out": ">"},
+  {"date": "2022-07-31", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 54, "set": "e"},
+  {"date": "2022-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 17, "set": "e", "out": ">"},
+  {"date": "2023-08-31", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 34, "set": "e"}
+ ]
+}

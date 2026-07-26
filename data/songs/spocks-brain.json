@@ -1,0 +1,32 @@
+{
+ "song": "Spock's Brain",
+ "slug": "spocks-brain",
+ "artist": "Phish",
+ "best": [
+  {"date": "2019-02-21", "score": 71, "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya, Quintana Roo", "state": "", "link": "https://fouldomain.com/tracks/34886"},
+  {"date": "2025-12-31", "score": 69, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/40023"},
+  {"date": "2000-10-06", "score": 56, "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "link": "https://fouldomain.com/tracks/25020"},
+  {"date": "2003-07-30", "score": 55, "venue": "Tweeter Center at the Waterfront", "city": "Camden", "state": "NJ", "link": "https://fouldomain.com/tracks/25625"},
+  {"date": "1995-06-14", "score": 53, "venue": "Mud Island Amphitheater", "city": "Memphis", "state": "TN", "link": "https://fouldomain.com/tracks/17496"},
+  {"date": "2019-07-14", "score": 52, "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "link": "https://fouldomain.com/tracks/35404"},
+  {"date": "1995-05-16", "score": 49, "venue": "Lowell Memorial Auditorium", "city": "Lowell", "state": "MA", "link": "https://fouldomain.com/tracks/17382"},
+  {"date": "1995-06-07", "score": 49, "venue": "Boise State University Pavilion", "city": "Boise", "state": "ID", "link": "https://fouldomain.com/tracks/17406"},
+  {"date": "1995-06-24", "score": 47, "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "link": "https://fouldomain.com/tracks/17639"},
+  {"date": "1995-06-20", "score": 41, "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "link": "https://fouldomain.com/tracks/17583"},
+  {"date": "2000-09-29", "score": 40, "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/24929"}
+ ],
+ "performances": [
+  {"date": "1995-05-14", "venue": "Fish's House", "city": "Burlington", "state": "VT", "gap": 0, "set": "1"},
+  {"date": "1995-05-16", "venue": "Lowell Memorial Auditorium", "city": "Lowell", "state": "MA", "gap": 951, "set": "1", "note": "Debut."},
+  {"date": "1995-06-07", "venue": "Boise State University Pavilion", "city": "Boise", "state": "ID", "gap": 1, "set": "2"},
+  {"date": "1995-06-14", "venue": "Mud Island Amphitheater", "city": "Memphis", "state": "TN", "gap": 5, "set": "1", "out": ">"},
+  {"date": "1995-06-20", "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "gap": 5, "set": "1"},
+  {"date": "1995-06-24", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 3, "set": "1"},
+  {"date": "2000-09-29", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 393, "set": "1", "out": ">"},
+  {"date": "2000-10-06", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 5, "set": "2"},
+  {"date": "2003-07-30", "venue": "Tweeter Center at the Waterfront", "city": "Camden", "state": "NJ", "gap": 35, "set": "1", "out": ">"},
+  {"date": "2019-02-21", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 429, "set": "1"},
+  {"date": "2019-07-14", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 25, "set": "1"},
+  {"date": "2025-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 237, "set": "e", "out": ">"}
+ ]
+}

@@ -6,17 +6,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#877e6e;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--grain-blend:multiply;--grain-opacity:.45;}
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--grain-blend:multiply;--grain-opacity:.45;}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
 :root:not([data-theme="light"]) .hero{border-top-width:2px;border-top-color:#6b6353}
 :root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 :root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
 }
 @media screen{
-:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
 :root[data-theme="dark"] .hero{border-top-width:2px;border-top-color:#6b6353}
 :root[data-theme="dark"] .badge img.flip{filter:invert(1)}
 :root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
@@ -214,7 +214,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    text-transform:uppercase;color:var(--dim)}
 .mark b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:.8rem;color:var(--dim);letter-spacing:0}
-.mark.high b{color:var(--hot)}
+.mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .mark a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -376,7 +376,7 @@ footer a{color:var(--dim)}
 <ol class="perfs" id="list">
 <li class='yr' id='era-4-0' data-era='4.0'><h2>4.0<span>2 shows</span><span>2025&ndash;2026</span></h2></li>
 <li id='2026-07-12' data-date='2026-07-12' data-era='4.0' data-gap='17' data-score='' data-search="2026-07-12 07/12/2026 7/12/2026 7/12/26 07/12 7/12 7-12 july 12 2026 july 12 sunday ruoff music center noblesville in  "><div class='row'><span class='r-date'><a href='../2026-07-12.html'>2026-07-12</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Ruoff Music Center</span><span class='r-place'>Noblesville, IN</span></span><span class='nb'><span class='nb-in seg'>Light &gt;</span><span class='nb-out seg'>&gt; Also Sprach Zarathustra</span></span><span class='bar'><span class='track'><span class='fill' style='width:100.0%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>17</span><span class='set'>SET 2</span></span></div></li>
-<li id='2025-12-31' data-date='2025-12-31' data-era='4.0' data-gap='-1' data-score='' data-search="2025-12-31 12/31/2025 12/31/2025 12/31/25 12/31 12/31 12-31 december 31 2025 december 31 wednesday madison square garden new york ny  phish debut; ice cream man on cowbell."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2025-12-31' target='_blank' rel='noopener noreferrer'>2025-12-31</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span><p class='note'><span class='tag'>Note</span>Phish debut; Ice cream man on cowbell.</p></span><span class='nb'><span class='nb-in seg'>It&#x27;s Ice &gt;</span></span><span class='bar'></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='2025-12-31' data-date='2025-12-31' data-era='4.0' data-gap='-1' data-score='' data-search="2025-12-31 12/31/2025 12/31/2025 12/31/25 12/31 12/31 12-31 december 31 2025 december 31 wednesday madison square garden new york ny  phish debut; ice cream man on cowbell."><div class='row'><span class='r-date'><a href='../2025-12-31.html'>2025-12-31</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span><p class='note'><span class='tag'>Note</span>Phish debut; Ice cream man on cowbell.</p></span><span class='nb'><span class='nb-in seg'>It&#x27;s Ice &gt;</span></span><span class='bar'></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

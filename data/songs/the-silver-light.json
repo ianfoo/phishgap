@@ -1,0 +1,11 @@
+{
+ "song": "The Silver Light",
+ "slug": "the-silver-light",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2021-10-26", "venue": "Santa Barbara Bowl", "city": "Santa Barbara", "state": "CA", "gap": 1894, "set": "1", "note": "Phish debut.", "out": ">"}
+ ]
+}

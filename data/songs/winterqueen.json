@@ -1,0 +1,35 @@
+{
+ "song": "Winterqueen",
+ "slug": "winterqueen",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2013-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 1632, "set": "2", "jamchart": true, "jam": "Phish debut includes Page nicely jumping around from the Fender-Rhodes to the B-3 to the piano, and a rock driven jam from Trey.", "note": "Phish debut."},
+  {"date": "2014-07-03", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 10, "set": "2"},
+  {"date": "2014-07-09", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 4, "set": "2", "out": ">"},
+  {"date": "2014-07-13", "venue": "Randall's Island", "city": "New York", "state": "NY", "gap": 3, "set": "1"},
+  {"date": "2014-07-20", "venue": "FirstMerit Bank Pavilion at Northerly Island", "city": "Chicago", "state": "IL", "gap": 5, "set": "2", "out": ">"},
+  {"date": "2014-07-25", "venue": "PNC Music Pavilion", "city": "Charlotte", "state": "NC", "gap": 1, "set": "1", "jamchart": true, "jam": "The jam has a more relaxed vibe than most. A bit of pitch shifting by Trey, which was an issue on 2014 versions. The ending segment is extended as well."},
+  {"date": "2014-08-31", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 10, "set": "1"},
+  {"date": "2014-10-22", "venue": "Santa Barbara Bowl", "city": "Santa Barbara", "state": "CA", "gap": 4, "set": "1", "out": ">"},
+  {"date": "2014-10-27", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 3, "set": "e"},
+  {"date": "2015-01-01", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 7, "set": "2", "jamchart": true, "jam": "Nice chord strumming and other melodic variation by Trey in a fiery and crescendo-oriented jam."},
+  {"date": "2015-07-22", "venue": "Les Schwab Amphitheater", "city": "Bend", "state": "OR", "gap": 4, "set": "1", "jamchart": true, "jam": "This version has a relaxed, feel-good vibe that's one part \"Gin,\" one part \"LxL,\" and four parts Phish. Eventually peaking in a strong manner, the closing adds appropriate punctuation."},
+  {"date": "2015-09-05", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 22, "set": "1"},
+  {"date": "2016-07-10", "venue": "Lakeview Amphitheater", "city": "Syracuse", "state": "NY", "gap": 21, "set": "1", "jamchart": true, "jam": "After a thoughtful, contemplative start, the jam gains momentum, moving into a faster paced, uplifting section with great, clear playing by Trey, and solidly grounded by Page."},
+  {"date": "2016-10-14", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 13, "set": "e"},
+  {"date": "2016-10-21", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 5, "set": "2", "jamchart": true, "jam": "Airy and introspective, Mike and Fish create a space which Trey and Page fill with truly dynamic interplay. Great guitar drives this version to a strong conclusion."},
+  {"date": "2017-01-14", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 13, "set": "2", "jamchart": true, "jam": "The \"Prince of Music\" neglects a verse but shrugs the flub and sets forth to shape one of the finest versions to date. The jam quickly assumes a quiet, delicate form, informed by great play from Mike. Trey's playing is patient and melodic, colored by customarily great fills from Page. The version skips along atop Fish's steady beat, with Trey building intensity via means of measured sustain and perfectly-placed notes, before working the surrounding space to a resounding peak."},
+  {"date": "2017-07-15", "venue": "Huntington Bank Pavilion at Northerly Island", "city": "Chicago", "state": "IL", "gap": 3, "set": "2", "jamchart": true, "jam": "> from an iconic \"Simple\", the band continues to push and poke through sonic boundaries, shaping a cool, spacey, and highly unusual version. Trey foregoes his customary solo, creating instead a nice pocket of sound through which effects and some pretty work from Page swell and recede atop great percussion and bass. Trey's play soon becomes more direct but remains atmospheric, offset by the deft sort of super full-band play we've come to expect from the band in this spot. Some plucky guitar gives rise to a swirling momentum which builds to a cacophonous conclusion.", "out": ">"},
+  {"date": "2017-08-04", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 14, "set": "1"},
+  {"date": "2017-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 4, "set": "2", "out": ">"},
+  {"date": "2018-08-03", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 16, "set": "2", "out": ">"},
+  {"date": "2019-06-23", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 40, "set": "1", "jamchart": true, "jam": "> from \"It's Ice.\" Mike has strong play from the start and Trey's play is airy and bouncy, as usual. Page mirrors Trey in a complementary fashion and Fish's delicate, driving drums keep the jam going. Strong play from the entire band in this version."},
+  {"date": "2021-10-16", "venue": "Chase Center", "city": "San Francisco", "state": "CA", "gap": 57, "set": "1", "out": ">"},
+  {"date": "2022-05-29", "venue": "The Wharf Amphitheater", "city": "Orange Beach", "state": "AL", "gap": 23, "set": "1"},
+  {"date": "2023-04-19", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 44, "set": "1", "out": ">"},
+  {"date": "2024-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 80, "set": "2"}
+ ]
+}

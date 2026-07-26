@@ -1,0 +1,33 @@
+{
+  "date": "2020-08-11",
+  "venue": "NBC Television Studios, Studio 6B, New York, NY",
+  "venue_name": "NBC Television Studios, Studio 6B",
+  "city": "New York",
+  "state": "NY",
+  "artist": "Trey Anastasio",
+  "tour": "Not Part of a Tour",
+  "notes": "<p>Trey was the first in-studio guest on&nbsp;<em>The Tonight Show</em> in five months (due to the COVID-19 pandemic)&nbsp;for the debut of I Never Needed You Like This Before with The Roots as his backing band.</p>",
+  "permalink": "https://phish.net/setlists/trey-anastasio-august-11-2020-nbc-television-studios-studio-6b-new-york-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "I Never Needed You Like This Before",
+      "slug": "i-never-needed-you-like-this-before",
+      "gap": 588,
+      "jamchart": false,
+      "prev_date": null,
+      "prev_venue": null,
+      "prev_place": null,
+      "debut": true,
+      "plays": 1,
+      "recent_plays": 0,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": "bustout"
+    }
+  ],
+  "count_since": "2026-07-26T10:30:29+00:00",
+  "provisional": false
+}

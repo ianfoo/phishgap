@@ -1,0 +1,12 @@
+{
+ "song": "Strawberry Fields Forever",
+ "slug": "strawberry-fields-forever",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1769, "set": "1", "note": "Phish debut; a cappella."},
+  {"date": "2022-08-02", "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "gap": 168, "set": "1"}
+ ]
+}

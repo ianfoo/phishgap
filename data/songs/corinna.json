@@ -1,0 +1,41 @@
+{
+ "song": "Corinna",
+ "slug": "corinna",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1987-02-21", "venue": "Slade Hall, University of Vermont", "city": "Burlington", "state": "VT", "gap": 61, "set": "2", "note": "First known Phish performance."},
+  {"date": "1987-03-06", "venue": "Goddard College", "city": "Plainfield", "state": "VT", "gap": 1, "set": "1"},
+  {"date": "1987-03-23", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 2, "set": "2"},
+  {"date": "1987-05-11", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 5, "set": "e"},
+  {"date": "1987-08-09", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 4, "set": "3"},
+  {"date": "1987-08-29", "venue": "The Ranch", "city": "South Burlington", "state": "VT", "gap": 4, "set": "3"},
+  {"date": "1987-11-19", "venue": "Hunt's", "city": "Burlington", "state": "VT", "gap": 20, "set": "2"},
+  {"date": "1988-01-27", "venue": "Gallagher's", "city": "Waitsfield", "state": "VT", "gap": 4, "set": "2", "out": ">"},
+  {"date": "1988-02-24", "venue": "Gallagher's", "city": "Waitsfield", "state": "VT", "gap": 6, "set": "1"},
+  {"date": "1988-03-11", "venue": "The Base Lodge, Stearns Hall, Johnson State College", "city": "Johnson", "state": "VT", "gap": 3, "set": "1"},
+  {"date": "1988-05-24", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 26, "set": "3"},
+  {"date": "1988-06-19", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 6, "set": "3"},
+  {"date": "1988-07-28", "venue": "The Roma", "city": "Telluride", "state": "CO", "gap": 13, "set": "2", "out": ">"},
+  {"date": "1988-07-30", "venue": "The Roma", "city": "Telluride", "state": "CO", "gap": 2, "set": "2", "note": "Fish absent, Trey on drums."},
+  {"date": "1988-08-05", "venue": "The Roma", "city": "Telluride", "state": "CO", "gap": 3, "set": "3"},
+  {"date": "1988-08-13", "venue": "The Front", "city": "Burlington", "state": "VT", "gap": 5, "set": "2", "out": ">"},
+  {"date": "1989-02-06", "venue": "The Front", "city": "Burlington", "state": "VT", "gap": 38, "set": "3"},
+  {"date": "1989-02-18", "venue": "Old Stone Church", "city": "Newmarket", "state": "NH", "gap": 5, "set": "3"},
+  {"date": "1999-12-30", "venue": "Big Cypress Seminole Indian Reservation", "city": "Big Cypress", "state": "FL", "gap": 1101, "set": "1"},
+  {"date": "2000-09-15", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 40, "set": "1"},
+  {"date": "2003-02-24", "venue": "Continental Airlines Arena", "city": "East Rutherford", "state": "NJ", "gap": 27, "set": "1"},
+  {"date": "2009-12-30", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 100, "set": "1"},
+  {"date": "2010-10-29", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 43, "set": "2"},
+  {"date": "2012-06-24", "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "gap": 56, "set": "1"},
+  {"date": "2012-07-06", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 7, "set": "1"},
+  {"date": "2012-08-17", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 4, "set": "1"},
+  {"date": "2016-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 170, "set": "1"},
+  {"date": "2018-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 68, "set": "1"},
+  {"date": "2019-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 42, "set": "1"},
+  {"date": "2021-10-15", "venue": "Golden 1 Center", "city": "Sacramento", "state": "CA", "gap": 28, "set": "1"},
+  {"date": "2023-10-14", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 103, "set": "1"}
+ ]
+}

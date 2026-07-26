@@ -6,17 +6,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#877e6e;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--grain-blend:multiply;--grain-opacity:.45;}
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--grain-blend:multiply;--grain-opacity:.45;}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
 :root:not([data-theme="light"]) .hero{border-top-width:2px;border-top-color:#6b6353}
 :root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 :root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
 }
 @media screen{
-:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
 :root[data-theme="dark"] .hero{border-top-width:2px;border-top-color:#6b6353}
 :root[data-theme="dark"] .badge img.flip{filter:invert(1)}
 :root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
@@ -122,7 +122,7 @@ header{padding-bottom:.9rem}
 .r-stats .st:nth-child(3) b{min-width:3.5rem}
 .r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
            font-size:.95rem;color:var(--ink)}
-.r-stats b.hot{color:var(--hot)}
+.r-stats b.hot{color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
    for what it is: ".r-song" also means "the song this row is about" on the
    song index, which inherits this stylesheet, and one grid-column rule meant

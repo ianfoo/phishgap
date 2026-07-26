@@ -1,0 +1,33 @@
+{
+ "song": "Moonage Daydream",
+ "slug": "moonage-daydream",
+ "artist": "Phish",
+ "best": [
+  {"date": "2025-09-20", "score": 64, "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "link": "https://fouldomain.com/tracks/39911"},
+  {"date": "2026-04-23", "score": 59, "venue": "Sphere", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/53582"},
+  {"date": "2021-08-31", "score": 50, "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "link": "https://fouldomain.com/tracks/36213"},
+  {"date": "2022-09-02", "score": 49, "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "link": "https://fouldomain.com/tracks/37322"},
+  {"date": "2019-12-07", "score": 46, "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "link": "https://fouldomain.com/tracks/35646"},
+  {"date": "2018-10-26", "score": 44, "venue": "Allstate Arena", "city": "Rosemont", "state": "IL", "link": "https://fouldomain.com/tracks/34662"},
+  {"date": "2022-08-06", "score": 43, "venue": "Atlantic City Beach", "city": "Atlantic City", "state": "NJ", "link": "https://fouldomain.com/tracks/37193"},
+  {"date": "2016-10-31", "score": 42, "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "link": "https://fouldomain.com/tracks/33504"},
+  {"date": "2024-07-27", "score": 42, "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "link": "https://fouldomain.com/tracks/38639"},
+  {"date": "2017-07-21", "score": 40, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/33768"},
+  {"date": "2023-07-29", "score": 35, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/37916"},
+  {"date": "2025-06-28", "score": 26, "venue": "Moody Center", "city": "Austin", "state": "TX", "link": "https://fouldomain.com/tracks/39466"}
+ ],
+ "performances": [
+  {"date": "2016-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1752, "set": "2", "note": "Phish debut; With Sylvia D'Avanzo, Alisa Horn, Todd Low, Antoine Silverman, Alissa Smith, and Hiroko Taguchi on strings and Jennifer Hartswick, Celisse Henderson, and Jo Lampert on backing vocals."},
+  {"date": "2017-07-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "1"},
+  {"date": "2018-10-26", "venue": "Allstate Arena", "city": "Rosemont", "state": "IL", "gap": 48, "set": "1"},
+  {"date": "2019-12-07", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 46, "set": "1"},
+  {"date": "2021-08-31", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 27, "set": "1"},
+  {"date": "2022-08-06", "venue": "Atlantic City Beach", "city": "Atlantic City", "state": "NJ", "gap": 51, "set": "1"},
+  {"date": "2022-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 7, "set": "1", "out": ">"},
+  {"date": "2023-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 32, "set": "1"},
+  {"date": "2024-07-27", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 38, "set": "1"},
+  {"date": "2025-06-28", "venue": "Moody Center", "city": "Austin", "state": "TX", "gap": 44, "set": "1"},
+  {"date": "2025-09-20", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 24, "set": "1"},
+  {"date": "2026-04-23", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 12, "set": "1"}
+ ]
+}

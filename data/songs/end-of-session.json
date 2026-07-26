@@ -1,0 +1,12 @@
+{
+ "song": "End of Session",
+ "slug": "end-of-session",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1771, "set": "2", "note": "Debut.", "out": ">"},
+  {"date": "2021-10-20", "venue": "Matthew Knight Arena", "city": "Eugene", "state": "OR", "gap": 127, "set": "1", "jamchart": true, "jam": "The second airing of \"End of Session\" is the meat of this \"Split Open and Melt\" sandwich.", "out": ">"}
+ ]
+}
