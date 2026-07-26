@@ -23,7 +23,7 @@
 }
 
 .theme{display:inline-flex;gap:.3rem;align-items:center}
-.theme button{font:inherit;font-size:.6rem;letter-spacing:.12em;
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
 .theme button:hover:not(:disabled){color:var(--ink)}
@@ -37,26 +37,26 @@
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:15px;line-height:1.5}
+     font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
 .crumb{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:1.1rem;
-   font-size:.62rem;letter-spacing:.16em;text-transform:uppercase}
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.02;margin:0 0 .5rem;
    letter-spacing:-.01em}
-.show{margin:0;font-size:.78rem;font-weight:600;letter-spacing:.07em;
+.show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
 .hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
    border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.1rem;line-height:1;
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
    letter-spacing:-.01em}
 .num.hot{color:var(--hot)}
-.lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-top:.4rem}
 .lbl .abbr{display:none}
 /* The best version gets a line rather than a fifth card: it is a date, a
@@ -64,47 +64,47 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    number. */
 .best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .7rem;
    margin:.9rem 0 0;padding:.6rem .8rem;border-left:3px solid var(--hot);
-   background:var(--hover);font-size:.8rem}
-.best .cap{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+   background:var(--hover);font-size:.875rem}
+.best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .best .when{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem}
 .best .score{font-family:'Alfa Slab One',Georgia,serif;color:var(--hot);
-   font-size:1.1rem;line-height:1}
+   font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
 .best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.35rem .5rem;border:1px solid var(--rule);color:var(--dim);
-   text-decoration:none;font-size:.66rem;letter-spacing:.08em;
+   text-decoration:none;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft)}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
    margin:1.9rem 0 .9rem}
-.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.9rem;
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
    padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
    background:transparent;color:var(--ink)}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
    outline-offset:1px}
-.sort{font:inherit;font-size:.7rem;padding:.4rem .3rem;background:transparent;
+.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
    color:var(--ink);border:1px solid var(--rule);border-radius:0}
-.count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
    scripting off and survive a reload. */
 .eras{display:flex;flex-wrap:wrap;gap:.3rem}
 .era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
-   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.42rem .55rem;border:1px solid var(--rule);color:var(--dim);
    text-decoration:none}
 .era-chip b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.8rem;letter-spacing:0;color:var(--ink-soft)}
+   font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
 .era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
 .era-chip:hover b{color:var(--hot)}
 /* Shown only once there is something to clear. */
-.clear{font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--rule);background:transparent;
    color:var(--dim);cursor:pointer}
 .clear:hover{color:var(--hot);border-color:var(--hot)}
@@ -114,7 +114,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .r-venue{cursor:pointer}
 .r-venue:hover{color:var(--hot)}
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.95rem;color:var(--ink)}
+   font-size:1rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 /* Anything a link can land on stops clear of the condensed header, which is
    fixed and 42px tall -- without this the browser puts the target's top edge
@@ -125,15 +125,15 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .perfs>li.yr{border-bottom:0}
 .yr h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;
    font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:1rem;letter-spacing:.04em;margin:1.6rem 0 .3rem;
+   font-size:1rem;letter-spacing:0;margin:1.6rem 0 .3rem;
    padding-bottom:.3rem;border-bottom:1px solid var(--rule);color:var(--ink)}
-.yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.6rem;
-   letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .yr:first-child h2{margin-top:.4rem}
 /* Column labels. The date and the venue say what they are; the bar and the
    number on the far right did not, and were left to be guessed at. */
 .head{padding-bottom:.35rem;border-bottom:1px solid var(--rule);
-   font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .head .nhead{color:var(--dim)}
 .head .ghead{grid-column:4/-1;text-align:right}
@@ -167,31 +167,31 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .i-pnet::after{background-image:url("data:image/png;base64,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")}
 .i-pin::after{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC")}
 .i-foul::after{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR42u2Xz2tcVRTHP+e+Nz+a2MTa4Ewy0zSpq7ZiFwWhCEIRoxWULhztdBItRbKwW3fdduHfUBDFYIM/diq6cS2KoNAWwSyqTjLMpLVEW9PJzLv36yIabcvUZGZUhJztvfe8zz3nnvM9D7Zt27q0y6WD6dqLo/t79eO6Pbgrvv6qi6n0ChB3c+jq6ZGdfs3tBQ3+VHlgaLU10E7HraHc/HLjHwMQWKOcO+qJcoH4CwhDIN8meyyV1jWv1BHg3FYBbLMbGy+MHQ8Rz4I1cfKGG4TggYvIhkETmXT6tV1vfb/Stwg0KuOPBZIpF5Kvvdkxk9apxcAf6IYdwEkK0FxrTwHv9QXgyqmJrK21SxjDuMxuk0+tZ+LO1ChCLoIgRyj2rQqySfu5gHZuxZlwe+ozucG7IlkuHKmVi9ObArj2UrFQr4yedcGPb/U2QmlH/Iz+8rbqM7lJmZ1wCo83pguH7gmg2cOpJPEvI5sMcpNdFbbXU8snR6c2fPr4aUkxDieFE9VScUdHgKutH3dj0UO9NJYgLDj3qMA0eziFNPHnavRgKq0nOgIkSfp0X/p00D5KxezSzfpBYOSO1UMdAeIQdvRNLLJt5wjRXe/ElHQEaGfsvBS+6/Xbhi0w11hNx1EdY+224MC3HQEKb9aqKHwUgvmeFE66YaCRtxeXTNrojGb6OTL/2T3LcHS+ftlMK13dXCTAApH7ZCPkkRYAFGhK9lV+rvHr33dCs0+Rnse4CQxtnsBCfn7p9dty7t2HjjCcRO6D4juLi5sWo5WZvZPNVhhUlJxxFvsgP4AQWNNMGczZ72IEuAgFefi8cKH2Rl9a8f1zP1zJv1u95MwuAjhjtcPWWxJVgNh0ve9yrBJR1e3ZT5ZbUcvPOuw+M9pgERYyJt1wRtXLHs5fqL3S94HE3sdD9RLA8snCvBfTgo9BRw3yMvuyZXwD/pd/bRhdV7jxJ+uVsfONcvGR/2QqVomoUR47vv1/sG3/e/sNrEkrwQ1sbIcAAAAASUVORK5CYII=")}
-.dek{margin:.55rem 0 0;font-size:.78rem;line-height:1.5;color:var(--dim);
+.dek{margin:.55rem 0 0;font-size:.75rem;line-height:1.5;color:var(--dim);
    max-width:56ch}
 .crumb .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
-   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);line-height:1.1rem}
-.r-venue{font-size:.8rem;font-weight:600;letter-spacing:.04em;
+.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;line-height:1.3rem}
-.r-place{display:block;color:var(--dim);font-size:.72rem;line-height:1.15rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
 .r-gap{text-align:right;line-height:1.3rem}
 /* The column header names this column, so the per-row label would be a second
    answer to a question already answered -- but the header is the first thing
    the narrow layout drops, and there the number was left to be guessed at.
    Shown exactly where the header is not. */
-.glabel{display:none;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.glabel{display:none;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-right:.4rem}
-.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.05rem}
+.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1rem}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
-.set{display:block;font-size:.6rem;letter-spacing:.14em;color:var(--dim);
+.set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
    text-transform:uppercase}
 /* What it followed and what it led into, stacked. Sized in ch so the column
    holds a couple of words of song title and truncates the rest rather than
    pushing the gap figures around. */
-.nb{font-size:.68rem;line-height:1.25rem;color:var(--dim);min-width:0}
+.nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
 .nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* Doubled backslashes: this is a Python string, and "90" is read as the
    octal escape  followed by "90", which reaches the browser as a control
@@ -213,10 +213,10 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 /* Only the rated versions carry these, which is 25 rows out of however many
    hundred -- and only they are known to have audio, since a version cannot be
    scored until a recording of it circulates. */
-.mark{display:block;margin-top:.3rem;font-size:.62rem;letter-spacing:.1em;
+.mark{display:block;margin-top:.3rem;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim)}
 .mark b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.8rem;color:var(--dim);letter-spacing:0}
+   font-size:.875rem;color:var(--dim);letter-spacing:0}
 .mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -226,9 +226,9 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    read as something stuck on afterwards rather than as part of the entry.
    Roman, not italic -- these run to 950 characters at the long end, and a
    paragraph of italic prose is tiring well before that. */
-.jam,.note{margin:.4rem 0 0;font-size:.76rem;line-height:1.5;
+.jam,.note{margin:.4rem 0 0;font-size:.75rem;line-height:1.5;
    color:var(--ink-soft);max-width:62ch}
-.tag{display:inline-block;margin-right:.45rem;font-size:.58rem;
+.tag{display:inline-block;margin-right:.45rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 details.jam,details.note{cursor:pointer}
 details.jam summary,details.note summary{display:block;list-style:none}
@@ -241,7 +241,7 @@ details[open] .clip{-webkit-line-clamp:none;display:block}
    the very rule that makes it necessary. */
 details.jam summary::after,
 details.note summary::after{content:"More";display:inline-block;margin-top:.2rem;
-   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);border-bottom:1px solid var(--rule)}
 details.jam[open] summary::after,
 details.note[open] summary::after{content:"Less"}
@@ -249,7 +249,7 @@ details.jam summary:hover::after,
 details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot)}
 details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
-.empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
 /* The header a reader keeps once the real one has scrolled away. Landing on a
    row from a report's link otherwise drops you into an unlabelled list of
    dates with no way to tell what page you are on. It carries the song and the
@@ -261,12 +261,12 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
 .stuck.on{transform:none}
 .stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
   gap:.7rem}
-.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
+.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stuck .n{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.stuck .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--dim);margin-left:auto;white-space:nowrap}
 .stuck .n b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-  font-size:.9rem;color:var(--ink);letter-spacing:0}
+  font-size:.875rem;color:var(--ink);letter-spacing:0}
 @media (prefers-reduced-motion:reduce){.stuck{transition:none}}
 /* Where a link dropped you. Bright for a moment, then gone -- it answers
    "which row?" and then stops being ink on the page. */
@@ -281,7 +281,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
 .totop:hover{color:var(--hot);border-color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-   font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim)}
@@ -311,12 +311,12 @@ footer a{color:var(--dim)}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
-  .lbl{font-size:.53rem;letter-spacing:.1em}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
   /* "Median gap, last 10 years" is the clear label and the default one; the
      column is simply not wide enough for it here. */
   .lbl .full{display:none}
   .lbl .abbr{display:inline}
-  .show{font-size:.7rem;letter-spacing:.05em}
+  .show{font-size:.75rem;letter-spacing:0}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }

@@ -23,7 +23,7 @@
 }
 
 .theme{display:inline-flex;gap:.3rem;align-items:center}
-.theme button{font:inherit;font-size:.6rem;letter-spacing:.12em;
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
 .theme button:hover:not(:disabled){color:var(--ink)}
@@ -37,20 +37,20 @@
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:15px;line-height:1.5}
+     font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.62rem;
-   letter-spacing:.16em;text-transform:uppercase}
+.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
-   letter-spacing:-.02em}
+   letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
 /* The wordmark goes home, as a wordmark does, without looking like a link. */
 h1 a{color:inherit;text-decoration:none}
@@ -62,37 +62,37 @@ a.card .lbl{border-bottom:1px solid var(--rule);display:inline-block;
    padding-bottom:.15rem}
 a.card:hover .lbl{color:var(--ink);border-bottom-color:var(--hot)}
 header{padding-bottom:.9rem}
-.show{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
+.show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
 .hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
       border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.3rem;line-height:1;
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
      letter-spacing:-.01em}
 .num.hot{color:var(--hot)}
-.lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
      color:var(--dim);margin-top:.4rem}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
        margin:1.9rem 0 .9rem}
-.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.9rem;
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
         padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
         background:transparent;color:var(--ink)}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.chip:focus-visible,.sort:focus-visible{
   outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
-.chip{font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
       padding:.42rem .6rem;border:1px solid var(--rule);background:transparent;
       color:var(--dim);cursor:pointer}
 .chip:hover{color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.sort{font:inherit;font-size:.7rem;padding:.4rem .3rem;background:transparent;
+.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
       color:var(--ink);border:1px solid var(--rule);border-radius:0}
-.count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);margin-left:auto}
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-         font-size:.95rem;color:var(--ink)}
+         font-size:1rem;color:var(--ink)}
 .reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .row{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;column-gap:1.1rem;
      align-items:baseline;padding:.7rem .25rem;text-decoration:none;
@@ -100,38 +100,33 @@ header{padding-bottom:.9rem}
 .row:hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
-.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
+.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
         line-height:1.3rem;white-space:nowrap}
-.r-venue{font-size:.85rem;font-weight:600;letter-spacing:.04em;
+.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
          text-transform:uppercase;line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
    of the numbers beside it. */
-.r-stats{font-size:.7rem;color:var(--dim);line-height:1.3rem;
+.r-stats{font-size:.75rem;color:var(--dim);line-height:1.3rem;
          display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
          justify-items:end;column-gap:.6rem}
 .r-stats .st{white-space:nowrap}
-/* Each figure gets a fixed field of its own, so the words beside them line up
-   as well as the digits do -- otherwise "longest 45" and "longest 1,468" pin
-   their right edges and the word wanders left by three characters. */
-.r-stats .st b{display:inline-block;text-align:right;min-width:2.6rem}
-.r-stats .st:first-child b{min-width:1.7rem}
-/* The longest gap is the one four-digit figure on either index -- 1,468 needs
-   more field than 45 does, and a field it overflows is no field at all. */
-.r-stats .st:nth-child(3) b{min-width:3.5rem}
+/* Tabular numerals do the aligning; the widths these used to be given by hand
+   were a workaround for not having asked the face for them. */
+.r-stats .st b{display:inline-block;text-align:right}
 .r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-           font-size:.95rem;color:var(--ink)}
+           font-size:1rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
    for what it is: ".r-song" also means "the song this row is about" on the
    song index, which inherits this stylesheet, and one grid-column rule meant
    for this was enough to wreck that. */
-.r-top{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
+.r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
@@ -160,19 +155,19 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
-  .lbl{font-size:.53rem;letter-spacing:.1em}
-  .show{font-size:.72rem;letter-spacing:.05em}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  .show{font-size:.75rem;letter-spacing:0}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
 
 .prose{max-width:68ch;margin:0 0 2.4rem}
 .prose h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:1.15rem;margin:2.2rem 0 .5rem;letter-spacing:.01em}
-.prose p{margin:0 0 .9rem;font-size:.85rem;line-height:1.65;color:var(--ink-soft)}
+   font-size:1.25rem;margin:2.2rem 0 .5rem;letter-spacing:0}
+.prose p{margin:0 0 .9rem;font-size:.875rem;line-height:1.65;color:var(--ink-soft)}
 .prose b{color:var(--ink)}
-.prose .verdict{display:inline-block;margin:0 .15rem;font-size:.62rem;
-   letter-spacing:.1em;text-transform:uppercase}
+.prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase}
 .prose .overdue{color:var(--hot)}
 .prose .premature{color:var(--cool)}
 .prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;

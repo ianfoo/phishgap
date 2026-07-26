@@ -23,7 +23,7 @@
 }
 
 .theme{display:inline-flex;gap:.3rem;align-items:center}
-.theme button{font:inherit;font-size:.6rem;letter-spacing:.12em;
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
 .theme button:hover:not(:disabled){color:var(--ink)}
@@ -34,10 +34,15 @@
 @media print{.theme{display:none}}
 
 *{box-sizing:border-box}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work; the alternative is a hand-measured
+   min-width per field, re-measured the first time a four-digit gap turns up. */
+body{font-variant-numeric:tabular-nums}
+h1,h2,.title{text-wrap:balance}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:15px;line-height:1.5}
+     font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
 /* The header is a grid so the tour, which lives in the show line where there
    is room for it, can be lifted out to ride the breadcrumb row where there is
@@ -45,8 +50,12 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 header{padding-bottom:.9rem}
 /* Three fixed columns rather than space-between, so the index link stays put
    when a show is missing one of its neighbours. */
-.crumb{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
-       gap:.5rem;margin:0 0 1rem;font-size:.62rem;letter-spacing:.16em;
+.crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   margin:0 0 .5rem}
+.crumb.sections{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+.crumb.sections .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
+.crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
+       gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
@@ -56,7 +65,7 @@ header{padding-bottom:.9rem}
 .crumb .next{grid-column:3;justify-self:end}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
-   letter-spacing:-.02em}
+   letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
 /* The wordmark goes home without dressing as a link. Without this it fell to
    the browser default and came out blue and underlined. */
@@ -73,18 +82,18 @@ h1 a:hover em{color:var(--ink)}
    hyphens, which is more punctuation than Alfa Slab One wants to carry. */
 .show .date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.5rem;
    line-height:1;color:var(--ink)}
-.show .tour{font-size:.95rem;font-weight:600;letter-spacing:.07em;
+.show .tour{font-size:1rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--dim)}
-.show .tour::before{content:"\2022";color:var(--hot);font-size:1.2rem;
+.show .tour::before{content:"\2022";color:var(--hot);font-size:1.25rem;
    margin:0 .7rem}
-.where{margin:.4rem 0 0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
+.where{margin:.4rem 0 0;font-size:1rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
 /* Below the stats rather than in the masthead: the header stays a tight block
    of identity, and the links get their own air on the first screen. */
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.32rem .52rem;border:1px solid var(--rule);color:var(--dim);
-   font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    text-decoration:none;white-space:nowrap}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft);
@@ -93,13 +102,13 @@ h1 a:hover em{color:var(--ink)}
       border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.3rem;line-height:1;
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
      letter-spacing:-.01em;color:var(--ink)}
 .num.hot{color:var(--hot)}
-.lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
      color:var(--dim);margin-top:.4rem}
-h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:.9rem;
-   letter-spacing:.1em;text-transform:uppercase;margin:2.4rem 0 .3rem;
+h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:.875rem;
+   letter-spacing:.14em;text-transform:uppercase;margin:2.4rem 0 .3rem;
    padding-bottom:.3rem;border-bottom:1px solid var(--rule)}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* The gap column carries the number plus the song's typical figures under it,
@@ -110,7 +119,7 @@ col.c-bar{width:12%}
 col.c-last{width:45%}
 table.no-last col.c-song{width:35%}
 table.no-last col.c-bar{width:52%}
-th{font-size:.62rem;text-transform:uppercase;letter-spacing:.15em;
+th{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);font-weight:500;text-align:left;padding:.45rem .6rem;
    border-bottom:1px solid var(--rule)}
 th.n,td.n{text-align:right;padding-right:1.1rem;white-space:nowrap}
@@ -122,12 +131,12 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    solid stamp, while this is an invitation to read something elsewhere. Inside
    the link, so the whole title-and-chip is one target and lights up together. */
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
-   border:1px solid var(--hot);color:var(--hot-text);font-size:.58rem;
-   font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+   border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
+   font-weight:600;letter-spacing:.14em;text-transform:uppercase;
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
 td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.3rem;line-height:1;
+.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.5rem;line-height:1;
      white-space:nowrap}
 .gap.big{color:var(--hot)}
 .gap.small{color:var(--cool)}
@@ -136,7 +145,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    thing on the page that is comfortably readable. */
 .typ{display:block;margin-top:.25rem;font-size:.75rem;color:var(--dim);
    white-space:nowrap}
-.verdict{display:block;margin-top:.2rem;font-size:.62rem;letter-spacing:.1em;
+.verdict{display:block;margin-top:.2rem;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;white-space:nowrap}
 .verdict.overdue{color:var(--hot-text)}
 .verdict.premature{color:var(--cool)}
@@ -146,8 +155,8 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 /* A filled edge reads tighter than text does at the same distance, so the chip
    needs more room above it than the plain tags to sit on the same rhythm. */
 .verdict.bustout{display:inline-block;margin-top:.5rem;background:var(--hot);
-   color:var(--paper);padding:.16rem .36rem;font-size:.66rem;font-weight:600;
-   letter-spacing:.12em;line-height:1.1;
+   color:var(--paper);padding:.16rem .36rem;font-size:.625rem;font-weight:600;
+   letter-spacing:.14em;line-height:1.1;
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 /* Our own tooltip, because the browser's waits about a second before showing
    and this one exists to answer "what is that bar?" while the pointer is still
@@ -157,7 +166,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
   td[data-tip]::after{content:attr(data-tip);position:absolute;left:.25rem;
     bottom:calc(100% - .35rem);z-index:5;white-space:nowrap;
     padding:.3rem .5rem;background:var(--ink);color:var(--paper);
-    font-size:.68rem;letter-spacing:.02em;line-height:1;
+    font-size:.75rem;letter-spacing:0;line-height:1;
     opacity:0;visibility:hidden;transition:opacity .09s ease-out}
   td[data-tip]:hover::after,td[data-tip]:focus-visible::after{
     opacity:1;visibility:visible}
@@ -182,7 +191,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    for free. */
 .bar .tick{position:absolute;top:-5px;bottom:-5px;width:2px;
    background:var(--ink);box-shadow:0 0 0 1px var(--paper)}
-.last{font-size:.85rem;overflow-wrap:anywhere;vertical-align:top}
+.last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* The date links when we hold that show. Underlined rather than coloured, so
    a column of them does not turn the right-hand side of the table orange. */
@@ -192,23 +201,23 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 /* Stacked on wide layouts, run together on narrow ones -- see the
    max-width block, which puts these back inline with separators. */
 .last .date,.last .venue,.last .place{display:block}
-.venue{color:var(--dim);font-size:.78rem;line-height:1.2rem}
-.rating{margin:.45rem 0 0;font-size:.66rem;letter-spacing:.1em;
+.venue{color:var(--dim);font-size:.75rem;line-height:1.2rem}
+.rating{margin:.45rem 0 0;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim)}
 .rating b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.95rem;color:var(--ink);letter-spacing:0;margin-left:.15rem}
+   font-size:1rem;color:var(--ink);letter-spacing:0;margin-left:.15rem}
 .rating span{opacity:.75}
 /* The title carries the link to the song's own page; underlining every one of
    them would stripe the table, so it colours on hover instead. */
 td.song a{color:inherit;text-decoration:none}
 td.song a:hover{color:var(--hot)}
-.place{color:var(--dim);font-size:.78rem;line-height:1.2rem;white-space:nowrap}
+.place{color:var(--dim);font-size:.75rem;line-height:1.2rem;white-space:nowrap}
 .none{color:var(--dim);font-style:italic}
 .notes{margin:2.2rem 0 0;padding:1rem 1.1rem;border-left:3px solid var(--rule);
-       font-size:.84rem;color:var(--ink-soft)}
+       font-size:.875rem;color:var(--ink-soft)}
 .notes a{color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
@@ -246,12 +255,12 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   td.last{grid-area:meta}
   td.bar{display:none}
   /* No bar here to carry the tick, so the words do all the work. */
-  .typ{font-size:.7rem;margin-top:.2rem}
-  .verdict{font-size:.6rem}
-  .verdict.bustout{font-size:.62rem}
-  .gap{font-size:1.2rem}
-  .song{font-size:.95rem;line-height:1.25rem}
-  .last{font-size:.72rem;line-height:1.15rem}
+  .typ{font-size:.75rem;margin-top:.2rem}
+  .verdict{font-size:.625rem}
+  .verdict.bustout{font-size:.625rem}
+  .gap{font-size:1.25rem}
+  .song{font-size:1rem;line-height:1.25rem}
+  .last{font-size:.75rem;line-height:1.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
   /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
@@ -265,25 +274,25 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* Two full dates and the index link have to share one line here, and at
      320px they only just do, so the pager gives up some tracking rather than
      risk pushing the page sideways. */
-  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.56rem;letter-spacing:.09em}
+  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
   h1{margin-bottom:.45rem}
-  .show .date{font-size:1.15rem}
-  .show .tour{font-size:.62rem;font-weight:400;letter-spacing:.14em}
+  .show .date{font-size:1.25rem}
+  .show .tour{font-size:.625rem;font-weight:400;letter-spacing:.14em}
   .show .tour::before{font-size:1rem;margin:0 .5rem}
-  .where{margin-top:.2rem;font-size:.72rem;letter-spacing:.05em}
+  .where{margin-top:.2rem;font-size:.75rem;letter-spacing:0}
   /* The buttons stand twice as tall as a line of footer text, so sharing a row
      with it inflated that row and opened a gap between the two text lines.
      They get their own row down here instead. */
   .theme{order:1;flex-basis:100%}
   /* All three badges have to hold one line down to a 320px phone. */
   .links{margin-top:.95rem;gap:.3rem}
-  .badge{font-size:.58rem;letter-spacing:.07em;padding:.3rem .45rem;gap:.3rem}
+  .badge{font-size:.625rem;letter-spacing:0;padding:.3rem .45rem;gap:.3rem}
   .badge img{width:12px;height:12px}
   .card{flex:1 1 45%;padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
-  .lbl{font-size:.53rem;letter-spacing:.1em}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
 }
 /* Wide layouts have a big empty corner to the right of the wordmark, and the
    show identity is about as tall as the wordmark is, so the two balance as
@@ -297,8 +306,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 @media screen and (min-width:700px){
   header{display:grid;grid-template-columns:auto 1fr;column-gap:2.5rem;
          align-items:start;
-         grid-template-areas:"crumb crumb" "title show" "title where"}
-  .crumb{grid-area:crumb}
+         grid-template-areas:"sections sections" "pager pager"
+                             "title show" "title where"}
+  .crumb.sections{grid-area:sections}
+  .crumb.pager{grid-area:pager}
   h1{grid-area:title;margin-bottom:0}
   .show{grid-area:show;justify-content:flex-end;text-align:right}
   .where{grid-area:where;text-align:right;margin-top:.35rem}
@@ -356,7 +367,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   });
 })();
 </script></head><body><div class="wrap">
-<header><nav class='crumb'><a class='prev' rel='prev' href='./2025-07-22.html' aria-label='Previous show, 2025-07-22'>&larr; 2025-07-22</a><a class='all' href='../index.html'>All reports</a><a class='next' rel='next' href='./2025-07-25.html' aria-label='Next show, 2025-07-25'>2025-07-25 &rarr;</a><a class='side' href='../songs.html'>Songs</a><a class='side' href='../method.html'>How this is worked out</a></nav><h1><a href="../index.html">Gap <em>Report</em></a></h1>
+<header><nav class='crumb sections'><a class='mark' href='../index.html'>Gap Reports</a><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2025-07-22.html' aria-label='Previous show, 2025-07-22'>&larr; 2025-07-22</a><a class='all' href='../index.html'>All reports</a><a class='next' rel='next' href='./2025-07-25.html' aria-label='Next show, 2025-07-25'>2025-07-25 &rarr;</a></nav><h1><a href="../index.html">Gap <em>Report</em></a></h1>
 <p class="show"><span class="date">2025-07-23</span><span class='tour'>2025 Early Summer Tour</span></p>
 <p class="where">Forest Hills Stadium, Forest Hills, NY</p><p class='rating'>Phish.net rating <b>4.08</b><span> via fouldomain</span></p></header>
 <section class="hero"><div class='card'><div class='num'>18</div><div class='lbl'>Songs Played</div></div><div class='card'><div class='num hot'>15</div><div class='lbl'>Longest Gap</div></div><div class='card'><div class='num'>8.5</div><div class='lbl'>Median Gap</div></div><div class='card'><div class='num'>9.1</div><div class='lbl'>Average Gap</div></div></section>
