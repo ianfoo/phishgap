@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How this is worked out &mdash; Phish Gap Reports</title>
+<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="How the gaps, the medians and the verdicts on this site are worked out."><meta property="og:site_name" content="Phish Gap Reports"><meta property="og:title" content="How this is worked out"><meta property="og:description" content="How the gaps, the medians and the verdicts on this site are worked out."><meta property="og:url" content="https://ianfoo.github.io/phishgap/method.html"><meta property="og:image" content="https://ianfoo.github.io/phishgap/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="How the gaps, the medians and the verdicts on this site are worked out."><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#877e6e;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--grain-blend:multiply;--grain-opacity:.45;}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
+@media screen and (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]) .hero{border-top-width:2px;border-top-color:#6b6353}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
+}
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#948b7c;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"] .hero{border-top-width:2px;border-top-color:#6b6353}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+:root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.6rem;letter-spacing:.12em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled){color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
+
+*{box-sizing:border-box}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:15px;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto}
+/* Which of the two lists you are looking at, and the way to the other one.
+   Above the wordmark because that is where a reader looks for it, and because
+   the footer link that used to be the only route was found by nobody. */
+.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.62rem;
+   letter-spacing:.16em;text-transform:uppercase}
+.crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
+   border-bottom:1px solid var(--rule)}
+.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
+   letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home, as a wordmark does, without looking like a link. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
+/* A hero card that is also a way in. Only some of them are. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card .lbl{border-bottom:1px solid var(--rule);display:inline-block;
+   padding-bottom:.15rem}
+a.card:hover .lbl{color:var(--ink);border-bottom-color:var(--hot)}
+header{padding-bottom:.9rem}
+.show{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
+      text-transform:uppercase;color:var(--ink-soft)}
+.hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
+      border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
+.card:first-child{border-left:0;padding-left:0}
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.3rem;line-height:1;
+     letter-spacing:-.01em}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;
+     color:var(--dim);margin-top:.4rem}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
+       margin:1.9rem 0 .9rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.9rem;
+        padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
+        background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.chip:focus-visible,.sort:focus-visible{
+  outline:2px solid var(--hot);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+      padding:.42rem .6rem;border:1px solid var(--rule);background:transparent;
+      color:var(--dim);cursor:pointer}
+.chip:hover{color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.sort{font:inherit;font-size:.7rem;padding:.4rem .3rem;background:transparent;
+      color:var(--ink);border:1px solid var(--rule);border-radius:0}
+.count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);margin-left:auto}
+.count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+         font-size:.95rem;color:var(--ink)}
+.reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;column-gap:1.1rem;
+     align-items:baseline;padding:.7rem .25rem;text-decoration:none;
+     color:inherit;border-bottom:1px solid var(--rule-soft)}
+.row:hover{background:var(--hover)}
+/* Same rule, same reason: this is the one place the site still spoke two
+   languages, since the song pages had already moved. */
+.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
+        line-height:1.3rem;white-space:nowrap}
+.r-venue{font-size:.85rem;font-weight:600;letter-spacing:.04em;
+         text-transform:uppercase;line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+/* A grid, not a right-aligned sentence. Right-alignment pins only the right
+   edge; every figure to the left of it still moved row to row with the width
+   of the numbers beside it. */
+.r-stats{font-size:.7rem;color:var(--dim);line-height:1.3rem;
+         display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
+         justify-items:end;column-gap:.6rem}
+.r-stats .st{white-space:nowrap}
+/* Each figure gets a fixed field of its own, so the words beside them line up
+   as well as the digits do -- otherwise "longest 45" and "longest 1,468" pin
+   their right edges and the word wanders left by three characters. */
+.r-stats .st b{display:inline-block;text-align:right;min-width:2.6rem}
+.r-stats .st:first-child b{min-width:1.7rem}
+/* The longest gap is the one four-digit figure on either index -- 1,468 needs
+   more field than 45 does, and a field it overflows is no field at all. */
+.r-stats .st:nth-child(3) b{min-width:3.5rem}
+.r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+           font-size:.95rem;color:var(--ink)}
+.r-stats b.hot{color:var(--hot)}
+/* The song that held the longest gap, under the figures it belongs to. Named
+   for what it is: ".r-song" also means "the song this row is about" on the
+   song index, which inherits this stylesheet, and one grid-column rule meant
+   for this was enough to wreck that. */
+.r-top{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
+   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+       font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+       color:var(--dim);display:flex;justify-content:space-between;
+       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+@media screen{
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
+    opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+}
+/* Same lesson as the report tables: stack instead of squeezing columns, so
+   the rules still run the full width and nothing has to be hidden. */
+@media screen and (max-width:620px){
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
+  .r-stats{display:block;text-align:left;white-space:normal}
+  .r-stats .st{display:inline;white-space:normal}
+  /* Before each but the first, never after: the last .st is not the last
+     child -- the song name follows it -- so a trailing separator was left
+     stranded at the end of the line with the name wrapped beneath it. */
+  .r-stats .st:empty{display:none}
+  /* --dim, not --rule: rule is a hairline colour and a glyph drawn in it is
+     invisible on the dark paper, the way the separators were. */
+  .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\00b7";
+    color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
+  .r-stats .st b{min-width:0!important;text-align:left}
+  .r-top{text-align:left;display:inline}
+  .r-top::before{content:" ("}
+  .r-top::after{content:")"}
+  .card{flex:1 1 45%;padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.53rem;letter-spacing:.1em}
+  .show{font-size:.72rem;letter-spacing:.05em}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+
+.prose{max-width:68ch;margin:0 0 2.4rem}
+.prose h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+   font-size:1.15rem;margin:2.2rem 0 .5rem;letter-spacing:.01em}
+.prose p{margin:0 0 .9rem;font-size:.85rem;line-height:1.65;color:var(--ink-soft)}
+.prose b{color:var(--ink)}
+.prose .verdict{display:inline-block;margin:0 .15rem;font-size:.62rem;
+   letter-spacing:.1em;text-transform:uppercase}
+.prose .overdue{color:var(--hot)}
+.prose .premature{color:var(--cool)}
+.prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;
+   font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.prose .num{font-family:'Alfa Slab One',Georgia,serif;font-size:1rem;
+   color:var(--ink)}
+</style><script>
+(function(){
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script></head><body><div class="wrap">
+<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a></nav>
+<header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
+<p class="show">How this is worked out</p></header>
+<div class="prose"><h2>What a gap is</h2>
+<p>The number beside a song is how many shows the band played between this
+performance and the one before it. A gap of <b class="num">0</b> means they
+played it again the very next night; <b class="num">485</b> means four hundred
+and eighty-five shows went by. The figure comes from Phish.net, which computes
+it; nothing here is counted a second time.</p>
+
+<h2>The median, and why ten years</h2>
+<p>Under each gap is that song's usual one &mdash; the median of its gaps over
+the <b>ten years</b> before the show, not over all of history. Forty years of a
+working band is several different bands. The 1990s dominate any all-time
+figure, when they played far more shows a year out of a smaller catalogue, so
+all-time gaps run much shorter and better than half of everything came out
+overdue &mdash; a word that means nothing if it fits three songs in five.</p>
+<p>Counting a fixed number of past performances instead does not fix it: twenty
+performances is two years for a staple and twenty-four for a rarity. Kung's
+last twenty reach back to 1995. Bounding by time instead means a song has to
+have been in rotation lately to be judged at all.</p>
+<p>The median rather than the average, because gap distributions are savagely
+right-skewed: a staple with a median of 6 carries a handful of 200s, and an
+average over that would call almost anything ordinary.</p>
+
+<h2>The verdicts</h2>
+<p>A gap outside the middle 70% of that ten-year window gets called. Below it,
+<span class="verdict premature">premature</span>; above it,
+<span class="verdict overdue">overdue</span>; inside, nothing is said, which is
+most songs. The band's ends are interpolated values that appear nowhere in the
+song's actual gaps, which is why they are not printed &mdash; the mark on the
+bar is the median, the one figure that is real.</p>
+<p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
+yields roughly 13% premature, 67% expected and 20% overdue.</p>
+
+<h2>Songs with no verdict</h2>
+<p>A song needs <b>eight</b> performances inside that ten-year window before
+any of this is said about it. Below that there is no current norm to be early
+or late against, so it gets its numbers and no adjective. Roughly one song in
+eleven falls here, which is the honest answer for something the band has nearly
+stopped playing.</p>
+
+<h2>Bustouts</h2>
+<p>A gap of <b class="num">100</b> or more is a
+<span class="verdict bust">bustout</span> regardless of everything above. A
+hundred sits where Phish.net's own setlist notes use the word. The gap alone
+decides it: a gap counts shows, so a large one already proves the song has been
+in the catalogue a long while &mdash; nothing newly written can reach the
+threshold.</p>
+
+<h2>Ratings and jam charts</h2>
+<p>Version scores and the Phish.net show rating both come by way of
+<b>fouldomain</b>, which is the only place the latter is exposed
+programmatically. Scores are computed from a mix of community signal and audio
+analysis, so a version has none until a recording of it circulates &mdash;
+days or weeks after the show, sometimes never. Jam chart entries are Phish.net's
+own, written months after the fact. Both are treated as optional everywhere
+they appear, which is why a report published the morning after a show carries
+neither.</p>
+
+<h2>When a report appears</h2>
+<p>Nothing in the data says whether a setlist is finished. There is no show
+time to reason from, and the format is not promised &mdash; a rained-out show
+can stop mid-second-set with no encore, so counting sets proves nothing.
+Stability stands in for completeness instead: once a song count has not moved
+for two hours it is taken for the whole show. Until then the report is held
+back, because a half-entered setlist would publish wrong totals.</p></div>
+<footer><span><a href="./index.html">All reports</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<span>Data: Phish.net &middot; ratings fouldomain</span></footer>
+</div></body></html>

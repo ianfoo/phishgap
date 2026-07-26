@@ -242,6 +242,36 @@ details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot
 details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
 .empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+/* The header a reader keeps once the real one has scrolled away. Landing on a
+   row from a report's link otherwise drops you into an unlabelled list of
+   dates with no way to tell what page you are on. It carries the song and the
+   figure the page exists for, and nothing else. */
+.stuck{position:fixed;top:0;left:0;right:0;z-index:20;
+  background:var(--paper);border-bottom:1px solid var(--rule);
+  transform:translateY(-101%);transition:transform .22s ease;
+  padding:.5rem clamp(1rem,5vw,3rem)}
+.stuck.on{transform:none}
+.stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
+  gap:.7rem}
+.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stuck .n{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin-left:auto;white-space:nowrap}
+.stuck .n b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+  font-size:.9rem;color:var(--ink);letter-spacing:0}
+@media (prefers-reduced-motion:reduce){.stuck{transition:none}}
+/* Where a link dropped you. Bright for a moment, then gone -- it answers
+   "which row?" and then stops being ink on the page. */
+@keyframes landed{from{background:var(--hover);box-shadow:inset 3px 0 0 var(--hot)}
+  to{background:transparent;box-shadow:inset 3px 0 0 transparent}}
+.perfs>li.landed{animation:landed 3.4s ease-out both}
+@media (prefers-reduced-motion:reduce){
+  .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--rule);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
@@ -315,8 +345,11 @@ footer a{color:var(--dim)}
     mark();
   });
 })();
-</script></head><body><div class="wrap">
+</script></head><body id="top"><div class="wrap">
 <nav class="crumb"><a href="../index.html">Shows</a><a href="../songs.html">Songs</a></nav>
+<div class="stuck" id="stuck" aria-hidden="true"><div class="in">
+<span class="name">Highway to Hell</span>
+<span class="n"><b>78</b> shows &middot; median gap <b>6</b></span></div></div>
 <header><h1>Highway to Hell</h1>
 <p class="show">Debut 1989-10-01 &middot; Last played 2026-07-25 &middot; 78 performances</p></header>
 <section class="hero"><div class='card'><div class='num'>78</div><div class='lbl'>Times Played</div></div><div class='card'><div class='num'>n/a</div><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div></div><div class='card'><div class='num'>6</div><div class='lbl'>Median Gap, All-Time</div></div><div class='card'><div class='num hot'>659</div><div class='lbl'>Longest Gap</div></div></section>
@@ -419,8 +452,8 @@ footer a{color:var(--dim)}
 <li id='1989-10-01' data-date='1989-10-01' data-era='1.0' data-gap='-1' data-score='' data-search="1989-10-01 10/01/1989 10/1/1989 10/1/89 10/01 10/1 10-1 october 01 1989 october 1 sunday the front burlington vt  first known phish performance."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1989-10-01' target='_blank' rel='noopener noreferrer'>1989-10-01</a><span class='dow'>Sun</span></span><span><span class='r-venue'>The Front</span><span class='r-place'>Burlington, VT</span><p class='note'><span class='tag'>Note</span>First known Phish performance.</p></span><span class='nb'></span><span class='bar'></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>ENCORE</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
-<footer><span>Data: Phish.net &middot; ratings <a href="https://fouldomain.com/"
- target="_blank" rel="noopener noreferrer">fouldomain</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
+<footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Current through 2026-07-25</span></footer>
 </div><script>
 (function(){
@@ -506,5 +539,32 @@ footer a{color:var(--dim)}
   });
   q.disabled=false; sort.disabled=false;
   apply();
+
+  // The condensed header appears once the real one is off screen, and the
+  // real one is the thing to watch rather than a scroll offset -- no
+  // magic number, and it stays right when the header wraps to more lines.
+  var stuck=document.getElementById('stuck'), head=document.querySelector('header'),
+      totop=document.getElementById('totop');
+  function perch(on){
+    if(stuck) stuck.classList.toggle('on', on);
+    if(totop) totop.hidden=!on;
+  }
+  if(head && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(e){ perch(!e[0].isIntersecting); },
+      {rootMargin:'-8px 0px 0px 0px'}).observe(head);
+  }
+
+  // A link from a report lands on one row; say which, then stop saying it.
+  function land(){
+    var id=location.hash.slice(1);
+    if(!id) return;
+    var li=document.getElementById(id);
+    if(!li || li.classList.contains('yr')) return;
+    li.classList.remove('landed');
+    void li.offsetWidth;            // restart the animation on a repeat visit
+    li.classList.add('landed');
+  }
+  window.addEventListener('hashchange', land);
+  land();
 })();
 </script></body></html>
