@@ -218,7 +218,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .last{font-size:.72rem;line-height:1.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
-  .last .venue::before,.last .place::before{content:" · ";color:var(--rule)}
+  /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
+     on #131210 this separator was invisible on the dark palette. */
+  .last .venue::before,.last .place::before{content:" · ";color:var(--dim);
+    opacity:.7}
   /* Same two lines, scaled down: date and tour still pair on the first one
      even at 320px, and the masthead closes up so it reads as one block rather
      than a stack of separate announcements. */
