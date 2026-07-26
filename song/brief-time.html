@@ -214,6 +214,8 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    holds a couple of words of song title and truncates the rest rather than
    pushing the gap figures around. */
 .nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
+/* Named only where the column header is not doing it. */
+.nb .cap{display:none}
 .nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* Doubled backslashes: this is a Python string, and "90" is read as the
    octal escape  followed by "90", which reaches the browser as a control
@@ -324,8 +326,10 @@ footer a{color:var(--dim)}
 @media screen and (max-width:820px){
   .head{display:none}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
-  .nb{margin-top:.2rem}
+  .nb{margin-top:.35rem}
   .nb span{white-space:normal;overflow:visible}
+  .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+     text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
   .dow{display:inline}
   .r-gap{text-align:left}
