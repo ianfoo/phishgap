@@ -701,7 +701,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .last{font-size:.72rem;line-height:1.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
-  .last .venue::before,.last .place::before{content:" · ";color:var(--rule)}
+  /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
+     on #131210 this separator was invisible on the dark palette. */
+  .last .venue::before,.last .place::before{content:" · ";color:var(--dim);
+    opacity:.7}
   /* Same two lines, scaled down: date and tour still pair on the first one
      even at 320px, and the masthead closes up so it reads as one block rather
      than a stack of separate announcements. */
@@ -1201,7 +1204,7 @@ header{padding-bottom:.9rem}
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
          font-size:.95rem;color:var(--ink)}
 .reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
-.row{display:grid;grid-template-columns:7.2rem 1fr auto;column-gap:1.1rem;
+.row{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;column-gap:1.1rem;
      align-items:baseline;padding:.7rem .25rem;text-decoration:none;
      color:inherit;border-bottom:1px solid var(--rule-soft)}
 .row:hover{background:var(--hover)}
@@ -1210,12 +1213,26 @@ header{padding-bottom:.9rem}
 .r-venue{font-size:.85rem;font-weight:600;letter-spacing:.04em;
          text-transform:uppercase;line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
-.r-stats{font-size:.7rem;color:var(--dim);text-align:right;white-space:nowrap;
-         line-height:1.3rem}
+/* A grid, not a right-aligned sentence. Right-alignment pins only the right
+   edge; every figure to the left of it still moved row to row with the width
+   of the numbers beside it. */
+.r-stats{font-size:.7rem;color:var(--dim);line-height:1.3rem;
+         display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
+         justify-items:end;column-gap:.6rem}
+.r-stats .st{white-space:nowrap}
+/* Each figure gets a fixed field of its own, so the words beside them line up
+   as well as the digits do -- otherwise "longest 45" and "longest 1,468" pin
+   their right edges and the word wanders left by three characters. */
+.r-stats .st b{display:inline-block;text-align:right;min-width:2.6rem}
+.r-stats .st:first-child b{min-width:1.7rem}
+/* The longest gap is the one four-digit figure on either index -- 1,468 needs
+   more field than 45 does, and a field it overflows is no field at all. */
+.r-stats .st:nth-child(3) b{min-width:3.5rem}
 .r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
            font-size:.95rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot)}
-.r-song{display:block;font-size:.7rem;color:var(--dim)}
+.r-song{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
+   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
@@ -1229,7 +1246,18 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    the rules still run the full width and nothing has to be hidden. */
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
-  .r-stats{text-align:left;white-space:normal}
+  .r-stats{display:block;text-align:left;white-space:normal}
+  .r-stats .st{display:inline;white-space:normal}
+  /* Before each but the first, never after: the last .st is not the last
+     child -- the song name follows it -- so a trailing separator was left
+     stranded at the end of the line with the name wrapped beneath it. */
+  .r-stats .st:empty{display:none}
+  /* --dim, not --rule: rule is a hairline colour and a glyph drawn in it is
+     invisible on the dark paper, the way the separators were. */
+  .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\\00b7";
+    color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
+  .r-stats .st b{min-width:0!important;text-align:left}
+  .r-song{text-align:left}
   .r-song{display:inline}
   .r-song::before{content:" ("}
   .r-song::after{content:")"}
@@ -1413,10 +1441,15 @@ def render_index(reports, page_href="./%s.html"):
         hay = " ".join([e["date"], _date_aliases(e["date"]),
                         e["venue"], e["place"], e["tour"]]
                        + e["titles"]).lower()
-        stats = "<b>%d</b> songs" % e["songs"]
+        # Each figure in its own cell rather than one right-aligned run of
+        # text. Right-aligning the whole string only pins its right edge: with
+        # 16 songs against 26, and a longest of 45 against 1,468, every other
+        # number in the line sat at a different place on every row.
+        stats = "<span class='st'><b>%d</b> songs</span>" % e["songs"]
         if e["longest"] is not None:
-            stats += (" &middot; median <b>%s</b> &middot; longest "
-                      "<b class='hot'>%s</b><span class='r-song'>%s</span>"
+            stats += ("<span class='st'>median <b>%s</b></span>"
+                      "<span class='st'>longest <b class='hot'>%s</b></span>"
+                      "<span class='r-song'>%s</span>"
                       % (_stat(e["median"]), _stat(e["longest"]),
                          html.escape(e["longest_song"])))
         rows.append(
@@ -1697,7 +1730,7 @@ footer a{color:var(--dim)}
   .glabel{display:inline}
   .gap{font-size:1rem}
   .set{display:inline;margin-left:.5rem}
-  .set::before{content:"\\00b7";margin-right:.5rem;color:var(--rule)}
+  .set::before{content:"\\00b7";margin-right:.5rem;color:var(--dim);opacity:.7}
   .bar{margin:.25rem 0}
   .card{flex:1 1 45%;padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
@@ -2062,7 +2095,8 @@ SONGS_CSS = INDEX_CSS + """
    contents put "485 shows - median 2 - longest 31 - best 90" and "325 shows -
    median 3 - longest 202 - best 79" at different widths, and the last-played
    column shifted row to row down the page. */
-.row{grid-template-columns:1fr 8.5rem 21.5rem}
+.row{grid-template-columns:1fr 8.5rem 23.5rem}
+.r-stats{grid-template-columns:5.4rem 6.4rem 7.4rem 4.3rem}
 .r-song{display:block;font-family:'Aleo',Georgia,serif;font-weight:600;
    font-size:1.05rem;line-height:1.3rem;color:inherit}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
@@ -2175,13 +2209,17 @@ def render_songs(docs, stamp=None):
     entries.sort(key=lambda e: -e["played"])
 
     for e in entries:
-        stats = "<b>%d</b> show%s" % (e["played"], "" if e["played"] == 1 else "s")
-        if e["median"] is not None:
-            stats += " &middot; median <b>%s</b>" % _stat(e["median"])
-        if e["longest"] is not None:
-            stats += " &middot; longest <b class='hot'>%s</b>" % _stat(e["longest"])
-        if e["score"] is not None:
-            stats += " &middot; best <b class='score'>%s</b>" % e["score"]
+        # One cell per figure, so the columns line up down the page rather than
+        # drifting with the width of each row's numbers.
+        stats = ("<span class='st'><b>%d</b> show%s</span>"
+                 % (e["played"], "" if e["played"] == 1 else "s"))
+        stats += ("<span class='st'>median <b>%s</b></span>" % _stat(e["median"])
+                  if e["median"] is not None else "<span class='st'></span>")
+        stats += ("<span class='st'>longest <b class='hot'>%s</b></span>"
+                  % _stat(e["longest"]) if e["longest"] is not None
+                  else "<span class='st'></span>")
+        stats += ("<span class='st'>best <b class='score'>%s</b></span>" % e["score"]
+                  if e["score"] is not None else "<span class='st'></span>")
         rows.append(
             "<li data-song=\"%s\" data-played='%d' data-last='%s'"
             " data-longest='%s' data-score='%s' data-search=\"%s\">"
