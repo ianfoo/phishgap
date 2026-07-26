@@ -743,12 +743,14 @@ h2::after{content:"";flex:1;border-bottom:1px solid var(--ink)}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* The gap column carries the number plus the song's typical figures under it,
    so it is wider than the number alone would need. */
-col.c-gap{width:19%}
-col.c-song{width:24%}
+/* Song, then where it last turned up, then the bar and the figure. The row
+   leads with what it is about; the gap is an attribute of it. */
+col.c-song{width:26%}
+col.c-last{width:42%}
 col.c-bar{width:12%}
-col.c-last{width:45%}
-table.no-last col.c-song{width:35%}
-table.no-last col.c-bar{width:52%}
+col.c-gap{width:20%}
+table.no-last col.c-song{width:36%}
+table.no-last col.c-bar{width:44%}
 th{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);font-weight:500;text-align:left;padding:.45rem .6rem;
    border-bottom:1px solid var(--rule)}
@@ -891,11 +893,12 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* Wide enough for a comma'd four-digit gap in the Georgia fallback. */
   .typ .full{display:none}
   .typ .abbr{display:inline}
-  tr{display:grid;grid-template-columns:3.7rem 1fr;column-gap:.7rem;
-     grid-template-areas:"gap song" "gap meta";
+  tr{display:grid;grid-template-columns:1fr 3.7rem;column-gap:.7rem;
+     grid-template-areas:"song gap" "meta gap";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   td{border:0;padding:0}
-  td.n{grid-area:gap;padding-right:0;align-self:start;padding-top:.1rem}
+  td.n{grid-area:gap;padding-right:0;align-self:start;padding-top:.1rem;
+       text-align:right}
   td.song{grid-area:song}
   td.last{grid-area:meta}
   td.bar{display:none}
@@ -1205,12 +1208,13 @@ def render_html(report, bar_scale="linear", index_href=None,
     def flush():
         if current is None:
             return
-        cols = ("<colgroup><col class='c-gap'><col class='c-song'>"
+        cols = ("<colgroup><col class='c-song'><col class='c-last'>"
                 "<col class='c-bar'>"
                 + ("<col class='c-last'>" if show_last else "")
                 + "</colgroup>")
-        head = ("<th class='n'>Gap</th><th>Song</th><th></th>"
-                + ("<th>Last Performed</th>" if show_last else ""))
+        head = ("<th>Song</th>"
+                + ("<th>Last Performed</th>" if show_last else "")
+                + "<th></th><th class='n'>Gap</th>")
         sections.append("%s<h2><span class='tab'>%s</span></h2>\n"
                         "<table%s>%s<thead><tr>%s</tr></thead>"
                         "<tbody>\n%s\n</tbody></table>"
@@ -1314,8 +1318,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             title = "<a href='../song/%s.html#%s'>%s</a>" % (
                 html.escape(s["slug"], quote=True),
                 html.escape(report["date"], quote=True), title)
-        cells = "<td class='n'%s>%s</td><td class='song'>%s%s</td>%s" % (
-            explain, gap_cell, title, verdict, bar)
+        cells = "<td class='song'>%s%s</td>" % (title, verdict)
         if show_last:
             if s["prev_date"]:
                 # No <br>: the spans are blocks on wide layouts and inline on
@@ -1341,6 +1344,9 @@ def render_html(report, bar_scale="linear", index_href=None,
                           "</span><span class='none'>debut</span></td>")
             else:
                 cells += "<td class='last'></td>"
+        # The bar and the figure close the row, which is where the song page
+        # puts them too.
+        cells += "%s<td class='n'%s>%s</td>" % (bar, explain, gap_cell)
         rows.append("<tr>%s</tr>" % cells)
     flush()
 
@@ -1991,6 +1997,8 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    holds a couple of words of song title and truncates the rest rather than
    pushing the gap figures around. */
 .nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
+/* Named only where the column header is not doing it. */
+.nb .cap{display:none}
 .nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* Doubled backslashes: this is a Python string, and "\2190" is read as the
    octal escape \21 followed by "90", which reaches the browser as a control
@@ -2101,8 +2109,10 @@ footer a{color:var(--dim)}
 @media screen and (max-width:820px){
   .head{display:none}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
-  .nb{margin-top:.2rem}
+  .nb{margin-top:.35rem}
   .nb span{white-space:normal;overflow:visible}
+  .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+     text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
   .dow{display:inline}
   .r-gap{text-align:left}
@@ -2462,7 +2472,9 @@ def render_song(doc, archived=(), stamp=None, card=None):
                         % (" seg" if p.get("out") else "",
                            "%s " % html.escape(p["out"]) if p.get("out") else "",
                            html.escape(p["next"])))
-        nb = "<span class='nb'>%s</span>" % "".join(bits)
+        nb = ("<span class='nb'>%s%s</span>"
+              % ("<span class='cap'>Before / after</span>" if bits else "",
+                 "".join(bits)))
         times = ("<span class='set'>%s &middot; %d&times;</span>"
                  % (SET_LABEL.get(p["set"], "Set %s" % p["set"]), p["times"])
                  if p.get("times") else
