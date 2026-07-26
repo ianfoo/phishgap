@@ -212,6 +212,9 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    background:var(--ink);box-shadow:0 0 0 1px var(--paper)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
+/* Named only where the column header is not doing it -- on a wide screen the
+   thead says "Last performed" and a second label would be saying it twice. */
+.last .cap{display:none}
 /* The date links when we hold that show. Underlined rather than coloured, so
    a column of them does not turn the right-hand side of the table orange. */
 .last .date a{color:inherit;text-decoration:none;
@@ -285,6 +288,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
   .last{font-size:.75rem;line-height:1.15rem}
+  .last .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+     text-transform:uppercase;color:var(--dim);margin-bottom:.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
   /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
