@@ -523,7 +523,7 @@ PALETTE_CSS = (
 # page with scripting off offers nothing it cannot deliver.
 THEME_CSS = """
 .theme{display:inline-flex;gap:.3rem;align-items:center}
-.theme button{font:inherit;font-size:.6rem;letter-spacing:.12em;
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
 .theme button:hover:not(:disabled){color:var(--ink)}
@@ -606,10 +606,15 @@ THEME_JS = """<script>
 
 CSS = PALETTE_CSS + THEME_CSS + """
 *{box-sizing:border-box}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work; the alternative is a hand-measured
+   min-width per field, re-measured the first time a four-digit gap turns up. */
+body{font-variant-numeric:tabular-nums}
+h1,h2,.title{text-wrap:balance}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:15px;line-height:1.5}
+     font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
 /* The header is a grid so the tour, which lives in the show line where there
    is room for it, can be lifted out to ride the breadcrumb row where there is
@@ -617,8 +622,12 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 header{padding-bottom:.9rem}
 /* Three fixed columns rather than space-between, so the index link stays put
    when a show is missing one of its neighbours. */
-.crumb{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
-       gap:.5rem;margin:0 0 1rem;font-size:.62rem;letter-spacing:.16em;
+.crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   margin:0 0 .5rem}
+.crumb.sections{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+.crumb.sections .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
+.crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
+       gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
@@ -628,7 +637,7 @@ header{padding-bottom:.9rem}
 .crumb .next{grid-column:3;justify-self:end}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
-   letter-spacing:-.02em}
+   letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
 /* The wordmark goes home without dressing as a link. Without this it fell to
    the browser default and came out blue and underlined. */
@@ -645,18 +654,18 @@ h1 a:hover em{color:var(--ink)}
    hyphens, which is more punctuation than Alfa Slab One wants to carry. */
 .show .date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.5rem;
    line-height:1;color:var(--ink)}
-.show .tour{font-size:.95rem;font-weight:600;letter-spacing:.07em;
+.show .tour{font-size:1rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--dim)}
-.show .tour::before{content:"\\2022";color:var(--hot);font-size:1.2rem;
+.show .tour::before{content:"\\2022";color:var(--hot);font-size:1.25rem;
    margin:0 .7rem}
-.where{margin:.4rem 0 0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
+.where{margin:.4rem 0 0;font-size:1rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
 /* Below the stats rather than in the masthead: the header stays a tight block
    of identity, and the links get their own air on the first screen. */
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.32rem .52rem;border:1px solid var(--rule);color:var(--dim);
-   font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    text-decoration:none;white-space:nowrap}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft);
@@ -665,13 +674,13 @@ h1 a:hover em{color:var(--ink)}
       border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.3rem;line-height:1;
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
      letter-spacing:-.01em;color:var(--ink)}
 .num.hot{color:var(--hot)}
-.lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
      color:var(--dim);margin-top:.4rem}
-h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:.9rem;
-   letter-spacing:.1em;text-transform:uppercase;margin:2.4rem 0 .3rem;
+h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:.875rem;
+   letter-spacing:.14em;text-transform:uppercase;margin:2.4rem 0 .3rem;
    padding-bottom:.3rem;border-bottom:1px solid var(--rule)}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* The gap column carries the number plus the song's typical figures under it,
@@ -682,7 +691,7 @@ col.c-bar{width:12%}
 col.c-last{width:45%}
 table.no-last col.c-song{width:35%}
 table.no-last col.c-bar{width:52%}
-th{font-size:.62rem;text-transform:uppercase;letter-spacing:.15em;
+th{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);font-weight:500;text-align:left;padding:.45rem .6rem;
    border-bottom:1px solid var(--rule)}
 th.n,td.n{text-align:right;padding-right:1.1rem;white-space:nowrap}
@@ -694,12 +703,12 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    solid stamp, while this is an invitation to read something elsewhere. Inside
    the link, so the whole title-and-chip is one target and lights up together. */
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
-   border:1px solid var(--hot);color:var(--hot-text);font-size:.58rem;
-   font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+   border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
+   font-weight:600;letter-spacing:.14em;text-transform:uppercase;
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
 td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.3rem;line-height:1;
+.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.5rem;line-height:1;
      white-space:nowrap}
 .gap.big{color:var(--hot)}
 .gap.small{color:var(--cool)}
@@ -708,7 +717,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    thing on the page that is comfortably readable. */
 .typ{display:block;margin-top:.25rem;font-size:.75rem;color:var(--dim);
    white-space:nowrap}
-.verdict{display:block;margin-top:.2rem;font-size:.62rem;letter-spacing:.1em;
+.verdict{display:block;margin-top:.2rem;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;white-space:nowrap}
 .verdict.overdue{color:var(--hot-text)}
 .verdict.premature{color:var(--cool)}
@@ -718,8 +727,8 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 /* A filled edge reads tighter than text does at the same distance, so the chip
    needs more room above it than the plain tags to sit on the same rhythm. */
 .verdict.bustout{display:inline-block;margin-top:.5rem;background:var(--hot);
-   color:var(--paper);padding:.16rem .36rem;font-size:.66rem;font-weight:600;
-   letter-spacing:.12em;line-height:1.1;
+   color:var(--paper);padding:.16rem .36rem;font-size:.625rem;font-weight:600;
+   letter-spacing:.14em;line-height:1.1;
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 /* Our own tooltip, because the browser's waits about a second before showing
    and this one exists to answer "what is that bar?" while the pointer is still
@@ -729,7 +738,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
   td[data-tip]::after{content:attr(data-tip);position:absolute;left:.25rem;
     bottom:calc(100% - .35rem);z-index:5;white-space:nowrap;
     padding:.3rem .5rem;background:var(--ink);color:var(--paper);
-    font-size:.68rem;letter-spacing:.02em;line-height:1;
+    font-size:.75rem;letter-spacing:0;line-height:1;
     opacity:0;visibility:hidden;transition:opacity .09s ease-out}
   td[data-tip]:hover::after,td[data-tip]:focus-visible::after{
     opacity:1;visibility:visible}
@@ -754,7 +763,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    for free. */
 .bar .tick{position:absolute;top:-5px;bottom:-5px;width:2px;
    background:var(--ink);box-shadow:0 0 0 1px var(--paper)}
-.last{font-size:.85rem;overflow-wrap:anywhere;vertical-align:top}
+.last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* The date links when we hold that show. Underlined rather than coloured, so
    a column of them does not turn the right-hand side of the table orange. */
@@ -764,23 +773,23 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 /* Stacked on wide layouts, run together on narrow ones -- see the
    max-width block, which puts these back inline with separators. */
 .last .date,.last .venue,.last .place{display:block}
-.venue{color:var(--dim);font-size:.78rem;line-height:1.2rem}
-.rating{margin:.45rem 0 0;font-size:.66rem;letter-spacing:.1em;
+.venue{color:var(--dim);font-size:.75rem;line-height:1.2rem}
+.rating{margin:.45rem 0 0;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim)}
 .rating b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.95rem;color:var(--ink);letter-spacing:0;margin-left:.15rem}
+   font-size:1rem;color:var(--ink);letter-spacing:0;margin-left:.15rem}
 .rating span{opacity:.75}
 /* The title carries the link to the song's own page; underlining every one of
    them would stripe the table, so it colours on hover instead. */
 td.song a{color:inherit;text-decoration:none}
 td.song a:hover{color:var(--hot)}
-.place{color:var(--dim);font-size:.78rem;line-height:1.2rem;white-space:nowrap}
+.place{color:var(--dim);font-size:.75rem;line-height:1.2rem;white-space:nowrap}
 .none{color:var(--dim);font-style:italic}
 .notes{margin:2.2rem 0 0;padding:1rem 1.1rem;border-left:3px solid var(--rule);
-       font-size:.84rem;color:var(--ink-soft)}
+       font-size:.875rem;color:var(--ink-soft)}
 .notes a{color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
@@ -818,12 +827,12 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   td.last{grid-area:meta}
   td.bar{display:none}
   /* No bar here to carry the tick, so the words do all the work. */
-  .typ{font-size:.7rem;margin-top:.2rem}
-  .verdict{font-size:.6rem}
-  .verdict.bustout{font-size:.62rem}
-  .gap{font-size:1.2rem}
-  .song{font-size:.95rem;line-height:1.25rem}
-  .last{font-size:.72rem;line-height:1.15rem}
+  .typ{font-size:.75rem;margin-top:.2rem}
+  .verdict{font-size:.625rem}
+  .verdict.bustout{font-size:.625rem}
+  .gap{font-size:1.25rem}
+  .song{font-size:1rem;line-height:1.25rem}
+  .last{font-size:.75rem;line-height:1.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
   /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
@@ -837,25 +846,25 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* Two full dates and the index link have to share one line here, and at
      320px they only just do, so the pager gives up some tracking rather than
      risk pushing the page sideways. */
-  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.56rem;letter-spacing:.09em}
+  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
   h1{margin-bottom:.45rem}
-  .show .date{font-size:1.15rem}
-  .show .tour{font-size:.62rem;font-weight:400;letter-spacing:.14em}
+  .show .date{font-size:1.25rem}
+  .show .tour{font-size:.625rem;font-weight:400;letter-spacing:.14em}
   .show .tour::before{font-size:1rem;margin:0 .5rem}
-  .where{margin-top:.2rem;font-size:.72rem;letter-spacing:.05em}
+  .where{margin-top:.2rem;font-size:.75rem;letter-spacing:0}
   /* The buttons stand twice as tall as a line of footer text, so sharing a row
      with it inflated that row and opened a gap between the two text lines.
      They get their own row down here instead. */
   .theme{order:1;flex-basis:100%}
   /* All three badges have to hold one line down to a 320px phone. */
   .links{margin-top:.95rem;gap:.3rem}
-  .badge{font-size:.58rem;letter-spacing:.07em;padding:.3rem .45rem;gap:.3rem}
+  .badge{font-size:.625rem;letter-spacing:0;padding:.3rem .45rem;gap:.3rem}
   .badge img{width:12px;height:12px}
   .card{flex:1 1 45%;padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
-  .lbl{font-size:.53rem;letter-spacing:.1em}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
 }
 /* Wide layouts have a big empty corner to the right of the wordmark, and the
    show identity is about as tall as the wordmark is, so the two balance as
@@ -869,8 +878,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 @media screen and (min-width:700px){
   header{display:grid;grid-template-columns:auto 1fr;column-gap:2.5rem;
          align-items:start;
-         grid-template-areas:"crumb crumb" "title show" "title where"}
-  .crumb{grid-area:crumb}
+         grid-template-areas:"sections sections" "pager pager"
+                             "title show" "title where"}
+  .crumb.sections{grid-area:sections}
+  .crumb.pager{grid-area:pager}
   h1{grid-area:title;margin-bottom:0}
   .show{grid-area:show;justify-content:flex-end;text-align:right}
   .where{grid-area:where;text-align:right;margin-top:.35rem}
@@ -1248,9 +1259,16 @@ def render_html(report, bar_scale="linear", index_href=None,
     if index_href:
         step = ("<a class='%s' rel='%s' href='./%s.html' "
                 "aria-label='%s show, %s'>%s</a>")
-        crumb = ("<nav class='crumb'>%s<a class='all' href='%s'>All reports</a>%s"
-                 "<a class='side' href='../songs.html'>Songs</a>"
-                 "<a class='side' href='../method.html'>How this is worked out</a>"
+        # Two rows, deliberately: the section links read the same as every
+        # other page type, and the pager sits under them. Appending them to a
+        # three-column pager grid left them wrapping into cells meant for
+        # something else.
+        crumb = ("<nav class='crumb sections'>"
+                 "<a class='mark' href='../index.html'>Gap Reports</a>"
+                 "<a href='../index.html'>Shows</a>"
+                 "<a href='../songs.html'>Songs</a>"
+                 "<a href='../method.html'>How this is worked out</a></nav>"
+                 "<nav class='crumb pager'>%s<a class='all' href='%s'>All reports</a>%s"
                  "</nav>") % (
             step % ("prev", "prev", prev_date, "Previous", prev_date,
                     "&larr; " + prev_date) if prev_date else "",
@@ -1306,20 +1324,20 @@ INDEX_CSS = PALETTE_CSS + THEME_CSS + """
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:15px;line-height:1.5}
+     font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.62rem;
-   letter-spacing:.16em;text-transform:uppercase}
+.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
-   letter-spacing:-.02em}
+   letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
 /* The wordmark goes home, as a wordmark does, without looking like a link. */
 h1 a{color:inherit;text-decoration:none}
@@ -1331,37 +1349,37 @@ a.card .lbl{border-bottom:1px solid var(--rule);display:inline-block;
    padding-bottom:.15rem}
 a.card:hover .lbl{color:var(--ink);border-bottom-color:var(--hot)}
 header{padding-bottom:.9rem}
-.show{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
+.show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
 .hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
       border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.3rem;line-height:1;
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
      letter-spacing:-.01em}
 .num.hot{color:var(--hot)}
-.lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
      color:var(--dim);margin-top:.4rem}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
        margin:1.9rem 0 .9rem}
-.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.9rem;
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
         padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
         background:transparent;color:var(--ink)}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.chip:focus-visible,.sort:focus-visible{
   outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
-.chip{font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
       padding:.42rem .6rem;border:1px solid var(--rule);background:transparent;
       color:var(--dim);cursor:pointer}
 .chip:hover{color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.sort{font:inherit;font-size:.7rem;padding:.4rem .3rem;background:transparent;
+.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
       color:var(--ink);border:1px solid var(--rule);border-radius:0}
-.count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);margin-left:auto}
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-         font-size:.95rem;color:var(--ink)}
+         font-size:1rem;color:var(--ink)}
 .reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .row{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;column-gap:1.1rem;
      align-items:baseline;padding:.7rem .25rem;text-decoration:none;
@@ -1369,38 +1387,33 @@ header{padding-bottom:.9rem}
 .row:hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
-.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
+.r-date{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
         line-height:1.3rem;white-space:nowrap}
-.r-venue{font-size:.85rem;font-weight:600;letter-spacing:.04em;
+.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
          text-transform:uppercase;line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
    of the numbers beside it. */
-.r-stats{font-size:.7rem;color:var(--dim);line-height:1.3rem;
+.r-stats{font-size:.75rem;color:var(--dim);line-height:1.3rem;
          display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
          justify-items:end;column-gap:.6rem}
 .r-stats .st{white-space:nowrap}
-/* Each figure gets a fixed field of its own, so the words beside them line up
-   as well as the digits do -- otherwise "longest 45" and "longest 1,468" pin
-   their right edges and the word wanders left by three characters. */
-.r-stats .st b{display:inline-block;text-align:right;min-width:2.6rem}
-.r-stats .st:first-child b{min-width:1.7rem}
-/* The longest gap is the one four-digit figure on either index -- 1,468 needs
-   more field than 45 does, and a field it overflows is no field at all. */
-.r-stats .st:nth-child(3) b{min-width:3.5rem}
+/* Tabular numerals do the aligning; the widths these used to be given by hand
+   were a workaround for not having asked the face for them. */
+.r-stats .st b{display:inline-block;text-align:right}
 .r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-           font-size:.95rem;color:var(--ink)}
+           font-size:1rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
    for what it is: ".r-song" also means "the song this row is about" on the
    song index, which inherits this stylesheet, and one grid-column rule meant
    for this was enough to wreck that. */
-.r-top{grid-column:1/-1;font-size:.7rem;color:var(--dim);text-align:right;
+.r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
@@ -1429,8 +1442,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
-  .lbl{font-size:.53rem;letter-spacing:.1em}
-  .show{font-size:.72rem;letter-spacing:.05em}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  .show{font-size:.75rem;letter-spacing:0}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
@@ -1690,26 +1703,26 @@ SONG_CSS = (PALETTE_CSS + THEME_CSS + """
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:15px;line-height:1.5}
+     font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
 .crumb{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:1.1rem;
-   font-size:.62rem;letter-spacing:.16em;text-transform:uppercase}
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.02;margin:0 0 .5rem;
    letter-spacing:-.01em}
-.show{margin:0;font-size:.78rem;font-weight:600;letter-spacing:.07em;
+.show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
 .hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
    border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.1rem;line-height:1;
+.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
    letter-spacing:-.01em}
 .num.hot{color:var(--hot)}
-.lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-top:.4rem}
 .lbl .abbr{display:none}
 /* The best version gets a line rather than a fifth card: it is a date, a
@@ -1717,47 +1730,47 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    number. */
 .best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .7rem;
    margin:.9rem 0 0;padding:.6rem .8rem;border-left:3px solid var(--hot);
-   background:var(--hover);font-size:.8rem}
-.best .cap{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+   background:var(--hover);font-size:.875rem}
+.best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .best .when{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem}
 .best .score{font-family:'Alfa Slab One',Georgia,serif;color:var(--hot);
-   font-size:1.1rem;line-height:1}
+   font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
 .best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.35rem .5rem;border:1px solid var(--rule);color:var(--dim);
-   text-decoration:none;font-size:.66rem;letter-spacing:.08em;
+   text-decoration:none;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft)}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
    margin:1.9rem 0 .9rem}
-.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.9rem;
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
    padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
    background:transparent;color:var(--ink)}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
    outline-offset:1px}
-.sort{font:inherit;font-size:.7rem;padding:.4rem .3rem;background:transparent;
+.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
    color:var(--ink);border:1px solid var(--rule);border-radius:0}
-.count{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
    scripting off and survive a reload. */
 .eras{display:flex;flex-wrap:wrap;gap:.3rem}
 .era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
-   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.42rem .55rem;border:1px solid var(--rule);color:var(--dim);
    text-decoration:none}
 .era-chip b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.8rem;letter-spacing:0;color:var(--ink-soft)}
+   font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
 .era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
 .era-chip:hover b{color:var(--hot)}
 /* Shown only once there is something to clear. */
-.clear{font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--rule);background:transparent;
    color:var(--dim);cursor:pointer}
 .clear:hover{color:var(--hot);border-color:var(--hot)}
@@ -1767,7 +1780,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .r-venue{cursor:pointer}
 .r-venue:hover{color:var(--hot)}
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.95rem;color:var(--ink)}
+   font-size:1rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 /* Anything a link can land on stops clear of the condensed header, which is
    fixed and 42px tall -- without this the browser puts the target's top edge
@@ -1778,15 +1791,15 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .perfs>li.yr{border-bottom:0}
 .yr h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;
    font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:1rem;letter-spacing:.04em;margin:1.6rem 0 .3rem;
+   font-size:1rem;letter-spacing:0;margin:1.6rem 0 .3rem;
    padding-bottom:.3rem;border-bottom:1px solid var(--rule);color:var(--ink)}
-.yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.6rem;
-   letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .yr:first-child h2{margin-top:.4rem}
 /* Column labels. The date and the venue say what they are; the bar and the
    number on the far right did not, and were left to be guessed at. */
 .head{padding-bottom:.35rem;border-bottom:1px solid var(--rule);
-   font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .head .nhead{color:var(--dim)}
 .head .ghead{grid-column:4/-1;text-align:right}
@@ -1820,31 +1833,31 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .i-pnet::after{background-image:url("data:image/png;base64,__PNET__")}
 .i-pin::after{background-image:url("data:image/png;base64,__PIN__")}
 .i-foul::after{background-image:url("data:image/png;base64,__FOUL__")}
-.dek{margin:.55rem 0 0;font-size:.78rem;line-height:1.5;color:var(--dim);
+.dek{margin:.55rem 0 0;font-size:.75rem;line-height:1.5;color:var(--dim);
    max-width:56ch}
 .crumb .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
-   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);line-height:1.1rem}
-.r-venue{font-size:.8rem;font-weight:600;letter-spacing:.04em;
+.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;line-height:1.3rem}
-.r-place{display:block;color:var(--dim);font-size:.72rem;line-height:1.15rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
 .r-gap{text-align:right;line-height:1.3rem}
 /* The column header names this column, so the per-row label would be a second
    answer to a question already answered -- but the header is the first thing
    the narrow layout drops, and there the number was left to be guessed at.
    Shown exactly where the header is not. */
-.glabel{display:none;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.glabel{display:none;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-right:.4rem}
-.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.05rem}
+.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1rem}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
-.set{display:block;font-size:.6rem;letter-spacing:.14em;color:var(--dim);
+.set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
    text-transform:uppercase}
 /* What it followed and what it led into, stacked. Sized in ch so the column
    holds a couple of words of song title and truncates the rest rather than
    pushing the gap figures around. */
-.nb{font-size:.68rem;line-height:1.25rem;color:var(--dim);min-width:0}
+.nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
 .nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* Doubled backslashes: this is a Python string, and "\2190" is read as the
    octal escape \21 followed by "90", which reaches the browser as a control
@@ -1866,10 +1879,10 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 /* Only the rated versions carry these, which is 25 rows out of however many
    hundred -- and only they are known to have audio, since a version cannot be
    scored until a recording of it circulates. */
-.mark{display:block;margin-top:.3rem;font-size:.62rem;letter-spacing:.1em;
+.mark{display:block;margin-top:.3rem;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim)}
 .mark b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:.8rem;color:var(--dim);letter-spacing:0}
+   font-size:.875rem;color:var(--dim);letter-spacing:0}
 .mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -1879,9 +1892,9 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    read as something stuck on afterwards rather than as part of the entry.
    Roman, not italic -- these run to 950 characters at the long end, and a
    paragraph of italic prose is tiring well before that. */
-.jam,.note{margin:.4rem 0 0;font-size:.76rem;line-height:1.5;
+.jam,.note{margin:.4rem 0 0;font-size:.75rem;line-height:1.5;
    color:var(--ink-soft);max-width:62ch}
-.tag{display:inline-block;margin-right:.45rem;font-size:.58rem;
+.tag{display:inline-block;margin-right:.45rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 details.jam,details.note{cursor:pointer}
 details.jam summary,details.note summary{display:block;list-style:none}
@@ -1894,7 +1907,7 @@ details[open] .clip{-webkit-line-clamp:none;display:block}
    the very rule that makes it necessary. */
 details.jam summary::after,
 details.note summary::after{content:"More";display:inline-block;margin-top:.2rem;
-   font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);border-bottom:1px solid var(--rule)}
 details.jam[open] summary::after,
 details.note[open] summary::after{content:"Less"}
@@ -1902,7 +1915,7 @@ details.jam summary:hover::after,
 details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot)}
 details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
-.empty{margin:2rem 0;font-size:.85rem;color:var(--dim);font-style:italic}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
 /* The header a reader keeps once the real one has scrolled away. Landing on a
    row from a report's link otherwise drops you into an unlabelled list of
    dates with no way to tell what page you are on. It carries the song and the
@@ -1914,12 +1927,12 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
 .stuck.on{transform:none}
 .stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
   gap:.7rem}
-.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1.05rem;
+.stuck .name{font-family:'Aleo',Georgia,serif;font-weight:600;font-size:1rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stuck .n{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.stuck .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--dim);margin-left:auto;white-space:nowrap}
 .stuck .n b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-  font-size:.9rem;color:var(--ink);letter-spacing:0}
+  font-size:.875rem;color:var(--ink);letter-spacing:0}
 @media (prefers-reduced-motion:reduce){.stuck{transition:none}}
 /* Where a link dropped you. Bright for a moment, then gone -- it answers
    "which row?" and then stops being ink on the page. */
@@ -1934,7 +1947,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
 .totop:hover{color:var(--hot);border-color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-   font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim)}
@@ -1964,12 +1977,12 @@ footer a{color:var(--dim)}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
-  .lbl{font-size:.53rem;letter-spacing:.1em}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
   /* "Median gap, last 10 years" is the clear label and the default one; the
      column is simply not wide enough for it here. */
   .lbl .full{display:none}
   .lbl .abbr{display:inline}
-  .show{font-size:.7rem;letter-spacing:.05em}
+  .show{font-size:.75rem;letter-spacing:0}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
@@ -2393,13 +2406,13 @@ SONGS_CSS = INDEX_CSS + """
 .row{grid-template-columns:1fr 8.5rem 23.5rem}
 .r-stats{grid-template-columns:5.4rem 6.4rem 7.4rem 4.3rem}
 .r-song{display:block;font-family:'Aleo',Georgia,serif;font-weight:600;
-   font-size:1.05rem;line-height:1.3rem;color:inherit}
+   font-size:1rem;line-height:1.3rem;color:inherit}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
 .r-stats .score{color:var(--hot-text)}
 /* The song the top score belongs to, under its label. */
-.lbl .of{display:block;margin-top:.2rem;letter-spacing:.1em;color:var(--ink-soft);
-   text-transform:none;font-size:.68rem}
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
+   text-transform:none;font-size:.75rem}
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr}
   .r-when{white-space:normal}
@@ -2565,11 +2578,11 @@ def render_songs(docs, stamp=None, card=None):
 METHOD_CSS = INDEX_CSS + """
 .prose{max-width:68ch;margin:0 0 2.4rem}
 .prose h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
-   font-size:1.15rem;margin:2.2rem 0 .5rem;letter-spacing:.01em}
-.prose p{margin:0 0 .9rem;font-size:.85rem;line-height:1.65;color:var(--ink-soft)}
+   font-size:1.25rem;margin:2.2rem 0 .5rem;letter-spacing:0}
+.prose p{margin:0 0 .9rem;font-size:.875rem;line-height:1.65;color:var(--ink-soft)}
 .prose b{color:var(--ink)}
-.prose .verdict{display:inline-block;margin:0 .15rem;font-size:.62rem;
-   letter-spacing:.1em;text-transform:uppercase}
+.prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase}
 .prose .overdue{color:var(--hot)}
 .prose .premature{color:var(--cool)}
 .prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;
@@ -2725,26 +2738,26 @@ body{background:#e9e3d6;font-family:'IBM Plex Mono',ui-monospace,monospace}
 .card{width:%(w)dpx;height:%(h)dpx;background:#f2ece0;color:#17150f;
   display:flex;flex-direction:column;justify-content:center;
   padding:0 84px;position:relative;overflow:hidden}
-.kind{font-size:25px;letter-spacing:.22em;text-transform:uppercase;color:#877e6e}
+.kind{font-size:25px;letter-spacing:.14em;text-transform:uppercase;color:#877e6e}
 /* Kept clear of the mark, which starts around x=870: without a ceiling a
    middling title like "You Enjoy Myself" ran under it and the last word went
    muddy. Wrapping is better than colliding. */
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;line-height:.94;
-   letter-spacing:-.02em;margin-top:16px;word-break:break-word;max-width:770px}
+   letter-spacing:-.01em;margin-top:16px;word-break:break-word;max-width:770px}
 /* Same rule as the pages: a card whose headline is a date or a song title
    sets it in Aleo, so a link and the page behind it speak the same way. */
 h1.data{font-family:'Aleo',Georgia,serif;font-weight:600;letter-spacing:-.01em}
 h1 em{font-style:normal;color:#c8371b}
-.sub{font-size:30px;letter-spacing:.08em;text-transform:uppercase;color:#413c31;
+.sub{font-size:30px;letter-spacing:.14em;text-transform:uppercase;color:#413c31;
   margin-top:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rule{height:7px;background:#17150f;margin-top:38px}
-.stats{display:flex;gap:58px;margin-top:30px;font-size:23px;letter-spacing:.13em;
+.stats{display:flex;gap:58px;margin-top:30px;font-size:23px;letter-spacing:.14em;
   text-transform:uppercase;color:#877e6e}
 .stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:52px;
   letter-spacing:0;color:#17150f;display:block;margin-bottom:4px;white-space:nowrap}
 .stats .hot{color:#c8371b}
 .mark{position:absolute;right:-64px;top:-72px;width:392px;height:392px;opacity:.12}
-.brand{position:absolute;left:84px;bottom:40px;font-size:21px;letter-spacing:.2em;
+.brand{position:absolute;left:84px;bottom:40px;font-size:21px;letter-spacing:.14em;
   text-transform:uppercase;color:#877e6e}
 """ % {"w": CARD_W, "h": CARD_H}
 
