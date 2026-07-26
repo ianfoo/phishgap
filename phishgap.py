@@ -471,7 +471,7 @@ LIGHT = {
     # brighter one; anything small takes the darker.
     "hot-text": "#a92e14",
     "track": "rgba(23,21,15,.085)", "band": "#7d7360",
-    "hover": "rgba(200,55,27,.055)",
+    "hover": "rgba(200,55,27,.055)", "edge": "#8d8676",
     "grain-blend": "multiply", "grain-opacity": ".45",
 }
 DARK = {
@@ -480,7 +480,7 @@ DARK = {
     "hot": "#ff6b45", "cool": "#93b184", "dim": "#9b9384",
     "hot-text": "#ff6b45",
     "track": "rgba(236,229,213,.1)", "band": "#a89c85",
-    "hover": "rgba(255,107,69,.07)",
+    "hover": "rgba(255,107,69,.07)", "edge": "#6b5f4f",
     "grain-blend": "screen", "grain-opacity": ".2",
 }
 
@@ -499,9 +499,6 @@ def _dark_under(root):
     and PDF are never anything but paper stock.
     """
     return ("%(r)s{%(v)s}\n"
-            # A 3px cream bar blooms on near-black the way 3px of ink never
-            # does on paper, so the hero rule thins and steps back a tone.
-            "%(r)s .hero{border-top-width:2px;border-top-color:#6b6353}\n"
             # Favicons drawn as solid black on transparency vanish here.
             "%(r)s .badge img.flip{filter:invert(1)}\n"
             # Same icon, same problem, worn as a background by the song pages.
@@ -524,7 +521,7 @@ PALETTE_CSS = (
 THEME_CSS = """
 .theme{display:inline-flex;gap:.3rem;align-items:center}
 .theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
-   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--rule);
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
 .theme button:hover:not(:disabled){color:var(--ink)}
 .theme button.on{background:var(--ink);color:var(--paper);
@@ -670,18 +667,31 @@ h1 a:hover em{color:var(--ink)}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft);
    background:var(--hover)}
-.hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
-      border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+      border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
      letter-spacing:-.01em;color:var(--ink)}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
-     color:var(--dim);margin-top:.4rem}
-h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:.875rem;
-   letter-spacing:.14em;text-transform:uppercase;margin:2.4rem 0 .3rem;
-   padding-bottom:.3rem;border-bottom:1px solid var(--rule)}
+   color:var(--dim);margin-bottom:.35rem}
+/* A tab struck in reverse, hung on a rule that runs out to the margin. Lighter
+   on the page than slab caps, and it leaves the display face one job. */
+h2{display:flex;align-items:center;gap:.6rem;margin:1.5rem 0 .3rem;padding:0;
+   border:0;font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+h2 .tab{background:var(--ink);color:var(--paper);padding:.25rem .55rem;
+   print-color-adjust:exact;-webkit-print-color-adjust:exact}
+h2::after{content:"";flex:1;border-bottom:1px solid var(--ink)}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* The gap column carries the number plus the song's typical figures under it,
    so it is wider than the number alone would need. */
@@ -727,9 +737,15 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    it; WeasyPrint keeps backgrounds anyway. */
 /* A filled edge reads tighter than text does at the same distance, so the chip
    needs more room above it than the plain tags to sit on the same rhythm. */
-.verdict.bustout{display:inline-block;margin-top:.5rem;background:var(--hot);
-   color:var(--paper);padding:.16rem .36rem;font-size:.625rem;font-weight:600;
-   letter-spacing:.14em;line-height:1.1;
+/* Struck twice -- fill, a hairline of paper, then the outline again -- and set
+   two degrees off true. The right margin buys the rotation its clearance. This
+   is the only rotated thing on the site; the moment there are two, it reads as
+   a theme rather than a stamp. */
+.verdict.bustout{display:inline-block;margin:0 .6rem .1rem .5rem;
+   background:var(--hot);color:var(--paper);padding:.16rem .4rem;
+   font-size:.625rem;font-weight:600;letter-spacing:.14em;line-height:1.15;
+   box-shadow:0 0 0 1.5px var(--paper),0 0 0 3px var(--hot);
+   transform:rotate(-2deg);transform-origin:left center;
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 /* Our own tooltip, because the browser's waits about a second before showing
    and this one exists to answer "what is that bar?" while the pointer is still
@@ -922,10 +938,12 @@ SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Aleo:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
+<div class="rule2"></div>
 <header>{crumb}<h1><a href="../index.html">Gap <em>Report</em></a></h1>
 <p class="show"><span class="date">{date}</span>{tour}</p>
 <p class="where">{venue}</p>{rating}</header>
 <section class="hero">{hero}</section>
+<div class="rule2"></div>
 <p class="links">{links}</p>
 {sections}{notes}
 <footer><span><a href="../method.html">How this is worked out</a></span>{theme_ui}
@@ -1114,8 +1132,8 @@ def render_html(report, bar_scale="linear", index_href=None,
     show_last = any(s["prev_date"] for s in report["songs"])
 
     hero = "".join(
-        "<div class='card'><div class='num%s'>%s</div>"
-        "<div class='lbl'>%s</div></div>" % (cls, val, lbl)
+        "<div class='card'><div class='lbl'>%s</div>"
+        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
         for val, lbl, cls in (
             (len(report["songs"]), "Songs Played", ""),
             (longest, "Longest Gap", " hot"),
@@ -1139,9 +1157,11 @@ def render_html(report, bar_scale="linear", index_href=None,
                 + "</colgroup>")
         head = ("<th class='n'>Gap</th><th>Song</th><th></th>"
                 + ("<th>Last Performed</th>" if show_last else ""))
-        sections.append("<h2>%s</h2>\n<table%s>%s<thead><tr>%s</tr></thead>"
+        sections.append("%s<h2><span class='tab'>%s</span></h2>\n"
+                        "<table%s>%s<thead><tr>%s</tr></thead>"
                         "<tbody>\n%s\n</tbody></table>"
-                        % (html.escape(current),
+                        % ("<div class='perf'></div>" if sections else "",
+                           html.escape(current),
                            "" if show_last else " class='no-last'",
                            cols, head, "\n".join(rows)))
 
@@ -1371,31 +1391,39 @@ a.card:hover .lbl{color:var(--ink);border-bottom-color:var(--hot)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
-.hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
-      border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+      border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
      letter-spacing:-.01em}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
-     color:var(--dim);margin-top:.4rem}
+   color:var(--dim);margin-bottom:.35rem}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
        margin:1.9rem 0 .9rem}
 .search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
-        padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
+        padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
         background:transparent;color:var(--ink)}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.chip:focus-visible,.sort:focus-visible{
   outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-      padding:.42rem .6rem;border:1px solid var(--rule);background:transparent;
+      padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
       color:var(--dim);cursor:pointer}
 .chip:hover{color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-      color:var(--ink);border:1px solid var(--rule);border-radius:0}
+      color:var(--ink);border:1px solid var(--edge);border-radius:0}
 .count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);margin-left:auto}
 .count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
@@ -1544,9 +1572,11 @@ INDEX_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
+<div class="rule2"></div>
 <header><h1>Gap <em>Reports</em></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
+<div class="rule2"></div>
 <div class="tools">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search date, venue, city, song&hellip;" aria-label="Search reports">
@@ -1676,7 +1706,7 @@ def render_index(reports, page_href="./show/%s.html", card=None):
     # has just noticed how many songs are logged is the reader who wants it.
     hero = "".join(
         ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
-        + "<div class='num%s'>%s</div><div class='lbl'>%s</div>" % (cls, val, lbl)
+        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
         + ("</a>" if href else "</div>")
         for val, lbl, cls, href in (
             (len(entries), "Reports", "", ""),
@@ -1737,15 +1767,23 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
-.hero{display:flex;flex-wrap:wrap;margin:1.1rem 0 .3rem;
-   border-top:3px solid var(--ink);border-bottom:1px solid var(--rule)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+   border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
    letter-spacing:-.01em}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
-   color:var(--dim);margin-top:.4rem}
+   color:var(--dim);margin-bottom:.35rem}
 .lbl .abbr{display:none}
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
@@ -1763,7 +1801,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
-   padding:.35rem .5rem;border:1px solid var(--rule);color:var(--dim);
+   padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
@@ -1771,13 +1809,13 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
    margin:1.9rem 0 .9rem}
 .search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
-   padding:.5rem .7rem;border:1px solid var(--rule);border-radius:0;
+   padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
    background:transparent;color:var(--ink)}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
    outline-offset:1px}
 .sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-   color:var(--ink);border:1px solid var(--rule);border-radius:0}
+   color:var(--ink);border:1px solid var(--edge);border-radius:0}
 .count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
@@ -1789,7 +1827,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    color:var(--dim);margin-right:.15rem}
 .era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   padding:.42rem .55rem;border:1px solid var(--rule);color:var(--dim);
+   padding:.42rem .55rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none}
 .era-chip b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
@@ -1797,7 +1835,7 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
 .era-chip:hover b{color:var(--hot)}
 /* Shown only once there is something to clear. */
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   padding:.45rem .6rem;border:1px solid var(--rule);background:transparent;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
 .clear:hover{color:var(--hot);border-color:var(--hot)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
@@ -1969,7 +2007,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
 .totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
   z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
-  justify-content:center;background:var(--paper);border:1px solid var(--rule);
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
 .totop:hover{color:var(--hot);border-color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
@@ -2145,11 +2183,13 @@ SONG_SHELL = """<!DOCTYPE html>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div></div>
+<div class="rule2"></div>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
 <p class="dek">Gap &mdash; the number of shows the band played between one
 performance of this song and the one before it.</p></header>
 <section class="hero">{hero}</section>
+<div class="rule2"></div>
 {best}
 <p class="links">{links}</p>
 <div class="tools">
@@ -2211,8 +2251,8 @@ def render_song(doc, archived=(), stamp=None, card=None):
     lbl10 = ("Median Gap, <span class='full'>Last %d Years</span>"
              "<span class='abbr'>%d Yr</span>" % (RECENT_YEARS, RECENT_YEARS))
     hero = "".join(
-        "<div class='card'><div class='num%s'>%s</div>"
-        "<div class='lbl'>%s</div></div>" % (cls, val, lbl)
+        "<div class='card'><div class='lbl'>%s</div>"
+        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
         for val, lbl, cls in (
             (len(perfs), "Times Played", ""),
             (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
@@ -2262,7 +2302,8 @@ def render_song(doc, archived=(), stamp=None, card=None):
                 # fragment but not a valid selector, where the dot reads as a
                 # class -- querySelector throws on it and :target could never
                 # match without escaping.
-                "<li class='yr' id='era-%s' data-era='%s'><h2>%s"
+                "<li class='yr' id='era-%s' data-era='%s'>"
+                "<h2><span class='tab'>%s</span>"
                 "<span>%d show%s</span><span>%s&ndash;%s</span></h2></li>"
                 % (this.replace(".", "-"), this, this, tally[this],
                    "" if tally[this] == 1 else "s", lo[:4], hi[:4]))
@@ -2458,9 +2499,11 @@ SONGS_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
+<div class="rule2"></div>
 <header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
+<div class="rule2"></div>
 <div class="tools">
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
@@ -2575,8 +2618,8 @@ def render_songs(docs, stamp=None, card=None):
     # says so -- and the best version is some particular song's, so it names it
     # rather than leaving a bare 97 to be a superlative about nothing.
     hero = "".join(
-        "<div class='card'><div class='num%s'>%s</div>"
-        "<div class='lbl'>%s</div></div>" % (cls, val, lbl)
+        "<div class='card'><div class='lbl'>%s</div>"
+        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
         for val, lbl, cls in (
             (len(entries), "Songs", ""),
             ("{:,}".format(total), "Song Performances", ""),
@@ -2630,8 +2673,10 @@ METHOD_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">How this is worked out</a></nav>
+<div class="rule2"></div>
 <header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
 <p class="show">How this is worked out</p></header>
+<div class="rule2"></div>
 <div class="prose">{body}</div>
 <footer><span><a href="./index.html">All reports</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain</span></footer>
@@ -2642,14 +2687,14 @@ METHOD_SHELL = """<!DOCTYPE html>
 def render_method():
     """The page the footers point at when a number wants explaining."""
     body = """
-<h2>What a gap is</h2>
+<h2 data-tab="What a gap is"></h2>
 <p>The number beside a song is how many shows the band played between this
 performance and the one before it. A gap of <b class="num">0</b> means they
 played it again the very next night; <b class="num">485</b> means four hundred
 and eighty-five shows went by. The figure comes from Phish.net, which computes
 it; nothing here is counted a second time.</p>
 
-<h2>The median, and why ten years</h2>
+<h2 data-tab="The median, and why ten years"></h2>
 <p>Under each gap is that song's usual one &mdash; the median of its gaps over
 the <b>ten years</b> before the show, not over all of history. Forty years of a
 working band is several different bands. The 1990s dominate any all-time
@@ -2664,7 +2709,7 @@ have been in rotation lately to be judged at all.</p>
 right-skewed: a staple with a median of 6 carries a handful of 200s, and an
 average over that would call almost anything ordinary.</p>
 
-<h2>The verdicts</h2>
+<h2 data-tab="The verdicts"></h2>
 <p>A gap outside the middle 70% of that ten-year window gets called. Below it,
 <span class="verdict premature">premature</span>; above it,
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
@@ -2674,14 +2719,14 @@ bar is the median, the one figure that is real.</p>
 <p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
 yields roughly 13% premature, 67% expected and 20% overdue.</p>
 
-<h2>Songs with no verdict</h2>
+<h2 data-tab="Songs with no verdict"></h2>
 <p>A song needs <b>eight</b> performances inside that ten-year window before
 any of this is said about it. Below that there is no current norm to be early
 or late against, so it gets its numbers and no adjective. Roughly one song in
 eleven falls here, which is the honest answer for something the band has nearly
 stopped playing.</p>
 
-<h2>Bustouts</h2>
+<h2 data-tab="Bustouts"></h2>
 <p>A gap of <b class="num">100</b> or more is a
 <span class="verdict bust">bustout</span> regardless of everything above. A
 hundred sits where Phish.net's own setlist notes use the word. The gap alone
@@ -2689,7 +2734,7 @@ decides it: a gap counts shows, so a large one already proves the song has been
 in the catalogue a long while &mdash; nothing newly written can reach the
 threshold.</p>
 
-<h2>Ratings and jam charts</h2>
+<h2 data-tab="Ratings and jam charts"></h2>
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
 programmatically. Scores are computed from a mix of community signal and audio
@@ -2699,7 +2744,7 @@ own, written months after the fact. Both are treated as optional everywhere
 they appear, which is why a report published the morning after a show carries
 neither.</p>
 
-<h2>When a report appears</h2>
+<h2 data-tab="When a report appears"></h2>
 <p>Nothing in the data says whether a setlist is finished. There is no show
 time to reason from, and the format is not promised &mdash; a rained-out show
 can stop mid-second-set with no encore, so counting sets proves nothing.
