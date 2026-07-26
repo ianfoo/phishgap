@@ -42,10 +42,28 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:15px;line-height:1.5}
 .wrap{max-width:960px;margin:0 auto}
+/* Which of the two lists you are looking at, and the way to the other one.
+   Above the wordmark because that is where a reader looks for it, and because
+   the footer link that used to be the only route was found by nobody. */
+.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.68rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
+   border-bottom:1px solid var(--rule)}
+.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:.94;margin:0 0 .7rem;
    letter-spacing:-.02em}
 h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home, as a wordmark does, without looking like a link. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
+/* A hero card that is also a way in. Only some of them are. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card .lbl{border-bottom:1px solid var(--rule);display:inline-block;
+   padding-bottom:.15rem}
+a.card:hover .lbl{color:var(--ink);border-bottom-color:var(--hot)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.07em;
       text-transform:uppercase;color:var(--ink-soft)}
@@ -154,9 +172,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   });
 })();
 </script></head><body><div class="wrap">
+<nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a></nav>
 <header><h1>Gap <em>Reports</em></h1>
 <p class="show">14 reports &middot; 2026-07-07 &rarr; 2026-07-25</p></header>
-<section class="hero"><div class='card'><div class='num'>14</div><div class='lbl'>Reports</div></div><div class='card'><div class='num hot'>1,468</div><div class='lbl'>Longest Gap</div></div><div class='card'><div class='num'>240</div><div class='lbl'>Songs Logged</div></div><div class='card'><div class='num'>7</div><div class='lbl'>Venues</div></div></section>
+<section class="hero"><div class='card'><div class='num'>14</div><div class='lbl'>Reports</div></div><div class='card'><div class='num hot'>1,468</div><div class='lbl'>Longest Gap</div></div><a class='card' href='./songs.html'><div class='num'>240</div><div class='lbl'>Songs Logged</div></a><div class='card'><div class='num'>7</div><div class='lbl'>Venues</div></div></section>
 <div class="tools">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search date, venue, city, song&hellip;" aria-label="Search reports">
