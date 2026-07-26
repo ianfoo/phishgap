@@ -717,7 +717,8 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    thing on the page that is comfortably readable. */
 .typ{display:block;margin-top:.25rem;font-size:.75rem;color:var(--dim);
    white-space:nowrap}
-.verdict{display:block;margin-top:.2rem;font-size:.625rem;letter-spacing:.14em;
+.typ .abbr{display:none}
+.verdict{display:inline-block;margin-left:.5rem;vertical-align:.05em;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;white-space:nowrap}
 .verdict.overdue{color:var(--hot-text)}
 .verdict.premature{color:var(--cool)}
@@ -781,6 +782,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 .rating span{opacity:.75}
 /* The title carries the link to the song's own page; underlining every one of
    them would stripe the table, so it colours on hover instead. */
+td.n,td.song{vertical-align:baseline}
 td.song a{color:inherit;text-decoration:none}
 td.song a:hover{color:var(--hot)}
 .place{color:var(--dim);font-size:.75rem;line-height:1.2rem;white-space:nowrap}
@@ -793,8 +795,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
-    opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+  /* Under the ink, not over it: as a fixed overlay this sat below the
+     sticky elements, which then showed cleaner paper than the page around
+     them, and it multiplied over 10px type. */
+  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
   tr:hover td{background:var(--hover)}
@@ -818,7 +822,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   table,tbody,tr,td{display:block}
   colgroup,thead{display:none}
   /* Wide enough for a comma'd four-digit gap in the Georgia fallback. */
-  tr{display:grid;grid-template-columns:4.7rem 1fr;column-gap:.7rem;
+  .typ .full{display:none}
+  .typ .abbr{display:inline}
+  tr{display:grid;grid-template-columns:3.7rem 1fr;column-gap:.7rem;
      grid-template-areas:"gap song" "gap meta";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   td{border:0;padding:0}
@@ -1114,7 +1120,12 @@ def render_html(report, bar_scale="linear", index_href=None,
             (len(report["songs"]), "Songs Played", ""),
             (longest, "Longest Gap", " hot"),
             (med, "Median Gap", ""),
-            (avg, "Average Gap", ""),
+            # Not the mean. A gap distribution with one 1,947 in it has a mean
+            # that describes no song in the setlist -- across this archive it
+            # runs to twice the median on 48% of shows and 253x on one of them.
+            # The count of bustouts is the thing the mean was standing near.
+            (sum(1 for s in report["songs"]
+                 if (s["gap"] or 0) >= BUSTOUT_GAP), "Bustouts", ""),
         ))
 
     sections, rows, current = [], [], None
@@ -1166,12 +1177,21 @@ def render_html(report, bar_scale="linear", index_href=None,
         elif s.get("recent_plays") is not None:
             # No norm to compare against, so say why: this is how thin its
             # recent record is.
-            typical = ("<span class='typ'>%d in %d yr</span>"
-                       % (s["recent_plays"], RECENT_YEARS))
-        tag = ""
+            # Spelt out where there is room, abbreviated where there is not:
+            # at 390px "3 in 10 yr" is 72px against a 56px four-digit gap, so
+            # the rarest thing in the column was setting its width.
+            typical = ("<span class='typ'><span class='full'>%d in %d yr</span>"
+                       "<span class='abbr'>%d/%dy</span></span>"
+                       % (s["recent_plays"], RECENT_YEARS,
+                          s["recent_plays"], RECENT_YEARS))
+        tag = verdict = ""
         if s.get("verdict") in ("premature", "overdue", "bustout"):
-            tag = "<span class='verdict %s'>%s</span>" % (s["verdict"],
-                                                          s["verdict"])
+            # Rendered in the song cell, not this one: at 390px "premature" is
+            # 63px against a 39px figure, so the least important thing in the
+            # column was setting the column's width and every row paid for it.
+            tag = ""
+            verdict = "<span class='verdict %s'>%s</span>" % (s["verdict"],
+                                                              s["verdict"])
         if g is None:
             gap_cell = "<span class='gap none'>&mdash;</span>" + typical + tag
             bar = "<td class='bar'></td>"
@@ -1220,8 +1240,8 @@ def render_html(report, bar_scale="linear", index_href=None,
             title = "<a href='../song/%s.html#%s'>%s</a>" % (
                 html.escape(s["slug"], quote=True),
                 html.escape(report["date"], quote=True), title)
-        cells = "<td class='n'%s>%s</td><td class='song'>%s</td>%s" % (
-            explain, gap_cell, title, bar)
+        cells = "<td class='n'%s>%s</td><td class='song'>%s%s</td>%s" % (
+            explain, gap_cell, title, verdict, bar)
         if show_last:
             if s["prev_date"]:
                 # No <br>: the spans are blocks on wide layouts and inline on
@@ -1417,8 +1437,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
-    opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+  /* Under the ink, not over it: as a fixed overlay this sat below the
+     sticky header and the to-top button, which then showed cleaner paper
+     than the page around them, and it multiplied over 10px type. */
+  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
    the rules still run the full width and nothing has to be hidden. */
@@ -1760,7 +1782,11 @@ h1{font-family:'Aleo',Georgia,serif;font-weight:600;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
    scripting off and survive a reload. */
-.eras{display:flex;flex-wrap:wrap;gap:.3rem}
+.eras{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+/* Captioned, because "4.0 42" beside a sort control reads as a filter with an
+   unexplained number, and nobody outside the fandom knows 4.0 is an era. */
+.eras-cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-right:.15rem}
 .era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.42rem .55rem;border:1px solid var(--rule);color:var(--dim);
@@ -1952,8 +1978,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim)}
 @media screen{
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
-    opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+  /* Under the ink, not over it: as a fixed overlay this sat below the
+     sticky header and the to-top button, which then showed cleaner paper
+     than the page around them, and it multiplied over 10px type. */
+  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -2128,7 +2156,7 @@ performance of this song and the one before it.</p></header>
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
 <button id="clear" class="clear" type="button" hidden>Clear</button>
-<span class="eras">{eras}</span>
+<span class="eras"><span class="eras-cap">Eras</span>{eras}</span>
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="newest">Newest</option><option value="oldest">Oldest</option>
