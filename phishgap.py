@@ -725,10 +725,11 @@ h1 a:hover em{color:var(--ink)}
    to right,var(--edge) 0 5px,transparent 5px 10px)}
 .hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
       border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
-     letter-spacing:0;color:var(--ink)}
+     letter-spacing:0;margin-top:auto;color:var(--ink)}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
@@ -1465,10 +1466,11 @@ header{padding-bottom:.9rem}
    to right,var(--edge) 0 5px,transparent 5px 10px)}
 .hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
       border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
-     letter-spacing:0}
+     letter-spacing:0;margin-top:auto}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
@@ -1843,10 +1845,11 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    to right,var(--edge) 0 5px,transparent 5px 10px)}
 .hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
    border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
-   letter-spacing:0}
+   letter-spacing:0;margin-top:auto}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
@@ -2000,7 +2003,6 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* The one card whose number arrives after the page does. Same shape as its
    four neighbours so its appearance is a card filling in, not the row
    reflowing around a new one. */
-.card.since .since-note{text-transform:none;letter-spacing:0;color:var(--dim)}
 .card.since.over .num{color:var(--hot)}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
@@ -2177,8 +2179,8 @@ SONG_JS = """
     var high=parseFloat(box.getAttribute('data-high')),
         bust=parseFloat(box.getAttribute('data-bustout'));
     if(high>0? n>high : n>=bust) box.classList.add('over');
-    var note=box.querySelector('.since-note');
-    if(note) note.textContent='as of '+d.as_of;
+    box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
+            ' shows that count toward a gap';
     box.hidden=false;
   }).catch(function(){});
 })();
@@ -2422,7 +2424,7 @@ def render_song(doc, archived=(), stamp=None, card=None):
     # not -- so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
              "data-bustout='%d'>"
-             "<div class='lbl'>Shows Since <span class='since-note'></span></div>"
+             "<div class='lbl'>Current Gap</div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
