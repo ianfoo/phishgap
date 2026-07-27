@@ -107,10 +107,11 @@ h1 a:hover em{color:var(--ink)}
    to right,var(--edge) 0 5px,transparent 5px 10px)}
 .hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
       border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
-     letter-spacing:0;color:var(--ink)}
+     letter-spacing:0;margin-top:auto;color:var(--ink)}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
