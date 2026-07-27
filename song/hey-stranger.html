@@ -209,6 +209,12 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .i-foul::after{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR42u2Xz2tcVRTHP+e+Nz+a2MTa4Ewy0zSpq7ZiFwWhCEIRoxWULhztdBItRbKwW3fdduHfUBDFYIM/diq6cS2KoNAWwSyqTjLMpLVEW9PJzLv36yIabcvUZGZUhJztvfe8zz3nnvM9D7Zt27q0y6WD6dqLo/t79eO6Pbgrvv6qi6n0ChB3c+jq6ZGdfs3tBQ3+VHlgaLU10E7HraHc/HLjHwMQWKOcO+qJcoH4CwhDIN8meyyV1jWv1BHg3FYBbLMbGy+MHQ8Rz4I1cfKGG4TggYvIhkETmXT6tV1vfb/Stwg0KuOPBZIpF5Kvvdkxk9apxcAf6IYdwEkK0FxrTwHv9QXgyqmJrK21SxjDuMxuk0+tZ+LO1ChCLoIgRyj2rQqySfu5gHZuxZlwe+ozucG7IlkuHKmVi9ObArj2UrFQr4yedcGPb/U2QmlH/Iz+8rbqM7lJmZ1wCo83pguH7gmg2cOpJPEvI5sMcpNdFbbXU8snR6c2fPr4aUkxDieFE9VScUdHgKutH3dj0UO9NJYgLDj3qMA0eziFNPHnavRgKq0nOgIkSfp0X/p00D5KxezSzfpBYOSO1UMdAeIQdvRNLLJt5wjRXe/ElHQEaGfsvBS+6/Xbhi0w11hNx1EdY+224MC3HQEKb9aqKHwUgvmeFE66YaCRtxeXTNrojGb6OTL/2T3LcHS+ftlMK13dXCTAApH7ZCPkkRYAFGhK9lV+rvHr33dCs0+Rnse4CQxtnsBCfn7p9dty7t2HjjCcRO6D4juLi5sWo5WZvZPNVhhUlJxxFvsgP4AQWNNMGczZ72IEuAgFefi8cKH2Rl9a8f1zP1zJv1u95MwuAjhjtcPWWxJVgNh0ve9yrBJR1e3ZT5ZbUcvPOuw+M9pgERYyJt1wRtXLHs5fqL3S94HE3sdD9RLA8snCvBfTgo9BRw3yMvuyZXwD/pd/bRhdV7jxJ+uVsfONcvGR/2QqVomoUR47vv1/sG3/e/sNrEkrwQ1sbIcAAAAASUVORK5CYII=")}
 .dek{margin:.55rem 0 0;font-size:.75rem;line-height:1.5;color:var(--dim);
    max-width:56ch}
+/* The notation legend. The arrows read as decoration unless something says
+   they are load-bearing: an arrow means the songs merely followed one another,
+   and phish.net's mark in its place means they did not stop. Worth one line,
+   because the alternative is a reader inventing a meaning for it. */
+.dek.key .k{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   color:var(--ink-soft);padding:0 .1rem}
 /* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
@@ -467,7 +473,11 @@ footer a{color:var(--dim)}
 <header><h1>Hey Stranger</h1>
 <p class="show">Debut 2022-12-29 &middot; Last played 2026-07-10 &middot; 19 performances</p>
 <p class="dek">Gap &mdash; the number of shows the band played between one
-performance of this song and the one before it.</p></header>
+performance of this song and the one before it.</p>
+<p class="dek key"><span class="k">&#8592;&#8201;&#8594;</span> the songs either
+side, played as separate songs. <span class="k">&gt;</span> and
+<span class="k">&#8211;&gt;</span> are phish.net&rsquo;s own marks, and mean the
+band ran them together rather than stopping between them.</p></header>
 <section class="hero"><div class='card'><div class='lbl'>Times Played</div><div class='num'>19</div></div><div class='card'><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div><div class='num'>6</div></div><div class='card'><div class='lbl'>Median Gap, All-Time</div><div class='num'>6</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>20</div></div><div class='card since' hidden data-slug='hey-stranger' data-high='10.899999999999999' data-bustout='100'><div class='lbl'>Current Gap<span class='v'></span></div><div class='num'></div></div></section>
 <div class="rule2"></div>
 <p class='best'><span class='field'><span class='cap'>Best version</span><a class='when' href='#2025-06-28'>2025-06-28</a></span><span class='field'><span class='cap'>Venue</span><span class='where'>Moody Center, Austin</span></span><span class='field'><span class='cap'>Score</span><span class='score'>79</span></span><span class='field'><span class='cap'>Hear it</span><span class='cap'><a class='ext i-pin' href='https://phish.in/2025-06-28' target='_blank' rel='noopener noreferrer'>Listen</a> &middot; <a class='ext i-foul' href='https://fouldomain.com/tracks/39463' target='_blank' rel='noopener noreferrer'>Details</a></span></span></p>
