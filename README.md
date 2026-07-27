@@ -132,7 +132,9 @@ re-checks recent shows for corrections. On a day with no show it finds nothing
 and publishes nothing. It needs one repository secret, `PHISHNET_API_KEY`, which it passes to the
 script as `PL_PHISHNET_API_KEY`. Everything this program reads from the
 environment is prefixed `PL_`; set `PL_GOATCOUNTER` as a repository variable
-to turn on analytics.
+to turn on analytics. Each falls back to its unprefixed name, and every run
+logs which variable it actually read — so a mistyped prefix cannot quietly
+fall through to a stale unprefixed value without saying so.
 Pushing a change to `possumlogic.py` also triggers it, so a template edit
 republishes every page.
 

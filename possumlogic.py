@@ -125,6 +125,75 @@ SERVICES = {
 }
 
 
+# Every setting this program takes from the environment, prefixed or not, so a
+# variable that is nearly right can be told from one that is simply unknown.
+ENV_SETTINGS = ("GOATCOUNTER",)
+
+
+def env_all_names():
+    """Every environment variable this program will read, prefixed and plain."""
+    names = []
+    for service in SERVICES:
+        names.extend(env_names(service))
+    for extra in ENV_SETTINGS:
+        names.extend((ENV_PREFIX + extra, extra))
+    return tuple(names)
+
+
+# Reported once each, however many times a value is asked for.
+_ENV_SAID = set()
+
+
+def env_value(stem, quiet=False):
+    """Read ENV_PREFIX+stem, falling back to stem, saying which one it used.
+
+    Saying so is the point. A prefix typed slightly wrong -- PL_PHISNET_API_KEY
+    -- sets a variable nothing reads, and the fallback then quietly serves
+    whatever the unprefixed name happens to hold, which may be a key from a
+    year ago. Silence there costs an afternoon. So a fallback announces itself,
+    and a PL_ variable nobody recognises is called out by name.
+    """
+    for name in (ENV_PREFIX + stem, stem):
+        raw = os.environ.get(name)
+        if raw and raw.strip():
+            if not quiet and name not in _ENV_SAID:
+                _ENV_SAID.add(name)
+                if not name.startswith(ENV_PREFIX):
+                    log("using %s (%s%s is not set)", name, ENV_PREFIX, stem)
+                else:
+                    log("using %s", name)
+            return raw.strip()
+    return None
+
+
+def check_env():
+    """Say what the environment is giving this run, and what it is not.
+
+    Two things worth saying out loud. Which variable a value actually came
+    from, because an unprefixed one is a value this program did not ask for by
+    its own name and may be older than whoever set the prefixed one intended.
+    And any PL_ variable nothing reads, because a prefixed name that is not one
+    of ours is almost always a typo -- nothing else has a reason to use the
+    prefix, and the fallback will hide the mistake by quietly working.
+    """
+    known = set(env_all_names())
+    for name in env_all_names():
+        raw = os.environ.get(name)
+        if not (raw and raw.strip()):
+            continue
+        if name.startswith(ENV_PREFIX):
+            log("env: %s is set", name)
+        elif not os.environ.get(ENV_PREFIX + name):
+            log("env: %s is set, and %s%s is not -- using the unprefixed one",
+                name, ENV_PREFIX, name)
+    stray = sorted(n for n in os.environ
+                   if n.startswith(ENV_PREFIX) and n not in known)
+    for n in stray:
+        log("env: warning -- %s is set but nothing reads it. This program reads "
+            "%s", n, ", ".join(sorted(x for x in known if x.startswith(ENV_PREFIX))))
+    return stray
+
+
 def env_names(service):
     """Environment variables to try for `service`, in order of precedence.
 
@@ -163,10 +232,10 @@ def load_key(explicit=None, service="phish.net", required=True):
     if explicit:
         return explicit
     meta = SERVICES.get(service) or {}
-    for name in env_names(service):
-        env = os.environ.get(name)
-        if env and env.strip():
-            return env.strip()
+    stem = env_names(service)[1]                 # the unprefixed form
+    found = env_value(stem)
+    if found:
+        return found
     found = _config_keys().get(service)
     if found:
         return found
@@ -399,7 +468,10 @@ SITE_URL = "https://ianfoo.github.io/phishgap"
 # there is nothing for a consent banner to ask about. Set to the account code
 # to switch it on; empty means the pages ask nothing of anyone, which is what
 # they do until someone deliberately changes this line.
-GOATCOUNTER = os.environ.get(ENV_PREFIX + "GOATCOUNTER", "").strip()
+# Read quietly at import; check_env reports it with everything else, so a run
+# gets one block about its environment rather than a line from wherever each
+# value happened to be needed.
+GOATCOUNTER = (env_value("GOATCOUNTER", quiet=True) or "")
 ANALYTICS = ('<script data-goatcounter="https://%s.goatcounter.com/count" '
              'async src="//gc.zgo.at/count.js"></script>' % GOATCOUNTER
              if GOATCOUNTER else "")
@@ -5363,6 +5435,7 @@ def main():
             ("seed-setlists", args.seed_setlists)) if on]
         if jobs and not args.watching:
             log("run starting: %s", ", ".join(jobs))
+            check_env()
 
     if args.watching:
         if not args.site:
