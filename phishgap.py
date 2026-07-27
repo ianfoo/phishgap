@@ -2049,6 +2049,15 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    four neighbours so its appearance is a card filling in, not the row
    reflowing around a new one. */
 .card.since.over .num{color:var(--hot)}
+/* The verdict rides in the label, which the hero can now afford to let wrap:
+   the figures hang off a shared bottom edge, so a second line here moves this
+   label and nothing else on the row. */
+.card.since .v{display:block;text-transform:none;letter-spacing:0}
+.card.since .v:not(:empty){margin-top:.1rem}
+.card.since .v.quiet,.card.since .v.dim{color:var(--dim)}
+.card.since.over .v{color:var(--hot-text);text-transform:uppercase;
+   letter-spacing:.14em}
+.card.since.dormant .num{color:var(--ink-soft)}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
 .set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
@@ -2222,8 +2231,15 @@ SONG_JS = """
        is not a claim about phish.net's gap, which is not reproducible from a
        show calendar. */
     var high=parseFloat(box.getAttribute('data-high')),
-        bust=parseFloat(box.getAttribute('data-bustout'));
-    if(high>0? n>high : n>=bust) box.classList.add('over');
+        bust=parseFloat(box.getAttribute('data-bustout')),
+        v=box.querySelector('.v');
+    if(high>0){
+      if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
+      else if(v){ v.textContent='line '+Math.round(high); v.className='v quiet'; }
+    }else if(n>=bust){
+      box.classList.add('dormant');
+      if(v){ v.textContent='dormant'; v.className='v dim'; }
+    }
     box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
             ' shows that count toward a gap';
     box.hidden=false;
@@ -2469,7 +2485,7 @@ def render_song(doc, archived=(), stamp=None, card=None):
     # not -- so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
              "data-bustout='%d'>"
-             "<div class='lbl'>Current Gap</div>"
+             "<div class='lbl'>Current Gap<span class='v'></span></div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
