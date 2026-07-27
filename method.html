@@ -25,9 +25,14 @@
 .theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
-.theme button:hover:not(:disabled){color:var(--ink)}
+.theme button:hover:not(:disabled):not(.on){color:var(--ink);
+   border-color:var(--ink)}
 .theme button.on{background:var(--ink);color:var(--paper);
    border-color:var(--ink)}
+/* The selected one is already ink-on-paper reversed, so hovering it must not
+   set the text to the colour it is sitting on. It brightens its edge instead. */
+.theme button.on:hover:not(:disabled){color:var(--paper);
+   box-shadow:0 0 0 2px var(--hot)}
 .theme button:disabled{opacity:.45;cursor:default}
 .theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 @media print{.theme{display:none}}
@@ -41,7 +46,8 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.625rem;
+.crumb{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem;
+   font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
    border-bottom:1px solid var(--rule)}

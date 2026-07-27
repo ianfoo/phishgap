@@ -21,11 +21,8 @@
       "debut": true,
       "plays": 1,
       "recent_plays": 0,
-      "gap_median": null,
       "gap_mean": null,
-      "gap_low": null,
-      "gap_high": null,
-      "verdict": "bustout"
+      "verdict": null
     }
   ],
   "count_since": "2026-07-26T10:30:29+00:00",
