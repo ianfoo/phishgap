@@ -187,11 +187,24 @@ def check_env():
         elif not os.environ.get(ENV_PREFIX + name):
             log("env: %s is set, and %s%s is not -- using the unprefixed one",
                 name, ENV_PREFIX, name)
+    # Two kinds of near-miss. A wrong name under the right prefix -- and a
+    # right name under the wrong prefix, which is the one that hides: PH_ for
+    # PL_ sets a variable that starts with neither of our forms, so a check
+    # that only looks at PL_ never sees it and the setting silently does
+    # nothing. Anything ending in one of our stems is suspicious whatever it
+    # begins with.
+    stems = tuple(n for n in known if not n.startswith(ENV_PREFIX))
     stray = sorted(n for n in os.environ
-                   if n.startswith(ENV_PREFIX) and n not in known)
+                   if n not in known
+                   and (n.startswith(ENV_PREFIX)
+                        or any(n.endswith("_" + s) for s in stems)))
     for n in stray:
-        log("env: warning -- %s is set but nothing reads it. This program reads "
-            "%s", n, ", ".join(sorted(x for x in known if x.startswith(ENV_PREFIX))))
+        near = [x for x in known
+                if x.startswith(ENV_PREFIX) and n.endswith(x[len(ENV_PREFIX):])]
+        log("env: warning -- %s is set but nothing reads it. %s",
+            n, ("Did you mean %s?" % near[0]) if near else
+            "This program reads %s"
+            % ", ".join(sorted(x for x in known if x.startswith(ENV_PREFIX))))
     return stray
 
 
@@ -3910,7 +3923,23 @@ def shoot_cards(exe, jobs, site_dir):
 
 
 def report_card(report):
-    """A show: what it was, where, and the night's headline gap."""
+    """A show: what it was, where, and the night's headline gap.
+
+    A show still being played gets a different card, and deliberately a fixed
+    one. Withholding it entirely was the wrong call: a show in progress is
+    exactly when a link gets shared, and a shared link with no preview is the
+    one that looks broken. But drawing the real card would redraw it every five
+    minutes all night, so the in-progress card says only what will not change
+    -- the date, the venue, and that the setlist is still coming in. Its
+    content hash is therefore stable, so it is drawn once at first sighting and
+    then left alone until the show settles and the real one replaces it.
+    """
+    if report.get("provisional"):
+        return card_markup(
+            "Possum Logic", html.escape(report["date"]),
+            html.escape((report.get("venue") or "").upper()),
+            ((" ", "Setlist still coming in", "hot"),),
+            size=104, data=True)
     gaps = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(gaps) if gaps else None
     song = next((s["song"] for s in report["songs"] if s["gap"] == biggest), "")
@@ -5178,11 +5207,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 log("wrote %s", page)
             else:
                 rebuilt += 1
-        # Not while it is still coming in: the card is redrawn whenever its
-        # contents change, so a show updating every five minutes would redraw
-        # its own picture all night for a link nobody has shared yet.
-        if not report.get("provisional"):
-            want_card(date, report_card(report))
+        # Provisional shows included -- see report_card, where the in-progress
+        # card is built from only the facts that will not move, so its hash
+        # holds still and it is drawn once rather than every five minutes.
+        want_card(date, report_card(report))
 
     # Song pages last, so they can link to whichever reports now exist. They
     # are cheap to write and the archive is the only input, so a rebuild does
