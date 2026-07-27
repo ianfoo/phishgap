@@ -13,11 +13,8 @@
       "set": "SET 1",
       "song": "Watcher of the Skies",
       "slug": "watcher-of-the-skies",
-      "gap": 0,
       "jamchart": false,
-      "prev_date": null,
-      "prev_venue": null,
-      "prev_place": null,
+      "gap": null,
       "debut": true,
       "plays": 1,
       "recent_plays": 0,
@@ -25,17 +22,17 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
-      "verdict": null
+      "verdict": null,
+      "prev_date": null,
+      "prev_venue": "",
+      "prev_place": ""
     },
     {
       "set": "SET 1",
       "song": "No Reply At All",
       "slug": "no-reply-at-all",
-      "gap": 0,
       "jamchart": false,
-      "prev_date": null,
-      "prev_venue": null,
-      "prev_place": null,
+      "gap": null,
       "debut": true,
       "plays": 1,
       "recent_plays": 0,
@@ -43,7 +40,10 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
-      "verdict": null
+      "verdict": null,
+      "prev_date": null,
+      "prev_venue": "",
+      "prev_place": ""
     }
   ],
   "pnet_rating": 3.552,
