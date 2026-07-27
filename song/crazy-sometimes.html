@@ -230,6 +230,11 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .card.since.dormant .num{color:var(--ink-soft)}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
+/* A soundcheck or a television session. It happened and it is listed,
+   but phish.net does not count it toward a gap and neither do we, so
+   the column says why it is empty rather than leaving a dash to be read
+   as missing data. */
+.gap.none{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
 .set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
    text-transform:uppercase}
 /* What it followed and what it led into, stacked. Sized in ch so the column
@@ -528,7 +533,9 @@ performance of this song and the one before it.</p></header>
         return t(hay);
       });
       r.hidden=!ok;
-      if(ok){ n++; live[r.getAttribute('data-era')]=1; }
+      // A soundcheck row is shown but is not a show, so it is not counted.
+      if(ok){ if(r.getAttribute('data-counted')!=='0') n++;
+              live[r.getAttribute('data-era')]=1; }
     });
     // A year heading with nothing left under it is worse than no heading, so
     // it goes when its rows do -- and stays gone whenever the order is not
