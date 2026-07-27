@@ -159,6 +159,11 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .r-stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
            font-size:1rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot-text)}
+/* A show still being played, said in the one place on the row where the
+   number it qualifies already is: 24 songs means something different
+   tonight than it will tomorrow. */
+.live-tag{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
    for what it is: ".r-song" also means "the song this row is about" on the
    song index, which inherits this stylesheet, and one grid-column rule meant
