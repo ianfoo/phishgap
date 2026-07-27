@@ -66,9 +66,12 @@ jobs:
           # Only the once-a-day run pays to re-fetch shows that already settled.
           recheck=""
           [ "$SCHEDULE" = "0 15 * * *" ] && recheck="--recheck"
+          # --calendar refreshes the current year of the show list that the
+          # "shows since" figures are counted against. One API call, and
+          # without it every song's standing freezes at the last backfill.
           python phishgap.py --site site --previous --rebuild \
             --catch-up "${{ github.event.inputs.days || 21 }}" $recheck \
-            --sweep-ratings
+            --sweep-ratings --calendar
 
       - name: Commit the data archive
         id: archive
