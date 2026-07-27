@@ -2293,6 +2293,11 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .card.since.dormant .num{color:var(--ink-soft)}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
+/* A soundcheck or a television session. It happened and it is listed,
+   but phish.net does not count it toward a gap and neither do we, so
+   the column says why it is empty rather than leaving a dash to be read
+   as missing data. */
+.gap.none{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
 .set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
    text-transform:uppercase}
 /* What it followed and what it led into, stacked. Sized in ch so the column
@@ -2517,7 +2522,9 @@ SONG_JS = """
         return t(hay);
       });
       r.hidden=!ok;
-      if(ok){ n++; live[r.getAttribute('data-era')]=1; }
+      // A soundcheck row is shown but is not a show, so it is not counted.
+      if(ok){ if(r.getAttribute('data-counted')!=='0') n++;
+              live[r.getAttribute('data-era')]=1; }
     });
     // A year heading with nothing left under it is worse than no heading, so
     // it goes when its rows do -- and stays gone whenever the order is not
@@ -2703,28 +2710,42 @@ def linkify(escaped):
     return URL_IN_PROSE.sub(wrap, escaped)
 
 
-def render_song(doc, archived=(), stamp=None, card=None):
-    """One song's whole performance history, newest first."""
+def render_song(doc, archived=(), stamp=None, card=None, counting=None):
+    """One song's whole performance history, newest first.
+
+    The archive stores phish.net verbatim, so the corrections happen here.
+    `counting` is the set of dates that count toward a gap; performances at the
+    others are soundchecks and television sessions, and they are shown -- they
+    happened -- but they are not the song's debut, they carry no gap, and they
+    are kept out of every figure. Left in, Gone's debut was the Festival 8
+    soundcheck, which made its real first performance render a gap of 1,468.
+    """
     perfs = list(reversed(doc["performances"]))
     song = doc["song"]
     best = doc.get("best") or []
     rated = {v["date"]: v for v in best}
-    gaps = [p["gap"] for p in perfs[:-1] if p["gap"] is not None]
+    # Newest first, so the last countable row is the earliest one.
+    countable = [p for p in perfs
+                 if not counting or p["date"] in counting]
+    debut_date = countable[-1]["date"] if countable else None
+    gaps = [p["gap"] for p in countable
+            if p["gap"] is not None and p["date"] != debut_date]
     biggest = max(gaps) if gaps else 0
 
     # The all-time and recent medians sit side by side because they disagree so
     # often: You Enjoy Myself is 1 against 6, Llama 2 against 11. Showing only
     # the all-time figure would describe a band that stopped existing in 1999.
     cutoff = _years_before(perfs[0]["date"], RECENT_YEARS) if perfs else ""
-    recent = [p["gap"] for p in perfs[1:] if p["gap"] is not None
-              and p["date"] >= cutoff]
+    recent = [p["gap"] for p in countable
+              if p["gap"] is not None and p["date"] >= cutoff
+              and p["date"] != debut_date]
     lbl10 = ("Median Gap, <span class='full'>Last %d Years</span>"
              "<span class='abbr'>%d Yr</span>" % (RECENT_YEARS, RECENT_YEARS))
     hero = "".join(
         "<div class='card'><div class='lbl'>%s</div>"
         "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
         for val, lbl, cls in (
-            (len(perfs), "Times Played", ""),
+            (len(countable), "Times Played", ""),
             (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
             (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
             (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
@@ -2765,7 +2786,9 @@ def render_song(doc, archived=(), stamp=None, card=None):
     # Each era heading counts its own shows, which is the thing a year heading
     # never told you: McGrupp reads 101 / 1 / 13 / 9 and you can watch the song
     # nearly die and come back.
-    tally = collections.Counter(era(p["date"]) for p in perfs)
+    # Counted over what counts, so an era chip agrees with the rows under it
+    # and with Times Played above it.
+    tally = collections.Counter(era(p["date"]) for p in countable)
     span = {}
     for p in perfs:
         e = era(p["date"])
@@ -2780,7 +2803,13 @@ def render_song(doc, archived=(), stamp=None, card=None):
         # thirty years before it existed. A different measurement wearing the
         # same name: it does not belong in the column, in the song's longest
         # gap, or on a bar scaled to gaps that mean the other thing.
-        debut = i == len(perfs) - 1
+        # The earliest performance that counts, not the earliest row: a
+        # soundcheck standing in front of it made the real debut look ordinary
+        # and gave it phish.net's since-the-beginning figure as a gap.
+        counted = not counting or date in counting
+        debut = date == debut_date
+        if not counted:
+            g = None
         this = era(date)
         if this != seen_era:
             seen_era = this
@@ -2871,7 +2900,7 @@ def render_song(doc, archived=(), stamp=None, card=None):
                     else "<p class='%s'>%s</p>" % (cls, body))
         rows.append(
             "<li id='%s' data-date='%s' data-era='%s' data-gap='%s'"
-            " data-score='%s' data-search=\"%s\"><div class='row'>"
+            " data-score='%s'%s data-search=\"%s\"><div class='row'>"
             "<span class='r-date'>%s<span class='dow'>%s</span></span>"
             "<span><span class='r-venue'>%s</span>"
             "<span class='r-place'>%s</span>%s%s</span>%s%s"
@@ -2880,11 +2909,13 @@ def render_song(doc, archived=(), stamp=None, card=None):
             "</div></li>"
             % (date, date, this, -1 if (g is None or debut) else g,
                rated[date]["score"] if date in rated else "",
+               "" if counted else " data-counted='0'",
                html.escape(hay, quote=True), link, weekday(date),
                html.escape(p["venue"]), html.escape(place), mark, jam, nb, bar,
                " none" if (g is None or debut) else (" big" if big else ""),
                "Debut" if debut else
-               ("{:,}".format(g) if g is not None else "&mdash;"), times))
+               ("Not a show" if not counted else
+                "{:,}".format(g) if g is not None else "&mdash;"), times))
 
     # Every bar on this page is the same song against the same scale, so the
     # median sits at one position for all of them -- drawn as a gridline in the
@@ -2918,14 +2949,18 @@ def render_song(doc, archived=(), stamp=None, card=None):
             % (" &middot; mark at median %s" % _stat(med) if medmark else ""))
     head = medmark + cols
 
-    first, last = (perfs[-1]["date"], perfs[0]["date"]) if perfs else ("", "")
+    # Over the performances that count, so the debut named here is the one the
+    # rows call the debut and the total matches Times Played.
+    first = debut_date or ""
+    last = countable[0]["date"] if countable else ""
+    n = len(countable)
     subtitle = " &middot; ".join(x for x in (
         "Debut %s" % first if first else "",
         "Last played %s" % last if last and last != first else "",
-        "%d performance%s" % (len(perfs), "" if len(perfs) == 1 else "s"),
+        "%d performance%s" % (n, "" if n == 1 else "s"),
     ) if x)
     blurb = "Every Phish performance of %s: %d show%s" % (
-        song, len(perfs), "" if len(perfs) == 1 else "s")
+        song, n, "" if n == 1 else "s")
     if first:
         blurb += ", %s to %s" % (first, last)
     if best:
@@ -2942,7 +2977,7 @@ def render_song(doc, archived=(), stamp=None, card=None):
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
         cols=cols, theme_js=THEME_JS,
         theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
-        hero=hero, best=top, links=links, count=len(perfs), eras=chips,
+        hero=hero, best=top, links=links, count=len(countable), eras=chips,
         share=share_meta(html.escape(song), html.escape(blurb, quote=True),
                          "song/%s.html" % doc["slug"], card=card),
         stuckstat="<b>%d</b> shows &middot; median gap <b>%s</b>"
@@ -4598,6 +4633,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     songs = archived_songs(site_dir)
     have_dates = {r["date"] for r in known}
     calendar = load_calendar(site_dir)
+    counting = set(calendar)
     for report in known:
         date = report["date"]
         if not (rebuild or date in stale):
@@ -4630,7 +4666,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         page = os.path.join(site_dir, "song", "%s.html" % slug)
         name = "song-%s" % slug
         moved = write_if_changed(page, render_song(doc, archived=have,
-                                                   card=name))
+                                                   card=name, counting=counting))
         wrote += 1 if moved else 0
         want_card(name, song_card(doc))
     if considered:
