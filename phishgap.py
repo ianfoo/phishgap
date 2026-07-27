@@ -285,7 +285,8 @@ FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
 # Plex Mono is the only thing still coming from Google: it is doing real work
 # at 10-14px and swapping it would cost legibility for no identity gain.
 WEB_FONTS = ("https://fonts.googleapis.com/css2"
-             "?family=IBM+Plex+Mono:wght@400;500;600&display=swap")
+             "?family=IBM+Plex+Mono:wght@400;500;600"
+             "&family=Literata:opsz,wght@7..72,400..500&display=swap")
 
 
 # ------------------------------------------------------------------ share ---
@@ -857,8 +858,11 @@ td.song a{color:inherit;text-decoration:none}
 td.song a:hover{color:var(--hot)}
 .place{color:var(--dim);font-size:.75rem;line-height:1.2rem;white-space:nowrap}
 .none{color:var(--dim);font-style:italic}
+/* The show's own notes: the other block of real prose on the site, and set in
+   the reading face for the same reason the song pages' are. */
 .notes{margin:2.2rem 0 0;padding:1rem 1.1rem;border-left:3px solid var(--rule);
-       font-size:.875rem;color:var(--ink-soft)}
+       font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
+       font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:68ch}
 .notes a{color:var(--hot)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
@@ -2102,7 +2106,16 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    read as something stuck on afterwards rather than as part of the entry.
    Roman, not italic -- these run to 950 characters at the long end, and a
    paragraph of italic prose is tiring well before that. */
-.jam,.note{margin:.4rem 0 0;font-size:.75rem;line-height:1.5;
+/* The only real prose on the site, and the one job neither other face can do.
+   The mono set it evenly and never argued with the figures, but 950 characters
+   of monospace gives the eye nothing to return on, and the display face at
+   text size is a display face at text size. Literata is drawn for reading and
+   has the optical axis to be drawn differently here than at a headline, which
+   is the whole argument for a third family rather than stretching a second.
+   15px rather than 12: a proportional face sets far more into the same measure,
+   and the old size was compensating for the mono's width. */
+.jam,.note{margin:.45rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 14;
    color:var(--ink-soft);max-width:62ch}
 .jam a,.note a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--edge);word-break:break-word}
