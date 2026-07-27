@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>2025-01-28 &mdash; Possum Logic</title>
-<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Moon Palace, Cancun, Quintana Roo · 3 songs · longest gap 382 (Jam)"><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="2025-01-28 &mdash; Possum Logic"><meta property="og:description" content="Moon Palace, Cancun, Quintana Roo · 3 songs · longest gap 382 (Jam)"><meta property="og:url" content="https://possumlogic.com/show/2025-01-28.html"><meta property="og:image" content="https://possumlogic.com/card/2025-01-28.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Moon Palace, Cancun, Quintana Roo · 3 songs · longest gap 382 (Jam)"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Moon Palace, Cancun, Quintana Roo · 3 songs · longest gap 382 (Jam)"><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="2025-01-28 &mdash; Possum Logic"><meta property="og:description" content="Moon Palace, Cancun, Quintana Roo · 3 songs · longest gap 382 (Jam)"><meta property="og:url" content="https://ianfoo.github.io/phishgap/show/2025-01-28.html"><meta property="og:image" content="https://ianfoo.github.io/phishgap/card/2025-01-28.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Moon Palace, Cancun, Quintana Roo · 3 songs · longest gap 382 (Jam)"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
@@ -174,13 +174,20 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    "Tweezer ->" and "Tweezer" are different entries in a setlist, and the report
    was printing them identically. Quiet, because it qualifies the title rather
    than competing with it. */
+/* Only the two-glyph mark is tightened, and only slightly. At full monospace
+   advance -> reads as a hyphen standing beside an angle bracket rather than as
+   one mark; -.06em closes that without breaking the fixed advance the rest of
+   the column depends on. A lone > has nothing to close up, so it is left on
+   the grid. */
+.seg.tight{letter-spacing:-.06em}
 .seg{margin-left:.3rem;font-family:'IBM Plex Mono',ui-monospace,monospace;
    font-weight:600;color:var(--dim);white-space:nowrap}
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
    border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
-td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
+a.jc-chip{text-decoration:none}
+td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;line-height:1;
      white-space:nowrap}

@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cinnamon Girl &mdash; Possum Logic</title>
-<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every Phish performance of Cinnamon Girl: 5 shows, 1989-03-01 to 2023-10-08"><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Cinnamon Girl"><meta property="og:description" content="Every Phish performance of Cinnamon Girl: 5 shows, 1989-03-01 to 2023-10-08"><meta property="og:url" content="https://possumlogic.com/song/cinnamon-girl.html"><meta property="og:image" content="https://possumlogic.com/card/song-cinnamon-girl.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every Phish performance of Cinnamon Girl: 5 shows, 1989-03-01 to 2023-10-08"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every Phish performance of Cinnamon Girl: 5 shows, 1989-03-01 to 2023-10-08"><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Cinnamon Girl"><meta property="og:description" content="Every Phish performance of Cinnamon Girl: 5 shows, 1989-03-01 to 2023-10-08"><meta property="og:url" content="https://ianfoo.github.io/phishgap/song/cinnamon-girl.html"><meta property="og:image" content="https://ianfoo.github.io/phishgap/card/song-cinnamon-girl.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every Phish performance of Cinnamon Girl: 5 shows, 1989-03-01 to 2023-10-08"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
@@ -270,7 +270,12 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
 /* Named only where the column header is not doing it. */
 .nb .cap{display:none}
-.nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Direct children only. These are the two lines -- what came before, what
+   came after -- and each is its own line. The transition mark now lives in
+   a span inside one of them, and a blanket rule here made that mark a
+   block too, so a row read "->" and "Golden Age" on separate lines. */
+.nb>span{display:block;overflow:hidden;text-overflow:ellipsis;
+   white-space:nowrap}
 /* Doubled backslashes: this is a Python string, and "90" is read as the
    octal escape  followed by "90", which reaches the browser as a control
    character and renders as a box. */
@@ -279,6 +284,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* Same -.06em as the report pages: enough to make -> one mark, not so
+   much that it stops matching the > on the row above it. */
+.nb .mk.tight{letter-spacing:-.06em}
 .bar{align-self:center}
 /* The same band the report pages use. This CSS is the half of that change I
    left out the first time: the markup emitted .band, .mid and .at while this
@@ -403,7 +411,7 @@ footer a{color:var(--dim)}
   .head{display:none}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.35rem}
-  .nb span{white-space:normal;overflow:visible}
+  .nb>span{white-space:normal;overflow:visible}
   .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
      text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
