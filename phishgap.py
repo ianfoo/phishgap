@@ -1003,22 +1003,26 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
   td.bar[data-tip]::after{left:auto;right:1.2rem}
 }
 .bar{padding-right:1.2rem}
+/* A position, not a length. The track is the whole range a gap can sit in for
+   this song; the shaded middle is where it usually sits, the hairline is its
+   median, and the mark is tonight. Nothing here is scaled to the show, so a
+   bustout somewhere else on the bill cannot flatten this row. */
 .bar .track{display:block;position:relative;width:100%;height:7px;
-   background-color:var(--track);
-   background-image:linear-gradient(to right,transparent calc(var(--med,-1%) - 1px),
-     var(--band) calc(var(--med,-1%) - 1px),var(--band) var(--med,-1%),
-     transparent var(--med,-1%));
-   background-repeat:no-repeat}
-.bar .fill{display:block;position:relative;height:7px;background:var(--cool);
-   min-width:2px}
-.bar .fill.big{background:var(--hot)}
-/* Both the fill and this sit on the show's scale, so a staple's median pins to
-   the far left and a bustout visibly overshoots it. Full-strength ink with a
-   paper halo, so it stays a hairline but reads clearly where it crosses the
-   fill rather than dissolving into it -- and the halo inverts with the theme
-   for free. */
-.bar .tick{position:absolute;top:-5px;bottom:-5px;width:2px;
-   background:var(--ink);box-shadow:0 0 0 1px var(--paper)}
+   background:linear-gradient(to bottom,transparent 0 3px,var(--rule-soft) 3px 4px,
+   transparent 4px 7px)}
+.bar .track.bare{opacity:.45}
+/* Where this song usually lands. Deliberately quiet -- it is the backdrop the
+   mark is read against, not a thing to look at. */
+.bar .band{position:absolute;left:30%;right:30%;top:0;bottom:0;
+   background:var(--track)}
+.bar .mid{position:absolute;left:50%;top:-1px;bottom:-1px;width:1px;
+   background:var(--rule)}
+/* Tonight. Full-strength ink with a paper halo so it stays legible wherever it
+   lands, including on top of the median hairline. */
+.bar .at{position:absolute;left:50%;top:-4px;bottom:-4px;width:3px;
+   transform:translateX(-50%);background:var(--cool);
+   box-shadow:0 0 0 1px var(--paper)}
+.bar .at.big{background:var(--hot)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Named only where the column header is not doing it -- on a wide screen the
@@ -1377,6 +1381,37 @@ def _stat(value):
 BAR_SCALES = ("linear", "sqrt", "log")
 
 
+def _band_pos(gap, low, high):
+    """Where this gap sits against the song's own band, as 0-100 across a track.
+
+    The old bar drew each gap as a fraction of the longest gap in the show,
+    which works until a bustout is in the room -- and on 168 of 690 shows the
+    longest gap is at least twenty times the median, so about 95% of that
+    night's bars collapse into one flat nub a couple of pixels long. A scale
+    that one row can destroy for every other row is not a scale.
+
+    So the bar stops measuring magnitude, which the printed number already
+    gives exactly, and measures the only thing the number cannot: whether this
+    was early or late *for this song*. Every row gets its own scale, which is
+    the point -- Tweezer's 9 and Cold as Ice's 1,468 are both ordinary against
+    their own histories, and both should read that way.
+
+    The band [low, high] occupies the middle 40% of the track, so a gap inside
+    it lands in the middle and one outside it visibly leaves. Beyond the band
+    the mapping saturates rather than running off: at three times the high mark
+    it reaches the end and stays there, because past a point "very late" is the
+    whole of the message and a longer bar does not add to it.
+    """
+    if high is None or low is None or high <= 0:
+        return None
+    if gap <= low:
+        return 30.0 * (gap / low) if low > 0 else 0.0
+    if gap <= high:
+        return 30.0 + 40.0 * (gap - low) / (high - low) if high > low else 50.0
+    over = (gap - high) / (high * 2.0)
+    return 70.0 + 30.0 * min(1.0, over)
+
+
 def _bar_pct(gap, biggest, scale="linear"):
     """Bar length as a percentage of the longest gap in the show.
 
@@ -1529,28 +1564,20 @@ def render_html(report, bar_scale="linear", index_href=None,
         else:
             gap_cell = ("<span class='gap %s'>%s</span>%s%s"
                         % (klass, "{:,}".format(g), typical, tag))
-            pct = _bar_pct(g, biggest, bar_scale)
-            # Both the tick and the fill sit on the show's scale. On a night
-            # with a 1,170 bustout in it, a staple's median of 10 lands at 0.9%
-            # of the track and is indistinguishable from the fill's origin, so
-            # it is only drawn where it can actually say something. The numbers
-            # under the gap carry it the rest of the time.
-            # The percentile band the verdict is judged against used to be
-            # shaded here. It was dropped from the text long ago as jargon and
-            # this was the last of it: a mark that appeared on some rows and
-            # not others, explained nowhere, and on a phone was a few pixels
-            # wide. The median tick says the useful half of it.
-            tick = ""
-            if s.get("gap_median") is not None:
-                at = _bar_pct(s["gap_median"], biggest, bar_scale)
-                if at >= 4.0:
-                    # No title here: the whole cell carries one, and a 2px
-                    # hover target is a joke.
-                    tick = ("<span class='tick' style='left:%.2f%%'></span>"
-                            % min(at, 100.0))
-            bar = ("<td class='bar'%s><span class='track'>"
-                   "<span class='fill %s' style='width:%.2f%%'></span>%s"
-                   "</span></td>" % (explain, klass, pct, tick))
+            # Against the song's own band, not the show's longest gap. See
+            # _band_pos: a bustout used to set a scale that flattened every
+            # other row on the night into an identical nub.
+            pos = _band_pos(g, s.get("gap_low"), s.get("gap_high"))
+            if pos is None:
+                # Too little history to have a norm, so there is nothing to be
+                # early or late against and the bar says nothing rather than
+                # implying a comparison that was never made.
+                bar = "<td class='bar'%s><span class='track bare'></span></td>" % explain
+            else:
+                bar = ("<td class='bar'%s><span class='track'>"
+                       "<span class='band'></span><span class='mid'></span>"
+                       "<span class='at %s' style='left:%.2f%%'></span>"
+                       "</span></td>" % (explain, klass, pos))
         # Both statistics cells carry the explanation, so the hover target is
         # the whole of them rather than a range bar that can be five pixels wide.
         # The title is the way in to the song's own history, but only once that
@@ -3346,10 +3373,29 @@ average over that would call almost anything ordinary.</p>
 <span class="verdict premature">premature</span>; above it,
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
 most songs. The band's ends are interpolated values that appear nowhere in the
-song's actual gaps, which is why they are not printed &mdash; the mark on the
-bar is the median, the one figure that is real.</p>
+song's actual gaps, which is why they are not printed as numbers.</p>
 <p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
 yields roughly 13% premature, 67% expected and 20% overdue.</p>
+
+<h2 id="the-bar">The bar</h2>
+<p>The bar is a <b>position, not a length</b>. Its shaded middle is the band
+above &mdash; where this song usually lands &mdash; the hairline through it is
+the median, and the mark is the performance being reported. Left of the shading
+is sooner than usual for that song, right of it is later. Past three times the
+upper edge the mark stops at the end and stays there, because beyond a point
+&ldquo;very late&rdquo; is the whole of the message.</p>
+<p>Every row is drawn against its own song, which is the reason it works.
+Earlier the bar was a fraction of the longest gap in the show, and one bustout
+would take the scale with it: on <span class="num">168</span> of
+<span class="num">690</span> shows the longest gap is at least twenty times the
+median, so about <span class="num">95%</span> of that night's bars collapsed
+into an identical stub two pixels long. A scale a single row can destroy for
+every other row is not a scale. Magnitude was also the one thing that did not
+need drawing, since the number is printed beside it &mdash; what the number
+cannot say is whether it was early or late <em>for this song</em>.</p>
+<p>A song with fewer than <b>eight</b> performances in the ten-year window has
+no band to be measured against, so its track is drawn empty rather than
+implying a comparison that was never made.</p>
 
 <h2 id="which-show-this-was">Which show this was</h2>
 <p>A report says where the night sits inside its era &mdash; the
