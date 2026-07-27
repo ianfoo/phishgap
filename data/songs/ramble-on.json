@@ -1,0 +1,13 @@
+{
+ "song": "Ramble On",
+ "slug": "ramble-on",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1998-08-01", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 1205, "set": "1", "note": "Phish debut.", "out": ">"},
+  {"date": "1998-08-12", "venue": "Vernon Downs", "city": "Vernon", "state": "NY", "gap": 8, "set": "1", "jamchart": true, "jam": "After extending the normal outro, Trey brings back the bridge riff to usher in a calming, cyclical groove in vintage '98 style until -> \"Slave\".", "out": "->"},
+  {"date": "2010-10-30", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 307, "set": "2", "out": "->"}
+ ]
+}

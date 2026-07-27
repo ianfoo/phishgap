@@ -1,0 +1,12 @@
+{
+ "song": "Who Loves the Sun?",
+ "slug": "who-loves-the-sun",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1998-10-31", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 1223, "set": "2", "note": "Phish debut."},
+  {"date": "2019-02-21", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 604, "set": "1"}
+ ]
+}

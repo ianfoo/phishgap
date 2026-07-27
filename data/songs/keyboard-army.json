@@ -1,0 +1,24 @@
+{
+ "song": "Keyboard Army",
+ "slug": "keyboard-army",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1995-09-27", "venue": "Cal Expo Amphitheater", "city": "Sacramento", "state": "CA", "gap": 974, "set": "2", "note": "Debut."},
+  {"date": "1995-09-28", "venue": "Summer Pops, Embarcadero Center", "city": "San Diego", "state": "CA", "gap": 1, "set": "2"},
+  {"date": "1995-09-30", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 2, "set": "2"},
+  {"date": "1995-10-02", "venue": "Seattle Center Arena", "city": "Seattle", "state": "WA", "gap": 1, "set": "2"},
+  {"date": "1995-10-06", "venue": "The Orpheum Theatre", "city": "Vancouver", "state": "British Columbia", "gap": 3, "set": "2", "out": ">"},
+  {"date": "1995-10-08", "venue": "Adams Fieldhouse, University of Montana", "city": "Missoula", "state": "MT", "gap": 2, "set": "2", "times": 2},
+  {"date": "1995-10-13", "venue": "Will Rogers Auditorium", "city": "Fort Worth", "state": "TX", "gap": 2, "set": "2"},
+  {"date": "1995-10-17", "venue": "State Palace Theatre", "city": "New Orleans", "state": "LA", "gap": 3, "set": "2", "out": "->"},
+  {"date": "1995-10-27", "venue": "Wing's Stadium", "city": "Kalamazoo", "state": "MI", "gap": 7, "set": "2"},
+  {"date": "1995-11-12", "venue": "O'Connell Center, University of Florida", "city": "Gainesville", "state": "FL", "gap": 7, "set": "2"},
+  {"date": "1995-11-21", "venue": "Lawrence Joel Veterans Memorial Coliseum", "city": "Winston-Salem", "state": "NC", "gap": 6, "set": "2", "out": ">"},
+  {"date": "1995-12-05", "venue": "Mullins Center, University of Massachusetts", "city": "Amherst", "state": "MA", "gap": 10, "set": "2"},
+  {"date": "1995-12-14", "venue": "Broome County Veterans Memorial Arena", "city": "Binghamton", "state": "NY", "gap": 6, "set": "2"},
+  {"date": "2015-09-06", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 686, "set": "e", "note": "Contained Harpua narration.", "out": ">"}
+ ]
+}

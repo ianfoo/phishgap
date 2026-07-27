@@ -1,0 +1,16 @@
+{
+ "song": "Been Caught Stealing",
+ "slug": "been-caught-stealing",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1998-08-01", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 1205, "set": "e", "note": "Phish debut.", "out": ">"},
+  {"date": "1998-11-08", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 23, "set": "e"},
+  {"date": "1998-11-19", "venue": "Lawrence Joel Veterans Memorial Coliseum", "city": "Winston-Salem", "state": "NC", "gap": 7, "set": "2"},
+  {"date": "1998-11-25", "venue": "Pepsi Arena", "city": "Albany", "state": "NY", "gap": 4, "set": "2", "out": ">"},
+  {"date": "1998-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "e"},
+  {"date": "2011-06-18", "venue": "Time Warner Cable Music Pavilion at Walnut Creek ", "city": "Raleigh", "state": "NC", "gap": 300, "set": "2"}
+ ]
+}

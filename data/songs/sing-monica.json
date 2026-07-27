@@ -1,0 +1,18 @@
+{
+ "song": "Sing Monica",
+ "slug": "sing-monica",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2013-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 1628, "set": "2", "note": "Debut; Acoustic."},
+  {"date": "2013-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1"},
+  {"date": "2014-07-03", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 7, "set": "e", "out": ">"},
+  {"date": "2014-07-09", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 4, "set": "1"},
+  {"date": "2014-07-13", "venue": "Randall's Island", "city": "New York", "state": "NY", "gap": 3, "set": "2"},
+  {"date": "2014-07-26", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 7, "set": "2", "out": ">"},
+  {"date": "2014-11-01", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 20, "set": "e"},
+  {"date": "2016-07-20", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 55, "set": "1", "out": ">"}
+ ]
+}

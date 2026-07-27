@@ -1,0 +1,12 @@
+{
+ "song": "Don't Bogart That Joint",
+ "slug": "dont-bogart-that-joint",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2010-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 1521, "set": "2", "note": "Phish debut; A cappella."},
+  {"date": "2016-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 238, "set": "1"}
+ ]
+}

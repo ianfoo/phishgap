@@ -1,0 +1,50 @@
+{
+  "date": "2014-07-14",
+  "venue": "NBC Studios, New York, NY",
+  "venue_name": "NBC Studios",
+  "city": "New York",
+  "state": "NY",
+  "artist": "Phish",
+  "tour": "Not Part of a Tour",
+  "notes": "Phish were the musical guests on <em><a href=\"http://www.nbc.com/the-tonight-show\">The Tonight Show Starring Jimmy Fallon</a></em>. Waiting All Night aired on the <a href=\"http://www.nbc.com/the-tonight-show/segments/8356\">NBC broadcast</a>; Fuego was made available as a <a href=\"http://m.nbc.com/the-tonight-show/segments/8321\">web exclusive</a>.",
+  "permalink": "https://phish.net/setlists/phish-july-14-2014-nbc-studios-new-york-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Waiting All Night",
+      "slug": "waiting-all-night",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2014-07-11",
+      "prev_venue": "Randall's Island",
+      "prev_place": "New York, NY",
+      "plays": 6,
+      "recent_plays": 4,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Fuego",
+      "slug": "fuego",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2014-07-11",
+      "prev_venue": "Randall's Island",
+      "prev_place": "New York, NY",
+      "plays": 7,
+      "recent_plays": 5,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": null
+    }
+  ],
+  "pnet_rating": 3.462,
+  "count_since": "2026-07-27T06:18:51+00:00",
+  "provisional": false
+}

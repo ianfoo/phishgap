@@ -1,0 +1,18 @@
+{
+ "song": "Sleep Again",
+ "slug": "sleep-again",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2009-10-29", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 0, "set": "1"},
+  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 1460, "set": "1", "note": "Acoustic; Phish debut."},
+  {"date": "2009-11-25", "venue": "Wachovia Center", "city": "Philadelphia", "state": "PA", "gap": 6, "set": "1"},
+  {"date": "2010-06-20", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 19, "set": "1"},
+  {"date": "2010-08-07", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 13, "set": "1"},
+  {"date": "2011-06-30", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 0, "set": "1", "note": "Ending repeated in order to teach Fish, who had apparently forgot the song's conclusion."},
+  {"date": "2016-06-28", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 224, "set": "1"},
+  {"date": "2016-07-16", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 10, "set": "1", "out": ">"}
+ ]
+}

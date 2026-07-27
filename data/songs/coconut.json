@@ -1,0 +1,11 @@
+{
+ "song": "Coconut",
+ "slug": "coconut",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-07-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1760, "set": "2", "note": "Phish debut."}
+ ]
+}

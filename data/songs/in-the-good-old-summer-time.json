@@ -1,0 +1,12 @@
+{
+ "song": "In The Good Old Summer Time",
+ "slug": "in-the-good-old-summer-time",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-07-14", "venue": "Huntington Bank Pavilion at Northerly Island", "city": "Chicago", "state": "IL", "gap": 1755, "set": "1", "note": "Phish debut."},
+  {"date": "2017-07-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 12, "set": "2"}
+ ]
+}

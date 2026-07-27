@@ -1,0 +1,13 @@
+{
+ "song": "Glide II",
+ "slug": "glide-ii",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1995-05-14", "venue": "Fish's House", "city": "Burlington", "state": "VT", "gap": 0, "set": "1"},
+  {"date": "1995-05-16", "venue": "Lowell Memorial Auditorium", "city": "Lowell", "state": "MA", "gap": 951, "set": "1", "note": "Debut.", "out": ">"},
+  {"date": "2018-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 874, "set": "1", "out": ">"}
+ ]
+}

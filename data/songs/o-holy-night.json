@@ -1,0 +1,11 @@
+{
+ "song": "O Holy Night",
+ "slug": "o-holy-night",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-08-02", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1769, "set": "2", "note": "Phish debut.", "out": ">"}
+ ]
+}

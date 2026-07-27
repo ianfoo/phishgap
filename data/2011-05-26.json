@@ -1,0 +1,33 @@
+{
+  "date": "2011-05-26",
+  "venue": "Bethel Woods Center for the Arts, Bethel, NY",
+  "venue_name": "Bethel Woods Center for the Arts",
+  "city": "Bethel",
+  "state": "NY",
+  "artist": "Phish",
+  "tour": "Not Part of a Tour",
+  "notes": "<p>This performance was from the tech rehearsal for Phish's 2011 <a href=\"http://phish.net/venue/809\">Bethel Woods</a>\u00a0run. This stunning version of <a href=\"http://phish.net/song/waves/history/?artist=1\">Waves</a>\u00a0(with A Love Supreme themes) was first revealed on Kevin Shapiro's \"From the Archives\" #15 in the early morning of 7/1/11 on <a href=\"http://twitter.com/#!/bunnyradio\">The Bunny</a> @ <a href=\"http://www.superballix.com/\">SBIX</a>.</p>",
+  "permalink": "https://phish.net/setlists/phish-may-26-2011-bethel-woods-center-for-the-arts-bethel-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Waves",
+      "slug": "waves",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2009-08-02",
+      "prev_venue": "Red Rocks Amphitheatre",
+      "prev_place": "Morrison, CO",
+      "plays": 19,
+      "recent_plays": 17,
+      "gap_median": 5,
+      "gap_mean": 4.9411764705882355,
+      "gap_low": 2.0,
+      "gap_high": 7.6,
+      "verdict": "premature"
+    }
+  ],
+  "pnet_rating": 4.5,
+  "count_since": "2026-07-27T06:15:54+00:00",
+  "provisional": false
+}

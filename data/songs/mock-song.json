@@ -1,0 +1,13 @@
+{
+ "song": "Mock Song",
+ "slug": "mock-song",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2003-07-12", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 1385, "set": "1", "note": "Debut."},
+  {"date": "2015-08-21", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 320, "set": "1"},
+  {"date": "2018-10-19", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 106, "set": "1"}
+ ]
+}

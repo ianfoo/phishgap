@@ -1,0 +1,13 @@
+{
+ "song": "Gone",
+ "slug": "gone",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2009-10-29", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 0, "set": "2"},
+  {"date": "2009-12-30", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 1468, "set": "1", "note": "Phish debut."},
+  {"date": "2010-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 49, "set": "1"}
+ ]
+}

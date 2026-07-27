@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Chinese Water Torture &mdash; Phish Gap Reports</title>
+<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every Phish performance of The Chinese Water Torture: 1 show, 2014-10-31 to 2014-10-31"><meta property="og:site_name" content="Phish Gap Reports"><meta property="og:title" content="The Chinese Water Torture"><meta property="og:description" content="Every Phish performance of The Chinese Water Torture: 1 show, 2014-10-31 to 2014-10-31"><meta property="og:url" content="https://ianfoo.github.io/phishgap/song/the-chinese-water-torture.html"><meta property="og:image" content="https://ianfoo.github.io/phishgap/card/song-the-chinese-water-torture.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every Phish performance of The Chinese Water Torture: 1 show, 2014-10-31 to 2014-10-31"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
+<link href="../fonts.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
+@media screen and (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
+}
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+:root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled){color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
+
+*{box-sizing:border-box}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:.875rem;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto}
+.crumb{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:1.1rem;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.crumb a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* One of the three slots the display face is allowed: the wordmark, a show's
+   date, and a song's name. Nowhere else. */
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.14;margin:0 0 .5rem;
+   letter-spacing:-.01em}
+.show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
+   text-transform:uppercase;color:var(--ink-soft)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+   border-bottom:1px solid var(--ink)}
+.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
+.card:first-child{border-left:0;padding-left:0}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+   letter-spacing:0;margin-top:auto}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
+   color:var(--dim);margin-bottom:.35rem}
+.lbl .abbr{display:none}
+/* The best version gets a line rather than a fifth card: it is a date, a
+   place, a score and two links, none of which fit a card built for one
+   number. */
+/* A stub, not a callout. The tinted panel with a coloured left border was the
+   one object on the site that looked like a framework component; it reads in
+   the same field language as the row above it now -- label, value, no fill. */
+.best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;
+   margin:.7rem 0 0;padding:0 0 .7rem;border-bottom:1px solid var(--rule);
+   font-size:.875rem}
+.best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.best .field{display:flex;flex-direction:column;gap:.3rem}
+.best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
+.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot);
+   font-size:1.25rem;line-height:1}
+.best .where{color:var(--dim)}
+.best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+.badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
+   padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
+   text-decoration:none;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase}
+.badge img{display:block;width:13px;height:13px}
+.badge:hover{color:var(--ink);border-color:var(--ink-soft)}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
+   margin:1.9rem 0 .9rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
+   padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
+   background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
+   outline-offset:1px}
+.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
+   color:var(--ink);border:1px solid var(--edge);border-radius:0}
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-left:auto}
+/* Jump to an era, with how many shows are in it. Anchors, so they work with
+   scripting off and survive a reload. */
+.eras{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+/* Captioned, because "4.0 42" beside a sort control reads as a filter with an
+   unexplained number, and nobody outside the fandom knows 4.0 is an era. */
+.eras-cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-right:.15rem}
+.era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.42rem .55rem;border:1px solid var(--edge);color:var(--dim);
+   text-decoration:none}
+.era-chip b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
+.era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
+.era-chip:hover b{color:var(--hot)}
+/* Shown only once there is something to clear. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+/* A venue is a filter waiting to happen: click it to see every other night
+   the song was played there. */
+.r-venue{cursor:pointer}
+.r-venue:hover{color:var(--hot)}
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1rem;color:var(--ink)}
+.perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+/* Anything a link can land on stops clear of the condensed header, which is
+   fixed and 42px tall -- without this the browser puts the target's top edge
+   at the top of the viewport, which is exactly where the header is, and the
+   row you tapped to look at arrives half hidden underneath it. */
+.perfs>li,.perfs>li.yr{scroll-margin-top:3.6rem}
+.perfs>li{border-bottom:1px solid var(--rule-soft)}
+.perfs>li.yr{border-bottom:0}
+/* The same tab the set headings take, so a section boundary looks the same
+   wherever it falls. */
+.yr h2{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .7rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   margin:1.6rem 0 .3rem;padding:0;border:0;color:var(--ink)}
+.yr h2 .tab{background:var(--ink);color:var(--paper);padding:.25rem .55rem;
+   letter-spacing:.14em;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.yr h2::after{content:"";flex:1;border-bottom:1px solid var(--ink)}
+.yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.yr:first-child h2{margin-top:.4rem}
+/* Column labels. The date and the venue say what they are; the bar and the
+   number on the far right did not, and were left to be guessed at. */
+.head{padding-bottom:.35rem;border-bottom:1px solid var(--rule);
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.head .nhead{color:var(--dim)}
+.head .ghead{grid-column:4/-1;text-align:right}
+/* Every row is its own grid, so an `auto` last column sizes to its own content
+   and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
+   2x" 71, which put the numbers at three different left edges down the page.
+   Fixed width, sized for the longest of them. */
+.row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
+   column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
+.row:hover{background:var(--hover)}
+/* The row's identifier, in the display face, same as the show index. It is
+   the one thing in the row that is not the song. */
+.r-date{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1rem;
+   line-height:1.3rem;white-space:nowrap}
+.r-date a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.r-date a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* One copy of each favicon for the whole page, worn by class.
+   No blanket opacity: these icons do not agree about their own. phish.net's is
+   fully opaque, phish.in's averages an alpha of 130 and fouldomain's 137, so a
+   single .65 on top of all three dimmed the translucent ones to about a third.
+   Black at a third reads fine on cream and disappears on near-black, which is
+   why phish.in's went missing in the dark and only in the dark. Each is dimmed
+   to taste against what it actually ships, and 12px rather than 10 because
+   they are detailed marks being drawn very small. */
+.ext::after{content:"";display:inline-block;width:12px;height:12px;
+   margin-left:.3rem;vertical-align:-1px;
+   background-position:center;background-repeat:no-repeat;
+   background-size:contain}
+.i-pnet::after{opacity:.6}
+.i-pin::after,.i-foul::after{opacity:.95}
+.ext:hover::after{opacity:1}
+.i-pnet::after{background-image:url("data:image/png;base64,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")}
+.i-pin::after{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC")}
+.i-foul::after{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR42u2Xz2tcVRTHP+e+Nz+a2MTa4Ewy0zSpq7ZiFwWhCEIRoxWULhztdBItRbKwW3fdduHfUBDFYIM/diq6cS2KoNAWwSyqTjLMpLVEW9PJzLv36yIabcvUZGZUhJztvfe8zz3nnvM9D7Zt27q0y6WD6dqLo/t79eO6Pbgrvv6qi6n0ChB3c+jq6ZGdfs3tBQ3+VHlgaLU10E7HraHc/HLjHwMQWKOcO+qJcoH4CwhDIN8meyyV1jWv1BHg3FYBbLMbGy+MHQ8Rz4I1cfKGG4TggYvIhkETmXT6tV1vfb/Stwg0KuOPBZIpF5Kvvdkxk9apxcAf6IYdwEkK0FxrTwHv9QXgyqmJrK21SxjDuMxuk0+tZ+LO1ChCLoIgRyj2rQqySfu5gHZuxZlwe+ozucG7IlkuHKmVi9ObArj2UrFQr4yedcGPb/U2QmlH/Iz+8rbqM7lJmZ1wCo83pguH7gmg2cOpJPEvI5sMcpNdFbbXU8snR6c2fPr4aUkxDieFE9VScUdHgKutH3dj0UO9NJYgLDj3qMA0eziFNPHnavRgKq0nOgIkSfp0X/p00D5KxezSzfpBYOSO1UMdAeIQdvRNLLJt5wjRXe/ElHQEaGfsvBS+6/Xbhi0w11hNx1EdY+224MC3HQEKb9aqKHwUgvmeFE66YaCRtxeXTNrojGb6OTL/2T3LcHS+ftlMK13dXCTAApH7ZCPkkRYAFGhK9lV+rvHr33dCs0+Rnse4CQxtnsBCfn7p9dty7t2HjjCcRO6D4juLi5sWo5WZvZPNVhhUlJxxFvsgP4AQWNNMGczZ72IEuAgFefi8cKH2Rl9a8f1zP1zJv1u95MwuAjhjtcPWWxJVgNh0ve9yrBJR1e3ZT5ZbUcvPOuw+M9pgERYyJt1wRtXLHs5fqL3S94HE3sdD9RLA8snCvBfTgo9BRw3yMvuyZXwD/pd/bRhdV7jxJ+uVsfONcvGR/2QqVomoUR47vv1/sG3/e/sNrEkrwQ1sbIcAAAAASUVORK5CYII=")}
+.dek{margin:.55rem 0 0;font-size:.75rem;line-height:1.5;color:var(--dim);
+   max-width:56ch}
+.crumb .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
+.dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);line-height:1.1rem}
+/* Heavier than the show index's venue, deliberately. There the venue is the
+   row's identity repeated 259 times and the weight accumulates into a wall.
+   Here every row is the same song, so the venue is the only thing telling one
+   performance from the next -- the weight is carrying the distinction rather
+   than shouting. The date being in the display face is what keeps the two from
+   competing at the same volume. */
+.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
+   text-transform:uppercase;line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+.r-gap{text-align:right;line-height:1.3rem}
+/* The column header names this column, so the per-row label would be a second
+   answer to a question already answered -- but the header is the first thing
+   the narrow layout drops, and there the number was left to be guessed at.
+   Shown exactly where the header is not. */
+.glabel{display:none;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-right:.4rem}
+.gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
+/* The one card whose number arrives after the page does. Same shape as its
+   four neighbours so its appearance is a card filling in, not the row
+   reflowing around a new one. */
+.card.since.over .num{color:var(--hot)}
+/* The verdict rides in the label, which the hero can now afford to let wrap:
+   the figures hang off a shared bottom edge, so a second line here moves this
+   label and nothing else on the row. */
+.card.since .v{display:block;text-transform:none;letter-spacing:0}
+.card.since .v:not(:empty){margin-top:.1rem}
+.card.since .v.quiet,.card.since .v.dim{color:var(--dim)}
+.card.since.over .v{color:var(--hot-text);text-transform:uppercase;
+   letter-spacing:.14em}
+.card.since.dormant .num{color:var(--ink-soft)}
+.gap.big{color:var(--hot)}
+.gap.none{color:var(--dim)}
+.set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
+   text-transform:uppercase}
+/* What it followed and what it led into, stacked. Sized in ch so the column
+   holds a couple of words of song title and truncates the rest rather than
+   pushing the gap figures around. */
+.nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
+/* Named only where the column header is not doing it. */
+.nb .cap{display:none}
+.nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Doubled backslashes: this is a Python string, and "90" is read as the
+   octal escape  followed by "90", which reaches the browser as a control
+   character and renders as a box. */
+.nb-in::before{content:"\2190\00a0";opacity:.55}
+.nb-out::before{content:"\2192\00a0";opacity:.55}
+/* Where a transition mark is shown it points on its own; the plain arrow is
+   only for rows that have none, so no line ever reads "-> ->". */
+.nb .seg::before{content:none}
+.bar{align-self:center}
+.bar .track{display:block;position:relative;width:100%;height:7px;
+   background-color:var(--track);
+   background-image:linear-gradient(to right,transparent calc(var(--med,-1%) - 1px),
+     var(--band) calc(var(--med,-1%) - 1px),var(--band) var(--med,-1%),
+     transparent var(--med,-1%));
+   background-repeat:no-repeat}
+.bar .fill{display:block;height:7px;max-width:100%;background:var(--cool)}
+.bar .fill.big{background:var(--hot)}
+/* Only the rated versions carry these, which is 25 rows out of however many
+   hundred -- and only they are known to have audio, since a version cannot be
+   scored until a recording of it circulates. */
+.mark{display:block;margin-top:.3rem;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.mark b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;color:var(--dim);letter-spacing:0}
+.mark.high b{color:var(--hot-text)}
+.mark a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.mark a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* phish.net's note on the version, set under the venue rather than across the
+   row: spanning every column put it against the page's left edge, where it
+   read as something stuck on afterwards rather than as part of the entry.
+   Roman, not italic -- these run to 950 characters at the long end, and a
+   paragraph of italic prose is tiring well before that. */
+/* The only real prose on the site, and the one job neither other face can do.
+   The mono set it evenly and never argued with the figures, but 950 characters
+   of monospace gives the eye nothing to return on, and the display face at
+   text size is a display face at text size. Literata is drawn for reading and
+   has the optical axis to be drawn differently here than at a headline, which
+   is the whole argument for a third family rather than stretching a second.
+   15px rather than 12: a proportional face sets far more into the same measure,
+   and the old size was compensating for the mono's width. */
+.jam,.note{margin:.45rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 14;
+   color:var(--ink-soft);max-width:62ch}
+.jam a,.note a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--edge);word-break:break-word}
+.jam a:hover,.note a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+.tag{display:inline-block;margin-right:.45rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+details.jam,details.note{cursor:pointer}
+details.jam summary,details.note summary{display:block;list-style:none}
+details.jam summary::-webkit-details-marker,
+details.note summary::-webkit-details-marker{display:none}
+.clip{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+   overflow:hidden}
+details[open] .clip{-webkit-line-clamp:none;display:block}
+/* The affordance sits outside the clamped box, or it would be clipped away by
+   the very rule that makes it necessary. */
+details.jam summary::after,
+details.note summary::after{content:"More";display:inline-block;margin-top:.2rem;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule)}
+details.jam[open] summary::after,
+details.note[open] summary::after{content:"Less"}
+details.jam summary:hover::after,
+details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot)}
+details.jam summary:focus-visible,
+details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
+/* The header a reader keeps once the real one has scrolled away. Landing on a
+   row from a report's link otherwise drops you into an unlabelled list of
+   dates with no way to tell what page you are on. It carries the song and the
+   figure the page exists for, and nothing else. */
+.stuck{position:fixed;top:0;left:0;right:0;z-index:20;
+  background:var(--paper);border-bottom:1px solid var(--rule);
+  transform:translateY(-101%);transition:transform .22s ease;
+  padding:.5rem clamp(1rem,5vw,3rem)}
+.stuck.on{transform:none}
+.stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
+  gap:.7rem}
+.stuck .name{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stuck .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin-left:auto;white-space:nowrap}
+.stuck .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+  font-size:.875rem;color:var(--ink);letter-spacing:0}
+@media (prefers-reduced-motion:reduce){.stuck{transition:none}}
+/* Where a link dropped you. Bright for a moment, then gone -- it answers
+   "which row?" and then stops being ink on the page. */
+@keyframes landed{from{background:var(--hover);box-shadow:inset 3px 0 0 var(--hot)}
+  to{background:transparent;box-shadow:inset 3px 0 0 transparent}}
+.perfs>li.landed{animation:landed 3.4s ease-out both}
+@media (prefers-reduced-motion:reduce){
+  .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);display:flex;justify-content:space-between;
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim)}
+@media screen{
+  /* Under the ink, not over it: as a fixed overlay this sat below the
+     sticky header and the to-top button, which then showed cleaner paper
+     than the page around them, and it multiplied over 10px type. */
+  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
+}
+/* Same lesson as the reports and the index: below this width the columns stop
+   being columns, so nothing has to be squeezed or hidden. Higher than the 620
+   the other pages use, because this row carries five columns to their three --
+   at 760px the fixed four left the venue about 14rem and "Bethel Woods Center
+   for the Arts" came out over four lines. */
+@media screen and (max-width:820px){
+  .head{display:none}
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
+  .nb{margin-top:.35rem}
+  .nb span{white-space:normal;overflow:visible}
+  .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+     text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
+  .r-date{display:flex;align-items:baseline;gap:.5rem}
+  .dow{display:inline}
+  .r-gap{text-align:left}
+  .glabel{display:inline}
+  .gap{font-size:1rem}
+  .set{display:inline;margin-left:.5rem}
+  .set::before{content:"\00b7";margin-right:.5rem;color:var(--dim);opacity:.7}
+  .bar{margin:.25rem 0}
+  .card{flex:1 1 45%;padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  /* "Median gap, last 10 years" is the clear label and the default one; the
+     column is simply not wide enough for it here. */
+  .lbl .full{display:none}
+  .lbl .abbr{display:inline}
+  .show{font-size:.75rem;letter-spacing:0}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+</style><script>
+(function(){
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script></head><body id="top"><div class="wrap">
+<nav class="crumb"><a class="mark" href="../index.html">Gap Reports</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
+<div class="stuck" id="stuck" aria-hidden="true"><div class="in">
+<span class="name">The Chinese Water Torture</span>
+<span class="n"><b>1</b> shows &middot; median gap <b>&mdash;</b></span></div></div>
+<div class="rule2"></div>
+<header><h1>The Chinese Water Torture</h1>
+<p class="show">Debut 2014-10-31 &middot; 1 performance</p>
+<p class="dek">Gap &mdash; the number of shows the band played between one
+performance of this song and the one before it.</p></header>
+<section class="hero"><div class='card'><div class='lbl'>Times Played</div><div class='num'>1</div></div><div class='card'><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div><div class='num'>n/a</div></div><div class='card'><div class='lbl'>Median Gap, All-Time</div><div class='num'>n/a</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>n/a</div></div><div class='card since' hidden data-slug='the-chinese-water-torture' data-high='' data-bustout='100'><div class='lbl'>Current Gap<span class='v'></span></div><div class='num'></div></div></section>
+<div class="rule2"></div>
+
+<p class="links"><a class='badge' href='https://phish.net/song/the-chinese-water-torture' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAJM0lEQVR42pWXe1BU1x3HP3ef7C4Lyy6wwAYUARVQAopR4yPWRC3SpJE4SZ2k0UmtSSeTadNJJo8/OomtZhIzJm1m0hgz0zhO6jimRuMQdEtsxuIDDI8QKhUBkYcLbFgey7LL7rK//gEB8d3fzJ07c+65v+/nnvO953eOIiLC/xk+n4+Ghgbq67/nyJEjGAxR1NTVsqAlwK+YhRoFADUKjYqXsgUG/nJoPz2ubqqqzvPlsS+pr/+O4WEfyt0AjI2N4fV66e3txel0cv78eXp6eli+fAUPrl7NkWNHOfTeHl4eTScLMxHGU2pQOKH08sVsIT//XiqrqujvcKEKR7BrjDjCOjR3Eu/v76eyspKqqira2tpwuVykpqby8ccfo9PrCQaD1NfVsyhoJoPoSXEAP2M0yiCXmlwEL7YzCyM/IYN0olGPKTQxdOcROHfuHJ999hmrVq0iKyuLoSEvu955m5jYGHRBP0OePqprv+OxPjurlQQ0okwihBFO0I2fMRZjxYEBDSrCRChX3FTda74zwOjoKD6fj6ioKOrr69m5cyelJ+uIRCK8kB7kpXQD34Z97G4KsOCKg4cj9sl3FRTCRFChoEJBEAKM8RXdjJQU8vIf/3DnKdDr9ej1er44coSD+/ZTW1MLiQ+BLpmDA19QovNQYrERws2brna0AYUoFDoYpVsfIj6o8HNJwYaeMEKZ0oOnaB5/emcHWRmZdwYAqKmr5R97/8a2hNk0xnjoVGZCVDK9ygY+uHSUaLuHVrcKc0aQi0lNxNus9PYL/zrjITMUy3pJwk+Y04qHr5NDvL3tGbIyMieMepPw+/14vV60Wi0Go5Hjh4/yG3MG2ZoYfKEoiE4ACYMqlrLuaDqHG1mxwc5HvywgLS2EzWajrGyQitMDJEai+Jwe2vHRpfERHoW3du7gq9LjPP74Yzd6wOPxsGPHDo4ePUpSUhJZWVn0dV5l56xlhMeC/PSf/8atz0eGW5hla6SkWGHTJgvzcqxotdrJPBcueHjvjcv8t6WPKFuElNQ0MmaqSb3Hx4ULag4fvkpv73UmjESEXbt2sX37m4yMjEwmMxiNzE9JIxKJUNPpQoWK5Us1/PZ30axbl47BoAfUgExc4yGDEa784CYmDqzWhIk+ABHOnm1m79726QB1dXWUlJRw+fLlO/oiOlqDw2Hg/vtDLF2WTE5eLAW5FoxGwzQIUE2KTg8hEAhNB3jxxRd5//330ev1iAjBYPCul+eUmbBovoVVSw2seSSF9PRYjEbttK8WEfz+EDqdFo1GRXPLFZCJaG1tlcLCQlEURUwmk+h0OgFFUlI0sn69RaxWs1wzxre8tGrEbtfIxo162bs3Xaqq8sXjKRCRdeL3Pyivvx4tBw9miMg6OXk4RyYBysvLxWaziVqtFq1WI4DMmGGWsrICGRxcLps3JwoodwUBiEaDGI3IjBnImjVqeemlGXLggF2WLFFk2TKzePofEBksmgJwOp0SFxc3mcBkQj74IFFE1opIkZSW5ktcnPauxDMyVPLuu3bZv98uOTkqASQ3F8nORkwmrcTGKnLqVKqIXAPQ2dkpa9asmUyyerUivb0LRGS9iKyXpqZ7paDgzuKJiRo5cGB8iEXWyUcfZUpCgiLHjlnk7Nn58sILZlEU5JVXZolIkfxoURwOB7t372bhwkKio7U880wWCQnxE+4VUlMNpKZG3daIigJPP53CE09kAgqgZsUKM+npQn+/gSVLUnn11TkUF0dx6VI/o6Mjk/8IAOXlX+NyXWXTJiMbN6Zd8wsJUVFx2O3JtwWw29U89VQCijKV1uEYw2qF6upoQEhJSWDbNgvunn6aLvZNB6ioOINOd5Xnn78HvV57g0Bm5iiaW1aPcfHcXOs164BgMBhRq/VcvTq1sM2ZY+GHbg1tTcoUwNmzZzl3rpKly2zk5SXcVGLpUjVm883li1fE8/utuWg06mntOp0Ng8HK8LCbwKgHAJstFa0pgarv2qcAWltbcfd1MDffgKJcv5qNf83ChRls3hyPxTI1DHPnwnPP2fnzJ4kkz9Fd6wh6e/u5dKmTwUE/oSGF0ODEXlEtmM0BGhoGp6qhSqWCSIQUy9gt59hoNPDGG/MoKhqmry+MSiXk5MC83DgU1Y/QCqDwn9peXnutnjZXkOZmWLvcQJR+/FkgEKKjI8xA8LpyrFJBdPTtbCbExhpYu9YwITTV/qN4MOinpdXNXz9ppqLSjFqjwT/iptPjp6W7m7mxOpzOJtxuL+0d1wEEAlBdo+eJX0QYt4fcFGL6fbKW0tJyhQ8/dFFePkRHJywsXElaWiptbW1cuFDDr7deISnpB6qq/KjVMTzy8KobNyT7/t5NfLKOLZvisSfF3kLs+lBx8WIfzz7bTnu7HbM5k4xZahyOFGJiYpg/fz5Wq5WamnpOn76MSJiSkofYs2fPVDXs6Ohg69atOJ1O9HoNhYVaiotjWbvWQmamA4Mhgk6nu6buRxgdDeHzqamp6WTXrkEqKoZ59NGfkZiYiIhw7V5HRBgZGaGnp4fGxkbC4TCFhYXTy7HL5WLLli04nc4Jt4LNpmP2bB0FBUFyclKwWm1otVrc7h6+/babM2fMBAJuZs4UGhoUZsxYzOLFi1CpVJMAiqLQ09NDbW0tGRkZxMfH4/V6uXz58o1bso6ODsrKyti+fTtdXV3k5Wl48skxBgZ0NFyA3kEzowMxiHjIzPSxaFEs993nID8fPv20i7fe8uFwzCEvLw+LxYKijJvV6/Vy5swZOjs7MZvN2O129Hr9rc8FTqeTQ4c+5+TJUh54wE1xcTqJiQqO1GgsMTYUJYJeH8FoVANaQMHlcrFhw0UqK31YLBays7PJysqaBAmFQjQ3N1NdXU1fXx8FBQW3P5iMjY1x/PgJSku/oqamApFWrHEhkpLjyc0dJTtbGBpS8HgidHVF0dIS5PvvzRQVPYparWbfvn1EIhHi4+NJS0sjMTERk8nEwMAA33zzDXl5eXd3OA0Gg3i9Xqqr6zh+/AQulwu9Pkwk4mNgYJjY2DhMJhuzZ89j1arl5OXlAXDq1ClKS0upqKigq6sLn8+HyWTCaDQiIqxcufLuAG4VIyN+hoaGSEhIQK1W3bJfS0sLzc3N9PX1EQgEAEhOTmbJkiX8Dy6oalTSw0WAAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://phish.in/songs/the-chinese-water-torture' target='_blank' rel='noopener noreferrer'><img class='flip' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.in</span></a></p>
+<div class="tools">
+<input id="q" class="search" type="search" autocomplete="off" disabled
+       placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
+<button id="clear" class="clear" type="button" hidden>Clear</button>
+<span class="eras"><span class="eras-cap">Eras</span><a class='era-chip' href='#era-3-0'>3.0<b>1</b></a></span>
+<label class="count" for="sort">Sort
+<select id="sort" class="sort" disabled>
+<option value="newest">Newest</option><option value="oldest">Oldest</option>
+<option value="rating">Highest rated</option><option value="gap">Longest gap</option>
+</select></label>
+<span class="count"><b id="shown">1</b> of 1 shows</span>
+</div>
+<div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap</span></div>
+<ol class="perfs" id="list">
+<li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>1 show</span><span>2014&ndash;2014</span></h2></li>
+<li id='2014-10-31' data-date='2014-10-31' data-era='3.0' data-gap='-1' data-score='' data-search="2014-10-31 10/31/2014 10/31/2014 10/31/14 10/31 10/31 10-31 october 31 2014 october 31 friday mgm grand garden arena las vegas nv  debut."><div class='row'><span class='r-date'><a href='../show/2014-10-31.html'>2014-10-31</a><span class='dow'>Fri</span></span><span><span class='r-venue'>MGM Grand Garden Arena</span><span class='r-place'>Las Vegas, NV</span><p class='note'><span class='tag'>Note</span>Debut.</p></span><span class='nb'></span><span class='bar'></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+</ol>
+<p class="empty" id="empty" hidden>No performances match that search.</p>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
+<footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<span>Current through 2014-10-31</span></footer>
+</div><script>
+/* How long this song has been waiting, read from one small file rather than
+   rendered into the page. It is the only figure here that moves when some
+   *other* song is played, so baking it in would rewrite every song page after
+   every show -- 48 MB pushed to publish one number that fits in 7 KB. The card
+   ships hidden and stays hidden if the fetch fails, so nothing on the page is
+   ever a placeholder waiting for a network that is not coming. */
+(function(){
+  var box=document.querySelector('.card.since');
+  if(!box||!window.fetch) return;
+  var slug=box.getAttribute('data-slug');
+  fetch('../data/current.json').then(function(r){
+    if(!r.ok) throw 0;
+    return r.json();
+  }).then(function(d){
+    var n=d.since&&d.since[slug];
+    if(typeof n!=='number') return;
+    box.querySelector('.num').textContent=n.toLocaleString();
+    /* The same two thresholds the report pages apply, in the same order: the
+       85th percentile of recent gaps where the song has enough history to have
+       one, and the bustout line where it does not. Ours against ours -- this
+       is not a claim about phish.net's gap, which is not reproducible from a
+       show calendar. */
+    var high=parseFloat(box.getAttribute('data-high')),
+        bust=parseFloat(box.getAttribute('data-bustout')),
+        v=box.querySelector('.v');
+    if(high>0){
+      if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
+      else if(v){ v.textContent='line '+Math.round(high); v.className='v quiet'; }
+    }else if(n>=bust){
+      box.classList.add('dormant');
+      if(v){ v.textContent='dormant'; v.className='v dim'; }
+    }
+    box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
+            ' shows that count toward a gap';
+    box.hidden=false;
+  }).catch(function(){});
+})();
+(function(){
+  var list=document.getElementById('list');
+  if(!list) return;
+  var kids=Array.prototype.slice.call(list.children),
+      rows=kids.filter(function(n){ return !n.classList.contains('yr'); }),
+      heads=kids.filter(function(n){ return n.classList.contains('yr'); }),
+      q=document.getElementById('q'), sort=document.getElementById('sort'),
+      shown=document.getElementById('shown'), empty=document.getElementById('empty');
+  function matcher(t){
+    if(!/^\d+$/.test(t)) return function(hay){ return hay.indexOf(t)>-1; };
+    var re=new RegExp('(^|[^0-9])'+t+'([^0-9]|$)');
+    return function(hay){ return re.test(hay); };
+  }
+  function apply(){
+    var terms=q.value.toLowerCase().split(/\s+/).filter(Boolean).map(matcher),
+        n=0, live={};
+    rows.forEach(function(r){
+      var hay=r.getAttribute('data-search'), ok=terms.every(function(t){
+        return t(hay);
+      });
+      r.hidden=!ok;
+      if(ok){ n++; live[r.getAttribute('data-era')]=1; }
+    });
+    // A year heading with nothing left under it is worse than no heading, so
+    // it goes when its rows do -- and stays gone whenever the order is not
+    // chronological, because then it is not describing what follows it.
+    var byDate=sort.value==='newest'||sort.value==='oldest';
+    heads.forEach(function(h){
+      h.hidden=!byDate||!live[h.getAttribute('data-era')];
+    });
+    shown.textContent=n;
+    empty.hidden=n>0;
+    // The way out of a filter appears only once there is one to leave.
+    if(clear) clear.hidden=!q.value;
+  }
+  var headFor={};
+  heads.forEach(function(h){ headFor[h.getAttribute('data-era')]=h; });
+  function order(){
+    var k=sort.value;
+    var sorted=rows.slice().sort(function(a,b){
+      if(k==='rating') return (b.getAttribute('data-score')||-1)-(a.getAttribute('data-score')||-1);
+      if(k==='gap') return (b.getAttribute('data-gap')||-1)-(a.getAttribute('data-gap')||-1);
+      var x=a.getAttribute('data-date'), y=b.getAttribute('data-date');
+      return k==='oldest' ? x.localeCompare(y) : y.localeCompare(x);
+    });
+    sorted.forEach(function(r){ list.appendChild(r); });
+    if(k==='newest'||k==='oldest'){
+      // Walk the list as it now runs and put each heading before the first row
+      // of its era. Reading the era order off the original array instead put
+      // every heading at the foot of its group when sorted oldest, because the
+      // array is newest-first and never gets re-sorted itself.
+      var placed={};
+      sorted.forEach(function(r){
+        var e=r.getAttribute('data-era');
+        if(placed[e]) return;
+        placed[e]=1;
+        if(headFor[e]) list.insertBefore(headFor[e], r);
+      });
+    } else {
+      // Hidden either way, but parked at the end rather than left stranded
+      // between rows they no longer describe.
+      heads.forEach(function(h){ list.appendChild(h); });
+    }
+    apply();
+  }
+  var clear=document.getElementById('clear');
+  function setQuery(v){ q.value=v; apply(); }
+  q.addEventListener('input', apply);
+  sort.addEventListener('change', order);
+  // Clicking a venue asks the question you were about to type.
+  list.addEventListener('click', function(e){
+    var v=e.target.closest && e.target.closest('.r-venue');
+    if(!v) return;
+    setQuery(v.textContent.trim());
+    q.scrollIntoView({block:'nearest'});
+  });
+  if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+    if(e.key==='Escape' && q.value){ setQuery(''); q.blur(); }
+  });
+  q.disabled=false; sort.disabled=false;
+  apply();
+
+  // The condensed header appears once the real one is off screen, and the
+  // real one is the thing to watch rather than a scroll offset -- no
+  // magic number, and it stays right when the header wraps to more lines.
+  var stuck=document.getElementById('stuck'), head=document.querySelector('header'),
+      totop=document.getElementById('totop');
+  function perch(on){
+    if(stuck) stuck.classList.toggle('on', on);
+    if(totop) totop.hidden=!on;
+  }
+  if(head && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(e){ perch(!e[0].isIntersecting); },
+      {rootMargin:'-8px 0px 0px 0px'}).observe(head);
+  }
+
+  // A link from a report lands on one row; say which, then stop saying it.
+  function land(){
+    var id=location.hash.slice(1);
+    if(!id) return;
+    var li=document.getElementById(id);
+    if(!li || li.classList.contains('yr')) return;
+    li.classList.remove('landed');
+    void li.offsetWidth;            // restart the animation on a repeat visit
+    li.classList.add('landed');
+  }
+  window.addEventListener('hashchange', land);
+  land();
+})();
+</script></body></html>

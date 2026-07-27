@@ -1,0 +1,19 @@
+{
+ "song": "Things People Do",
+ "slug": "things-people-do",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2016-06-28", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 1714, "set": "1", "note": "Debut."},
+  {"date": "2016-07-06", "venue": "Cross Insurance Arena", "city": "Portland", "state": "ME", "gap": 5, "set": "1"},
+  {"date": "2016-10-15", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 17, "set": "1"},
+  {"date": "2016-10-21", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 4, "set": "1"},
+  {"date": "2016-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 10, "set": "1"},
+  {"date": "2017-07-19", "venue": "Petersen Events Center", "city": "Pittsburgh", "state": "PA", "gap": 9, "set": "e"},
+  {"date": "2017-07-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "1"},
+  {"date": "2018-08-04", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 26, "set": "1"},
+  {"date": "2019-07-09", "venue": "Mohegan Sun Arena", "city": "Uncasville", "state": "CT", "gap": 49, "set": "1", "out": ">"}
+ ]
+}

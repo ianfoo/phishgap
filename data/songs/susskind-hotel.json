@@ -1,0 +1,13 @@
+{
+ "song": "Susskind Hotel",
+ "slug": "susskind-hotel",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2011-07-02", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 1538, "set": "1", "note": "Phish debut."},
+  {"date": "2011-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 11, "set": "1"},
+  {"date": "2012-07-04", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 24, "set": "1"}
+ ]
+}

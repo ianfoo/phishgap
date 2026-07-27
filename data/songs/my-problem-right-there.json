@@ -1,0 +1,13 @@
+{
+ "song": "My Problem Right There",
+ "slug": "my-problem-right-there",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2010-10-10", "venue": "1stBank Center", "city": "Broomfield", "state": "CO", "gap": 1500, "set": "2", "note": "Debut.", "out": ">"},
+  {"date": "2010-10-15", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 3, "set": "2"},
+  {"date": "2010-10-22", "venue": "Dunkin' Donuts Center", "city": "Providence", "state": "RI", "gap": 4, "set": "2"}
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "song": "Ride Captain Ride",
+ "slug": "ride-captain-ride",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1987-03-23", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 64, "set": "2", "note": "First known Phish performance.", "out": "->"},
+  {"date": "1988-09-13", "venue": "Sam's Tavern", "city": "Burlington", "state": "VT", "gap": 114, "set": "2"},
+  {"date": "1989-03-01", "venue": "Gallagher's", "city": "Waitsfield", "state": "VT", "gap": 34, "set": "3"},
+  {"date": "1989-05-28", "venue": "Ian McLean's Party, Connie Condon's Farm", "city": "Hebron", "state": "NY", "gap": 41, "set": "2"},
+  {"date": "1990-04-14", "venue": "The Inferno", "city": "Steamboat Springs", "state": "CO", "gap": 116, "set": "2"},
+  {"date": "1992-12-12", "venue": "The Spectrum", "city": "Toronto", "state": "Ontario", "gap": 340, "set": "e", "out": ">"},
+  {"date": "1992-12-30", "venue": "Symphony Hall", "city": "Springfield", "state": "MA", "gap": 4, "set": "e"},
+  {"date": "1998-08-03", "venue": "Deer Creek Music Center", "city": "Noblesville", "state": "IN", "gap": 494, "set": "1"},
+  {"date": "1998-11-08", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 21, "set": "1"},
+  {"date": "1999-12-10", "venue": "First Union Spectrum", "city": "Philadelphia", "state": "PA", "gap": 73, "set": "e"},
+  {"date": "2010-10-24", "venue": "Mullins Center, University of Massachusetts", "city": "Amherst", "state": "MA", "gap": 216, "set": "1"},
+  {"date": "2011-06-08", "venue": "Darien Lake Performing Arts Center", "city": "Darien Center", "state": "NY", "gap": 19, "set": "1"},
+  {"date": "2012-06-29", "venue": "Klipsch Music Center", "city": "Noblesville", "state": "IN", "gap": 41, "set": "2", "out": ">"},
+  {"date": "2012-08-19", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 11, "set": "e", "out": ">"},
+  {"date": "2012-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 9, "set": "1", "out": ">"},
+  {"date": "2012-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1"},
+  {"date": "2013-10-26", "venue": "DCU Center", "city": "Worcester", "state": "MA", "gap": 33, "set": "1"}
+ ]
+}

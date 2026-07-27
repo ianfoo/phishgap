@@ -1,0 +1,11 @@
+{
+ "song": "We Are the Champions",
+ "slug": "we-are-the-champions",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2014-10-29", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 0, "set": "1", "out": ">"}
+ ]
+}

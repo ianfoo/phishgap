@@ -1,0 +1,12 @@
+{
+ "song": "Scabbard",
+ "slug": "scabbard",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2015-07-22", "venue": "Les Schwab Amphitheater", "city": "Bend", "state": "OR", "gap": 1679, "set": "1", "note": "Phish debut.", "out": ">"},
+  {"date": "2015-08-22", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 19, "set": "1", "out": ">"}
+ ]
+}

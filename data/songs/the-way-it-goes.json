@@ -1,0 +1,11 @@
+{
+ "song": "The Way It Goes",
+ "slug": "the-way-it-goes",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2011-09-04", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 1551, "set": "1", "note": "Phish debut."}
+ ]
+}

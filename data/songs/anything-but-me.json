@@ -1,0 +1,22 @@
+{
+ "song": "Anything But Me",
+ "slug": "anything-but-me",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2003-01-04", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 1360, "set": "1", "note": "Debut."},
+  {"date": "2003-02-16", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 3, "set": "2", "out": ">"},
+  {"date": "2003-02-20", "venue": "Allstate Arena", "city": "Rosemont", "state": "IL", "gap": 2, "set": "e", "out": ">"},
+  {"date": "2003-07-07", "venue": "Cricket Pavilion", "city": "Phoenix", "state": "AZ", "gap": 8, "set": "1"},
+  {"date": "2003-07-17", "venue": "Verizon Wireless Amphitheater Kansas City", "city": "Bonner Springs", "state": "KS", "gap": 7, "set": "2", "out": ">"},
+  {"date": "2003-07-27", "venue": "ALLTEL Pavilion", "city": "Raleigh", "state": "NC", "gap": 8, "set": "1"},
+  {"date": "2003-12-02", "venue": "FleetCenter", "city": "Boston", "state": "MA", "gap": 9, "set": "1"},
+  {"date": "2003-12-29", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 2, "set": "1"},
+  {"date": "2004-06-25", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 13, "set": "1"},
+  {"date": "2004-08-15", "venue": "Newport State Airport", "city": "Coventry", "state": "VT", "gap": 7, "set": "1"},
+  {"date": "2009-08-16", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 30, "set": "1"},
+  {"date": "2011-08-15", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 97, "set": "1"}
+ ]
+}

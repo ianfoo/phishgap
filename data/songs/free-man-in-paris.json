@@ -1,0 +1,11 @@
+{
+ "song": "Free Man in Paris",
+ "slug": "free-man-in-paris",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2010-06-25", "venue": "Susquehanna Bank Center", "city": "Camden", "state": "NJ", "gap": 1480, "set": "1", "note": "Phish debut."}
+ ]
+}

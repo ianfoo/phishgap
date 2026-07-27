@@ -1,0 +1,33 @@
+{
+  "date": "2009-06-11",
+  "venue": "Bonnaroo Music & Arts Festival, Manchester, TN",
+  "venue_name": "Bonnaroo Music & Arts Festival",
+  "city": "Manchester",
+  "state": "TN",
+  "artist": "Phish",
+  "tour": "2009 Early Summer Tour",
+  "notes": "This was the soundcheck for Phish&rsquo;s Bonnaroo performances.",
+  "permalink": "https://phish.net/setlists/phish-june-11-2009-bonnaroo-music-arts-festival-manchester-tn-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Dog Log",
+      "slug": "custom",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "1999-07-29",
+      "prev_venue": "Naeba Ski Resort",
+      "prev_place": "Niigata, Niigata",
+      "plays": 8,
+      "recent_plays": 1,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": null
+    }
+  ],
+  "pnet_rating": 2.727,
+  "count_since": "2026-07-27T06:13:11+00:00",
+  "provisional": false
+}

@@ -190,10 +190,20 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .theme{order:1;flex-basis:100%}
 }
 
-.prose{max-width:68ch;margin:0 0 2.4rem}
+.prose{max-width:66ch;margin:0 0 2.4rem}
 .prose h2{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:1.25rem;margin:2.2rem 0 .5rem;letter-spacing:0}
-.prose p{margin:0 0 .9rem;font-size:.875rem;line-height:1.65;color:var(--ink-soft)}
+/* The page is almost nothing but prose -- 3.4 KB of it, eleven paragraphs --
+   and it was the one place where setting everything in the mono was hardest to
+   defend: this is the page that has to be read start to finish rather than
+   scanned for a number. The reading face, at the measure it was already given.
+   Figures inside a sentence stay mono, so a threshold quoted in the text looks
+   like the same object it does on a report. */
+.prose p{margin:0 0 1rem;font-family:'Literata',Georgia,serif;
+   font-size:1rem;line-height:1.6;font-variation-settings:'opsz' 16;
+   color:var(--ink-soft)}
+.prose li{font-family:'Literata',Georgia,serif;font-size:1rem;line-height:1.6;
+   font-variation-settings:'opsz' 16;color:var(--ink-soft)}
 .prose b{color:var(--ink)}
 .prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
@@ -274,6 +284,29 @@ song's actual gaps, which is why they are not printed &mdash; the mark on the
 bar is the median, the one figure that is real.</p>
 <p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
 yields roughly 13% premature, 67% expected and 20% overdue.</p>
+
+<h2 data-tab="Which show this was"></h2>
+<p>A report says where the night sits inside its era &mdash; the
+<span class="num">312</span>th show of 3.0 &mdash; and never where it sits
+overall. There is no honest overall number to give. phish.net offers three
+defensible totals for how many shows the band has played: <span
+class="num">2,239</span> entries listed, <span class="num">2,114</span> that
+count toward statistics, and <span class="num">2,106</span> distinct dates
+among those. They differ by soundchecks, television and radio sessions,
+cancelled dates, and nights when two separate shows were played.</p>
+<p>The disagreement reaches the beginning. <b>1983-10-30</b>, the show
+generally called Phish's first, is one phish.net excludes from statistics, so a
+count built on that flag declares the <em>second</em> show to be number one and
+every figure after it inherits the error.</p>
+<p>Inside an era the count is exact for three of the four. Six dates carry more
+than one counting show, and all six fall in 1.0 &mdash; the earliest being
+<b>1985-02-25</b>, close enough to the start that the drift is not confined to
+six shows but is inherited by every show after them, roughly <span
+class="num">1,350</span> of <span class="num">1,361</span>. 2.0, 3.0 and 4.0
+run one show to a date throughout, so their ordinals are counted rather than
+estimated. <b>1.0 shows carry no ordinal</b>, which is a decision and not an
+oversight: the number could be produced, and it would be wrong by somewhere
+between one and eight with no way to tell which from the date alone.</p>
 
 <h2 data-tab="Songs with no verdict"></h2>
 <p>A song needs <b>eight</b> performances inside that ten-year window before

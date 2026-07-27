@@ -1,0 +1,11 @@
+{
+ "song": "Monkey Man",
+ "slug": "monkey-man",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2011-07-02", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 1538, "set": "1", "note": "Phish debut."}
+ ]
+}
