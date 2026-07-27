@@ -1017,6 +1017,13 @@ header{padding-bottom:.9rem}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(1.9rem,5.5vw,3.25rem);line-height:1.06;margin:0 0 .25rem;
    letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+/* The day of the week, which the index has always shown and this page never
+   did. Set against the date rather than under it: the masthead is already
+   two blocks at width, and a third line would make it three. */
+h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-left:.7rem;vertical-align:.35em;
+   white-space:nowrap}
 /* Date and tour pair up: both short, so this line cannot wrap and the one
    separator on the page can be neither orphaned nor widowed. The venue is the
    variable-length part, so it gets a line to wrap inside, with no separator to
@@ -1397,7 +1404,7 @@ SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <div class="rule2"></div>
-<header>{crumb}<h1>{date}</h1>
+<header>{crumb}<h1>{date}<span class="dow">{dow}</span></h1>
 <p class="where">{venue}</p>
 <p class="show">{tour}</p>{rating}{aside}{live}</header>
 <section class="hero">{hero}</section>
@@ -1930,6 +1937,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         analytics=ANALYTICS,
         css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
+        dow=_full_weekday(report["date"]),
         live=live, refresh=refresh, aside=aside,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
@@ -2283,6 +2291,19 @@ def _date_aliases(iso):
         # saying. "sun" is a prefix of "sunday", so one spelling covers both.
         d.strftime("%A"),
     ))
+
+
+def _full_weekday(iso):
+    """Saturday, Sunday... spelt out.
+
+    The index abbreviates because it repeats the word 710 times down a column
+    and the abbreviation is unambiguous there. A masthead says it once, so it
+    can say it properly.
+    """
+    try:
+        return datetime.date.fromisoformat(iso).strftime("%A")
+    except ValueError:
+        return ""
 
 
 def weekday(iso):
