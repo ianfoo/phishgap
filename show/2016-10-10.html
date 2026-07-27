@@ -83,6 +83,13 @@ header{padding-bottom:.9rem}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(1.9rem,5.5vw,3.25rem);line-height:1.06;margin:0 0 .25rem;
    letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+/* The day of the week, which the index has always shown and this page never
+   did. Set against the date rather than under it: the masthead is already
+   two blocks at width, and a third line would make it three. */
+h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-left:.7rem;vertical-align:.35em;
+   white-space:nowrap}
 /* Date and tour pair up: both short, so this line cannot wrap and the one
    separator on the page can be neither orphaned nor widowed. The venue is the
    variable-length part, so it gets a line to wrap inside, with no separator to
@@ -488,7 +495,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 })();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
-<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2016-09-04.html' aria-label='Previous show, 2016-09-04'>&larr; 2016-09-04</a><a class='all' href='../index.html'>All reports</a><a class='next' rel='next' href='./2016-10-14.html' aria-label='Next show, 2016-10-14'>2016-10-14 &rarr;</a></nav><h1>2016-10-10</h1>
+<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2016-09-04.html' aria-label='Previous show, 2016-09-04'>&larr; 2016-09-04</a><a class='all' href='../index.html'>All reports</a><a class='next' rel='next' href='./2016-10-14.html' aria-label='Next show, 2016-10-14'>2016-10-14 &rarr;</a></nav><h1>2016-10-10<span class="dow">Monday</span></h1>
 <p class="where">NBC Studios, New York, NY</p>
 <p class="show"><span class='nth'>315th show of 3.0</span></p><p class='rating'>Phish.net rating <b>2.84</b><span> via fouldomain</span></p><p class='aside-note'><b>Not counted</b><span>phish.net does not count this toward a gap, so neither do we. Nothing here feeds any figure on the rest of the site.</span></p></header>
 <section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>2</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>0</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>0</div></div></section>
