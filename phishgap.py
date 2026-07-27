@@ -24,6 +24,7 @@ re-request. Use --refresh to bypass.
 
 import argparse
 import base64
+import bisect
 import contextlib
 import collections
 import datetime
@@ -1996,6 +1997,11 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .glabel{display:none;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-right:.4rem}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
+/* The one card whose number arrives after the page does. Same shape as its
+   four neighbours so its appearance is a card filling in, not the row
+   reflowing around a new one. */
+.card.since .since-note{text-transform:none;letter-spacing:0;color:var(--dim)}
+.card.since.over .num{color:var(--hot)}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
 .set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
@@ -2146,6 +2152,36 @@ footer a{color:var(--dim)}
    .replace("__FOUL__", ICON_FOUL))
 
 SONG_JS = """
+/* How long this song has been waiting, read from one small file rather than
+   rendered into the page. It is the only figure here that moves when some
+   *other* song is played, so baking it in would rewrite every song page after
+   every show -- 48 MB pushed to publish one number that fits in 7 KB. The card
+   ships hidden and stays hidden if the fetch fails, so nothing on the page is
+   ever a placeholder waiting for a network that is not coming. */
+(function(){
+  var box=document.querySelector('.card.since');
+  if(!box||!window.fetch) return;
+  var slug=box.getAttribute('data-slug');
+  fetch('../data/current.json').then(function(r){
+    if(!r.ok) throw 0;
+    return r.json();
+  }).then(function(d){
+    var n=d.since&&d.since[slug];
+    if(typeof n!=='number') return;
+    box.querySelector('.num').textContent=n.toLocaleString();
+    /* The same two thresholds the report pages apply, in the same order: the
+       85th percentile of recent gaps where the song has enough history to have
+       one, and the bustout line where it does not. Ours against ours -- this
+       is not a claim about phish.net's gap, which is not reproducible from a
+       show calendar. */
+    var high=parseFloat(box.getAttribute('data-high')),
+        bust=parseFloat(box.getAttribute('data-bustout'));
+    if(high>0? n>high : n>=bust) box.classList.add('over');
+    var note=box.querySelector('.since-note');
+    if(note) note.textContent='as of '+d.as_of;
+    box.hidden=false;
+  }).catch(function(){});
+})();
 (function(){
   var list=document.getElementById('list');
   if(!list) return;
@@ -2378,6 +2414,19 @@ def render_song(doc, archived=(), stamp=None, card=None):
             (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
             (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
         ))
+    # Filled in the browser from data/current.json; see SONG_JS. It carries the
+    # thresholds rather than the verdict, because the count it has to be judged
+    # against is the thing that is not known until the page is open. They are
+    # the same two the report pages use -- the 85th percentile of recent gaps
+    # where there is enough history for one, the bustout line where there is
+    # not -- so a song called overdue here is overdue by the site's one rule.
+    hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
+             "data-bustout='%d'>"
+             "<div class='lbl'>Shows Since <span class='since-note'></span></div>"
+             "<div class='num'></div></div>"
+             % (html.escape(doc.get("slug") or ""),
+                _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
+                BUSTOUT_GAP))
 
     top = best[0] if best else ""
     if top:
@@ -3423,6 +3472,120 @@ def song_history(site_dir, slug):
             return None
 
 
+# --------------------------------------------------------------- calendar ---
+
+# A gap is a count of shows, so it needs the list of shows -- and that list is
+# not the archive. The archive holds the reports we have written, which is a
+# subset of what the band played, so counting its rows undercounts every gap
+# that spans a show we never fetched.
+#
+# phish.net flags the shows that do not count toward statistics. Of the 289
+# Phish shows it lists for 2020-2026, 39 carry exclude_from_stats: 27 are the
+# cancelled 2020 Summer Tour dates that became the Dinner and a Movie webcasts,
+# which are replays of shows already in the record and would otherwise inflate
+# every gap spanning that summer. The flag is phish.net's own judgment about
+# what counts, which is a better thing to defer to than a rule of our own.
+CALENDAR = ("data", "calendar.json")
+
+
+def calendar_path(site_dir):
+    return os.path.join(site_dir, *CALENDAR)
+
+
+def load_calendar(site_dir):
+    """Every show date that counts toward a gap, oldest first."""
+    path = calendar_path(site_dir)
+    if not os.path.isfile(path):
+        return []
+    with open(path, encoding="utf-8") as fh:
+        try:
+            return json.load(fh).get("shows") or []
+        except ValueError:
+            print("warning: skipping unreadable %s" % path, file=sys.stderr)
+            return []
+
+
+def fetch_calendar(site_dir, apikey, years, artist="Phish", **kw):
+    """Refresh `years` of the show calendar. -> every counting date, sorted.
+
+    One call per year. Only the current year needs re-asking on a normal run,
+    which is why this is cheap enough to sit in the scheduled job; a full
+    backfill is one call per year of the band's career and happens once.
+    """
+    have = set(load_calendar(site_dir))
+    # showyear lists a tour that has been announced as readily as one that has
+    # been played -- asking in July 2026 returns dates into September -- and a
+    # show nobody has played yet cannot be a show a song has gone without.
+    #
+    # Strictly before today in UTC, not up to and including it. The band plays
+    # in the evening in North America, which is already tomorrow in UTC, so a
+    # date equal to the UTC date is a show that has either not started or not
+    # finished. Cutting below it costs nothing -- a show that ended at 04:00
+    # UTC is counted the moment that day ends -- and never counts a concert
+    # that has not happened.
+    today = _utcnow().date().isoformat()
+    for year in years:
+        prefix = "%d-" % year
+        fresh = set()
+        for row in get("shows/showyear/%d" % year, apikey, **kw):
+            if artist and row.get("artist_name") != artist:
+                continue
+            if str(row.get("exclude_from_stats")) in ("1", "True"):
+                continue
+            date = row.get("showdate") or ""
+            # Two shows on one date is still one date: .net's own gap figures
+            # count 2021-12-31 once, and a date is what a performance carries.
+            if date and date < today:
+                fresh.add(date)
+        # Replace the year wholesale, so a show phish.net has since withdrawn
+        # or newly flagged actually leaves the calendar.
+        have = {d for d in have if not d.startswith(prefix)} | fresh
+    dates = sorted(have)
+    path = calendar_path(site_dir)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    write_if_changed(path, "{\n \"shows\": [\n%s\n ]\n}\n"
+                     % ",\n".join('  "%s"' % d for d in dates))
+    return dates
+
+
+def shows_since(dates, date):
+    """How many counting shows the band has played since `date`."""
+    return len(dates) - bisect.bisect_right(dates, date)
+
+
+def write_current(site_dir, dates=None):
+    """The one file that changes when a show is played.
+
+    Every song's count moves at once -- play one song and all the others go up
+    by one -- so this cannot be rendered into the pages without rewriting all
+    of them every time. At 379 songs that is 48 MB pushed per show, and the
+    catalog is nowhere near its full size. Here it is a single file of a few
+    kilobytes that the pages read at load, so a show changes exactly one blob.
+
+    Deliberately not called a gap. phish.net's gap is not reproducible from
+    the show calendar -- two songs spanning the same pair of shows can carry
+    different gaps, so there is a per-song term in it we cannot see -- and
+    publishing a number that disagrees with theirs under their name would be
+    worse than publishing our own under ours. This counts shows since the last
+    performance, which is exact because we define it.
+    """
+    if dates is None:
+        dates = load_calendar(site_dir)
+    if not dates:
+        return None
+    since = {}
+    for slug in sorted(archived_songs(site_dir)):
+        doc = song_history(site_dir, slug)
+        perfs = (doc or {}).get("performances") or []
+        if perfs:
+            since[slug] = shows_since(dates, perfs[-1]["date"])
+    path = os.path.join(site_dir, "data", "current.json")
+    write_if_changed(path, json.dumps(
+        {"as_of": dates[-1], "shows": len(dates), "since": since},
+        separators=(",", ":"), sort_keys=True) + "\n")
+    return path
+
+
 def setlist_neighbours(rows, artist=None):
     """What each song followed and led into, per slug, for one show.
 
@@ -3865,6 +4028,9 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
 
     write_redirects(site_dir)
     write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
+    # Rewritten every run, but it is one small file and write_if_changed means
+    # a run that moved nothing publishes nothing.
+    write_current(site_dir)
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
@@ -4246,6 +4412,10 @@ def main():
                     help="with --site, fetch fouldomain's top-rated versions "
                          "for archived songs that have none yet; --force "
                          "re-asks for every song")
+    ap.add_argument("--calendar", nargs="?", type=int, const=0, metavar="FROM",
+                    help="with --site, refresh the show calendar that gap "
+                         "counts are measured against, from year FROM to now "
+                         "(default: the current year only; one call per year)")
     ap.add_argument("--catch-up", nargs="?", type=int, const=21, metavar="DAYS",
                     help="with --site, add every show played in the last DAYS "
                          "(default 21) that the site does not have yet, and "
@@ -4277,16 +4447,16 @@ def main():
         sys.exit("error: --%s names a single file; use --site DIR to render "
                  "several dates at once" % one_file)
     if (args.rebuild or args.force or args.catch_up or args.seed_songs
-            or args.seed_scores or args.seed_setlists
-            or args.sweep_ratings) and not args.site:
+            or args.seed_scores or args.seed_setlists or args.sweep_ratings
+            or args.calendar is not None) and not args.site:
         sys.exit("error: --rebuild, --force, --catch-up, --seed-songs, "
-                 "--seed-scores, --seed-setlists and --sweep-ratings "
-                 "need --site DIR")
+                 "--seed-scores, --seed-setlists, --sweep-ratings and "
+                 "--calendar need --site DIR")
     if args.recheck and not args.catch_up:
         sys.exit("error: --recheck only means something with --catch-up")
     if not (args.showdate or args.from_json or args.rebuild or args.catch_up
             or args.seed_songs or args.seed_scores or args.seed_setlists
-            or args.sweep_ratings):
+            or args.sweep_ratings or args.calendar is not None):
         sys.exit("error: give at least one show date (YYYY-MM-DD)")
     if args.html and args.pdf and \
             os.path.abspath(args.html) == os.path.abspath(args.pdf):
@@ -4365,6 +4535,14 @@ def main():
             seed_scores(args.site,
                         songs=sorted(archived_songs(args.site))
                         if args.force and args.seed_scores else None, **kw)
+        if args.calendar is not None:
+            # The current year alone on a scheduled run: earlier years cannot
+            # gain shows, and a year that gains a correction is rare enough to
+            # ask for by hand.
+            key = key or load_key(args.apikey)
+            first = args.calendar or _utcnow().date().year
+            fetch_calendar(args.site, key, range(first, _utcnow().date().year + 1),
+                           artist=args.artist, **kw)
     except ApiError as exc:
         sys.exit("error: %s" % exc)
 
