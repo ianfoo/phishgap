@@ -5114,8 +5114,8 @@ def main():
                          "performances for every archived report from the "
                          "stored song histories (no API calls)")
     ap.add_argument("--watching", action="store_true",
-                    help="with --site, print active=true when a scheduled show "
-                         "is inside its watch window and active=false "
+                    help="with --site, print watching=true when a scheduled "
+                         "show is inside its watch window and watching=false "
                          "otherwise, then exit (no API calls)")
     ap.add_argument("--schedule", action="store_true",
                     help="with --site, refresh the list of announced shows "
@@ -5171,8 +5171,11 @@ def main():
                   file=sys.stderr)
         if not live:
             print("no scheduled show is in its watch window", file=sys.stderr)
-        # stdout stays machine-readable: a workflow reads this one line.
-        print("active=%s" % ("true" if live else "false"))
+        # stdout stays machine-readable: a workflow reads this one line. Named
+        # for what it actually reports -- whether a scheduled show is inside
+        # its watch window right now -- and not for what a caller might do
+        # about it, which is the caller's question and has other answers.
+        print("watching=%s" % ("true" if live else "false"))
         return
     if args.recheck and not args.catch_up:
         sys.exit("error: --recheck only means something with --catch-up")

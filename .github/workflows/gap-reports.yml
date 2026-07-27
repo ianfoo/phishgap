@@ -51,22 +51,29 @@ jobs:
       # each venue keeps, so this asks a local question and answers it in
       # milliseconds. The daily run never gates -- it is the sweep that catches
       # whatever the windows did not.
-      - name: Is a show happening right now?
+      # Two different questions, kept apart because they have different
+      # answers. `watching` is whether a show is on stage right now. `work` is
+      # whether this particular run should do anything -- which the frequent
+      # cron decides from `watching`, and which every other trigger answers yes
+      # to unconditionally, because the daily sweep and a manual run exist
+      # precisely to cover the times nothing is playing.
+      - name: Should this run do anything?
         id: gate
         env:
           SCHEDULE: ${{ github.event.schedule }}
         run: |
           if [ "$SCHEDULE" = "*/5 22-23,0-9 * * *" ]; then
-            python phishgap.py --site site --watching >> "$GITHUB_OUTPUT"
+            watching=$(python phishgap.py --site site --watching | cut -d= -f2)
+            echo "work=$watching" >> "$GITHUB_OUTPUT"
           else
-            echo "active=true" >> "$GITHUB_OUTPUT"
+            echo "work=true" >> "$GITHUB_OUTPUT"
           fi
 
       # Pillow slices the batched preview-card screenshot; the browser that
       # takes it is already on the runner image. Without both, pages still
       # build and publish -- they just point at previews nobody drew.
       - name: Install what the preview cards need
-        if: steps.gate.outputs.active == 'true'
+        if: steps.gate.outputs.work == 'true'
         run: python -m pip install --quiet pillow
 
       # The previews already published, so a run only draws the ones whose
@@ -74,7 +81,7 @@ jobs:
       # at all and redraws every one of them, which is minutes of browser time
       # to reproduce images identical to the ones already served.
       - name: Restore the published preview cards
-        if: steps.gate.outputs.active == 'true'
+        if: steps.gate.outputs.work == 'true'
         run: |
           git fetch --depth=1 origin gh-pages || exit 0
           mkdir -p site/card
@@ -84,7 +91,7 @@ jobs:
       # Adds any show the archive is missing, then re-renders every page from
       # the archive, which costs no API calls.
       - name: Add new shows and render the site
-        if: steps.gate.outputs.active == 'true'
+        if: steps.gate.outputs.work == 'true'
         env:
           PHISHNET_API_KEY: ${{ secrets.PHISHNET_API_KEY }}
           SCHEDULE: ${{ github.event.schedule }}
@@ -105,7 +112,7 @@ jobs:
 
       - name: Commit the data archive
         id: archive
-        if: steps.gate.outputs.active == 'true'
+        if: steps.gate.outputs.work == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
