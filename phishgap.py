@@ -3700,6 +3700,120 @@ def song_history(site_dir, slug):
             return None
 
 
+# --------------------------------------------------------------- schedule ---
+
+# phish.net lists announced dates alongside played ones, so the schedule comes
+# from a call the calendar already makes. What it does not carry is a start
+# time -- there is no time field of any kind -- so knowing *when* to look still
+# needs a local clock, and a local clock needs the venue's zone.
+#
+# Not derived from coordinates. Zone boundaries follow county lines rather than
+# meridians, so deriving them means either a geo API with a quota or a shapefile
+# dependency, to answer a question with 157 distinct venues and three countries
+# in it. A checked table is smaller than the code that would avoid it, costs no
+# network, and is wrong only where a diff can show it.
+TZ_BY_STATE = {
+    # Eastern
+    "CT": "America/New_York", "DC": "America/New_York", "DE": "America/New_York",
+    "GA": "America/New_York", "MA": "America/New_York", "MD": "America/New_York",
+    "ME": "America/New_York", "NC": "America/New_York", "NH": "America/New_York",
+    "NJ": "America/New_York", "NY": "America/New_York", "OH": "America/New_York",
+    "PA": "America/New_York", "RI": "America/New_York", "SC": "America/New_York",
+    "VA": "America/New_York", "VT": "America/New_York", "WV": "America/New_York",
+    # Central
+    "AL": "America/Chicago", "AR": "America/Chicago", "IA": "America/Chicago",
+    "IL": "America/Chicago", "LA": "America/Chicago", "MN": "America/Chicago",
+    "MO": "America/Chicago", "MS": "America/Chicago", "OK": "America/Chicago",
+    "WI": "America/Chicago",
+    # Mountain and Pacific
+    "CO": "America/Denver", "MT": "America/Denver", "NM": "America/Denver",
+    "UT": "America/Denver", "WY": "America/Denver",
+    "CA": "America/Los_Angeles", "NV": "America/Los_Angeles",
+    "WA": "America/Los_Angeles",
+    # Outside the US, by province rather than state
+    "Quintana Roo": "America/Cancun", "Ontario": "America/Toronto",
+}
+
+# The eight states Phish plays that span two zones. Every venue in them
+# resolves by city, and Tennessee is the only one where it genuinely decides
+# anything -- Knoxville is Eastern, Nashville and Manchester are Central.
+TZ_BY_CITY = {
+    ("AZ", "Phoenix"): "America/Phoenix",          # no DST, so not Denver
+    ("FL", "Jacksonville"): "America/New_York",
+    ("FL", "Miami"): "America/New_York",
+    ("IN", "Noblesville"): "America/Indiana/Indianapolis",
+    ("KY", "Louisville"): "America/New_York",
+    ("MI", "Clarkston"): "America/Detroit",
+    ("MI", "Detroit"): "America/Detroit",
+    ("MI", "Grand Rapids"): "America/Detroit",
+    ("OR", "Bend"): "America/Los_Angeles",
+    ("OR", "Eugene"): "America/Los_Angeles",
+    ("OR", "Portland"): "America/Los_Angeles",
+    ("TN", "Knoxville"): "America/New_York",
+    ("TN", "Manchester"): "America/Chicago",
+    ("TN", "Nashville"): "America/Chicago",
+    ("TX", "Austin"): "America/Chicago",
+    ("TX", "Del Valle"): "America/Chicago",
+    ("TX", "Grand Prairie"): "America/Chicago",
+}
+
+
+def venue_zone(row):
+    """IANA zone for a show row, or None when we cannot say.
+
+    None is a real answer and the caller must treat it as one: a venue we have
+    no zone for gets no watch window and falls back to the ordinary sweep,
+    which is late but never wrong. Guessing a zone would schedule a burst of
+    polling at the wrong hour and quietly miss the show.
+    """
+    state = (row.get("state") or "").strip()
+    city = (row.get("city") or "").strip()
+    return TZ_BY_CITY.get((state, city)) or TZ_BY_STATE.get(state)
+
+
+SCHEDULE = ("data", "schedule.json")
+
+
+def fetch_schedule(site_dir, apikey, artist="Phish", **kw):
+    """Announced shows that have not happened yet. -> the list, soonest first.
+
+    Rewritten whole every run rather than merged, which is what makes it
+    self-correcting: the 2021 New Year's run was announced for December, then
+    withdrawn, then re-announced for the following April. A merge would have
+    kept believing in the December dates forever.
+    """
+    today = _utcnow().date()
+    out = []
+    # Always past the cache: an announced date that has been withdrawn is
+    # exactly the thing this file exists to notice, and a cached answer cannot.
+    fresh = dict(kw, refresh=True)
+    for year in (today.year, today.year + 1):
+        for row in get("shows/showyear/%d" % year, apikey, **fresh):
+            if artist and row.get("artist_name") != artist:
+                continue
+            date = row.get("showdate") or ""
+            if date < today.isoformat():
+                continue
+            out.append({"date": date,
+                        "venue": row.get("venue") or "",
+                        "city": row.get("city") or "",
+                        "state": row.get("state") or "",
+                        "country": row.get("country") or "",
+                        "tz": venue_zone(row) or ""})
+    out.sort(key=lambda s: (s["date"], s["venue"]))
+    path = os.path.join(site_dir, *SCHEDULE)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    write_if_changed(path, json.dumps(
+        {"fetched": today.isoformat(), "shows": out}, indent=1) + "\n")
+    unknown = [s for s in out if not s["tz"]]
+    if unknown:
+        print("warning: no time zone for %d scheduled venue(s): %s"
+              % (len(unknown),
+                 "; ".join("%s %s" % (s["date"], s["venue"]) for s in unknown[:4])),
+              file=sys.stderr)
+    return out
+
+
 # --------------------------------------------------------------- calendar ---
 
 # A gap is a count of shows, so it needs the list of shows -- and that list is
@@ -4724,6 +4838,10 @@ def main():
                     help="with --site, fetch fouldomain's top-rated versions "
                          "for archived songs that have none yet; --force "
                          "re-asks for every song")
+    ap.add_argument("--schedule", action="store_true",
+                    help="with --site, refresh the list of announced shows "
+                         "that have not happened yet, with each venue's time "
+                         "zone (two API calls)")
     ap.add_argument("--calendar", nargs="?", type=int, const=0, metavar="FROM",
                     help="with --site, refresh the show calendar that gap "
                          "counts are measured against, from year FROM to now "
@@ -4760,7 +4878,7 @@ def main():
                  "several dates at once" % one_file)
     if (args.rebuild or args.force or args.catch_up or args.seed_songs
             or args.seed_scores or args.seed_setlists or args.sweep_ratings
-            or args.calendar is not None) and not args.site:
+            or args.calendar is not None or args.schedule) and not args.site:
         sys.exit("error: --rebuild, --force, --catch-up, --seed-songs, "
                  "--seed-scores, --seed-setlists, --sweep-ratings and "
                  "--calendar need --site DIR")
@@ -4768,7 +4886,8 @@ def main():
         sys.exit("error: --recheck only means something with --catch-up")
     if not (args.showdate or args.from_json or args.rebuild or args.catch_up
             or args.seed_songs or args.seed_scores or args.seed_setlists
-            or args.sweep_ratings or args.calendar is not None):
+            or args.sweep_ratings or args.calendar is not None
+            or args.schedule):
         sys.exit("error: give at least one show date (YYYY-MM-DD)")
     if args.html and args.pdf and \
             os.path.abspath(args.html) == os.path.abspath(args.pdf):
@@ -4847,6 +4966,9 @@ def main():
             seed_scores(args.site,
                         songs=sorted(archived_songs(args.site))
                         if args.force and args.seed_scores else None, **kw)
+        if args.schedule:
+            key = key or load_key(args.apikey)
+            fetch_schedule(args.site, key, artist=args.artist, **kw)
         if args.calendar is not None:
             # The current year alone on a scheduled run: earlier years cannot
             # gain shows, and a year that gains a correction is rare enough to
