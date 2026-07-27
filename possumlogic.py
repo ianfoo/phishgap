@@ -650,9 +650,17 @@ def remeasure(site_dir, artist="Phish"):
         with open(path, encoding="utf-8") as fh:
             report = json.load(fh)
         before = json.dumps(report, sort_keys=True)
+        counts = report["date"] in counting
         for s in report.get("songs") or []:
             hist = archived_history(site_dir, s.get("slug") or "", report["date"])
             if hist is None:
+                # No stored history to recompute from, but a verdict on an
+                # event that is not a show is wrong whatever the history says,
+                # so that much can still be withdrawn.
+                if not counts:
+                    for k in ("verdict", "gap_median", "gap_low", "gap_high"):
+                        s.pop(k, None)
+                    s["verdict"] = None
                 skipped += 1
                 continue
             # The verdict fields are rewritten wholesale, so a song that should
@@ -721,8 +729,21 @@ def _finish_song(s, hist, date, counting=None):
     # The history is already in hand for the previous-performance lookup, so
     # the song's own gap distribution costs nothing more. Shows before this one
     # only, and never the debut, which has no gap to speak of.
-    s.update(_classify(s["gap"], hist[1:idx if idx else 0], date,
-                       plays=None if idx is None else idx + 1))
+    # No verdict where the comparison would be meaningless. A soundcheck is not
+    # a show, so calling something a bustout there says the band brought a song
+    # back at an event that does not count as an occasion. And "Jam" is not a
+    # composition -- it cannot be overdue or bust out, because there is no
+    # particular thing to have been waiting for.
+    judgeable = (not counting or date in counting) \
+        and (s.get("slug") or "") not in NOT_A_SONG
+    if judgeable:
+        s.update(_classify(s["gap"], hist[1:idx if idx else 0], date,
+                           plays=None if idx is None else idx + 1))
+    else:
+        for k in ("verdict", "gap_median", "gap_mean", "gap_low", "gap_high",
+                  "plays", "recent_plays"):
+            s.pop(k, None)
+        s["verdict"] = None
     prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
     # Always assigned, never conditionally. The renderers read these by
     # subscript because the report shape has always guaranteed them, so a debut
@@ -858,9 +879,14 @@ THEME_CSS = """
 .theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
    background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
-.theme button:hover:not(:disabled){color:var(--ink)}
+.theme button:hover:not(:disabled):not(.on){color:var(--ink);
+   border-color:var(--ink)}
 .theme button.on{background:var(--ink);color:var(--paper);
    border-color:var(--ink)}
+/* The selected one is already ink-on-paper reversed, so hovering it must not
+   set the text to the colour it is sitting on. It brightens its edge instead. */
+.theme button.on:hover:not(:disabled){color:var(--paper);
+   box-shadow:0 0 0 2px var(--hot)}
 .theme button:disabled{opacity:.45;cursor:default}
 .theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 @media print{.theme{display:none}}
@@ -959,7 +985,8 @@ header{padding-bottom:.9rem}
    when a show is missing one of its neighbours. */
 .crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    margin:0 0 .5rem}
-.crumb.sections{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+.crumb.sections{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.3rem .9rem}
 /* The site's name, not a link. It used to go where "Shows" goes, so the strip
    offered the same destination twice under two labels. As a label it also stops
    inheriting the link underline that made it sit differently from its
@@ -1056,8 +1083,8 @@ table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* Song, then where it last turned up, then the bar and the figure. The row
    leads with what it is about; the gap is an attribute of it. */
 col.c-song{width:26%}
-col.c-last{width:42%}
-col.c-bar{width:12%}
+col.c-last{width:38%}
+col.c-bar{width:16%}
 col.c-gap{width:20%}
 table.no-last col.c-song{width:36%}
 table.no-last col.c-bar{width:44%}
@@ -1134,25 +1161,25 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    this song; the shaded middle is where it usually sits, the hairline is its
    median, and the mark is tonight. Nothing here is scaled to the show, so a
    bustout somewhere else on the bill cannot flatten this row. */
-.bar .track{display:block;position:relative;width:100%;height:11px}
+.bar .track{display:block;position:relative;width:100%;height:14px}
 /* The line the mark sits on. Faint, but a real line -- without it a mark near
    the middle had nothing to be near. */
-.bar .track::before{content:"";position:absolute;left:0;right:0;top:5px;
-   height:1px;background:var(--rule)}
-.bar .track.bare::before{opacity:.5}
+.bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
+   height:2px;background:var(--rule)}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
-   background:var(--band);opacity:.5;border-radius:1px}
-.bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:1px;
-   background:var(--ink);opacity:.4}
+   background:var(--band);opacity:.85;border-radius:1px}
+.bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
+   background:var(--paper);opacity:.85}
 /* Tonight. Full height and full-strength ink, with a paper halo so it reads
    wherever it lands -- including on top of the median line. This is the one
    thing in the row the eye is meant to find. */
-.bar .at{position:absolute;left:50%;top:0;bottom:0;width:4px;
+.bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
    transform:translateX(-50%);background:var(--ink);border-radius:1px;
-   box-shadow:0 0 0 1.5px var(--paper)}
+   box-shadow:0 0 0 2px var(--paper)}
 .bar .at.big{background:var(--hot)}
 .bar .at.small{background:var(--cool)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
@@ -1182,6 +1209,14 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 .live b{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .live span{color:var(--dim)}
+/* Same shape as the still-coming-in notice: state in the bold half, detail in
+   the quiet one, set in the reading face because it is a sentence. */
+.aside-note{margin:.7rem 0 0;padding-left:.8rem;border-left:2px solid var(--rule);
+   max-width:62ch}
+.aside-note b{display:block;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);font-weight:400}
+.aside-note span{font-family:'Literata',Georgia,serif;font-size:.9375rem;
+   line-height:1.5;font-variation-settings:'opsz' 14;color:var(--ink-soft)}
 /* The title carries the link to the song's own page; underlining every one of
    them would stripe the table, so it colours on hover instead. */
 td.n,td.song{vertical-align:baseline}
@@ -1345,7 +1380,7 @@ SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header>{crumb}<h1>{date}</h1>
 <p class="where">{venue}</p>
-<p class="show">{tour}</p>{rating}{live}</header>
+<p class="show">{tour}</p>{rating}{aside}{live}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 <p class="links">{links}</p>
@@ -1592,6 +1627,10 @@ def _ordinal(n):
 def render_html(report, bar_scale="linear", index_href=None,
                 prev_date=None, next_date=None, songs=(), card=None,
                 archived_show=(), sheet="../fonts.css", calendar=()):
+    # Whether this is a show at all. A soundcheck's songs are real and its
+    # gaps are phish.net's, but nothing here feeds the rest of the site, and a
+    # count of bustouts is a verdict wearing a number's clothes.
+    counts = not calendar or report["date"] in set(calendar)
     allg = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(allg) if allg else 0
     avg = _stat(sum(allg) / len(allg)) if allg else "n/a"
@@ -1612,7 +1651,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             # The count of bustouts is the thing the mean was standing near.
             (sum(1 for s in report["songs"]
                  if (s["gap"] or 0) >= BUSTOUT_GAP), "Bustouts", ""),
-        ))
+        ) if counts or lbl != "Bustouts")
 
     sections, rows, current = [], [], None
 
@@ -1818,6 +1857,16 @@ def render_html(report, bar_scale="linear", index_href=None,
     # Still coming in. Said plainly, with the two facts that make it useful:
     # how much is here, and when it last moved. The reload keeps a page open on
     # a phone in a parking lot current without anybody touching it.
+    # Not a show. Its pages exist and its songs are real, but nothing on it
+    # feeds a gap, a median or a verdict, and a reader who arrived from the
+    # "Also on file" list should not have to infer that.
+    aside = ""
+    if not counts:
+        aside = ("<p class='aside-note'><b>Not counted</b>"
+                 "<span>phish.net does not count this toward a gap, so neither "
+                 "do we. Nothing here feeds any figure on the rest of the "
+                 "site.</span></p>")
+
     live = refresh = ""
     if report.get("provisional"):
         since = report.get("count_since") or ""
@@ -1837,7 +1886,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         analytics=ANALYTICS,
         css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
-        live=live, refresh=refresh,
+        live=live, refresh=refresh, aside=aside,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
@@ -1868,7 +1917,8 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;gap:.9rem;margin-bottom:1.1rem;font-size:.625rem;
+.crumb{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem;
+   font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
    border-bottom:1px solid var(--rule)}
@@ -2331,7 +2381,8 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
-.crumb{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:1.1rem;
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .9rem;
+   margin-bottom:1.1rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -2499,8 +2550,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
-.caveat{margin:.5rem 0 0;padding-left:.7rem;border-left:2px solid var(--hot);
-   font-size:.75rem;line-height:1.5;color:var(--ink-soft);max-width:56ch}
+.caveat{margin:.6rem 0 0;padding-left:.8rem;border-left:2px solid var(--hot);
+   font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
+   font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:58ch}
 
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -2564,17 +2616,17 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    left out the first time: the markup emitted .band, .mid and .at while this
    sheet still described the old fill, so a song page drew an empty track with
    three unstyled spans inside it and looked like nothing at all. */
-.bar .track{display:block;position:relative;width:100%;height:11px}
-.bar .track::before{content:"";position:absolute;left:0;right:0;top:5px;
-   height:1px;background:var(--rule)}
-.bar .track.bare::before{opacity:.5}
+.bar .track{display:block;position:relative;width:100%;height:14px}
+.bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
+   height:2px;background:var(--rule)}
+.bar .track.bare::before{opacity:.55}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
-   background:var(--band);opacity:.5;border-radius:1px}
-.bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:1px;
-   background:var(--ink);opacity:.4}
-.bar .at{position:absolute;left:50%;top:0;bottom:0;width:4px;
+   background:var(--band);opacity:.85;border-radius:1px}
+.bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
+   background:var(--paper);opacity:.85}
+.bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
    transform:translateX(-50%);background:var(--ink);border-radius:1px;
-   box-shadow:0 0 0 1.5px var(--paper)}
+   box-shadow:0 0 0 2px var(--paper)}
 .bar .at.big{background:var(--hot)}
 /* Only the rated versions carry these, which is 25 rows out of however many
    hundred -- and only they are known to have audio, since a version cannot be
