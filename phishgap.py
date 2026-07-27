@@ -363,6 +363,15 @@ FAVICON_HREF = "data:image/svg+xml,%s" % urllib.parse.quote(FAVICON, safe="/:=")
 # and og:url are fetched by a server that has no idea what page they came from,
 # so a relative path is no path at all.
 SITE_URL = "https://ianfoo.github.io/phishgap"
+
+# GoatCounter: no cookies, no personal data, nothing stored about a visitor, so
+# there is nothing for a consent banner to ask about. Set to the account code
+# to switch it on; empty means the pages ask nothing of anyone, which is what
+# they do until someone deliberately changes this line.
+GOATCOUNTER = ""
+ANALYTICS = ('<script data-goatcounter="https://%s.goatcounter.com/count" '
+             'async src="//gc.zgo.at/count.js"></script>' % GOATCOUNTER
+             if GOATCOUNTER else "")
 OG_IMAGE = "og.png"
 
 
@@ -1211,6 +1220,7 @@ SHELL = """<!DOCTYPE html>
 {sections}{notes}
 <footer><span><a href="../method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
+{analytics}
 </div>{row_js}</body></html>
 """
 
@@ -1669,6 +1679,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                   "<span> via fouldomain</span></p>" % report["pnet_rating"])
 
     return SHELL.format(
+        analytics=ANALYTICS,
         css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
         live=live, refresh=refresh,
@@ -1969,6 +1980,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 {aside}
 <footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
+{analytics}
 </div><script>{js}</script></body></html>
 """
 
@@ -2141,6 +2153,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
         subtitle, blurb = "No reports yet", "Per-song gaps for Phish shows."
 
     return INDEX_SHELL.format(
+        analytics=ANALYTICS,
         css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
         fonts=WEB_FONTS, sheet="./fonts.css",
         hero=hero, years=chips,
@@ -2323,6 +2336,11 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .i-foul::after{background-image:url("data:image/png;base64,__FOUL__")}
 .dek{margin:.55rem 0 0;font-size:.75rem;line-height:1.5;color:var(--dim);
    max-width:56ch}
+/* Said where the page explains itself, in the same voice as the gap note above
+   it, but marked -- it is a correction to what the numbers appear to mean, not
+   more description of them. */
+.caveat{margin:.5rem 0 0;padding-left:.7rem;border-left:2px solid var(--hot);
+   font-size:.75rem;line-height:1.5;color:var(--ink-soft);max-width:56ch}
 .crumb .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -2701,7 +2719,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
 <p class="dek">Gap &mdash; the number of shows the band played between one
-performance of this song and the one before it.</p></header>
+performance of this song and the one before it.</p>{caveat}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 {best}
@@ -2726,6 +2744,7 @@ performance of this song and the one before it.</p></header>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
 <footer><span><a href="../method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
+{analytics}
 </div><script>{js}</script></body></html>
 """
 
@@ -3020,6 +3039,8 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     first = debut_date or ""
     last = countable[0]["date"] if countable else ""
     n = len(countable)
+    caveat = NOT_A_SONG.get(doc.get("slug") or "")
+    caveat = "<p class='caveat'>%s</p>" % html.escape(caveat) if caveat else ""
     subtitle = " &middot; ".join(x for x in (
         "Debut %s" % first if first else "",
         "Last played %s" % last if last and last != first else "",
@@ -3040,8 +3061,9 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         for label, url, icon, flip in SONG_LINKS)
 
     return SONG_SHELL.format(
+        analytics=ANALYTICS,
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
-        cols=cols, theme_js=THEME_JS,
+        cols=cols, caveat=caveat, theme_js=THEME_JS,
         theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(countable), eras=chips,
         share=share_meta(html.escape(song), html.escape(blurb, quote=True),
@@ -3116,6 +3138,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
 <footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
+{analytics}
 </div><script>{js}</script></body></html>
 """
 
@@ -3232,6 +3255,7 @@ def render_songs(docs, stamp=None, card=None):
     blurb = ("Every song in the archive: %d of them, played %s times."
              % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
+        analytics=ANALYTICS,
         css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS,
         theme_ui=THEME_UI, hero=hero, count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
@@ -3287,6 +3311,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <div class="prose">{body}</div>
 <footer><span><a href="./index.html">All reports</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain</span></footer>
+{analytics}
 </div></body></html>
 """
 
@@ -3385,6 +3410,7 @@ back, because a half-entered setlist would publish wrong totals.</p>
     blurb = ("How the gaps, the medians and the verdicts on this site are "
              "worked out.")
     return METHOD_SHELL.format(
+        analytics=ANALYTICS,
         css=METHOD_CSS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS, theme_ui=THEME_UI,
         body=body.strip(),
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
@@ -4018,6 +4044,22 @@ WATCH_RULES = (
 )
 
 SCHEDULE = ("data", "schedule.json")
+
+# phish.net logs unnamed improvisation under the title "Jam", which makes it
+# the 125th most played "song" in the catalogue with 93 performances. It is not
+# a composition, so every figure on its page answers a different question than
+# the same figure does anywhere else: its median gap is how often the band
+# improvises without naming what came out, not how often they play a song.
+# Left unsaid, the page reads as a straightforwardly popular tune.
+#
+# Only entries that are genuinely not songs. Big Ball Jam is a song, Woodlands
+# Jam is a named one-off, and neither belongs here.
+NOT_A_SONG = {
+    "jam": "phish.net files unnamed improvisation under this title, so this is "
+           "not one composition but every jam the band never named. The figures "
+           "below are real counts, but they describe how often that happens "
+           "rather than how often a particular song is played.",
+}
 
 
 def watch_window(show):
