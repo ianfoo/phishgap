@@ -29,6 +29,7 @@ import bisect
 import contextlib
 import collections
 import datetime
+import glob
 import hashlib
 import html
 import json
@@ -42,6 +43,7 @@ import tempfile
 import time
 import urllib.parse
 import urllib.request
+import zoneinfo
 
 API_ROOT = "https://api.phish.net/v5"
 CACHE_TTL = 6 * 3600
@@ -488,12 +490,67 @@ def own_history(rows, artist):
     return rows
 
 
-def _finish_song(s, hist, date):
+def remeasure(site_dir, artist="Phish"):
+    """Recompute every archived report's derived fields from stored histories.
+
+    Gaps, verdicts and previous performances are written into a report when it
+    is fetched, so a change to how any of them is decided leaves every report
+    already on disk stating the old answer. Re-fetching to correct that would
+    be thousands of calls for data the archive already holds; this reads the
+    song histories instead and costs nothing.
+
+    Only songs whose stored history covers the show are touched. Anything else
+    is left exactly as it was rather than guessed at.
+    """
+    changed = skipped = 0
+    counting = set(load_calendar(site_dir))
+    for path in sorted(glob.glob(os.path.join(site_dir, "data", "[12]*.json"))):
+        with open(path, encoding="utf-8") as fh:
+            report = json.load(fh)
+        before = json.dumps(report, sort_keys=True)
+        for s in report.get("songs") or []:
+            hist = archived_history(site_dir, s.get("slug") or "", report["date"])
+            if hist is None:
+                skipped += 1
+                continue
+            # The verdict fields are rewritten wholesale, so a song that should
+            # no longer carry one loses it rather than keeping a stale value.
+            for k in ("gap", "verdict", "debut", "prev_date", "prev_venue",
+                      "prev_place", "gap_median", "gap_mean", "gap_low",
+                      "gap_high", "plays", "recent_plays"):
+                s.pop(k, None)
+            _finish_song(s, hist, report["date"], counting)
+        after = json.dumps(report, sort_keys=True)
+        if after != before:
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(report, fh, indent=2)
+            changed += 1
+    print("remeasured: %d report%s rewritten, %d song rows had no stored history"
+          % (changed, "" if changed == 1 else "s", skipped), file=sys.stderr)
+    return changed
+
+
+def _finish_song(s, hist, date, counting=None):
     """Fill one song's gap, verdict and previous performance from its history.
 
     Split out so the archived path and the fetched path cannot drift: they
     differ in where the rows came from and in nothing else.
+
+    `counting` is the set of show dates that count toward a gap. Performances
+    at the others -- soundchecks, the Tonight Show, Tiny Desk -- are dropped
+    before anything is decided, because they are not shows and must not stand
+    as the performance before this one. Left in, Gone read as a bustout of
+    1,468 whose previous performance was two months earlier: its first outing
+    was the Festival 8 soundcheck, so its real debut did not look like one.
+    Evolve pointed "last performed" at a Tiny Desk session four shows back that
+    was not four shows back, or a show at all.
+
+    The show being described always survives the filter, even when it is itself
+    a soundcheck -- those reports still exist and still have to render.
     """
+    if counting:
+        hist = [h for h in hist
+                if h["showdate"] in counting or h["showdate"] == date]
     idx = next((i for i, h in enumerate(hist) if h["showdate"] == date), None)
     if idx is not None:
         # by_show has already found the night's real gap, wherever among the
@@ -503,17 +560,28 @@ def _finish_song(s, hist, date):
             s["gap"] = g
     if idx == 0:
         s["debut"] = True              # this show IS the first performance
+        # ...and a debut has no gap. A gap is the shows between a performance
+        # and the one before it, so with nothing before it there is no gap to
+        # state. phish.net files a number here anyway, and that number is the
+        # count of every show the band had played up to that night: the
+        # fourteen covers debuted on 2009-10-31 all carry 1,451, the nine on
+        # 2016-10-31 all carry 1,747. Kept, it made 244 debuts read as bustouts
+        # -- a song cannot come back from an absence it was never in -- and put
+        # a debut at the top of the index as the longest gap on the site.
+        s["gap"] = None
     # The history is already in hand for the previous-performance lookup, so
     # the song's own gap distribution costs nothing more. Shows before this one
     # only, and never the debut, which has no gap to speak of.
     s.update(_classify(s["gap"], hist[1:idx if idx else 0], date,
                        plays=None if idx is None else idx + 1))
     prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
-    if prior:
-        s["prev_date"] = prior.get("showdate")
-        s["prev_venue"] = prior.get("venue") or ""
-        s["prev_place"] = ", ".join(
-            p for p in (prior.get("city"), prior.get("state")) if p)
+    # Always assigned, never conditionally. The renderers read these by
+    # subscript because the report shape has always guaranteed them, so a debut
+    # that simply omitted them turned into a KeyError three screens away.
+    s["prev_date"] = prior.get("showdate") if prior else None
+    s["prev_venue"] = (prior.get("venue") or "") if prior else ""
+    s["prev_place"] = ", ".join(
+        p for p in (prior.get("city"), prior.get("state")) if p) if prior else ""
 
 
 def add_previous(report, apikey, site_dir=None, **kw):
@@ -528,12 +596,13 @@ def add_previous(report, apikey, site_dir=None, **kw):
     """
     missed = []
     artist = report.get("artist")
+    counting = set(load_calendar(site_dir)) if site_dir else None
     for s in report["songs"]:
         # Free when the archive already covers this show, which during a
         # backfill is nearly always.
         hist = archived_history(site_dir, s["slug"], report["date"])
         if hist is not None:
-            _finish_song(s, hist, report["date"])
+            _finish_song(s, hist, report["date"], counting)
             continue
         try:
             hist = get("setlists/slug/%s" % s["slug"], apikey, **kw)
@@ -550,7 +619,7 @@ def add_previous(report, apikey, site_dir=None, **kw):
         hist = by_show(own_history(hist, artist))
         if site_dir:
             save_song_history(site_dir, s["slug"], s["song"], hist, artist)
-        _finish_song(s, hist, report["date"])
+        _finish_song(s, hist, report["date"], counting)
     if missed:
         print("warning: no history for %d of %d songs in %s: %s"
               % (len(missed), len(report["songs"]), report["date"],
@@ -3771,7 +3840,82 @@ def venue_zone(row):
     return TZ_BY_CITY.get((state, city)) or TZ_BY_STATE.get(state)
 
 
+# When to be watching, in the venue's own local time. Deliberately generous at
+# both ends, because the two ways of being wrong do not cost the same: polling
+# a few extra times on a public repo costs nothing, and being twenty minutes
+# late to open costs the first set. So exceptions widen the window; none of
+# them narrows it.
+#
+# The default opens before the earliest plausible downbeat -- setlist.fm has
+# tonight's Garden show scheduled for 19:30, and shows run 19:25 to 20:10 -- and
+# closes after a four-hour show plus the quiet period a setlist needs to settle.
+WATCH_DEFAULT = ((19, 0), (2, 30))
+
+# Mexico is the standing exception and the reason the window is a table rather
+# than a constant. The run does not keep one start time: the first night runs
+# late for people still arriving, the middle nights are ordinary but early, and
+# the last night is early again for people flying out. Rather than encode which
+# night is which -- and be wrong the year they reorder it -- the window spans
+# all of them.
+WATCH_RULES = (
+    (lambda s: s.get("tz") == "America/Cancun", ((17, 0), (3, 30))),
+)
+
 SCHEDULE = ("data", "schedule.json")
+
+
+def watch_window(show):
+    """(open, close) in UTC for one scheduled show, or None without a zone.
+
+    The close is on the following day whenever it falls after midnight, which
+    for a show starting at seven in the evening it always does.
+    """
+    if not show.get("tz"):
+        return None
+    try:
+        zone = zoneinfo.ZoneInfo(show["tz"])
+    except Exception:                                          # noqa: BLE001
+        return None
+    (oh, om), (ch, cm) = WATCH_DEFAULT
+    for matches, window in WATCH_RULES:
+        if matches(show):
+            (oh, om), (ch, cm) = window
+            break
+    try:
+        day = datetime.date.fromisoformat(show["date"])
+    except ValueError:
+        return None
+    start = datetime.datetime.combine(
+        day, datetime.time(oh, om), tzinfo=zone)
+    end = datetime.datetime.combine(
+        day + datetime.timedelta(days=1), datetime.time(ch, cm), tzinfo=zone)
+    return start.astimezone(datetime.timezone.utc), \
+        end.astimezone(datetime.timezone.utc)
+
+
+def watching(site_dir, now=None):
+    """Scheduled shows whose watch window contains `now`. Usually empty.
+
+    This is the whole gate: a run that finds nothing here has done no API call
+    and can stop. Reading a file the repo already holds is the cheapest
+    possible answer to "is anything happening", and on most days it is no.
+    """
+    now = now or _utcnow()
+    path = os.path.join(site_dir, *SCHEDULE)
+    if not os.path.isfile(path):
+        return []
+    try:
+        with open(path, encoding="utf-8") as fh:
+            shows = json.load(fh).get("shows") or []
+    except ValueError:
+        print("warning: unreadable %s" % path, file=sys.stderr)
+        return []
+    live = []
+    for s in shows:
+        w = watch_window(s)
+        if w and w[0] <= now <= w[1]:
+            live.append(s)
+    return live
 
 
 def fetch_schedule(site_dir, apikey, artist="Phish", **kw):
@@ -4838,6 +4982,14 @@ def main():
                     help="with --site, fetch fouldomain's top-rated versions "
                          "for archived songs that have none yet; --force "
                          "re-asks for every song")
+    ap.add_argument("--remeasure", action="store_true",
+                    help="with --site, recompute gaps, verdicts and previous "
+                         "performances for every archived report from the "
+                         "stored song histories (no API calls)")
+    ap.add_argument("--watching", action="store_true",
+                    help="with --site, print active=true when a scheduled show "
+                         "is inside its watch window and active=false "
+                         "otherwise, then exit (no API calls)")
     ap.add_argument("--schedule", action="store_true",
                     help="with --site, refresh the list of announced shows "
                          "that have not happened yet, with each venue's time "
@@ -4878,16 +5030,29 @@ def main():
                  "several dates at once" % one_file)
     if (args.rebuild or args.force or args.catch_up or args.seed_songs
             or args.seed_scores or args.seed_setlists or args.sweep_ratings
-            or args.calendar is not None or args.schedule) and not args.site:
+            or args.calendar is not None or args.schedule
+            or args.remeasure) and not args.site:
         sys.exit("error: --rebuild, --force, --catch-up, --seed-songs, "
                  "--seed-scores, --seed-setlists, --sweep-ratings and "
                  "--calendar need --site DIR")
+    if args.watching:
+        if not args.site:
+            sys.exit("error: --watching needs --site DIR")
+        live = watching(args.site)
+        for s in live:
+            print("watching %s %s (%s)" % (s["date"], s["venue"], s["tz"]),
+                  file=sys.stderr)
+        if not live:
+            print("no scheduled show is in its watch window", file=sys.stderr)
+        # stdout stays machine-readable: a workflow reads this one line.
+        print("active=%s" % ("true" if live else "false"))
+        return
     if args.recheck and not args.catch_up:
         sys.exit("error: --recheck only means something with --catch-up")
     if not (args.showdate or args.from_json or args.rebuild or args.catch_up
             or args.seed_songs or args.seed_scores or args.seed_setlists
             or args.sweep_ratings or args.calendar is not None
-            or args.schedule):
+            or args.schedule or args.remeasure):
         sys.exit("error: give at least one show date (YYYY-MM-DD)")
     if args.html and args.pdf and \
             os.path.abspath(args.html) == os.path.abspath(args.pdf):
@@ -4966,6 +5131,8 @@ def main():
             seed_scores(args.site,
                         songs=sorted(archived_songs(args.site))
                         if args.force and args.seed_scores else None, **kw)
+        if args.remeasure:
+            remeasure(args.site, artist=args.artist)
         if args.schedule:
             key = key or load_key(args.apikey)
             fetch_schedule(args.site, key, artist=args.artist, **kw)
