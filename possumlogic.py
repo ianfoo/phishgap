@@ -36,6 +36,7 @@ import html
 import json
 import math
 import os
+import random
 import re
 import shutil
 import subprocess
@@ -432,6 +433,22 @@ FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
    Licence text: ./%(dir)s/OFL.txt */
 @font-face{font-family:'%(face)s';src:url('./%(dir)s/Bagnard.otf') format('opentype');
   font-weight:400;font-style:normal;font-display:swap}
+/* The paper's texture. It lives here rather than inline in every page for two
+   reasons. It was an SVG feTurbulence data URI, which the browser has to run a
+   filter over before it can paint -- about a quarter of a second, during which
+   the page showed flat colour and then visibly changed under the reader. A PNG
+   decodes immediately. And as one cached file it costs 640 pages nothing,
+   where a data URI large enough to look good would have been carried by each
+   of them.
+
+   url() in an external sheet resolves against the sheet, not the page, so this
+   one line works from ./, ./show/ and ./song/ alike.
+
+   The blend mode is the variable that has existed unused since the palettes
+   were written: multiply on cream darkens the grain into the paper, screen on
+   near-black lifts it, and neither shifts the paper colour the way painting
+   opaque noise over it did. */
+body{background-image:url(grain.png);background-blend-mode:var(--grain-blend)}
 """ % {"face": DISPLAY_FACE, "dir": FONT_DIR}
 
 # Plex Mono is the only thing still coming from Google: it is doing real work
@@ -943,7 +960,11 @@ header{padding-bottom:.9rem}
 .crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    margin:0 0 .5rem}
 .crumb.sections{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
-.crumb.sections .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. As a label it also stops
+   inheriting the link underline that made it sit differently from its
+   neighbours on the song pages. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
 .crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
@@ -1113,22 +1134,27 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    this song; the shaded middle is where it usually sits, the hairline is its
    median, and the mark is tonight. Nothing here is scaled to the show, so a
    bustout somewhere else on the bill cannot flatten this row. */
-.bar .track{display:block;position:relative;width:100%;height:7px;
-   background:linear-gradient(to bottom,transparent 0 3px,var(--rule-soft) 3px 4px,
-   transparent 4px 7px)}
-.bar .track.bare{opacity:.45}
-/* Where this song usually lands. Deliberately quiet -- it is the backdrop the
-   mark is read against, not a thing to look at. */
-.bar .band{position:absolute;left:30%;right:30%;top:0;bottom:0;
-   background:var(--track)}
-.bar .mid{position:absolute;left:50%;top:-1px;bottom:-1px;width:1px;
-   background:var(--rule)}
-/* Tonight. Full-strength ink with a paper halo so it stays legible wherever it
-   lands, including on top of the median hairline. */
-.bar .at{position:absolute;left:50%;top:-4px;bottom:-4px;width:3px;
-   transform:translateX(-50%);background:var(--cool);
-   box-shadow:0 0 0 1px var(--paper)}
+.bar .track{display:block;position:relative;width:100%;height:11px}
+/* The line the mark sits on. Faint, but a real line -- without it a mark near
+   the middle had nothing to be near. */
+.bar .track::before{content:"";position:absolute;left:0;right:0;top:5px;
+   height:1px;background:var(--rule)}
+.bar .track.bare::before{opacity:.5}
+/* Where this song usually lands, as a block rather than a tint. The previous
+   version used --track, which is a 10% alpha meant for the inside of a
+   progress bar, and against paper it was not there at all. */
+.bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
+   background:var(--band);opacity:.5;border-radius:1px}
+.bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:1px;
+   background:var(--ink);opacity:.4}
+/* Tonight. Full height and full-strength ink, with a paper halo so it reads
+   wherever it lands -- including on top of the median line. This is the one
+   thing in the row the eye is meant to find. */
+.bar .at{position:absolute;left:50%;top:0;bottom:0;width:4px;
+   transform:translateX(-50%);background:var(--ink);border-radius:1px;
+   box-shadow:0 0 0 1.5px var(--paper)}
 .bar .at.big{background:var(--hot)}
+.bar .at.small{background:var(--cool)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Named only where the column header is not doing it -- on a wide screen the
@@ -1174,10 +1200,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
-  /* Under the ink, not over it: as a fixed overlay this sat below the
-     sticky elements, which then showed cleaner paper than the page around
-     them, and it multiplied over 10px type. */
-  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
   tr:hover td{background:var(--hover)}
@@ -1756,7 +1778,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         # three-column pager grid left them wrapping into cells meant for
         # something else.
         crumb = ("<nav class='crumb sections'>"
-                 "<a class='mark' href='../index.html'>Possum Logic</a>"
+                 "<span class='mark'>Possum Logic</span>"
                  "<a href='../index.html'>Shows</a>"
                  "<a href='../songs.html'>Songs</a>"
                  "<a href='../method.html'>How this is worked out</a></nav>"
@@ -1981,10 +2003,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
-  /* Under the ink, not over it: as a fixed overlay this sat below the
-     sticky header and the to-top button, which then showed cleaner paper
-     than the page around them, and it multiplied over 10px type. */
-  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
    the rules still run the full width and nothing has to be hidden. */
@@ -2413,7 +2431,16 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    fixed and 42px tall -- without this the browser puts the target's top edge
    at the top of the viewport, which is exactly where the header is, and the
    row you tapped to look at arrives half hidden underneath it. */
+/* Clear of the sticky bar, which is not one height. Below 820px it carries the
+   song and its counts and measures 42px; above, it also carries the column
+   labels and measures 73px -- against the 57.6px this used to be, which put a
+   jumped-to performance 16px underneath the bar meant to orient it. Measured
+   at both widths rather than estimated, with room left over so the row has air
+   above it rather than being flush to the edge. */
 .perfs>li,.perfs>li.yr{scroll-margin-top:3.6rem}
+@media screen and (min-width:821px){
+  .perfs>li,.perfs>li.yr{scroll-margin-top:5.4rem}
+}
 .perfs>li{border-bottom:1px solid var(--rule-soft)}
 .perfs>li.yr{border-bottom:0}
 /* The same tab the set headings take, so a section boundary looks the same
@@ -2474,7 +2501,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    more description of them. */
 .caveat{margin:.5rem 0 0;padding-left:.7rem;border-left:2px solid var(--hot);
    font-size:.75rem;line-height:1.5;color:var(--ink-soft);max-width:56ch}
-.crumb .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
+
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);line-height:1.1rem}
@@ -2638,10 +2665,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim)}
 @media screen{
-  /* Under the ink, not over it: as a fixed overlay this sat below the
-     sticky header and the to-top button, which then showed cleaner paper
-     than the page around them, and it multiplied over 10px type. */
-  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -2843,7 +2866,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body id="top"><div class="wrap">
-<nav class="crumb"><a class="mark" href="../index.html">Possum Logic</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -3013,6 +3036,10 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         lo, hi = span.get(e, (p["date"], p["date"]))
         span[e] = (min(lo, p["date"]), max(hi, p["date"]))
 
+    # One band for the whole page: this is a single song, so "usually" is a
+    # single answer rather than a per-row one.
+    low = _quantile(recent, BAND[0]) if len(recent) >= MIN_HISTORY else None
+    high = _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else None
     rows, seen_era = [], None
     for i, p in enumerate(perfs):
         date, g = p["date"], p["gap"]
@@ -3055,12 +3082,19 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
             link = _ext("https://phish.net/setlist/?d=%s" % date, date, "i-pnet")
         place = ", ".join(x for x in (p["city"], p["state"]) if x)
         big = (g or 0) >= 50 and not debut
-        bar = "<span class='bar'></span>"
-        if g and biggest and not debut:
-            bar = ("<span class='bar'><span class='track'><span class='fill%s'"
-                   " style='width:%.1f%%'></span></span></span>"
-                   % (" big" if big else "",
-                      min(_bar_pct(g, biggest), 100.0)))
+        # The same band the report pages use, and for the same reason: scaled
+        # to the song's own longest gap, one bustout flattened every other row
+        # on the page -- Back in the U.S.S.R. drew 485 and 689 at full width
+        # and its 23 at three percent of one. The band is the same for every
+        # row here, since every row is this song, so the marks line up down the
+        # page and the shape of them is the song's history.
+        bar = "<span class='bar'><span class='track bare'></span></span>"
+        pos = _band_pos(g, low, high) if (g is not None and not debut) else None
+        if pos is not None:
+            bar = ("<span class='bar'><span class='track'>"
+                   "<span class='band'></span><span class='mid'></span>"
+                   "<span class='at%s' style='left:%.2f%%'></span>"
+                   "</span></span>" % (" big" if big else "", pos))
         mark = ""
         if date in rated:
             v = rated[date]
@@ -3810,6 +3844,43 @@ padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
 <body><p>This report has moved to
 <a href="./show/{date}.html">show/{date}.html</a>.</p></body></html>
 """
+
+
+def write_grain(site_dir, size=140):
+    """The paper texture, as a tile beside fonts.css. Skipped without Pillow.
+
+    Monochrome and deliberately faint. The old SVG painted full-range noise --
+    single pixels from 19 to 232 on a 0-255 scale -- straight over the paper at
+    28% opacity, which lifted the dark palette's #131210 to a measured #2d2c2a
+    and muddied the light one. Texture should be felt rather than seen; this is
+    a narrow band around mid-grey, and the blend mode in fonts.css decides which
+    way it pushes.
+
+    Deterministic, so a rebuild does not produce a new file and republish it.
+    """
+    path = os.path.join(site_dir, "grain.png")
+    try:
+        from PIL import Image
+    except ImportError:
+        return None
+    rnd = random.Random(20260727)          # fixed: the tile must not change
+    img = Image.new("L", (size, size))
+    img.putdata([rnd.randint(108, 148) for _ in range(size * size)])
+    img = img.convert("RGBA")
+    img.putalpha(46)
+    scratch = path + ".tmp"
+    img.save(scratch, "PNG", optimize=True)
+    with open(scratch, "rb") as fh:
+        blob = fh.read()
+    os.remove(scratch)
+    if os.path.isfile(path):
+        with open(path, "rb") as fh:
+            if fh.read() == blob:
+                return path
+    with open(path, "wb") as fh:
+        fh.write(blob)
+    log("wrote %s (%d bytes)", path, len(blob))
+    return path
 
 
 def write_redirects(site_dir):
@@ -4981,6 +5052,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
             rebuilt)
     write_redirects(site_dir)
     write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
+    write_grain(site_dir)
     # Rewritten every run, but it is one small file and write_if_changed means
     # a run that moved nothing publishes nothing.
     write_current(site_dir)
