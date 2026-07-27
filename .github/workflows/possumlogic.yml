@@ -1,4 +1,4 @@
-name: gap reports
+name: possum logic
 
 on:
   schedule:
@@ -26,14 +26,14 @@ on:
   push:
     branches: [main]
     paths:
-      - phishgap.py
-      - .github/workflows/gap-reports.yml
+      - possumlogic.py
+      - .github/workflows/possumlogic.yml
 
 permissions:
   contents: write
 
 concurrency:
-  group: gap-reports
+  group: possumlogic
   cancel-in-progress: false
 
 jobs:
@@ -63,7 +63,7 @@ jobs:
           SCHEDULE: ${{ github.event.schedule }}
         run: |
           if [ "$SCHEDULE" = "*/5 22-23,0-9 * * *" ]; then
-            watching=$(python phishgap.py --site site --watching | cut -d= -f2)
+            watching=$(python possumlogic.py --site site --watching | cut -d= -f2)
             echo "work=$watching" >> "$GITHUB_OUTPUT"
           else
             echo "work=true" >> "$GITHUB_OUTPUT"
@@ -103,11 +103,11 @@ jobs:
             # every song's standing freezes. --schedule refreshes the announced
             # dates the gate above reads, and is what makes a withdrawn or
             # moved run correct itself.
-            python phishgap.py --site site --previous --rebuild \
+            python possumlogic.py --site site --previous --rebuild \
               --catch-up "${{ github.event.inputs.days || 21 }}" --recheck \
               --sweep-ratings --calendar --schedule
           else
-            python phishgap.py --site site --previous --rebuild --catch-up 2
+            python possumlogic.py --site site --previous --rebuild --catch-up 2
           fi
 
       - name: Commit the data archive

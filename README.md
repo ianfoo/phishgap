@@ -1,4 +1,4 @@
-# phishgap
+# possumlogic
 
 Per-song **gap** reports for Phish shows: how many shows passed between each
 song at a given concert and the last time the band played it. A gap of 4 is a
@@ -20,7 +20,7 @@ which holds one key per service so each says which API it belongs to:
 A single show, as text on stdout:
 
 ```sh
-./phishgap.py 2026-07-24
+./possumlogic.py 2026-07-24
 ```
 
 Add `--previous` for each song's prior performance — date, venue, city. It costs
@@ -29,7 +29,7 @@ one API call per song, which is why it is opt-in.
 ### A growing site
 
 ```sh
-./phishgap.py 2026-07-22 2026-07-24 --previous --site site
+./possumlogic.py 2026-07-22 2026-07-24 --previous --site site
 ```
 
 Each show lands in `site/<date>.html`, its data is archived in
@@ -50,9 +50,9 @@ Three passes fill in what a single show's fetch cannot know. Each is skippable,
 resumable, and only asks for what it does not already hold:
 
 ```sh
-./phishgap.py --site site --seed-songs      # a history per song the archive names
-./phishgap.py --site site --seed-scores     # fouldomain's top-rated versions
-./phishgap.py --site site --seed-setlists   # what each performance followed
+./possumlogic.py --site site --seed-songs      # a history per song the archive names
+./possumlogic.py --site site --seed-scores     # fouldomain's top-rated versions
+./possumlogic.py --site site --seed-setlists   # what each performance followed
 ```
 
 `--seed-songs` costs one call per song. `--seed-scores` fetches [fouldomain's](https://fouldomain.com/)
@@ -71,8 +71,8 @@ months afterwards. Both are treated as optional everywhere they appear.
 Rather than naming dates, let it find them:
 
 ```sh
-./phishgap.py --site site --previous --catch-up      # shows played in the last 21 days
-./phishgap.py --site site --previous --catch-up 400  # or a whole year of them
+./possumlogic.py --site site --previous --catch-up      # shows played in the last 21 days
+./possumlogic.py --site site --previous --catch-up 400  # or a whole year of them
 ```
 
 A show is held back until its setlist stops growing. Nothing in the API says
@@ -91,20 +91,20 @@ once no show that night could still be running anywhere in North America.
 Corrections to shows that already settled arrive with `--recheck`:
 
 ```sh
-./phishgap.py --site site --previous --catch-up --recheck
+./possumlogic.py --site site --previous --catch-up --recheck
 ```
 
 Because the archive holds every report, re-rendering after a style change costs
 nothing and touches no API:
 
 ```sh
-./phishgap.py --site site --rebuild
+./possumlogic.py --site site --rebuild
 ```
 
 ### Single files
 
 ```sh
-./phishgap.py 2026-07-24 --previous --html report.html --pdf report.pdf
+./possumlogic.py 2026-07-24 --previous --html report.html --pdf report.pdf
 ```
 
 `--pdf` wants [WeasyPrint](https://weasyprint.org/) (`pip install weasyprint`)
@@ -121,7 +121,7 @@ GitHub Pages serves the `gh-pages` branch root. `main` tracks the script and the
 JSON archive; the generated pages live only on `gh-pages`.
 
 ```sh
-./phishgap.py --site site --previous --catch-up   # build
+./possumlogic.py --site site --previous --catch-up   # build
 ./publish.sh                                      # push site/ to gh-pages
 ```
 
@@ -129,7 +129,7 @@ JSON archive; the generated pages live only on `gh-pages`.
 through the window a show can be settling in, plus a once-a-day pass that also
 re-checks recent shows for corrections. On a day with no show it finds nothing
 and publishes nothing. It needs one repository secret, `PHISHNET_API_KEY`.
-Pushing a change to `phishgap.py` also triggers it, so a template edit
+Pushing a change to `possumlogic.py` also triggers it, so a template edit
 republishes every page.
 
 Song pages are the bulk of the built site — one per song rather than one per
@@ -138,7 +138,8 @@ changing something every page shares.
 
 ## Notes
 
-API responses are cached under `~/.cache/phishgap` for six hours, because
+API responses are cached under `~/.cache/possumlogic` for six hours (the old `~/.cache/phishgap` is
+still used if it is the one that exists), because
 phish.net asks that clients cache rather than re-request; `--refresh` bypasses
 it. Live requests are spaced out and back off on HTTP 429, which a tour-length
 run with `--previous` will otherwise earn.

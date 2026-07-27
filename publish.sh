@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 
 if [ ! -f site/index.html ]; then
     echo "no site/index.html -- build the site first:" >&2
-    echo "  ./phishgap.py --site site --previous --catch-up" >&2
+    echo "  ./possumlogic.py --site site --previous --catch-up" >&2
     exit 1
 fi
 

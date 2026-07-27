@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-phishgap5.py -- per-song gap report for a Phish show, via the Phish.net API v5.
+possumlogic.py -- an archive of Phish performances, via the Phish.net API v5.
 
 One call to /v5/setlists/showdate/<date>.json returns every song in the show
 with its `gap` already computed, so there is no HTML parsing and no arithmetic.
 
     export PHISHNET_API_KEY=...            # or ~/.config/possumlogic/keys.json
                                            # {"phish.net": "..."}
-    python3 phishgap5.py 2026-07-24 --html report.html --pdf report.pdf
+    python3 possumlogic.py 2026-07-24 --html report.html --pdf report.pdf
 
 Or keep a growing site of them, one page per show plus a searchable index:
 
-    python3 phishgap5.py 2026-07-22 2026-07-24 --previous --site site
-    python3 phishgap5.py --site site --rebuild      # re-render after a CSS edit
+    python3 possumlogic.py 2026-07-22 2026-07-24 --previous --site site
+    python3 possumlogic.py --site site --rebuild    # re-render after a CSS edit
 
 Each show lands in site/<date>.html, its data is archived in site/data, and
 site/index.html is regenerated from that archive every run. Dates already in
@@ -47,7 +47,13 @@ import zoneinfo
 
 API_ROOT = "https://api.phish.net/v5"
 CACHE_TTL = 6 * 3600
-DEFAULT_CACHE = os.path.expanduser("~/.cache/phishgap")
+# The new home, with the old one still read. A cache is disposable, but
+# throwing one away silently means the next run re-fetches thousands of
+# responses it already had, so the move is made without that cost.
+_CACHE_NEW = os.path.expanduser("~/.cache/possumlogic")
+_CACHE_OLD = os.path.expanduser("~/.cache/phishgap")
+DEFAULT_CACHE = (_CACHE_OLD if os.path.isdir(_CACHE_OLD)
+                 and not os.path.isdir(_CACHE_NEW) else _CACHE_NEW)
 
 # Minimum spacing between live requests. Building a whole tour with --previous
 # is a couple of hundred calls, and phish.net is a volunteer operation; the
@@ -182,7 +188,7 @@ def _http_json(url, label, cache_dir=DEFAULT_CACHE, refresh=False,
 
     if blob is None:
         req = urllib.request.Request(
-            url, headers={"User-Agent": "phishgap/1.0 (+personal use)",
+            url, headers={"User-Agent": "possumlogic/1.0 (+personal use)",
                           "Accept": "application/json"})
         for attempt in range(1, MAX_TRIES + 1):
             wait = MIN_INTERVAL - (time.time() - _last_fetch[0])
@@ -362,6 +368,10 @@ FAVICON_HREF = "data:image/svg+xml,%s" % urllib.parse.quote(FAVICON, safe="/:=")
 # Where the site lives, for the absolute URLs link previews require: og:image
 # and og:url are fetched by a server that has no idea what page they came from,
 # so a relative path is no path at all.
+# Where the pages actually live, which is the one name here that cannot be
+# changed ahead of the move: it is what share cards and og:url point at, so it
+# has to match reality rather than intent. Update it when the repository is
+# renamed or possumlogic.com is pointed at Pages, and not before.
 SITE_URL = "https://ianfoo.github.io/phishgap"
 
 # GoatCounter: no cookies, no personal data, nothing stored about a visitor, so
@@ -392,7 +402,7 @@ def share_meta(title, description, path="", image=OG_IMAGE, card=None):
         '<link rel="icon" href="%s">' % FAVICON_HREF,
         '<meta name="theme-color" content="#c8371b">',
         '<meta name="description" content="%s">' % description,
-        '<meta property="og:site_name" content="Phish Gap Reports">',
+        '<meta property="og:site_name" content="Possum Logic">',
         '<meta property="og:title" content="%s">' % title,
         '<meta property="og:description" content="%s">' % description,
         '<meta property="og:url" content="%s">' % html.escape(url, quote=True),
@@ -783,6 +793,9 @@ THEME_UI = ("<span class='theme' role='group' aria-label='Colour theme'>"
 # shared, hence the try blocks.
 THEME_JS = """<script>
 (function(){
+  // Deliberately not renamed: this is a private key in a reader's own
+  // browser, and changing it would silently reset the light/dark choice
+  // of everyone who has ever set one, to rename a string nobody sees.
   var KEY='phishgap-theme', root=document.documentElement;
   function apply(v){
     if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
@@ -848,7 +861,7 @@ header{padding-bottom:.9rem}
 .crumb .all{grid-column:2;justify-self:center}
 .crumb .next{grid-column:3;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
-   its date -- but the page led with "Gap Report" at 4rem while the date sat
+   its date -- but the page led with the site's own name at 4rem while the date sat
    small beside a tour and an ordinal, so the one thing that identified the
    page was the least prominent thing on it. The wordmark is already in the nav
    above as a small mark, which is where a wordmark belongs on a page that is
@@ -1207,7 +1220,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gap Report &mdash; {date}</title>{refresh}
+<title>{date} &mdash; Possum Logic</title>{refresh}
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1650,7 +1663,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         # three-column pager grid left them wrapping into cells meant for
         # something else.
         crumb = ("<nav class='crumb sections'>"
-                 "<a class='mark' href='../index.html'>Gap Reports</a>"
+                 "<a class='mark' href='../index.html'>Possum Logic</a>"
                  "<a href='../index.html'>Shows</a>"
                  "<a href='../songs.html'>Songs</a>"
                  "<a href='../method.html'>How this is worked out</a></nav>"
@@ -1716,7 +1729,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         sheet=('<link href="%s" rel="stylesheet">' % sheet if sheet
                else inline_font_css()),
         row_js=ROW_JS,
-        share=share_meta("Gap Report &mdash; %s" % html.escape(report["date"]),
+        share=share_meta("%s &mdash; Possum Logic" % html.escape(report["date"]),
                          html.escape(blurb, quote=True),
                          "%s/%s.html" % (SHOW_DIR, report["date"]), card=card),
         # Dated by the report's own data, not by the clock. A build stamp made
@@ -1974,7 +1987,7 @@ INDEX_JS = """
 INDEX_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Phish Gap Reports</title>
+<title>Possum Logic</title>
 <meta property="og:type" content="website">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1984,7 +1997,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
-<header><h1>Gap <em>Reports</em></h1>
+<header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
@@ -2186,7 +2199,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
         hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         aside=aside_html, subtitle=subtitle,
-        share=share_meta("Phish Gap Reports", html.escape(blurb, quote=True),
+        share=share_meta("Possum Logic", html.escape(blurb, quote=True),
                          card=card),
         # The newest show it lists, for the same reason.
         stamp="Updated %s" % (entries[0]["date"] if entries else "&mdash;"))
@@ -2730,14 +2743,14 @@ SONG_JS = """
 SONG_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{song} &mdash; Phish Gap Reports</title>
+<title>{song} &mdash; Possum Logic</title>
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}</head><body id="top"><div class="wrap">
-<nav class="crumb"><a class="mark" href="../index.html">Gap Reports</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
+<nav class="crumb"><a class="mark" href="../index.html">Possum Logic</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -3135,7 +3148,7 @@ SONGS_CSS = INDEX_CSS + """
 SONGS_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Songs &mdash; Phish Gap Reports</title>
+<title>Songs &mdash; Possum Logic</title>
 <meta property="og:type" content="website">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3145,7 +3158,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
-<header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
+<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
@@ -3286,7 +3299,7 @@ def render_songs(docs, stamp=None, card=None):
         css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS,
         theme_ui=THEME_UI, hero=hero, count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
-        share=share_meta("Phish Gap Reports &mdash; Songs",
+        share=share_meta("Songs &mdash; Possum Logic",
                          html.escape(blurb, quote=True), "songs.html", card=card),
         stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
 
@@ -3322,7 +3335,7 @@ METHOD_CSS = INDEX_CSS + """
 METHOD_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>How this is worked out &mdash; Phish Gap Reports</title>
+<title>How this is worked out &mdash; Possum Logic</title>
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3332,7 +3345,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">How this is worked out</a></nav>
 <div class="rule2"></div>
-<header><h1><a href="./index.html">Gap <em>Reports</em></a></h1>
+<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
 <div class="rule2"></div>
 <div class="prose">{body}</div>
@@ -3552,7 +3565,7 @@ def card_markup(kind, title, subtitle, stats, size=96, data=False):
             "<h1 class='%s' style='font-size:%dpx'>%s</h1>"
             "<div class='sub'>%s</div><div class='rule'></div>"
             "<div class='stats'>%s</div>"
-            "<div class='brand'>ianfoo.github.io/phishgap</div></div>"
+            "<div class='brand'>possumlogic</div></div>"
             % (FAVICON.replace("<svg", "<svg class='mark'", 1), kind,
                "data" if data else "", size, title, subtitle, figures))
 
@@ -3616,7 +3629,7 @@ def report_card(report):
     song = next((s["song"] for s in report["songs"] if s["gap"] == biggest), "")
     where = report.get("venue") or ""
     return card_markup(
-        "Gap Report", html.escape(report["date"]), html.escape(where.upper()),
+        "Possum Logic", html.escape(report["date"]), html.escape(where.upper()),
         (("%d" % len(report["songs"]), "Songs", ""),
          (_stat(_median(gaps)) if gaps else "&mdash;", "Median gap", ""),
          (_stat(biggest) if gaps else "&mdash;",
@@ -3651,7 +3664,7 @@ def index_card(reports):
     entries = [summarize(r) for r in reports]
     longest = max((e["longest"] or 0) for e in entries) if entries else 0
     return card_markup(
-        "Phish", "Gap <em>Reports</em>", "How long since they last played it",
+        "Phish", "Possum <em>Logic</em>", "How long since they last played it",
         (("%d" % len(entries), "Shows", ""),
          ("{:,}".format(sum(e["songs"] for e in entries)), "Songs logged", ""),
          (_stat(longest) if longest else "&mdash;", "Longest gap", "hot")))
@@ -3662,7 +3675,7 @@ def songs_card(docs):
     best = max((v["score"] for d in docs for v in (d.get("best") or [])),
                default=None)
     return card_markup(
-        "Every song", "Gap <em>Reports</em>", "One page per song, all the way back",
+        "Every song", "Possum <em>Logic</em>", "One page per song, all the way back",
         (("%d" % len(docs), "Songs", ""),
          ("{:,}".format(total), "Song performances", ""),
          (("%s" % best) if best else "&mdash;", "Best rated version", "hot")))
@@ -3698,7 +3711,7 @@ REDIRECT = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="0; url=./show/{date}.html">
 <link rel="canonical" href="{site}/show/{date}.html">
-<title>Gap Report &mdash; {date}</title>
+<title>{date} &mdash; Possum Logic</title>
 <style>body{{font-family:ui-monospace,monospace;margin:4rem auto;max-width:32rem;
 padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
 <body><p>This report has moved to

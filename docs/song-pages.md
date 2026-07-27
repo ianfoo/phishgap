@@ -35,7 +35,7 @@ and a full corpus is several hundred songs.
 
 ## Statistics already computed
 
-`_classify()` in phishgap.py already produces, per song per show, and stores in
+`_classify()` in possumlogic.py already produces, per song per show, and stores in
 the show's JSON: `plays`, `recent_plays`, `gap_median`, `gap_mean`, `gap_low`,
 `gap_high` (the p15/p85 bounds), and `verdict`. Hero stats for a song page can
 reuse these rather than inventing a second set. Note they are deliberately
