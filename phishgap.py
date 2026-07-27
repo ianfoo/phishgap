@@ -1506,6 +1506,25 @@ header{padding-bottom:.9rem}
 .r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
          line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+/* Deliberately not a report row. These are on file, not on the bill: smaller,
+   dimmer, no figures, and below the empty-search message so a search matching
+   nothing cannot look as though it matched these. */
+.aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
+.aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin:0 0 .3rem;font-weight:400}
+.aside>p{margin:0 0 .7rem;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside ol{list-style:none;margin:0;padding:0}
+.aside li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+   padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
+.ax-row{display:contents;color:inherit;text-decoration:none}
+.ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
+   border-bottom:1px solid var(--rule)}
+a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
+.ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+.ax-venue{color:var(--dim)}
+.aside .for{color:var(--dim)}
+.aside .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
    of the numbers beside it. */
@@ -1658,6 +1677,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
+{aside}
 <footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 </div><script>{js}</script></body></html>
@@ -1726,7 +1746,7 @@ def weekday(iso):
         return ""
 
 
-def render_index(reports, page_href="./show/%s.html", card=None):
+def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
     """A single self-contained index page over every saved report."""
     entries = sorted((summarize(r) for r in reports),
                      key=lambda e: e["date"], reverse=True)
@@ -1786,6 +1806,31 @@ def render_index(reports, page_href="./show/%s.html", card=None):
             (len({e["venue"] for e in entries if e["venue"]}), "Venues", "", ""),
         ))
 
+    # Not concerts, and kept off the list above rather than out of the site:
+    # the pages exist, the gap figures on them do not describe a show, and a
+    # soundcheck's whole reason for existing is the concert it precedes.
+    aside_html = ""
+    if aside:
+        items = []
+        for a in sorted(aside, key=lambda a: a["report"]["date"], reverse=True):
+            r, kind = a["report"], a["kind"]
+            link = ""
+            if kind == "soundcheck" and a["before"]:
+                link = ("<span class='for'>for <a href='%s'>%s</a></span>"
+                        % (page_href % a["before"], a["before"]))
+            items.append(
+                "<li><a class='ax-row' href='%s'><span class='ax-date'>%s</span>"
+                "<span class='ax-kind'>%s</span>"
+                "<span class='ax-venue'>%s</span></a>%s</li>"
+                % (page_href % r["date"], r["date"], kind,
+                   html.escape(r.get("venue") or ""), link))
+        aside_html = (
+            "<section class='aside'><h2>Also on file</h2>"
+            "<p>Soundchecks, and television and radio sessions. phish.net lists"
+            " these but does not count them toward a gap, so neither do we"
+            " &mdash; the figures on their pages describe the entry, not a"
+            " show the band played.</p><ol>%s</ol></section>" % "".join(items))
+
     plural = "" if len(entries) == 1 else "s"
     if entries:
         span = ("%s &rarr; %s" % (entries[-1]["date"], entries[0]["date"])
@@ -1801,7 +1846,7 @@ def render_index(reports, page_href="./show/%s.html", card=None):
         fonts=WEB_FONTS, sheet="./fonts.css",
         hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
-        subtitle=subtitle,
+        aside=aside_html, subtitle=subtitle,
         share=share_meta("Phish Gap Reports", html.escape(blurb, quote=True),
                          card=card),
         # The newest show it lists, for the same reason.
@@ -3588,6 +3633,51 @@ def write_current(site_dir, dates=None):
     return path
 
 
+def show_kind(report, calendar=None):
+    """Whether an archived report is a show, a soundcheck or a session.
+
+    Nine of the archive's entries are not concerts. phish.net lists them and
+    flags them exclude_from_stats, which is why they are absent from the
+    calendar, and their notes say which kind they are: five Moon Palace
+    soundchecks, the Mondegreen soundcheck, two Tonight Show appearances and an
+    NPR Tiny Desk. A gap counted over them would be counting a soundcheck as a
+    show the band played, and 2020-02-19 -- a soundcheck -- is the oldest entry
+    in the archive, so it opened the index.
+
+    phish.net is not consistent about this across its whole history: of twenty
+    studio, TV and radio sessions in the song histories, eight count and twelve
+    do not, split roughly at 1999. We defer to the flag rather than invent a
+    rule, so where they disagree with themselves we disagree with ourselves in
+    exactly the same places, which is at least auditable.
+    """
+    if calendar is None:
+        calendar = ()
+    if report["date"] in set(calendar):
+        return "show"
+    notes = re.sub(r"<[^>]+>", " ", html.unescape(str(report.get("notes") or "")))
+    return "soundcheck" if re.search(r"\bwas the soundcheck\b", notes, re.I) \
+        else "session"
+
+
+def split_archive(reports, calendar):
+    """(concerts, everything else), the second oldest-first and annotated.
+
+    A soundcheck belongs to the show it precedes -- that is what it is for --
+    so each one carries the date of the next concert on the calendar.
+    """
+    dates = sorted(calendar)
+    shows, aside = [], []
+    for r in sorted(reports, key=lambda r: r["date"]):
+        kind = show_kind(r, dates)
+        if kind == "show":
+            shows.append(r)
+            continue
+        i = bisect.bisect_right(dates, r["date"])
+        aside.append({"report": r, "kind": kind,
+                      "before": dates[i] if i < len(dates) else None})
+    return shows, aside
+
+
 def setlist_neighbours(rows, artist=None):
     """What each song followed and led into, per slug, for one show.
 
@@ -4039,8 +4129,14 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         print("wrote %s" % method, file=sys.stderr)
 
     index = os.path.join(site_dir, "index.html")
-    changed = write_if_changed(index, render_index(known, card="index"))
-    want_card("index", index_card(known))
+    # Nine of the archive's entries are soundchecks or TV and radio sessions,
+    # which phish.net does not count toward a gap. Keeping them in the list
+    # meant the index counted 259 shows the band had not played 259 of, and
+    # opened on a 2020 Moon Palace soundcheck.
+    shows, aside = split_archive(known, load_calendar(site_dir))
+    changed = write_if_changed(
+        index, render_index(shows, card="index", aside=aside))
+    want_card("index", index_card(shows))
     if jobs:
         made = shoot_cards(exe, jobs, site_dir)
         print("preview cards: %d of %d drawn" % (made, len(jobs)),
