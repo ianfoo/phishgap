@@ -1134,6 +1134,11 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .verdict{display:inline-block;margin-left:.5rem;vertical-align:.05em;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;white-space:nowrap}
 .verdict.overdue{color:var(--hot-text)}
+/* One of the pair shows at a time. Wide: under the figure, where the median
+   it is judged against already is. Narrow: beside the title, because the
+   gap column there is 3.7rem and the word is wider than that. */
+.verdict.at-gap{display:block;margin:.1rem 0 0}
+.verdict.at-song{display:none}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
@@ -1297,6 +1302,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.75rem;margin-top:.2rem}
   .verdict{font-size:.625rem}
+  .verdict.at-gap{display:none}
+  .verdict.at-song{display:inline-block}
   .verdict.bustout{font-size:.625rem}
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
@@ -1727,14 +1734,28 @@ def render_html(report, bar_scale="linear", index_href=None,
                        "<span class='abbr'>%d/%dy</span></span>"
                        % (s["recent_plays"], RECENT_YEARS,
                           s["recent_plays"], RECENT_YEARS))
+        # Where a verdict goes depends on what kind of thing it is. A bustout
+        # is remarkable about the song -- it belongs against the title, next to
+        # the jam chart chip, which is likewise about the song and not its
+        # timing. Premature and overdue are judgements about the number, so
+        # they belong against the number, under the median they are measured
+        # from.
+        #
+        # Except at 390px, where "premature" is 63px against a 39px figure and
+        # the gap column is 3.7rem wide: put it there and the least important
+        # thing in the row sets the column's width for every row. So the timing
+        # verdicts are emitted twice and the layout picks one -- under the
+        # figure where there is room, back beside the title where there is not.
+        # The duplicate is hidden from assistive technology rather than merely
+        # from view, so it is never announced twice.
         tag = verdict = ""
-        if s.get("verdict") in ("premature", "overdue", "bustout"):
-            # Rendered in the song cell, not this one: at 390px "premature" is
-            # 63px against a 39px figure, so the least important thing in the
-            # column was setting the column's width and every row paid for it.
-            tag = ""
-            verdict = "<span class='verdict %s'>%s</span>" % (s["verdict"],
-                                                              s["verdict"])
+        v = s.get("verdict")
+        if v == "bustout":
+            verdict = "<span class='verdict bustout'>bustout</span>"
+        elif v in ("premature", "overdue"):
+            tag = "<span class='verdict %s at-gap'>%s</span>" % (v, v)
+            verdict = ("<span class='verdict %s at-song' aria-hidden='true'>%s"
+                       "</span>" % (v, v))
         if g is None:
             gap_cell = "<span class='gap none'>&mdash;</span>" + typical + tag
             bar = "<td class='bar'></td>"
