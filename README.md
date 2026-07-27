@@ -13,7 +13,9 @@ Reports are published at
 ## Usage
 
 Get a key at [phish.net/api](https://phish.net/api), then put it anywhere the
-script looks — `PHISHNET_API_KEY`, `--apikey`, or `~/.config/phishgap/apikey`.
+script looks — `PHISHNET_API_KEY`, `--apikey`, or `~/.config/possumlogic/keys.json`,
+which holds one key per service so each says which API it belongs to:
+`{"phish.net": "..."}`. The older `~/.config/phishgap/apikey` is still read.
 
 A single show, as text on stdout:
 

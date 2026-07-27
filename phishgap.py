@@ -5,7 +5,8 @@ phishgap5.py -- per-song gap report for a Phish show, via the Phish.net API v5.
 One call to /v5/setlists/showdate/<date>.json returns every song in the show
 with its `gap` already computed, so there is no HTML parsing and no arithmetic.
 
-    export PHISHNET_API_KEY=...            # request a key at phish.net/api
+    export PHISHNET_API_KEY=...            # or ~/.config/possumlogic/keys.json
+                                           # {"phish.net": "..."}
     python3 phishgap5.py 2026-07-24 --html report.html --pdf report.pdf
 
 Or keep a growing site of them, one page per show plus a searchable index:
@@ -88,19 +89,72 @@ class ApiError(RuntimeError):
     pass
 
 
-def load_key(explicit=None):
+# One file, one key per service, because a file called `apikey` holding a bare
+# string does not say whose key it is -- and it stopped being true the moment a
+# second service was worth asking. Keyed by the host the key authenticates
+# against, so the name of the setting is checkable against the URL it is sent
+# to rather than being a label we chose.
+CONFIG_DIR = os.path.join(
+    os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config"),
+    "possumlogic")
+CONFIG_FILE = os.path.join(CONFIG_DIR, "keys.json")
+LEGACY_KEY_FILE = os.path.expanduser("~/.config/phishgap/apikey")
+
+# The environment variable for each service names the service too. PHISHNET_API_KEY
+# keeps its name: it is phish.net's key, not this program's, and rebranding
+# someone else's credential would be the same mistake in the other direction.
+SERVICES = {
+    "phish.net": {"env": "PHISHNET_API_KEY",
+                  "signup": "https://phish.net/api"},
+    "setlist.fm": {"env": "SETLISTFM_API_KEY",
+                   "signup": "https://www.setlist.fm/settings/api"},
+}
+
+
+def _config_keys():
+    """{service: key} from the config file, or {} if there is not one."""
+    if not os.path.isfile(CONFIG_FILE):
+        return {}
+    try:
+        with open(CONFIG_FILE, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except ValueError as exc:
+        raise ApiError("%s is not valid JSON: %s" % (CONFIG_FILE, exc))
+    if not isinstance(data, dict):
+        raise ApiError("%s should hold an object of service -> key" % CONFIG_FILE)
+    return {k: v for k, v in data.items() if isinstance(v, str) and v.strip()}
+
+
+def load_key(explicit=None, service="phish.net", required=True):
+    """The key for one service: explicit, then environment, then config file.
+
+    Returns None rather than raising when `required` is false, which is how an
+    optional service -- one whose absence costs a feature rather than the run --
+    asks whether it is configured.
+    """
     if explicit:
         return explicit
-    env = os.environ.get("PHISHNET_API_KEY")
+    meta = SERVICES.get(service) or {}
+    env = os.environ.get(meta.get("env") or "")
     if env:
-        return env
-    path = os.path.expanduser("~/.config/phishgap/apikey")
-    if os.path.isfile(path):
-        with open(path) as fh:
-            return fh.read().strip()
+        return env.strip()
+    found = _config_keys().get(service)
+    if found:
+        return found
+    # The old single-key file, which could only ever have been phish.net's.
+    if service == "phish.net" and os.path.isfile(LEGACY_KEY_FILE):
+        with open(LEGACY_KEY_FILE) as fh:
+            legacy = fh.read().strip()
+        if legacy:
+            return legacy
+    if not required:
+        return None
     raise ApiError(
-        "No API key. Set PHISHNET_API_KEY, pass --apikey, or write one to "
-        "~/.config/phishgap/apikey. Request a key at https://phish.net/api")
+        "No %s API key. Set %s, or add it to %s as\n"
+        '  {"%s": "..."}\n'
+        "Request a key at %s"
+        % (service, meta.get("env", "the environment"), CONFIG_FILE,
+           service, meta.get("signup", "the service")))
 
 
 def _http_json(url, label, cache_dir=DEFAULT_CACHE, refresh=False,
