@@ -475,13 +475,15 @@ FAVICON_HREF = "data:image/svg+xml,%s" % urllib.parse.quote(FAVICON, safe="/:=")
 # Where the site lives, for the absolute URLs link previews require: og:image
 # and og:url are fetched by a server that has no idea what page they came from,
 # so a relative path is no path at all.
-# The domain, if there is one. Set PL_DOMAIN and three things follow together:
-# share cards and og:url resolve against it, and site/CNAME is written so
-# GitHub Pages keeps serving it. That last one matters more than it looks --
-# publishing replaces the gh-pages tree wholesale, so a CNAME added by hand in
-# the repository settings is deleted by the next publish and the domain stops
-# resolving. It has to be generated with everything else.
-DOMAIN = env_value("DOMAIN", quiet=True) or ""
+# The domain. In the source rather than only in the environment, because it is
+# not a secret and because the alternative bites: GitHub Pages keeps serving a
+# custom domain only while CNAME is on the branch, publishing replaces that
+# branch wholesale, and a build that does not know the domain writes no CNAME.
+# So with this in a repository variable alone, every publish from a laptop --
+# where the variable does not exist -- would silently take the domain down
+# until the next scheduled run put it back. PL_DOMAIN still overrides, which is
+# what a move or a second deployment would use.
+DOMAIN = env_value("DOMAIN", quiet=True) or "possumlogic.com"
 SITE_URL = ("https://%s" % DOMAIN) if DOMAIN else "https://ianfoo.github.io/phishgap"
 
 # GoatCounter: no cookies, no personal data, nothing stored about a visitor, so
@@ -5199,12 +5201,12 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     write_redirects(site_dir)
     write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
     write_grain(site_dir)
-    # Regenerated every publish, because every publish would otherwise remove it.
-    cname = os.path.join(site_dir, "CNAME")
+    # Regenerated every publish, because every publish would otherwise remove
+    # it. Never deleted when DOMAIN is empty: an unset variable in one
+    # environment is not an instruction to unpublish the domain in all of them,
+    # which is exactly the mistake this file exists to survive.
     if DOMAIN:
-        write_if_changed(cname, DOMAIN + "\n")
-    elif os.path.isfile(cname):
-        os.remove(cname)
+        write_if_changed(os.path.join(site_dir, "CNAME"), DOMAIN + "\n")
     # Rewritten every run, but it is one small file and write_if_changed means
     # a run that moved nothing publishes nothing.
     write_current(site_dir)

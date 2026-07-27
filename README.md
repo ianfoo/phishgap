@@ -8,7 +8,7 @@ Data comes from the [Phish.net API v5](https://docs.phish.net/), which returns
 each song's gap already computed, so there is no scraping and no arithmetic.
 
 Reports are published at
-**[ianfoo.github.io/phishgap](https://ianfoo.github.io/phishgap/)**.
+**[possumlogic.com](https://possumlogic.com/)**.
 
 ## Usage
 
