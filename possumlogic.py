@@ -1106,13 +1106,20 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    "Tweezer ->" and "Tweezer" are different entries in a setlist, and the report
    was printing them identically. Quiet, because it qualifies the title rather
    than competing with it. */
+/* Only the two-glyph mark is tightened, and only slightly. At full monospace
+   advance -> reads as a hyphen standing beside an angle bracket rather than as
+   one mark; -.06em closes that without breaking the fixed advance the rest of
+   the column depends on. A lone > has nothing to close up, so it is left on
+   the grid. */
+.seg.tight{letter-spacing:-.06em}
 .seg{margin-left:.3rem;font-family:'IBM Plex Mono',ui-monospace,monospace;
    font-weight:600;color:var(--dim);white-space:nowrap}
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
    border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
-td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
+a.jc-chip{text-decoration:none}
+td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;line-height:1;
      white-space:nowrap}
@@ -1755,24 +1762,35 @@ def render_html(report, bar_scale="linear", index_href=None,
         # band has not played since, and those get a page when they next come
         # round rather than a link to nowhere now.
         title = html.escape(s["song"])
-        # phish.net wrote something about this one. The prose itself lives on
-        # the song page, so this says so and points there rather than repeating
-        # it here: a report is one night's gaps, and a paragraph per song would
-        # bury them. A dot used to mark these, which told nobody anything.
-        if s["jamchart"]:
-            title += "<span class='jc-chip'>Jam chart</span>"
+        href = ""
         if s["slug"] in songs:
             # Anchored at this very performance, so the link answers "where
             # does tonight's version sit against all the others" rather than
             # dropping you at the top of a six-hundred-row page to go looking.
-            title = "<a href='../song/%s.html#%s'>%s</a>" % (
+            href = "../song/%s.html#%s" % (
                 html.escape(s["slug"], quote=True),
-                html.escape(report["date"], quote=True), title)
+                html.escape(report["date"], quote=True))
+            title = "<a href='%s'>%s</a>" % (href, title)
+        # phish.net wrote something about this one. The prose itself lives on
+        # the song page, so this says so and points there rather than repeating
+        # it here: a report is one night's gaps, and a paragraph per song would
+        # bury them. A dot used to mark these, which told nobody anything.
+        # Its own link rather than part of the title's, so the segue mark can
+        # sit between them -- see below.
+        chip = ""
+        if s["jamchart"]:
+            chip = ("<a class='jc-chip' href='%s'>Jam chart</a>" % href if href
+                    else "<span class='jc-chip'>Jam chart</span>")
         # Outside the link, so the mark is not underlined with the title and
         # cannot be mistaken for part of the song's name.
-        seg = ("<span class='seg'>%s</span>" % html.escape(s["out"])
+        seg = ("<span class='seg%s'>%s</span>"
+               % (" tight" if s["out"] == "->" else "", html.escape(s["out"]))
                if s.get("out") else "")
-        cells = "<td class='song'>%s%s%s</td>" % (title, seg, verdict)
+        # Song, then how it left, then everything said about it. The mark is
+        # setlist notation and belongs against the title the way it is written
+        # -- "Ether Edge >" -- not stranded past a chip, where it read as
+        # punctuation belonging to the chip.
+        cells = "<td class='song'>%s%s%s%s</td>" % (title, seg, chip, verdict)
         if show_last:
             if s["prev_date"]:
                 # No <br>: the spans are blocks on wide layouts and inline on
@@ -2611,7 +2629,12 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
 /* Named only where the column header is not doing it. */
 .nb .cap{display:none}
-.nb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Direct children only. These are the two lines -- what came before, what
+   came after -- and each is its own line. The transition mark now lives in
+   a span inside one of them, and a blanket rule here made that mark a
+   block too, so a row read "->" and "Golden Age" on separate lines. */
+.nb>span{display:block;overflow:hidden;text-overflow:ellipsis;
+   white-space:nowrap}
 /* Doubled backslashes: this is a Python string, and "\2190" is read as the
    octal escape \21 followed by "90", which reaches the browser as a control
    character and renders as a box. */
@@ -2620,6 +2643,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* Same -.06em as the report pages: enough to make -> one mark, not so
+   much that it stops matching the > on the row above it. */
+.nb .mk.tight{letter-spacing:-.06em}
 .bar{align-self:center}
 /* The same band the report pages use. This CSS is the half of that change I
    left out the first time: the markup emitted .band, .mid and .at while this
@@ -2744,7 +2770,7 @@ footer a{color:var(--dim)}
   .head{display:none}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.35rem}
-  .nb span{white-space:normal;overflow:visible}
+  .nb>span{white-space:normal;overflow:visible}
   .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
      text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
@@ -3186,16 +3212,21 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         # in setlist position and does the pointing itself -- "Everything's
         # Right ->" above, "-> Golden Age" below; a plain arrow only where
         # there was no mark to show. Both at once read as "-> ->".
+        def _mk(mark):
+            """The transition mark, wrapped so it can be set on its own."""
+            return ("<span class='mk%s'>%s</span>"
+                    % (" tight" if mark == "->" else "", html.escape(mark)))
+
         bits = []
         if p.get("prev"):
             bits.append("<span class='nb-in%s'>%s%s</span>"
                         % (" seg" if p.get("in") else "",
                            html.escape(p["prev"]),
-                           " %s" % html.escape(p["in"]) if p.get("in") else ""))
+                           " %s" % _mk(p["in"]) if p.get("in") else ""))
         if p.get("next"):
             bits.append("<span class='nb-out%s'>%s%s</span>"
                         % (" seg" if p.get("out") else "",
-                           "%s " % html.escape(p["out"]) if p.get("out") else "",
+                           "%s " % _mk(p["out"]) if p.get("out") else "",
                            html.escape(p["next"])))
         nb = ("<span class='nb'>%s%s</span>"
               % ("<span class='cap'>Before / after</span>" if bits else "",
