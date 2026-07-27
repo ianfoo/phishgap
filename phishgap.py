@@ -825,14 +825,17 @@ header{padding-bottom:.9rem}
 .crumb .prev{grid-column:1;justify-self:start}
 .crumb .all{grid-column:2;justify-self:center}
 .crumb .next{grid-column:3;justify-self:end}
+/* The date, not the wordmark. A report is one night, and the night's name is
+   its date -- but the page led with "Gap Report" at 4rem while the date sat
+   small beside a tour and an ordinal, so the one thing that identified the
+   page was the least prominent thing on it. The wordmark is already in the nav
+   above as a small mark, which is where a wordmark belongs on a page that is
+   not the front door.
+   Tabular figures because a date is eight digits: without them the 1s pull the
+   whole string crooked at this size. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(2rem,7vw,4rem);line-height:1.06;margin:0 0 .7rem;
-   letter-spacing:-.01em}
-h1 em{font-style:normal;color:var(--hot)}
-/* The wordmark goes home without dressing as a link. Without this it fell to
-   the browser default and came out blue and underlined. */
-h1 a{color:inherit;text-decoration:none}
-h1 a:hover em{color:var(--ink)}
+   font-size:clamp(1.9rem,5.5vw,3.25rem);line-height:1.06;margin:0 0 .25rem;
+   letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 /* Date and tour pair up: both short, so this line cannot wrap and the one
    separator on the page can be neither orphaned nor widowed. The venue is the
    variable-length part, so it gets a line to wrap inside, with no separator to
@@ -857,10 +860,11 @@ h1 a:hover em{color:var(--ink)}
    with the quieter mark. Its own, because a show with no tour still needs
    something between the date and this. */
 .show .nth::before{content:"\\00B7";color:var(--dim);margin:0 .45rem}
-.show .tour::before{content:"\\2022";color:var(--hot);font-size:1.25rem;
-   margin:0 .7rem}
-.where{margin:.4rem 0 0;font-size:1rem;font-weight:600;letter-spacing:0;
-   text-transform:uppercase;color:var(--ink-soft)}
+/* No leading bullet: the tour used to follow the date on this line and the
+   bullet joined them. It leads now, and a separator with nothing before it is
+   just a dot. The ordinal brings its own, which is the only join left. */
+.where{margin:0 0 .45rem;font-size:1.125rem;font-weight:600;letter-spacing:0;
+   text-transform:uppercase;color:var(--ink)}
 /* Below the stats rather than in the masthead: the header stays a tight block
    of identity, and the links get their own air on the first screen. */
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
@@ -1170,9 +1174,9 @@ SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}</head><body><div class="wrap">
 <div class="rule2"></div>
-<header>{crumb}<h1><a href="../index.html">Gap <em>Report</em></a></h1>
-<p class="show"><span class="date">{date}</span>{tour}</p>
-<p class="where">{venue}</p>{rating}{live}</header>
+<header>{crumb}<h1>{date}</h1>
+<p class="where">{venue}</p>
+<p class="show">{tour}</p>{rating}{live}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 <p class="links">{links}</p>
