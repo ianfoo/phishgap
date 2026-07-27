@@ -1499,10 +1499,10 @@ header{padding-bottom:.9rem}
 .row:hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
-.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
+.r-date{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1rem;
         line-height:1.3rem;white-space:nowrap}
-.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
-         text-transform:uppercase;line-height:1.3rem}
+.r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
+         line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
@@ -1949,7 +1949,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
    column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
 .row:hover{background:var(--hover)}
-.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
+/* The row's identifier, in the display face, same as the show index. It is
+   the one thing in the row that is not the song. */
+.r-date{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1rem;
    line-height:1.3rem;white-space:nowrap}
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -1978,8 +1980,8 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);line-height:1.1rem}
-.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
-   text-transform:uppercase;line-height:1.3rem}
+.r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
+   line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
 .r-gap{text-align:right;line-height:1.3rem}
 /* The column header names this column, so the per-row label would be a second
