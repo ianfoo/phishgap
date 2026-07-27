@@ -1642,9 +1642,13 @@ h1 a:hover em{color:var(--ink)}
 /* A hero card that is also a way in. Only some of them are. */
 a.card{text-decoration:none;color:inherit}
 a.card:hover{background:var(--hover)}
-a.card .lbl{border-bottom:1px solid var(--rule);display:inline-block;
-   padding-bottom:.15rem}
-a.card:hover .lbl{color:var(--ink);border-bottom-color:var(--hot)}
+/* Only one of the four cards is a link, so it needs to say so -- but a rule
+   under a letterspaced label reads as a stray underline rather than an
+   affordance, and it was the one line in the hero not doing structural work.
+   An arrow after the label carries the same message and disappears into the
+   type. */
+a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
@@ -1666,8 +1670,13 @@ header{padding-bottom:.9rem}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
-.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
-       margin:1.9rem 0 .9rem}
+.tools{margin:1.9rem 0 .9rem}
+/* Two rows rather than one wrapping run. The things you operate -- the search
+   box and the sort -- sit together on the first; the filter chips are a
+   different kind of control and get their own line instead of pushing sort to
+   wherever the chips happen to stop. */
+.tools-main{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem}
+.tools .chips{margin-top:.6rem}
 .search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
         padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
         background:transparent;color:var(--ink)}
@@ -1680,6 +1689,11 @@ header{padding-bottom:.9rem}
       color:var(--dim);cursor:pointer}
 .chip:hover{color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* How many shows the era holds, so four chips carry the information the
+   forty years did without the forty buttons. */
+.chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   letter-spacing:0;color:var(--dim);margin-left:.3rem}
+.chip.on .chip-n{color:var(--paper)}
 .sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
       color:var(--ink);border:1px solid var(--edge);border-radius:0}
 .count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -1787,7 +1801,7 @@ INDEX_JS = """
   var q=document.getElementById('q'), sort=document.getElementById('sort'),
       shown=document.getElementById('shown'), empty=document.getElementById('empty'),
       chips=Array.prototype.slice.call(document.querySelectorAll('.chip')),
-      year='';
+      era='';
   // A bare number means that number: searching 8 should find the 8th, not the
   // 18th. Anything else is a plain substring, which is what makes partial
   // venue and song typing work.
@@ -1803,7 +1817,7 @@ INDEX_JS = """
       var hay=r.getAttribute('data-search'), ok=terms.every(function(t){
         return t(hay);
       });
-      if(ok&&year) ok=r.getAttribute('data-year')===year;
+      if(ok&&era) ok=r.getAttribute('data-era')===era;
       r.hidden=!ok;
       if(ok) n++;
     });
@@ -1823,8 +1837,8 @@ INDEX_JS = """
   sort.addEventListener('change', order);
   chips.forEach(function(c){
     c.addEventListener('click', function(){
-      year = c.classList.contains('on') ? '' : c.getAttribute('data-year');
-      chips.forEach(function(o){ o.classList.toggle('on', o.getAttribute('data-year')===year); });
+      era = c.classList.contains('on') ? '' : c.getAttribute('data-era');
+      chips.forEach(function(o){ o.classList.toggle('on', o.getAttribute('data-era')===era); });
       apply();
     });
   });
@@ -1856,14 +1870,16 @@ INDEX_SHELL = """<!DOCTYPE html>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 <div class="tools">
+<div class="tools-main">
 <input id="q" class="search" type="search" autocomplete="off" disabled
-       placeholder="Search date, venue, city, song&hellip;" aria-label="Search reports">
-<div class="chips">{years}</div>
+       placeholder="Search date, venue, city, song, year&hellip;" aria-label="Search reports">
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="newest">Newest</option><option value="oldest">Oldest</option>
 <option value="gap">Longest gap</option></select></label>
 <span class="count"><b id="shown">{count}</b> of {count} shows</span>
+</div>
+<div class="chips">{years}</div>
 </div>
 <ol class="reports" id="list">
 {rows}
@@ -1961,24 +1977,32 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
                       % (_stat(e["median"]), _stat(e["longest"]),
                          html.escape(e["longest_song"])))
         rows.append(
-            "<li data-date='%s' data-year='%s' data-longest='%d' data-search=\"%s\">"
+            "<li data-date='%s' data-year='%s' data-era='%s' "
+            "data-longest='%d' data-search=\"%s\">"
             "<a class='row' href='%s'>"
             "<span class='r-date'>%s</span>"
             "<span class='r-where'><span class='r-venue'>%s</span>"
             "<span class='r-place'>%s</span></span>"
             "<span class='r-stats'>%s</span></a></li>"
-            % (e["date"], e["date"][:4], e["longest"] or 0,
+            % (e["date"], e["date"][:4], era(e["date"]), e["longest"] or 0,
                html.escape(hay, quote=True),
                html.escape(page_href % e["date"], quote=True),
                e["date"], html.escape(e["venue"]), html.escape(e["place"]),
                stats))
 
-    # A lone year chip filters nothing, and it crowds the search box on a
-    # phone, so the chips only appear once there is more than one year.
-    years = sorted({e["date"][:4] for e in entries}, reverse=True)
-    chips = "" if len(years) < 2 else "".join(
-        "<button class='chip' type='button' disabled data-year='%s'>%s</button>"
-        % (y, y) for y in years)
+    # Eras rather than years. A year chip per year was fine at six and is not
+    # at eighteen; the full archive would put more than forty buttons above the
+    # list, which is a wall rather than a filter. The eras are four, they are
+    # the divisions the band's own audience uses, and the site already teaches
+    # them on song pages. A year is still reachable -- typing it in the search
+    # box filters to it, because the date is in the haystack.
+    order = [label for label, _, _ in ERAS]
+    present = sorted({era(e["date"]) for e in entries}, key=order.index)
+    counts = collections.Counter(era(e["date"]) for e in entries)
+    chips = "" if len(present) < 2 else "".join(
+        "<button class='chip' type='button' disabled data-era='%s'>"
+        "%s <span class='chip-n'>%d</span></button>" % (x, x, counts[x])
+        for x in present)
 
     every = [g for e in entries for g in ([e["longest"]] if e["longest"] else [])]
     # The songs card doubles as the way to the song index, since a reader who
