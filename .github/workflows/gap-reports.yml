@@ -2,13 +2,20 @@ name: gap reports
 
 on:
   schedule:
-    # Hourly across the window a show can be settling in: an east coast encore
-    # lands around 03:30 UTC, a west coast one around 06:30. A show publishes
-    # once its song count has held still for QUIET_HOURS, so the run interval
-    # only decides how soon after that we notice. Nothing to do on most days,
-    # and finding nothing costs one API call.
-    - cron: "0 2-13 * * *"
-    # Once a day, also re-fetch recent settled shows to pick up corrections.
+    # Every five minutes across the UTC hours a show anywhere from the east
+    # coast to the west can be playing or settling. Almost every one of these
+    # runs does nothing: the first step reads site/data/schedule.json, finds no
+    # show inside its watch window, and the rest of the job is skipped. That
+    # check makes no API call and no network request of any kind.
+    #
+    # Five rather than ten because many songs are shorter than ten minutes, so
+    # a coarser poll can miss one entirely. GitHub delays scheduled runs under
+    # load, sometimes considerably, so this is a ceiling on freshness and not a
+    # promise of it.
+    - cron: "*/5 22-23,0-9 * * *"
+    # Once a day regardless: refresh the announced schedule, re-fetch settled
+    # shows for corrections, and catch anything the windows missed -- an
+    # afternoon set, a festival, a show at a venue we had no time zone for.
     - cron: "0 15 * * *"
   workflow_dispatch:
     inputs:
@@ -39,10 +46,27 @@ jobs:
         with:
           python-version: "3.12"
 
+      # The whole state machine, and it is a file rather than anything in
+      # Actions: schedule.json says when the next shows are and what time zone
+      # each venue keeps, so this asks a local question and answers it in
+      # milliseconds. The daily run never gates -- it is the sweep that catches
+      # whatever the windows did not.
+      - name: Is a show happening right now?
+        id: gate
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          if [ "$SCHEDULE" = "*/5 22-23,0-9 * * *" ]; then
+            python phishgap.py --site site --watching >> "$GITHUB_OUTPUT"
+          else
+            echo "active=true" >> "$GITHUB_OUTPUT"
+          fi
+
       # Pillow slices the batched preview-card screenshot; the browser that
       # takes it is already on the runner image. Without both, pages still
       # build and publish -- they just point at previews nobody drew.
       - name: Install what the preview cards need
+        if: steps.gate.outputs.active == 'true'
         run: python -m pip install --quiet pillow
 
       # The previews already published, so a run only draws the ones whose
@@ -50,6 +74,7 @@ jobs:
       # at all and redraws every one of them, which is minutes of browser time
       # to reproduce images identical to the ones already served.
       - name: Restore the published preview cards
+        if: steps.gate.outputs.active == 'true'
         run: |
           git fetch --depth=1 origin gh-pages || exit 0
           mkdir -p site/card
@@ -59,22 +84,28 @@ jobs:
       # Adds any show the archive is missing, then re-renders every page from
       # the archive, which costs no API calls.
       - name: Add new shows and render the site
+        if: steps.gate.outputs.active == 'true'
         env:
           PHISHNET_API_KEY: ${{ secrets.PHISHNET_API_KEY }}
           SCHEDULE: ${{ github.event.schedule }}
         run: |
-          # Only the once-a-day run pays to re-fetch shows that already settled.
-          recheck=""
-          [ "$SCHEDULE" = "0 15 * * *" ] && recheck="--recheck"
-          # --calendar refreshes the current year of the show list that the
-          # "shows since" figures are counted against. One API call, and
-          # without it every song's standing freezes at the last backfill.
-          python phishgap.py --site site --previous --rebuild \
-            --catch-up "${{ github.event.inputs.days || 21 }}" $recheck \
-            --sweep-ratings --calendar
+          # The daily run does the expensive, thorough things. A run that fired
+          # because a show is on stage wants tonight only, as fast as possible.
+          if [ "$SCHEDULE" = "0 15 * * *" ] || [ -z "$SCHEDULE" ]; then
+            # --calendar keeps the counting show list current, without which
+            # every song's standing freezes. --schedule refreshes the announced
+            # dates the gate above reads, and is what makes a withdrawn or
+            # moved run correct itself.
+            python phishgap.py --site site --previous --rebuild \
+              --catch-up "${{ github.event.inputs.days || 21 }}" --recheck \
+              --sweep-ratings --calendar --schedule
+          else
+            python phishgap.py --site site --previous --rebuild --catch-up 2
+          fi
 
       - name: Commit the data archive
         id: archive
+        if: steps.gate.outputs.active == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

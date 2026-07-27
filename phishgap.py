@@ -1012,6 +1012,14 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 .rating b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;color:var(--ink);letter-spacing:0;margin-left:.15rem}
 .rating span{opacity:.75}
+/* A show that is still happening. Marked, not decorated: the same field
+   language as the rest of the masthead, with the state in the bold half and
+   the detail in the quiet one. */
+.live{margin:.7rem 0 0;display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.2rem .6rem;font-size:.75rem}
+.live b{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+.live span{color:var(--dim)}
 /* The title carries the link to the song's own page; underlining every one of
    them would stripe the table, so it colours on hover instead. */
 td.n,td.song{vertical-align:baseline}
@@ -1154,7 +1162,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gap Report &mdash; {date}</title>
+<title>Gap Report &mdash; {date}</title>{refresh}
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1164,7 +1172,7 @@ SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header>{crumb}<h1><a href="../index.html">Gap <em>Report</em></a></h1>
 <p class="show"><span class="date">{date}</span>{tour}</p>
-<p class="where">{venue}</p>{rating}</header>
+<p class="where">{venue}</p>{rating}{live}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 <p class="links">{links}</p>
@@ -1605,6 +1613,19 @@ def render_html(report, bar_scale="linear", index_href=None,
     # phish.net's own rating for the night, which their API does not expose --
     # fouldomain does, so it is theirs by way of someone else and says so.
     # Absent for a show played last night, which simply has no line.
+    # Still coming in. Said plainly, with the two facts that make it useful:
+    # how much is here, and when it last moved. The reload keeps a page open on
+    # a phone in a parking lot current without anybody touching it.
+    live = refresh = ""
+    if report.get("provisional"):
+        since = report.get("count_since") or ""
+        when = (" &middot; last new song %s UTC" % since[11:16]) if since else ""
+        live = ("<p class='live'><b>Setlist still coming in</b>"
+                "<span>%d song%s so far%s. This page reloads itself.</span></p>"
+                % (len(report["songs"]),
+                   "" if len(report["songs"]) == 1 else "s", when))
+        refresh = '\n<meta http-equiv="refresh" content="120">'
+
     rating = ""
     if report.get("pnet_rating") is not None:
         rating = ("<p class='rating'>Phish.net rating <b>%.2f</b>"
@@ -1613,6 +1634,7 @@ def render_html(report, bar_scale="linear", index_href=None,
     return SHELL.format(
         css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
+        live=live, refresh=refresh,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
         links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
@@ -1761,6 +1783,11 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .r-stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
            font-size:1rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot-text)}
+/* A show still being played, said in the one place on the row where the
+   number it qualifies already is: 24 songs means something different
+   tonight than it will tomorrow. */
+.live-tag{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
    for what it is: ".r-song" also means "the song this row is about" on the
    song index, which inherits this stylesheet, and one grid-column rule meant
@@ -1922,6 +1949,7 @@ def summarize(report):
         venue, place = (parts[0] if parts else ""), ", ".join(parts[1:])
     return {
         "date": report["date"],
+        "live": bool(report.get("provisional")),
         "venue": venue,
         "place": place,
         "tour": report.get("tour") or "",
@@ -1986,7 +2014,8 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
         # text. Right-aligning the whole string only pins its right edge: with
         # 16 songs against 26, and a longest of 45 against 1,468, every other
         # number in the line sat at a different place on every row.
-        stats = "<span class='st'><b>%d</b> songs</span>" % e["songs"]
+        stats = "<span class='st'><b>%d</b> songs%s</span>" % (
+            e["songs"], " <span class='live-tag'>so far</span>" if e["live"] else "")
         if e["longest"] is not None:
             stats += ("<span class='st'>median <b>%s</b></span>"
                       "<span class='st'>longest <b class='hot'>%s</b></span>"
@@ -4588,8 +4617,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         with open(blob, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)
 
-    # Reports predating the provisional flag have no such key, so they publish.
-    known = [r for r in saved_reports(site_dir) if not r.get("provisional")]
+    # Everything publishes, unfinished included. A show is worth reading while
+    # it is happening, and the page says plainly that it is still coming in --
+    # which is more honest than a site that pretends nothing is going on for
+    # the four hours a show takes plus the two it takes to settle.
+    known = list(saved_reports(site_dir))
     order = sorted(r["date"] for r in known)
     around = {d: (order[i - 1] if i else None,
                   order[i + 1] if i + 1 < len(order) else None)
@@ -4597,7 +4629,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
 
     # A new show gives its neighbour a next link it did not have, so that page
     # is stale too. --rebuild rewrites the lot regardless.
-    fresh = {r["date"] for r in reports if not r.get("provisional")}
+    fresh = {r["date"] for r in reports}
     stale = set(fresh)
     for date in fresh:
         stale |= {d for d in around.get(date, ()) if d}
@@ -4647,7 +4679,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 sheet="../fonts.css", calendar=calendar)):
             print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
                   file=sys.stderr)
-        want_card(date, report_card(report))
+        # Not while it is still coming in: the card is redrawn whenever its
+        # contents change, so a show updating every five minutes would redraw
+        # its own picture all night for a link nobody has shared yet.
+        if not report.get("provisional"):
+            want_card(date, report_card(report))
 
     # Song pages last, so they can link to whichever reports now exist. They
     # are cheap to write and the archive is the only input, so a rebuild does
