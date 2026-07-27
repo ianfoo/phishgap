@@ -197,8 +197,14 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);line-height:1.1rem}
-.r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
-   line-height:1.3rem}
+/* Heavier than the show index's venue, deliberately. There the venue is the
+   row's identity repeated 259 times and the weight accumulates into a wall.
+   Here every row is the same song, so the venue is the only thing telling one
+   performance from the next -- the weight is carrying the distinction rather
+   than shouting. The date being in the display face is what keeps the two from
+   competing at the same volume. */
+.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
+   text-transform:uppercase;line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
 .r-gap{text-align:right;line-height:1.3rem}
 /* The column header names this column, so the per-row label would be a second
