@@ -1084,15 +1084,30 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* Wide enough for a comma'd four-digit gap in the Georgia fallback. */
   .typ .full{display:none}
   .typ .abbr{display:inline}
-  tr{display:grid;grid-template-columns:1fr 3.7rem;column-gap:.7rem;
+  /* minmax(0,1fr) rather than 1fr, because a 1fr track still takes
+     min-width:auto and a long unbreakable run would widen it. Not the cause of
+     anything observed -- the tracks measure 267 + 59 against a 338 row -- but
+     the row has no business being able to grow. */
+  tr{display:grid;grid-template-columns:minmax(0,1fr) 3.7rem;column-gap:.7rem;
      grid-template-areas:"song gap" "meta gap";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
+  /* And nothing inside may refuse to break, or the track has no smaller size
+     to fall back to. */
+  td.song,td.last{min-width:0;overflow-wrap:anywhere}
   td{border:0;padding:0}
   td.n{grid-area:gap;padding-right:0;align-self:start;padding-top:.1rem;
        text-align:right}
   td.song{grid-area:song}
   td.last{grid-area:meta}
   td.bar{display:none}
+  /* The hover tooltip, gone. It is position:absolute and white-space:nowrap,
+     and it was hidden with visibility:hidden -- which still takes part in
+     layout. Every report page was therefore as wide as its longest tooltip:
+     497px inside a 375px viewport, so every report scrolled sideways on a
+     phone, with nothing visible out there to explain why. Measured: disabling
+     this one rule takes the page from 497 to exactly 375.
+     No loss here, because there is no hover on a touch screen to show it. */
+  td[data-tip]::after{content:none}
   /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.75rem;margin-top:.2rem}
   .verdict{font-size:.625rem}
@@ -1431,10 +1446,15 @@ def render_html(report, bar_scale="linear", index_href=None,
     def flush():
         if current is None:
             return
-        cols = ("<colgroup><col class='c-song'><col class='c-last'>"
-                "<col class='c-bar'>"
+        # In the same order as the header below, which it was not: the last
+        # column was emitted as c-last, so the widths came to 26 + 42 + 12 + 42
+        # and the table was 122% of its container -- which is why a report
+        # scrolled sideways on a phone. Without the Last Performed column it
+        # was worse than wrong, it was misaligned: three cols against three
+        # headers, but c-last landed on the bar and c-bar on the gap.
+        cols = ("<colgroup><col class='c-song'>"
                 + ("<col class='c-last'>" if show_last else "")
-                + "</colgroup>")
+                + "<col class='c-bar'><col class='c-gap'></colgroup>")
         head = ("<th>Song</th>"
                 + ("<th>Last Performed</th>" if show_last else "")
                 + "<th></th><th class='n'>Gap</th>")
