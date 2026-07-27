@@ -517,7 +517,7 @@ def remeasure(site_dir, artist="Phish"):
             # no longer carry one loses it rather than keeping a stale value.
             for k in ("gap", "verdict", "debut", "prev_date", "prev_venue",
                       "prev_place", "gap_median", "gap_mean", "gap_low",
-                      "gap_high", "plays", "recent_plays"):
+                      "gap_high", "plays", "recent_plays", "out"):
                 s.pop(k, None)
             _finish_song(s, hist, report["date"], counting)
         after = json.dumps(report, sort_keys=True)
@@ -558,6 +558,13 @@ def _finish_song(s, hist, date, counting=None):
         g = _gap(hist[idx])
         if g is not None:
             s["gap"] = g
+    # What the song went into. phish.net files the mark on the earlier of the
+    # two songs it joins, which is what makes it belong on this row: with a
+    # band that segues as much as this one, "Tweezer ->" and "Tweezer" are
+    # different facts about the night, and the report was printing them the
+    # same. Absent for a set closer, which genuinely went into nothing.
+    if idx is not None:
+        s["out"] = hist[idx].get("out") or ""
     if idx == 0:
         s["debut"] = True              # this show IS the first performance
         # ...and a debut has no gap. A gap is the shows between a performance
@@ -912,6 +919,12 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 /* Outlined, not filled: a bustout is the headline of a night and gets the
    solid stamp, while this is an invitation to read something elsewhere. Inside
    the link, so the whole title-and-chip is one target and lights up together. */
+/* The segue mark, which is a fact about the night rather than about the song:
+   "Tweezer ->" and "Tweezer" are different entries in a setlist, and the report
+   was printing them identically. Quiet, because it qualifies the title rather
+   than competing with it. */
+.seg{margin-left:.3rem;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;color:var(--dim);white-space:nowrap}
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
    border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
@@ -1503,7 +1516,11 @@ def render_html(report, bar_scale="linear", index_href=None,
             title = "<a href='../song/%s.html#%s'>%s</a>" % (
                 html.escape(s["slug"], quote=True),
                 html.escape(report["date"], quote=True), title)
-        cells = "<td class='song'>%s%s</td>" % (title, verdict)
+        # Outside the link, so the mark is not underlined with the title and
+        # cannot be mistaken for part of the song's name.
+        seg = ("<span class='seg'>%s</span>" % html.escape(s["out"])
+               if s.get("out") else "")
+        cells = "<td class='song'>%s%s%s</td>" % (title, seg, verdict)
         if show_last:
             if s["prev_date"]:
                 # No <br>: the spans are blocks on wide layouts and inline on
@@ -2371,6 +2388,15 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   color:var(--dim);margin-left:auto;white-space:nowrap}
 .stuck .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
   font-size:.875rem;color:var(--ink);letter-spacing:0}
+/* The column labels come along. A reader arriving from a report page lands
+   mid-list, having never seen the header row, and the last column is a bare
+   number: knowing it is a gap requires knowing the site already. Same markup
+   and same grid as the real header, so the labels sit over their columns
+   rather than near them. Dropped below 820px, where the row stops being
+   columns at all and each field carries its own label instead. */
+.stuck .cols{display:block;margin-top:.4rem}
+.stuck .cols .head{border-bottom:0;padding-bottom:0}
+@media screen and (max-width:820px){.stuck .cols{display:none}}
 @media (prefers-reduced-motion:reduce){.stuck{transition:none}}
 /* Where a link dropped you. Bright for a moment, then gone -- it answers
    "which row?" and then stops being ink on the page. */
@@ -2596,7 +2622,8 @@ SONG_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a class="mark" href="../index.html">Gap Reports</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
-<span class="n">{stuckstat}</span></div></div>
+<span class="n">{stuckstat}</span></div>
+<div class="in cols">{cols}</div></div>
 <div class="rule2"></div>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
@@ -2883,10 +2910,13 @@ def render_song(doc, archived=(), stamp=None, card=None):
         % (e.replace(".", "-"), e, tally[e])
         for e in seen_order)
 
-    head = ("<div class='row head'><span>Date</span><span>Venue</span>"
+    # The labels alone, so the sticky bar can carry a second copy without
+    # dragging the median's <style> block into a div with it.
+    cols = ("<div class='row head'><span>Date</span><span>Venue</span>"
             "<span class='nhead'>Before / after</span>"
             "<span class='ghead'>Gap%s</span></div>"
             % (" &middot; mark at median %s" % _stat(med) if medmark else ""))
+    head = medmark + cols
 
     first, last = (perfs[-1]["date"], perfs[0]["date"]) if perfs else ("", "")
     subtitle = " &middot; ".join(x for x in (
@@ -2909,14 +2939,15 @@ def render_song(doc, archived=(), stamp=None, card=None):
         for label, url, icon, flip in SONG_LINKS)
 
     return SONG_SHELL.format(
-        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css", theme_js=THEME_JS,
+        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
+        cols=cols, theme_js=THEME_JS,
         theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(perfs), eras=chips,
         share=share_meta(html.escape(song), html.escape(blurb, quote=True),
                          "song/%s.html" % doc["slug"], card=card),
         stuckstat="<b>%d</b> shows &middot; median gap <b>%s</b>"
                   % (len(perfs), _stat(_median(gaps)) if gaps else "&mdash;"),
-        head=medmark + head,
+        head=head,          # already carries medmark; see where it is built
         rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
         # Dated by the data rather than by the clock. A build stamp changed
         # every page on every run, which is exactly the churn that made
@@ -4170,7 +4201,7 @@ def archived_history(site_dir, slug, date):
     # and own_history would have produced on the way in.
     return [{"showdate": p["date"], "venue": p.get("venue") or "",
              "city": p.get("city") or "", "state": p.get("state") or "",
-             "gap": p.get("gap")} for p in perfs]
+             "gap": p.get("gap"), "out": p.get("out") or ""} for p in perfs]
 
 
 def setlist_neighbours(rows, artist=None):
