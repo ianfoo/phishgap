@@ -52,7 +52,11 @@ header{padding-bottom:.9rem}
 .crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    margin:0 0 .5rem}
 .crumb.sections{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
-.crumb.sections .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. As a label it also stops
+   inheriting the link underline that made it sit differently from its
+   neighbours on the song pages. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
 .crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
@@ -222,22 +226,27 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    this song; the shaded middle is where it usually sits, the hairline is its
    median, and the mark is tonight. Nothing here is scaled to the show, so a
    bustout somewhere else on the bill cannot flatten this row. */
-.bar .track{display:block;position:relative;width:100%;height:7px;
-   background:linear-gradient(to bottom,transparent 0 3px,var(--rule-soft) 3px 4px,
-   transparent 4px 7px)}
-.bar .track.bare{opacity:.45}
-/* Where this song usually lands. Deliberately quiet -- it is the backdrop the
-   mark is read against, not a thing to look at. */
-.bar .band{position:absolute;left:30%;right:30%;top:0;bottom:0;
-   background:var(--track)}
-.bar .mid{position:absolute;left:50%;top:-1px;bottom:-1px;width:1px;
-   background:var(--rule)}
-/* Tonight. Full-strength ink with a paper halo so it stays legible wherever it
-   lands, including on top of the median hairline. */
-.bar .at{position:absolute;left:50%;top:-4px;bottom:-4px;width:3px;
-   transform:translateX(-50%);background:var(--cool);
-   box-shadow:0 0 0 1px var(--paper)}
+.bar .track{display:block;position:relative;width:100%;height:11px}
+/* The line the mark sits on. Faint, but a real line -- without it a mark near
+   the middle had nothing to be near. */
+.bar .track::before{content:"";position:absolute;left:0;right:0;top:5px;
+   height:1px;background:var(--rule)}
+.bar .track.bare::before{opacity:.5}
+/* Where this song usually lands, as a block rather than a tint. The previous
+   version used --track, which is a 10% alpha meant for the inside of a
+   progress bar, and against paper it was not there at all. */
+.bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
+   background:var(--band);opacity:.5;border-radius:1px}
+.bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:1px;
+   background:var(--ink);opacity:.4}
+/* Tonight. Full height and full-strength ink, with a paper halo so it reads
+   wherever it lands -- including on top of the median line. This is the one
+   thing in the row the eye is meant to find. */
+.bar .at{position:absolute;left:50%;top:0;bottom:0;width:4px;
+   transform:translateX(-50%);background:var(--ink);border-radius:1px;
+   box-shadow:0 0 0 1.5px var(--paper)}
 .bar .at.big{background:var(--hot)}
+.bar .at.small{background:var(--cool)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Named only where the column header is not doing it -- on a wide screen the
@@ -283,10 +292,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 @media screen{
-  /* Under the ink, not over it: as a fixed overlay this sat below the
-     sticky elements, which then showed cleaner paper than the page around
-     them, and it multiplied over 10px type. */
-  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
   tr:hover td{background:var(--hover)}
@@ -455,7 +460,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 })();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
-<header><nav class='crumb sections'><a class='mark' href='../index.html'>Possum Logic</a><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2023-07-21.html' aria-label='Previous show, 2023-07-21'>&larr; 2023-07-21</a><a class='all' href='../index.html'>All reports</a><a class='next' rel='next' href='./2023-07-23.html' aria-label='Next show, 2023-07-23'>2023-07-23 &rarr;</a></nav><h1>2023-07-22</h1>
+<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2023-07-21.html' aria-label='Previous show, 2023-07-21'>&larr; 2023-07-21</a><a class='all' href='../index.html'>All reports</a><a class='next' rel='next' href='./2023-07-23.html' aria-label='Next show, 2023-07-23'>2023-07-23 &rarr;</a></nav><h1>2023-07-22</h1>
 <p class="where">The Pavilion at Star Lake, Burgettstown, PA</p>
 <p class="show"><span class='tour'>2023 Summer Tour</span><span class='nth'>103rd show of 4.0</span></p><p class='rating'>Phish.net rating <b>4.00</b><span> via fouldomain</span></p></header>
 <section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>22</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>51</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>17</div></div><div class='card'><div class='lbl'>Bustouts</div><div class='num'>0</div></div></section>

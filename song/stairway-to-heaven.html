@@ -138,7 +138,16 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    fixed and 42px tall -- without this the browser puts the target's top edge
    at the top of the viewport, which is exactly where the header is, and the
    row you tapped to look at arrives half hidden underneath it. */
+/* Clear of the sticky bar, which is not one height. Below 820px it carries the
+   song and its counts and measures 42px; above, it also carries the column
+   labels and measures 73px -- against the 57.6px this used to be, which put a
+   jumped-to performance 16px underneath the bar meant to orient it. Measured
+   at both widths rather than estimated, with room left over so the row has air
+   above it rather than being flush to the edge. */
 .perfs>li,.perfs>li.yr{scroll-margin-top:3.6rem}
+@media screen and (min-width:821px){
+  .perfs>li,.perfs>li.yr{scroll-margin-top:5.4rem}
+}
 .perfs>li{border-bottom:1px solid var(--rule-soft)}
 .perfs>li.yr{border-bottom:0}
 /* The same tab the set headings take, so a section boundary looks the same
@@ -199,7 +208,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    more description of them. */
 .caveat{margin:.5rem 0 0;padding-left:.7rem;border-left:2px solid var(--hot);
    font-size:.75rem;line-height:1.5;color:var(--ink-soft);max-width:56ch}
-.crumb .mark{color:var(--ink);border-bottom-color:var(--ink-soft)}
+
 .dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);line-height:1.1rem}
@@ -363,10 +372,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim)}
 @media screen{
-  /* Under the ink, not over it: as a fixed overlay this sat below the
-     sticky header and the to-top button, which then showed cleaner paper
-     than the page around them, and it multiplied over 10px type. */
-  body{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.28'/></svg>")}
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -438,7 +443,7 @@ footer a{color:var(--dim)}
   });
 })();
 </script></head><body id="top"><div class="wrap">
-<nav class="crumb"><a class="mark" href="../index.html">Possum Logic</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">Stairway to Heaven</span>
 <span class="n"><b>2</b> shows &middot; median gap <b>&mdash;</b></span></div>
@@ -467,9 +472,9 @@ performance of this song and the one before it.</p></header>
 <div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap</span></div>
 <ol class="perfs" id="list">
 <li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>0 shows</span><span>2024&ndash;2024</span></h2></li>
-<li id='2024-08-14' data-date='2024-08-14' data-era='4.0' data-gap='-1' data-score='' data-counted='0' data-search="2024-08-14 08/14/2024 8/14/2024 8/14/24 08/14 8/14 8-14 august 14 2024 august 14 wednesday the woodlands dover de  ending only."><div class='row'><span class='r-date'><a href='../show/2024-08-14.html'>2024-08-14</a><span class='dow'>Wed</span></span><span><span class='r-venue'>The Woodlands</span><span class='r-place'>Dover, DE</span><p class='note'><span class='tag'>Note</span>Ending only.</p></span><span class='nb'></span><span class='bar'></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Not a show</span><span class='set'>SET 1</span></span></div></li>
+<li id='2024-08-14' data-date='2024-08-14' data-era='4.0' data-gap='-1' data-score='' data-counted='0' data-search="2024-08-14 08/14/2024 8/14/2024 8/14/24 08/14 8/14 8-14 august 14 2024 august 14 wednesday the woodlands dover de  ending only."><div class='row'><span class='r-date'><a href='../show/2024-08-14.html'>2024-08-14</a><span class='dow'>Wed</span></span><span><span class='r-venue'>The Woodlands</span><span class='r-place'>Dover, DE</span><p class='note'><span class='tag'>Note</span>Ending only.</p></span><span class='nb'></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Not a show</span><span class='set'>SET 1</span></span></div></li>
 <li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>1 show</span><span>2010&ndash;2010</span></h2></li>
-<li id='2010-10-30' data-date='2010-10-30' data-era='3.0' data-gap='-1' data-score='' data-search="2010-10-30 10/30/2010 10/30/2010 10/30/10 10/30 10/30 10-30 october 30 2010 october 30 saturday boardwalk hall atlantic city nj  phish debut; incomplete."><div class='row'><span class='r-date'><a href='../show/2010-10-30.html'>2010-10-30</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Boardwalk Hall</span><span class='r-place'>Atlantic City, NJ</span><p class='note'><span class='tag'>Note</span>Phish debut; Incomplete.</p></span><span class='nb'></span><span class='bar'></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='2010-10-30' data-date='2010-10-30' data-era='3.0' data-gap='-1' data-score='' data-search="2010-10-30 10/30/2010 10/30/2010 10/30/10 10/30 10/30 10-30 october 30 2010 october 30 saturday boardwalk hall atlantic city nj  phish debut; incomplete."><div class='row'><span class='r-date'><a href='../show/2010-10-30.html'>2010-10-30</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Boardwalk Hall</span><span class='r-place'>Atlantic City, NJ</span><p class='note'><span class='tag'>Note</span>Phish debut; Incomplete.</p></span><span class='nb'></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
