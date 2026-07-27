@@ -156,6 +156,12 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 /* Outlined, not filled: a bustout is the headline of a night and gets the
    solid stamp, while this is an invitation to read something elsewhere. Inside
    the link, so the whole title-and-chip is one target and lights up together. */
+/* The segue mark, which is a fact about the night rather than about the song:
+   "Tweezer ->" and "Tweezer" are different entries in a setlist, and the report
+   was printing them identically. Quiet, because it qualifies the title rather
+   than competing with it. */
+.seg{margin-left:.3rem;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;color:var(--dim);white-space:nowrap}
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
    border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
@@ -433,7 +439,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <div class='perf'></div><h2><span class='tab'>SET 2</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-last'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr><td class='song'><a href='../song/jam.html#2009-10-29'>Jam</a><span class='verdict premature'>premature</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'>2003-12-28</span><span class='venue'>American Airlines Arena</span><span class='place'>Miami, FL</span></td><td class='bar' data-tip='0 shows; usually 1 to 20' aria-label='0 shows; usually 1 to 20'><span class='track'><span class='fill small' style='width:0.00%'></span></span></td><td class='n' data-tip='0 shows; usually 1 to 20' aria-label='0 shows; usually 1 to 20'><span class='gap small'>0</span><span class='typ'>med 6</span></td></tr>
-<tr><td class='song'><a href='../song/undermind.html#2009-10-29'>Undermind</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-08-02.html'>2009-08-02</a></span><span class='venue'>Red Rocks Amphitheatre</span><span class='place'>Morrison, CO</span></td><td class='bar'><span class='track'><span class='fill small' style='width:0.00%'></span></span></td><td class='n'><span class='gap small'>0</span><span class='typ'><span class='full'>2 in 10 yr</span><span class='abbr'>2/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/undermind.html#2009-10-29'>Undermind</a><span class='seg'>-&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-08-02.html'>2009-08-02</a></span><span class='venue'>Red Rocks Amphitheatre</span><span class='place'>Morrison, CO</span></td><td class='bar'><span class='track'><span class='fill small' style='width:0.00%'></span></span></td><td class='n'><span class='gap small'>0</span><span class='typ'><span class='full'>2 in 10 yr</span><span class='abbr'>2/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/custom.html#2009-10-29'>Devil With a Blue Dress On Jam</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'>1997-02-26</span><span class='venue'>SWF3 Studios</span><span class='place'>Baden-Baden, Baden-Württemberg</span></td><td class='bar'><span class='track'><span class='fill small' style='width:0.00%'></span></span></td><td class='n'><span class='gap small'>0</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/gone.html#2009-10-29'>Gone</a></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/liquid-time.html#2009-10-29'>Liquid Time</a></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>

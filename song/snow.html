@@ -325,6 +325,15 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   color:var(--dim);margin-left:auto;white-space:nowrap}
 .stuck .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
   font-size:.875rem;color:var(--ink);letter-spacing:0}
+/* The column labels come along. A reader arriving from a report page lands
+   mid-list, having never seen the header row, and the last column is a bare
+   number: knowing it is a gap requires knowing the site already. Same markup
+   and same grid as the real header, so the labels sit over their columns
+   rather than near them. Dropped below 820px, where the row stops being
+   columns at all and each field carries its own label instead. */
+.stuck .cols{display:block;margin-top:.4rem}
+.stuck .cols .head{border-bottom:0;padding-bottom:0}
+@media screen and (max-width:820px){.stuck .cols{display:none}}
 @media (prefers-reduced-motion:reduce){.stuck{transition:none}}
 /* Where a link dropped you. Bright for a moment, then gone -- it answers
    "which row?" and then stops being ink on the page. */
@@ -419,7 +428,8 @@ footer a{color:var(--dim)}
 <nav class="crumb"><a class="mark" href="../index.html">Gap Reports</a><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">Snow</span>
-<span class="n"><b>1</b> shows &middot; median gap <b>&mdash;</b></span></div></div>
+<span class="n"><b>1</b> shows &middot; median gap <b>&mdash;</b></span></div>
+<div class="in cols"><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap</span></div></div></div>
 <div class="rule2"></div>
 <header><h1>Snow</h1>
 <p class="show">Debut 2013-10-31 &middot; 1 performance</p>

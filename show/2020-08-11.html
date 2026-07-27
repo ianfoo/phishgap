@@ -156,6 +156,12 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 /* Outlined, not filled: a bustout is the headline of a night and gets the
    solid stamp, while this is an invitation to read something elsewhere. Inside
    the link, so the whole title-and-chip is one target and lights up together. */
+/* The segue mark, which is a fact about the night rather than about the song:
+   "Tweezer ->" and "Tweezer" are different entries in a setlist, and the report
+   was printing them identically. Quiet, because it qualifies the title rather
+   than competing with it. */
+.seg{margin-left:.3rem;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;color:var(--dim);white-space:nowrap}
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
    border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
