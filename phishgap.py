@@ -445,6 +445,19 @@ def build(showdate, apikey, artist="Phish", **kw):
     return report
 
 
+def log(msg, *args):
+    """One timestamped line to stderr.
+
+    These are read in a GitHub Actions log days later, usually to answer "what
+    did the run at 01:35 actually see" -- so every line carries the UTC time
+    and says what was decided rather than what was written. A run that does
+    nothing should say why in one line; a run during a show should be legible
+    as a sequence of events without opening the archive.
+    """
+    stamp = _utcnow().strftime("%H:%M:%S")
+    print("[%s] %s" % (stamp, msg % args if args else msg), file=sys.stderr)
+
+
 def _utcnow():
     return datetime.datetime.now(datetime.timezone.utc)
 
@@ -4016,6 +4029,24 @@ def watch_window(show):
         end.astimezone(datetime.timezone.utc)
 
 
+def next_show(site_dir, now=None):
+    """The soonest scheduled show still ahead of `now`, or None.
+
+    Only for the log: a run that did nothing is much easier to trust when it
+    says what it is waiting for.
+    """
+    now = (now or _utcnow()).date().isoformat()
+    path = os.path.join(site_dir, *SCHEDULE)
+    if not os.path.isfile(path):
+        return None
+    try:
+        with open(path, encoding="utf-8") as fh:
+            shows = json.load(fh).get("shows") or []
+    except ValueError:
+        return None
+    return next((s for s in shows if s.get("date", "") >= now), None)
+
+
 def watching(site_dir, now=None):
     """Scheduled shows whose watch window contains `now`. Usually empty.
 
@@ -4601,9 +4632,13 @@ def settle(report, prior, now):
     report["provisional"] = not (held >= datetime.timedelta(hours=QUIET_HOURS)
                                 or _certainly_over(report["date"], now))
     if report["provisional"]:
-        print("%s held provisional: %d songs, steady %d min of %d needed"
-              % (report["date"], count, held.total_seconds() // 60,
-                 QUIET_HOURS * 60), file=sys.stderr)
+        log("%s still coming in: %d song%s, unchanged for %d of the %d min "
+            "needed to call it finished",
+            report["date"], count, "" if count == 1 else "s",
+            held.total_seconds() // 60, QUIET_HOURS * 60)
+    elif prior is not None and (prior or {}).get("provisional"):
+        log("%s settled: %d song%s, publishing as complete",
+            report["date"], count, "" if count == 1 else "s")
     return report
 
 
@@ -4670,6 +4705,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     have_dates = {r["date"] for r in known}
     calendar = load_calendar(site_dir)
     counting = set(calendar)
+    rebuilt = 0
+    live_now = [r["date"] for r in known if r.get("provisional")]
+    if live_now:
+        log("%d show(s) still coming in: %s", len(live_now), ", ".join(live_now))
     for report in known:
         date = report["date"]
         if not (rebuild or date in stale):
@@ -4681,8 +4720,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates,
                 sheet="../fonts.css", calendar=calendar)):
-            print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
-                  file=sys.stderr)
+            if date in fresh:
+                log("wrote %s", page)
+            else:
+                rebuilt += 1
         # Not while it is still coming in: the card is redrawn whenever its
         # contents change, so a show updating every five minutes would redraw
         # its own picture all night for a link nobody has shared yet.
@@ -4721,6 +4762,9 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                   file=sys.stderr)
         want_card("songs", songs_card(docs))
 
+    if rebuilt:
+        log("re-rendered %d unchanged-content page(s) after a template change",
+            rebuilt)
     write_redirects(site_dir)
     write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
     # Rewritten every run, but it is one small file and write_if_changed means
@@ -5166,15 +5210,31 @@ def main():
         sys.exit("error: --rebuild, --force, --catch-up, --seed-songs, "
                  "--seed-scores, --seed-setlists, --sweep-ratings and "
                  "--calendar need --site DIR")
+    if args.site:
+        jobs = [n for n, on in (
+            ("catch-up %s days" % args.catch_up, args.catch_up),
+            ("recheck", args.recheck), ("previous", args.previous),
+            ("rebuild", args.rebuild), ("sweep-ratings", args.sweep_ratings),
+            ("calendar", args.calendar is not None), ("schedule", args.schedule),
+            ("remeasure", args.remeasure), ("seed-songs", args.seed_songs),
+            ("seed-scores", args.seed_scores),
+            ("seed-setlists", args.seed_setlists)) if on]
+        if jobs and not args.watching:
+            log("run starting: %s", ", ".join(jobs))
+
     if args.watching:
         if not args.site:
             sys.exit("error: --watching needs --site DIR")
         live = watching(args.site)
         for s in live:
-            print("watching %s %s (%s)" % (s["date"], s["venue"], s["tz"]),
-                  file=sys.stderr)
+            w = watch_window(s)
+            log("show in progress: %s %s (%s) -- window %s to %s UTC",
+                s["date"], s["venue"], s["tz"],
+                w[0].strftime("%H:%M"), w[1].strftime("%H:%M"))
         if not live:
-            print("no scheduled show is in its watch window", file=sys.stderr)
+            nxt = next_show(args.site)
+            log("nothing playing%s", (" -- next is %s %s" % (nxt["date"], nxt["venue"]))
+                if nxt else "")
         # stdout stays machine-readable: a workflow reads this one line. Named
         # for what it actually reports -- whether a scheduled show is inside
         # its watch window right now -- and not for what a caller might do
