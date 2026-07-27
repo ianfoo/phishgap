@@ -100,6 +100,11 @@ jobs:
           # Empty unless the variable is set, and empty means the pages carry
           # no analytics at all rather than a broken tag.
           PL_GOATCOUNTER: ${{ vars.PL_GOATCOUNTER }}
+          # Writes site/CNAME and points share URLs at the domain. Publishing
+          # replaces the whole gh-pages tree, so this file has to be generated
+          # on every run or the custom domain stops resolving after the next
+          # publish.
+          PL_DOMAIN: ${{ vars.PL_DOMAIN }}
           SCHEDULE: ${{ github.event.schedule }}
         run: |
           # The daily run does the expensive, thorough things. A run that fired

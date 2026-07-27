@@ -128,7 +128,7 @@ SERVICES = {
 
 # Every setting this program takes from the environment, prefixed or not, so a
 # variable that is nearly right can be told from one that is simply unknown.
-ENV_SETTINGS = ("GOATCOUNTER",)
+ENV_SETTINGS = ("GOATCOUNTER", "DOMAIN")
 
 
 def env_all_names():
@@ -475,11 +475,14 @@ FAVICON_HREF = "data:image/svg+xml,%s" % urllib.parse.quote(FAVICON, safe="/:=")
 # Where the site lives, for the absolute URLs link previews require: og:image
 # and og:url are fetched by a server that has no idea what page they came from,
 # so a relative path is no path at all.
-# Where the pages actually live, which is the one name here that cannot be
-# changed ahead of the move: it is what share cards and og:url point at, so it
-# has to match reality rather than intent. Update it when the repository is
-# renamed or possumlogic.com is pointed at Pages, and not before.
-SITE_URL = "https://ianfoo.github.io/phishgap"
+# The domain, if there is one. Set PL_DOMAIN and three things follow together:
+# share cards and og:url resolve against it, and site/CNAME is written so
+# GitHub Pages keeps serving it. That last one matters more than it looks --
+# publishing replaces the gh-pages tree wholesale, so a CNAME added by hand in
+# the repository settings is deleted by the next publish and the domain stops
+# resolving. It has to be generated with everything else.
+DOMAIN = env_value("DOMAIN", quiet=True) or ""
+SITE_URL = ("https://%s" % DOMAIN) if DOMAIN else "https://ianfoo.github.io/phishgap"
 
 # GoatCounter: no cookies, no personal data, nothing stored about a visitor, so
 # there is nothing for a consent banner to ask about. Set to the account code
@@ -2547,6 +2550,12 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .i-foul::after{background-image:url("data:image/png;base64,__FOUL__")}
 .dek{margin:.55rem 0 0;font-size:.75rem;line-height:1.5;color:var(--dim);
    max-width:56ch}
+/* The notation legend. The arrows read as decoration unless something says
+   they are load-bearing: an arrow means the songs merely followed one another,
+   and phish.net's mark in its place means they did not stop. Worth one line,
+   because the alternative is a reader inventing a meaning for it. */
+.dek.key .k{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   color:var(--ink-soft);padding:0 .1rem}
 /* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
@@ -2935,7 +2944,11 @@ SONG_SHELL = """<!DOCTYPE html>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
 <p class="dek">Gap &mdash; the number of shows the band played between one
-performance of this song and the one before it.</p>{caveat}</header>
+performance of this song and the one before it.</p>
+<p class="dek key"><span class="k">&#8592;&#8201;&#8594;</span> the songs either
+side, played as separate songs. <span class="k">&gt;</span> and
+<span class="k">&#8211;&gt;</span> are phish.net&rsquo;s own marks, and mean the
+band ran them together rather than stopping between them.</p>{caveat}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 {best}
@@ -3576,6 +3589,18 @@ most songs. The band's ends are interpolated values that appear nowhere in the
 song's actual gaps, which is why they are not printed as numbers.</p>
 <p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
 yields roughly 13% premature, 67% expected and 20% overdue.</p>
+
+<h2 id="before-and-after">What came before and after</h2>
+<p>A song page shows what each performance sat between. A plain
+<span class="num">&#8592;</span> or <span class="num">&#8594;</span> means only
+that: the song before it, the song after it, played as separate songs with a
+stop between them.</p>
+<p>Where phish.net recorded that the band ran two songs together, its own mark
+appears in place of the arrow &mdash; <span class="num">&gt;</span> or
+<span class="num">&#8211;&gt;</span> &mdash; and it sits between the two songs
+it joins, the way it does in a written setlist. So an arrow is the absence of a
+segue rather than the presence of anything, which is worth saying because the
+two look equally deliberate on the page.</p>
 
 <h2 id="the-bar">The bar</h2>
 <p>The bar is a <b>position, not a length</b>. Its shaded middle is the band
@@ -5113,6 +5138,12 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     write_redirects(site_dir)
     write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
     write_grain(site_dir)
+    # Regenerated every publish, because every publish would otherwise remove it.
+    cname = os.path.join(site_dir, "CNAME")
+    if DOMAIN:
+        write_if_changed(cname, DOMAIN + "\n")
+    elif os.path.isfile(cname):
+        os.remove(cname)
     # Rewritten every run, but it is one small file and write_if_changed means
     # a run that moved nothing publishes nothing.
     write_current(site_dir)
