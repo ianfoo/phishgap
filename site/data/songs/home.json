@@ -1,0 +1,17 @@
+{
+ "song": "Home",
+ "slug": "home",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2016-10-14", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 1735, "set": "1", "note": "Debut."},
+  {"date": "2016-10-28", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 9, "set": "1"},
+  {"date": "2017-07-19", "venue": "Petersen Events Center", "city": "Pittsburgh", "state": "PA", "gap": 15, "set": "1", "out": ">"},
+  {"date": "2017-07-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 8, "set": "1"},
+  {"date": "2018-08-11", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 29, "set": "1"},
+  {"date": "2018-09-01", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 3, "set": "1"},
+  {"date": "2019-07-02", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 37, "set": "1", "out": ">"}
+ ]
+}

@@ -716,6 +716,10 @@ h1 a:hover em{color:var(--ink)}
    line-height:1;color:var(--ink)}
 .show .tour{font-size:1rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--dim)}
+/* Sits with the tour, not with the date: it is context for the night rather
+   than part of naming it. Absent for 1.0, where it cannot be said honestly,
+   and for anything phish.net does not count as a show. */
+.show .nth{font-size:.75rem;font-weight:400;letter-spacing:0;color:var(--dim)}
 .show .tour::before{content:"\\2022";color:var(--hot);font-size:1.25rem;
    margin:0 .7rem}
 .where{margin:.4rem 0 0;font-size:1rem;font-weight:600;letter-spacing:0;
@@ -1197,9 +1201,41 @@ def _bar_pct(gap, biggest, scale="linear"):
     return gap / biggest * 100
 
 
+def era_ordinal(dates, date):
+    """"nth show of 3.0", or None where that cannot be said honestly.
+
+    An absolute ordinal cannot: phish.net offers three defensible totals for
+    how many shows Phish has played -- 2,239 rows, 2,114 that count toward
+    statistics, 2,106 distinct dates -- and 1983-10-30, the show everyone calls
+    their first, is flagged exclude_from_stats, so a stats-based count declares
+    the second show to be number one. Any figure we printed would be
+    confidently wrong against the one the reader already has.
+
+    Inside an era it can, for three of the four. Six dates carry more than one
+    counting show and all six are in 1.0, the earliest being 1985-02-25 -- so
+    the drift is not confined to six shows, it is inherited by every show after
+    them, roughly 1,350 of 1,361. 2.0, 3.0 and 4.0 are one show per date
+    throughout, so the count is exact rather than approximately right.
+    """
+    label = era(date)
+    if label == ERAS[0][0]:
+        return None
+    start = next((s for l, s, _ in ERAS if l == label), None)
+    if not start:
+        return None
+    n = sum(1 for d in dates if start <= d <= date)
+    return (n, label) if n else None
+
+
+def _ordinal(n):
+    """1 -> 1st. 11, 12 and 13 are the ones that break the naive rule."""
+    suffix = "th" if 11 <= n % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return "{:,}{}".format(n, suffix)
+
+
 def render_html(report, bar_scale="linear", index_href=None,
                 prev_date=None, next_date=None, songs=(), card=None,
-                archived_show=(), sheet="../fonts.css"):
+                archived_show=(), sheet="../fonts.css", calendar=()):
     allg = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(allg) if allg else 0
     avg = _stat(sum(allg) / len(allg)) if allg else "n/a"
@@ -1410,6 +1446,14 @@ def render_html(report, bar_scale="linear", index_href=None,
     tour = report.get("tour") or ""
     tour = ("<span class='tour'>%s</span>" % html.escape(tour)
             if tour and "not part of a tour" not in tour.lower() else "")
+
+    # Era-scoped, because an absolute one cannot be said honestly -- see
+    # era_ordinal. Silent for 1.0 and for anything not on the calendar, which
+    # is where the soundchecks and sessions land.
+    place = era_ordinal(calendar, report["date"])
+    if place:
+        tour += ("<span class='nth'>%s show of %s</span>"
+                 % (_ordinal(place[0]), place[1]))
 
     # phish.net's own rating for the night, which their API does not expose --
     # fouldomain does, so it is theirs by way of someone else and says so.
@@ -2913,10 +2957,20 @@ def render_songs(docs, stamp=None, card=None):
 # ----------------------------------------------------------------- method ---
 
 METHOD_CSS = INDEX_CSS + """
-.prose{max-width:68ch;margin:0 0 2.4rem}
+.prose{max-width:66ch;margin:0 0 2.4rem}
 .prose h2{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:1.25rem;margin:2.2rem 0 .5rem;letter-spacing:0}
-.prose p{margin:0 0 .9rem;font-size:.875rem;line-height:1.65;color:var(--ink-soft)}
+/* The page is almost nothing but prose -- 3.4 KB of it, eleven paragraphs --
+   and it was the one place where setting everything in the mono was hardest to
+   defend: this is the page that has to be read start to finish rather than
+   scanned for a number. The reading face, at the measure it was already given.
+   Figures inside a sentence stay mono, so a threshold quoted in the text looks
+   like the same object it does on a report. */
+.prose p{margin:0 0 1rem;font-family:'Literata',Georgia,serif;
+   font-size:1rem;line-height:1.6;font-variation-settings:'opsz' 16;
+   color:var(--ink-soft)}
+.prose li{font-family:'Literata',Georgia,serif;font-size:1rem;line-height:1.6;
+   font-variation-settings:'opsz' 16;color:var(--ink-soft)}
 .prose b{color:var(--ink)}
 .prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
@@ -2985,6 +3039,29 @@ song's actual gaps, which is why they are not printed &mdash; the mark on the
 bar is the median, the one figure that is real.</p>
 <p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
 yields roughly 13% premature, 67% expected and 20% overdue.</p>
+
+<h2 data-tab="Which show this was"></h2>
+<p>A report says where the night sits inside its era &mdash; the
+<span class="num">312</span>th show of 3.0 &mdash; and never where it sits
+overall. There is no honest overall number to give. phish.net offers three
+defensible totals for how many shows the band has played: <span
+class="num">2,239</span> entries listed, <span class="num">2,114</span> that
+count toward statistics, and <span class="num">2,106</span> distinct dates
+among those. They differ by soundchecks, television and radio sessions,
+cancelled dates, and nights when two separate shows were played.</p>
+<p>The disagreement reaches the beginning. <b>1983-10-30</b>, the show
+generally called Phish's first, is one phish.net excludes from statistics, so a
+count built on that flag declares the <em>second</em> show to be number one and
+every figure after it inherits the error.</p>
+<p>Inside an era the count is exact for three of the four. Six dates carry more
+than one counting show, and all six fall in 1.0 &mdash; the earliest being
+<b>1985-02-25</b>, close enough to the start that the drift is not confined to
+six shows but is inherited by every show after them, roughly <span
+class="num">1,350</span> of <span class="num">1,361</span>. 2.0, 3.0 and 4.0
+run one show to a date throughout, so their ordinals are counted rather than
+estimated. <b>1.0 shows carry no ordinal</b>, which is a decision and not an
+oversight: the number could be produced, and it would be wrong by somewhere
+between one and eight with no way to tell which from the date alone.</p>
 
 <h2 data-tab="Songs with no verdict"></h2>
 <p>A song needs <b>eight</b> performances inside that ten-year window before
@@ -3698,8 +3775,14 @@ def show_kind(report, calendar=None):
     if report["date"] in set(calendar):
         return "show"
     notes = re.sub(r"<[^>]+>", " ", html.unescape(str(report.get("notes") or "")))
-    return "soundcheck" if re.search(r"\bwas the soundcheck\b", notes, re.I) \
-        else "session"
+    # "was the soundcheck for X", but also "there were two soundchecks for X"
+    # and "the tech rehearsal for X" -- all the same thing, a non-show that
+    # exists because of a show that follows it. A television or radio session
+    # exists on its own account and matches none of them.
+    return ("soundcheck"
+            if re.search(r"\b(?:soundchecks?|rehearsal)\b[^.]{0,60}\bfor\b",
+                         notes, re.I)
+            else "session")
 
 
 def split_archive(reports, calendar):
@@ -4140,6 +4223,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
 
     songs = archived_songs(site_dir)
     have_dates = {r["date"] for r in known}
+    calendar = load_calendar(site_dir)
     for report in known:
         date = report["date"]
         if not (rebuild or date in stale):
@@ -4150,7 +4234,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 report, bar_scale=bar_scale, index_href="../index.html",
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates,
-                sheet="../fonts.css")):
+                sheet="../fonts.css", calendar=calendar)):
             print("%s %s" % ("wrote" if date in fresh else "rebuilt", page),
                   file=sys.stderr)
         want_card(date, report_card(report))

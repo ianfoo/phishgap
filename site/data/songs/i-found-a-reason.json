@@ -1,0 +1,12 @@
+{
+ "song": "I Found a Reason",
+ "slug": "i-found-a-reason",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1998-10-31", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 1223, "set": "2", "note": "Phish debut."},
+  {"date": "2016-06-22", "venue": "Xcel Energy Center", "city": "St. Paul", "state": "MN", "gap": 495, "set": "2"}
+ ]
+}

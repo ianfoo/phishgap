@@ -1,0 +1,11 @@
+{
+ "song": "Chocolate Rain",
+ "slug": "chocolate-rain",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-07-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1765, "set": "1", "note": "Phish debut; a cappella, with Page on a midi controller keyboard."}
+ ]
+}

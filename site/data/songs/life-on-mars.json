@@ -1,0 +1,33 @@
+{
+ "song": "Life on Mars?",
+ "slug": "life-on-mars",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1995-10-13", "venue": "Will Rogers Auditorium", "city": "Fort Worth", "state": "TX", "gap": 985, "set": "1", "note": "Phish debut."},
+  {"date": "1995-10-22", "venue": "Assembly Hall, University of Illinois", "city": "Champaign", "state": "IL", "gap": 7, "set": "2"},
+  {"date": "1995-10-25", "venue": "St. Paul Civic Center", "city": "St. Paul", "state": "MN", "gap": 2, "set": "2"},
+  {"date": "1995-10-27", "venue": "Wing's Stadium", "city": "Kalamazoo", "state": "MI", "gap": 1, "set": "e"},
+  {"date": "1995-11-09", "venue": "The Fox Theatre", "city": "Atlanta", "state": "GA", "gap": 4, "set": "2"},
+  {"date": "1995-11-15", "venue": "Sun Dome, University of South Florida", "city": "Tampa", "state": "FL", "gap": 5, "set": "2", "out": ">"},
+  {"date": "1995-11-19", "venue": "Charlotte Coliseum", "city": "Charlotte", "state": "NC", "gap": 3, "set": "e", "out": ">"},
+  {"date": "1995-11-24", "venue": "Civic Arena", "city": "Pittsburgh", "state": "PA", "gap": 3, "set": "e"},
+  {"date": "1996-07-21", "venue": "The Forum", "city": "N\u00fcremberg", "state": "Bavaria", "gap": 37, "set": "2"},
+  {"date": "1996-07-25", "venue": "Stadtpark", "city": "Hamburg", "state": "Hamburg", "gap": 4, "set": "1"},
+  {"date": "1996-08-07", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 5, "set": "2"},
+  {"date": "1996-08-16", "venue": "Plattsburgh Air Force Base", "city": "Plattsburgh", "state": "NY", "gap": 5, "set": "3", "out": ">"},
+  {"date": "1996-10-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "2"},
+  {"date": "1996-10-27", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 5, "set": "2", "out": ">"},
+  {"date": "1996-11-03", "venue": "O'Connell Center, University of Florida", "city": "Gainesville", "state": "FL", "gap": 4, "set": "2", "note": "Karl Perazzo on percussion."},
+  {"date": "1996-11-14", "venue": "Hilton Coliseum", "city": "Ames", "state": "IA", "gap": 7, "set": "2"},
+  {"date": "1996-11-29", "venue": "The Cow Palace", "city": "Daly City", "state": "CA", "gap": 9, "set": "1"},
+  {"date": "1996-12-04", "venue": "Sports Arena", "city": "San Diego", "state": "CA", "gap": 4, "set": "2"},
+  {"date": "1997-03-02", "venue": "Pumpehuset", "city": "Copenhagen", "state": "Capital Region", "gap": 19, "set": "1", "out": ">"},
+  {"date": "2003-02-15", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 255, "set": "1"},
+  {"date": "2011-07-01", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 175, "set": "1"},
+  {"date": "2011-08-12", "venue": "Polo Fields, Golden Gate Park", "city": "San Francisco", "state": "CA", "gap": 8, "set": "2"},
+  {"date": "2012-06-29", "venue": "Klipsch Music Center", "city": "Noblesville", "state": "IN", "gap": 24, "set": "1"}
+ ]
+}

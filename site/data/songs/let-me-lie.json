@@ -1,0 +1,21 @@
+{
+ "song": "Let Me Lie",
+ "slug": "let-me-lie",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2009-06-06", "venue": "Comcast Center", "city": "Mansfield", "state": "MA", "gap": 1435, "set": "1", "note": "Phish debut."},
+  {"date": "2009-06-19", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 8, "set": "2"},
+  {"date": "2009-08-05", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 7, "set": "e"},
+  {"date": "2009-08-15", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 6, "set": "2"},
+  {"date": "2009-10-29", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 0, "set": "1"},
+  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 4, "set": "1", "note": "Acoustic."},
+  {"date": "2009-11-22", "venue": "War Memorial at Oncenter", "city": "Syracuse", "state": "NY", "gap": 4, "set": "1"},
+  {"date": "2009-11-28", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 4, "set": "2"},
+  {"date": "2010-08-10", "venue": "Telluride Town Park", "city": "Telluride", "state": "CO", "gap": 32, "set": "1"},
+  {"date": "2016-07-09", "venue": "Xfinity Theatre", "city": "Hartford", "state": "CT", "gap": 229, "set": "1"},
+  {"date": "2016-10-15", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 15, "set": "1"}
+ ]
+}

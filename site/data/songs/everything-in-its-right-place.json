@@ -1,0 +1,11 @@
+{
+ "song": "Everything In Its Right Place",
+ "slug": "everything-in-its-right-place",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-08-04", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1770, "set": "2", "note": "Phish debut."}
+ ]
+}

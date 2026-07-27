@@ -1,0 +1,21 @@
+{
+ "song": "Drums",
+ "slug": "drums",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1984-11-03", "venue": "Slade Hall, University of Vermont", "city": "Burlington", "state": "VT", "gap": 4, "set": "1", "note": "Marc Daubert on percussion."},
+  {"date": "1984-12-01", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 1, "set": "1", "note": "Marc Daubert.", "out": "->"},
+  {"date": "1985-11-14", "venue": "Memorial Auditorium Basement", "city": "Burlington", "state": "VT", "gap": 25, "set": "1", "note": "Possible guest appearance by Marc Daubert, at least one member of The Joneses, and possibly others.", "out": ">"},
+  {"date": "1990-10-18", "venue": "The Georgia Theatre", "city": "Athens", "state": "GA", "gap": 401, "set": "1", "out": ">"},
+  {"date": "1991-05-02", "venue": "The Chance", "city": "Poughkeepsie", "state": "NY", "gap": 82, "set": "1", "out": "->"},
+  {"date": "1991-05-17", "venue": "Campus Club", "city": "Providence", "state": "RI", "gap": 8, "set": "1", "note": "Carl Gerhard on trumpet.", "out": "->"},
+  {"date": "1994-04-21", "venue": "Lawrence Joel Veterans Memorial Coliseum", "city": "Winston-Salem", "state": "NC", "gap": 314, "set": "e", "note": "Carter Beauford on drums.", "out": "->"},
+  {"date": "1994-10-15", "venue": "Oak Mountain Amphitheatre", "city": "Pelham", "state": "AL", "gap": 67, "set": "e", "note": "Carter Beauford on drums."},
+  {"date": "1997-07-25", "venue": "Starplex Amphitheatre", "city": "Dallas", "state": "TX", "gap": 231, "set": "2", "note": "Bob Gullotti on a second drum set and Page on keys.", "out": "->"},
+  {"date": "2004-08-11", "venue": "Tweeter Center", "city": "Mansfield", "state": "MA", "gap": 283, "set": "2", "note": "Trey and Fish.", "out": "->"},
+  {"date": "2009-08-02", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 25, "set": "2", "note": "Bill Kreutzmann on drums.", "out": "->"}
+ ]
+}

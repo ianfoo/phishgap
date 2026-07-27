@@ -1,0 +1,12 @@
+{
+ "song": "Tuesday",
+ "slug": "tuesday",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2017-07-18", "venue": "Ervin J. Nutter Center, Wright State University", "city": "Dayton", "state": "OH", "gap": 1758, "set": "1", "note": "Phish debut."},
+  {"date": "2017-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "2", "out": ">"}
+ ]
+}

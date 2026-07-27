@@ -1,0 +1,12 @@
+{
+ "song": "Friends",
+ "slug": "friends",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 0, "set": "2", "note": "Debut."},
+  {"date": "2016-07-10", "venue": "Lakeview Amphitheater", "city": "Syracuse", "state": "NY", "gap": 7, "set": "1"}
+ ]
+}

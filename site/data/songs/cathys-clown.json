@@ -1,0 +1,11 @@
+{
+ "song": "Cathy's Clown",
+ "slug": "cathys-clown",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2019-07-02", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 1836, "set": "1", "note": "Phish debut."}
+ ]
+}

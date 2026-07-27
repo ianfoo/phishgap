@@ -1,0 +1,26 @@
+{
+ "song": "Demand",
+ "slug": "demand",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1994-04-09", "venue": "Broome County Veterans Memorial Arena", "city": "Binghamton", "state": "NY", "gap": 830, "set": "2", "note": "Debut.", "out": ">"},
+  {"date": "1994-04-14", "venue": "Beacon Theatre", "city": "New York", "state": "NY", "gap": 4, "set": "1"},
+  {"date": "1994-04-24", "venue": "Grady Cole Center", "city": "Charlotte", "state": "NC", "gap": 9, "set": "2", "out": ">"},
+  {"date": "1994-05-22", "venue": "Vogue Theatre", "city": "Vancouver", "state": "British Columbia", "gap": 21, "set": "1"},
+  {"date": "1994-05-26", "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "gap": 3, "set": "1"},
+  {"date": "1994-06-10", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 5, "set": "1", "out": ">"},
+  {"date": "1994-06-14", "venue": "Civic Center", "city": "Des Moines", "state": "IA", "gap": 3, "set": "2", "out": ">"},
+  {"date": "1994-06-24", "venue": "Murat Theatre", "city": "Indianapolis", "state": "IN", "gap": 8, "set": "2", "out": ">"},
+  {"date": "1994-06-26", "venue": "Municipal Auditorium", "city": "Charleston", "state": "WV", "gap": 2, "set": "2", "out": ">"},
+  {"date": "1995-10-08", "venue": "Adams Fieldhouse, University of Montana", "city": "Missoula", "state": "MT", "gap": 98, "set": "1"},
+  {"date": "1995-10-15", "venue": "Austin Music Hall", "city": "Austin", "state": "TX", "gap": 4, "set": "1", "out": ">"},
+  {"date": "1995-10-24", "venue": "Dane County Coliseum", "city": "Madison", "state": "WI", "gap": 6, "set": "1", "out": ">"},
+  {"date": "1995-12-07", "venue": "Niagara Falls Convention Center", "city": "Niagara Falls", "state": "NY", "gap": 26, "set": "1", "out": ">"},
+  {"date": "1996-11-14", "venue": "Hilton Coliseum", "city": "Ames", "state": "IA", "gap": 64, "set": "2", "out": ">"},
+  {"date": "2009-12-31", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 394, "set": "1", "out": ">"},
+  {"date": "2016-07-20", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 258, "set": "1"}
+ ]
+}

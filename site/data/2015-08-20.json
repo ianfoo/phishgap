@@ -1,0 +1,33 @@
+{
+  "date": "2015-08-20",
+  "venue": "Watkins Glen International, Watkins Glen, NY",
+  "venue_name": "Watkins Glen International",
+  "city": "Watkins Glen",
+  "state": "NY",
+  "artist": "Phish",
+  "tour": "2015 Summer",
+  "notes": "<p>This was the soundcheck for the Magnaball Festival. The soundcheck consisted of one 46-minute jam, which included Fish and Trey saying &quot;Feel the Bern&quot; (in reference to 2016 presidential candidate Bernie Sanders),&nbsp;&nbsp;a Rock Around the Clock quote from Mike,&nbsp;and was broadcast on &quot;<a href=\"http://phish.net/faq/the-bunny\">The Bunny</a>.&quot;</p>",
+  "permalink": "https://phish.net/setlists/phish-august-20-2015-watkins-glen-international-watkins-glen-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Jam",
+      "slug": "jam",
+      "gap": 43,
+      "jamchart": false,
+      "prev_date": "2014-07-27",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD",
+      "plays": 85,
+      "recent_plays": 4,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": null
+    }
+  ],
+  "pnet_rating": 4.502,
+  "count_since": "2026-07-27T06:20:03+00:00",
+  "provisional": false
+}

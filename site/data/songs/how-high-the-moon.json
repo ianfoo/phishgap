@@ -1,0 +1,16 @@
+{
+ "song": "How High the Moon",
+ "slug": "how-high-the-moon",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1990-04-21", "venue": "Canyon West Room, Lincoln Center", "city": "Fort Collins", "state": "CO", "gap": 373, "set": "1", "note": "Phish debut.", "out": ">"},
+  {"date": "1990-04-22", "venue": "Cutler Quad, Colorado College", "city": "Colorado Springs", "state": "CO", "gap": 1, "set": "2"},
+  {"date": "1990-04-26", "venue": "Dionysus Club, The 'Sco, Oberlin College", "city": "Oberlin", "state": "OH", "gap": 3, "set": "2"},
+  {"date": "1990-05-28", "venue": "Jack McConnell's House", "city": "Hilton Head", "state": "SC", "gap": 18, "set": "1"},
+  {"date": "1993-03-08", "venue": "Sweeney Center", "city": "Santa Fe", "state": "NM", "gap": 363, "set": "1", "out": ">"},
+  {"date": "2009-08-13", "venue": "Darien Lake Performing Arts Center", "city": "Darien Center", "state": "NY", "gap": 714, "set": "1", "out": ">"}
+ ]
+}

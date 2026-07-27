@@ -1,0 +1,11 @@
+{
+ "song": "Send in the Clowns",
+ "slug": "send-in-the-clowns",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2019-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 0, "set": "3", "note": "Phish debut; with lyrics changed to \"Send in the clones\" and performed a cappella."}
+ ]
+}

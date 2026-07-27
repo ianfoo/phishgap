@@ -1,0 +1,37 @@
+{
+ "song": "The Star-Spangled Banner",
+ "slug": "the-star-spangled-banner",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1996-10-17", "venue": "Bryce Jordan Center, Penn State University", "city": "State College", "state": "PA", "gap": 1058, "set": "2", "note": "Phish debut."},
+  {"date": "1996-10-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1"},
+  {"date": "1996-10-25", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 3, "set": "2"},
+  {"date": "1996-10-31", "venue": "The Omni", "city": "Atlanta", "state": "GA", "gap": 4, "set": "1"},
+  {"date": "1996-11-08", "venue": "Assembly Hall, University of Illinois", "city": "Champaign", "state": "IL", "gap": 4, "set": "2"},
+  {"date": "1996-11-12", "venue": "Target Center", "city": "Minneapolis", "state": "MN", "gap": 0, "set": "1"},
+  {"date": "1996-11-19", "venue": "Municipal Auditorium", "city": "Kansas City", "state": "MO", "gap": 8, "set": "2"},
+  {"date": "1996-11-27", "venue": "Key Arena", "city": "Seattle", "state": "WA", "gap": 3, "set": "2"},
+  {"date": "1996-12-03", "venue": "Great Western Forum", "city": "Inglewood", "state": "CA", "gap": 0, "set": "1"},
+  {"date": "1996-12-28", "venue": "CoreStates Spectrum", "city": "Philadelphia", "state": "PA", "gap": 7, "set": "2"},
+  {"date": "1997-05-18", "venue": "CoreStates Center", "city": "Philadelphia", "state": "PA", "gap": 0, "set": "1"},
+  {"date": "1997-12-01", "venue": "CoreStates Center", "city": "Philadelphia", "state": "PA", "gap": 0, "set": "1"},
+  {"date": "1997-12-02", "venue": "CoreStates Spectrum", "city": "Philadelphia", "state": "PA", "gap": 69, "set": "1"},
+  {"date": "1999-07-04", "venue": "Lakewood Amphitheatre", "city": "Atlanta", "state": "GA", "gap": 83, "set": "e2"},
+  {"date": "2000-07-04", "venue": "E Centre", "city": "Camden", "state": "NJ", "gap": 82, "set": "1"},
+  {"date": "2003-06-11", "venue": "Continental Airlines Arena", "city": "East Rutherford", "state": "NJ", "gap": 46, "set": "1"},
+  {"date": "2003-07-25", "venue": "Verizon Wireless Amphitheatre - Charlotte", "city": "Charlotte", "state": "NC", "gap": 60, "set": "e"},
+  {"date": "2004-03-13", "venue": "Patrick Gymnasium, University of Vermont", "city": "Burlington", "state": "VT", "gap": 0, "set": "1"},
+  {"date": "2009-05-31", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 37, "set": "1"},
+  {"date": "2009-06-16", "venue": "The Fox Theatre", "city": "St. Louis", "state": "MO", "gap": 10, "set": "e"},
+  {"date": "2010-07-04", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 54, "set": "1"},
+  {"date": "2010-10-29", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 24, "set": "1"},
+  {"date": "2011-07-03", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 28, "set": "2"},
+  {"date": "2012-07-04", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 34, "set": "1"},
+  {"date": "2014-07-04", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 66, "set": "1"},
+  {"date": "2014-11-01", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 33, "set": "e"},
+  {"date": "2016-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 76, "set": "1"}
+ ]
+}

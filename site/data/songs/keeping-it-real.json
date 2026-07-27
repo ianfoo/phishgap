@@ -1,0 +1,12 @@
+{
+ "song": "Keeping It Real",
+ "slug": "keeping-it-real",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2018-07-25", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 1786, "set": "1", "note": "Debut."},
+  {"date": "2018-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 14, "set": "1"}
+ ]
+}

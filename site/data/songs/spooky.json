@@ -1,0 +1,13 @@
+{
+ "song": "Spooky",
+ "slug": "spooky",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1993-03-14", "venue": "Paul Wright Gym, Western State College", "city": "Gunnison", "state": "CO", "gap": 744, "set": "2", "jamchart": true, "jam": "-&gt; in from &quot;YEM.&quot; A &quot;Spooky&quot; jam is sandwiched in this &quot;YEM&quot; along with many other teases. -&gt; back to &quot;YEM.&quot;", "out": "->"},
+  {"date": "1993-04-14", "venue": "American Theater", "city": "St. Louis", "state": "MO", "gap": 23, "set": "2", "jamchart": true, "jam": "-&gt; in from &quot;YEM.&quot; A &quot;Spooky&quot; jam is sandwiched in this &quot;YEM&quot; jam. -&gt; back to &quot;YEM.&quot;", "note": "Included a verse sung by Page.", "out": "->"},
+  {"date": "2010-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 754, "set": "1", "out": ">"}
+ ]
+}

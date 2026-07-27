@@ -1,0 +1,14 @@
+{
+ "song": "Summer of '89",
+ "slug": "summer-of-89",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2010-06-18", "venue": "The Comcast Theatre", "city": "Hartford", "state": "CT", "gap": 1475, "set": "1", "note": "Debut."},
+  {"date": "2010-06-25", "venue": "Susquehanna Bank Center", "city": "Camden", "state": "NJ", "gap": 5, "set": "1"},
+  {"date": "2010-08-09", "venue": "Telluride Town Park", "city": "Telluride", "state": "CO", "gap": 11, "set": "1"},
+  {"date": "2010-10-12", "venue": "1stBank Center", "city": "Broomfield", "state": "CO", "gap": 11, "set": "2", "out": ">"}
+ ]
+}

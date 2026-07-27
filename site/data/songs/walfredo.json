@@ -1,0 +1,18 @@
+{
+ "song": "Walfredo",
+ "slug": "walfredo",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1997-02-13", "venue": "Shepherd's Bush Empire", "city": "London", "state": "England", "gap": 1102, "set": "1", "note": "Debut."},
+  {"date": "1997-02-14", "venue": "Le Botanique", "city": "Brussels", "state": "Brussels-Capital", "gap": 1, "set": "2"},
+  {"date": "1997-02-18", "venue": "Bataclan", "city": "Paris", "state": "\u00cele-de-France", "gap": 3, "set": "1"},
+  {"date": "1997-02-22", "venue": "Teatro Olimpico", "city": "Rome", "state": "Lazio", "gap": 3, "set": "1"},
+  {"date": "1997-02-26", "venue": "SWF3 Studios", "city": "Baden-Baden", "state": "Baden-W\u00fcrttemberg", "gap": 0, "set": "1"},
+  {"date": "2000-09-30", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 250, "set": "1"},
+  {"date": "2010-06-27", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 131, "set": "1"},
+  {"date": "2014-10-27", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 186, "set": "1"}
+ ]
+}

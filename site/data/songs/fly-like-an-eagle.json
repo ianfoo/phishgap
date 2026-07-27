@@ -1,0 +1,11 @@
+{
+ "song": "Fly Like an Eagle",
+ "slug": "fly-like-an-eagle",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "2012-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1593, "set": "3", "note": "Phish debut.", "out": ">"}
+ ]
+}

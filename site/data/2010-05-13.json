@@ -1,0 +1,50 @@
+{
+  "date": "2010-05-13",
+  "venue": "NBC Television Studios, Studio 6B, New York, NY",
+  "venue_name": "NBC Television Studios, Studio 6B",
+  "city": "New York",
+  "state": "NY",
+  "artist": "Phish",
+  "tour": "Not Part of a Tour",
+  "notes": "Phish (introduced by Keith Richards!) were the musical guests on <em>Late Night with Jimmy Fallon</em>&nbsp;as part of a week of artists performing <em>Exile On Main St</em>&nbsp;songs on the show in celebration of The Rolling Stones' re-release of the album. Phish stuck around after the conclusion of the show and played Kill Devil Falls, which was not included in that evening's broadcast, but was subsequently aired as part of the 6/9/10 <em>Fallon</em>&nbsp;show.",
+  "permalink": "https://phish.net/setlists/phish-may-13-2010-nbc-television-studios-studio-6b-new-york-ny-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "Loving Cup",
+      "slug": "loving-cup",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2009-12-31",
+      "prev_venue": "American Airlines Arena",
+      "prev_place": "Miami, FL",
+      "plays": 91,
+      "recent_plays": 28,
+      "gap_median": 4.5,
+      "gap_mean": 5.107142857142857,
+      "gap_low": 3.0,
+      "gap_high": 7.949999999999999,
+      "verdict": "premature"
+    },
+    {
+      "set": "SET 1",
+      "song": "Kill Devil Falls",
+      "slug": "kill-devil-falls",
+      "gap": 0,
+      "jamchart": false,
+      "prev_date": "2009-12-29",
+      "prev_venue": "American Airlines Arena",
+      "prev_place": "Miami, FL",
+      "plays": 17,
+      "recent_plays": 15,
+      "gap_median": 2,
+      "gap_mean": 1.8666666666666667,
+      "gap_low": 1.0,
+      "gap_high": 2.0,
+      "verdict": "premature"
+    }
+  ],
+  "pnet_rating": 2.97,
+  "count_since": "2026-07-27T06:14:27+00:00",
+  "provisional": false
+}
