@@ -4829,13 +4829,22 @@ def sweep_ratings(site_dir, days=RATING_CHASE_DAYS, **kw):
             print("  %s: %s" % (report["date"], exc), file=sys.stderr)
         if not got:
             continue
+        # fouldomain answers with whatever it has, and it has its own score for
+        # a show well before phish.net has a rating for it -- so a non-empty
+        # reply is not the same as the reply we came for. Keeping the score is
+        # still worth the write; announcing a rating that is not there is a
+        # KeyError that kills the whole run, which is what it did.
         report.update(got)
         _, blob = site_paths(site_dir, report["date"])
         with open(blob, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)
+        rating = got.get("pnet_rating")
+        if rating is None:
+            log("  %s: fouldomain has a score but phish.net has no rating yet",
+                report["date"])
+            continue
         found.append(report["date"])
-        print("  %s rated %.2f" % (report["date"], got["pnet_rating"]),
-              file=sys.stderr)
+        log("  %s rated %.2f", report["date"], rating)
     return found
 
 
