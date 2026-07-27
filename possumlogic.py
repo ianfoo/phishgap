@@ -5,8 +5,9 @@ possumlogic.py -- an archive of Phish performances, via the Phish.net API v5.
 One call to /v5/setlists/showdate/<date>.json returns every song in the show
 with its `gap` already computed, so there is no HTML parsing and no arithmetic.
 
-    export PHISHNET_API_KEY=...            # or ~/.config/possumlogic/keys.json
+    export PL_PHISHNET_API_KEY=...         # or ~/.config/possumlogic/keys.json
                                            # {"phish.net": "..."}
+                                           # every PL_ var belongs to this program
     python3 possumlogic.py 2026-07-24 --html report.html --pdf report.pdf
 
 Or keep a growing site of them, one page per show plus a searchable index:
@@ -111,12 +112,31 @@ LEGACY_KEY_FILE = os.path.expanduser("~/.config/phishgap/apikey")
 # The environment variable for each service names the service too. PHISHNET_API_KEY
 # keeps its name: it is phish.net's key, not this program's, and rebranding
 # someone else's credential would be the same mistake in the other direction.
+# Everything this program reads from the environment is prefixed PL_, so it
+# cannot collide with a variable some other tool owns and so a shell that has
+# several of these in it says which belongs to what. The names are derived from
+# the service key rather than listed, which is what keeps a third service from
+# needing a decision: phish.net becomes PL_PHISH_NET_API_KEY on its own.
+ENV_PREFIX = "PL_"
+
 SERVICES = {
-    "phish.net": {"env": "PHISHNET_API_KEY",
-                  "signup": "https://phish.net/api"},
-    "setlist.fm": {"env": "SETLISTFM_API_KEY",
-                   "signup": "https://www.setlist.fm/settings/api"},
+    "phish.net": {"signup": "https://phish.net/api"},
+    "setlist.fm": {"signup": "https://www.setlist.fm/settings/api"},
 }
+
+
+def env_names(service):
+    """Environment variables to try for `service`, in order of precedence.
+
+    The namespaced name, then the same name without the prefix. Separators in
+    the service key are dropped rather than becoming underscores, which makes
+    the unprefixed form come out as PHISHNET_API_KEY -- the name already in
+    every existing shell and in the repository secret a scheduled job depends
+    on tonight. So the fallback is not a compatibility shim bolted on; it is
+    simply what these have always been called.
+    """
+    stem = re.sub(r"[^A-Z0-9]+", "", service.upper()) + "_API_KEY"
+    return (ENV_PREFIX + stem, stem)
 
 
 def _config_keys():
@@ -143,9 +163,10 @@ def load_key(explicit=None, service="phish.net", required=True):
     if explicit:
         return explicit
     meta = SERVICES.get(service) or {}
-    env = os.environ.get(meta.get("env") or "")
-    if env:
-        return env.strip()
+    for name in env_names(service):
+        env = os.environ.get(name)
+        if env and env.strip():
+            return env.strip()
     found = _config_keys().get(service)
     if found:
         return found
@@ -161,7 +182,7 @@ def load_key(explicit=None, service="phish.net", required=True):
         "No %s API key. Set %s, or add it to %s as\n"
         '  {"%s": "..."}\n'
         "Request a key at %s"
-        % (service, meta.get("env", "the environment"), CONFIG_FILE,
+        % (service, env_names(service)[0], CONFIG_FILE,
            service, meta.get("signup", "the service")))
 
 
@@ -378,7 +399,7 @@ SITE_URL = "https://ianfoo.github.io/phishgap"
 # there is nothing for a consent banner to ask about. Set to the account code
 # to switch it on; empty means the pages ask nothing of anyone, which is what
 # they do until someone deliberately changes this line.
-GOATCOUNTER = ""
+GOATCOUNTER = os.environ.get(ENV_PREFIX + "GOATCOUNTER", "").strip()
 ANALYTICS = ('<script data-goatcounter="https://%s.goatcounter.com/count" '
              'async src="//gc.zgo.at/count.js"></script>' % GOATCOUNTER
              if GOATCOUNTER else "")
@@ -5246,7 +5267,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("showdate", nargs="*", metavar="SHOWDATE",
                     help="one or more show dates, YYYY-MM-DD")
-    ap.add_argument("--apikey", help="overrides PHISHNET_API_KEY")
+    ap.add_argument("--apikey", help="overrides PL_PHISHNET_API_KEY")
     ap.add_argument("--artist", default="Phish",
                     help="artist filter when a date has multiple (default Phish)")
     ap.add_argument("--previous", action="store_true",

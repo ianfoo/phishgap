@@ -13,7 +13,8 @@ Reports are published at
 ## Usage
 
 Get a key at [phish.net/api](https://phish.net/api), then put it anywhere the
-script looks — `PHISHNET_API_KEY`, `--apikey`, or `~/.config/possumlogic/keys.json`,
+script looks — `PL_PHISHNET_API_KEY` (or plain `PHISHNET_API_KEY`), `--apikey`,
+or `~/.config/possumlogic/keys.json`,
 which holds one key per service so each says which API it belongs to:
 `{"phish.net": "..."}`. The older `~/.config/phishgap/apikey` is still read.
 
@@ -128,7 +129,10 @@ JSON archive; the generated pages live only on `gh-pages`.
 `.github/workflows/gap-reports.yml` does the same thing on a schedule: hourly
 through the window a show can be settling in, plus a once-a-day pass that also
 re-checks recent shows for corrections. On a day with no show it finds nothing
-and publishes nothing. It needs one repository secret, `PHISHNET_API_KEY`.
+and publishes nothing. It needs one repository secret, `PHISHNET_API_KEY`, which it passes to the
+script as `PL_PHISHNET_API_KEY`. Everything this program reads from the
+environment is prefixed `PL_`; set `PL_GOATCOUNTER` as a repository variable
+to turn on analytics.
 Pushing a change to `possumlogic.py` also triggers it, so a template edit
 republishes every page.
 
