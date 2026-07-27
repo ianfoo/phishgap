@@ -5,7 +5,7 @@
 <meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every Phish performance of Guyute: 137 shows, 1994-10-07 to 2026-07-17. Best version 2004-08-14 (77)"><meta property="og:site_name" content="Phish Gap Reports"><meta property="og:title" content="Guyute"><meta property="og:description" content="Every Phish performance of Guyute: 137 shows, 1994-10-07 to 2026-07-17. Best version 2004-08-14 (77)"><meta property="og:url" content="https://ianfoo.github.io/phishgap/song/guyute.html"><meta property="og:image" content="https://ianfoo.github.io/phishgap/card/song-guyute.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every Phish performance of Guyute: 137 shows, 1994-10-07 to 2026-07-17. Best version 2004-08-14 (77)"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
 <link href="../fonts.css" rel="stylesheet">
 <style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
 :root[data-theme="light"]{color-scheme:only light}
@@ -272,7 +272,16 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    read as something stuck on afterwards rather than as part of the entry.
    Roman, not italic -- these run to 950 characters at the long end, and a
    paragraph of italic prose is tiring well before that. */
-.jam,.note{margin:.4rem 0 0;font-size:.75rem;line-height:1.5;
+/* The only real prose on the site, and the one job neither other face can do.
+   The mono set it evenly and never argued with the figures, but 950 characters
+   of monospace gives the eye nothing to return on, and the display face at
+   text size is a display face at text size. Literata is drawn for reading and
+   has the optical axis to be drawn differently here than at a headline, which
+   is the whole argument for a third family rather than stretching a second.
+   15px rather than 12: a proportional face sets far more into the same measure,
+   and the old size was compensating for the mono's width. */
+.jam,.note{margin:.45rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 14;
    color:var(--ink-soft);max-width:62ch}
 .jam a,.note a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--edge);word-break:break-word}
