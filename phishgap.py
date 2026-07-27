@@ -284,8 +284,7 @@ FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
 # Plex Mono is the only thing still coming from Google: it is doing real work
 # at 10-14px and swapping it would cost legibility for no identity gain.
 WEB_FONTS = ("https://fonts.googleapis.com/css2"
-             "?family=Alfa+Slab+One"
-             "&family=IBM+Plex+Mono:wght@400;500;600&display=swap")
+             "?family=IBM+Plex+Mono:wght@400;500;600&display=swap")
 
 
 # ------------------------------------------------------------------ share ---
@@ -727,8 +726,8 @@ h1 a:hover em{color:var(--ink)}
       border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
-     letter-spacing:-.01em;color:var(--ink)}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+     letter-spacing:0;color:var(--ink)}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
@@ -768,7 +767,7 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
 td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1.5rem;line-height:1;
+.gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;line-height:1;
      white-space:nowrap}
 .gap.big{color:var(--hot)}
 .gap.small{color:var(--cool)}
@@ -846,7 +845,7 @@ td.song a:hover .jc-chip{background:var(--hot);color:var(--paper);
 .venue{color:var(--dim);font-size:.75rem;line-height:1.2rem}
 .rating{margin:.45rem 0 0;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim)}
-.rating b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.rating b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;color:var(--ink);letter-spacing:0;margin-left:.15rem}
 .rating span{opacity:.75}
 /* The title carries the link to the song's own page; underlining every one of
@@ -1467,8 +1466,8 @@ header{padding-bottom:.9rem}
       border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
-     letter-spacing:-.01em}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+     letter-spacing:0}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
@@ -1490,7 +1489,7 @@ header{padding-bottom:.9rem}
       color:var(--ink);border:1px solid var(--edge);border-radius:0}
 .count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);margin-left:auto}
-.count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
          font-size:1rem;color:var(--ink)}
 .reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .row{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;column-gap:1.1rem;
@@ -1514,7 +1513,7 @@ header{padding-bottom:.9rem}
 /* Tabular numerals do the aligning; the widths these used to be given by hand
    were a workaround for not having asked the face for them. */
 .r-stats .st b{display:inline-block;text-align:right}
-.r-stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.r-stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
            font-size:1rem;color:var(--ink)}
 .r-stats b.hot{color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
@@ -1845,8 +1844,8 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule)}
 .card:first-child{border-left:0;padding-left:0}
-.num{font-family:'Alfa Slab One',Georgia,serif;font-size:2.25rem;line-height:1;
-   letter-spacing:-.01em}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+   letter-spacing:0}
 .num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
@@ -1864,7 +1863,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    color:var(--dim)}
 .best .field{display:flex;flex-direction:column;gap:.3rem}
 .best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
-.best .score{font-family:'Alfa Slab One',Georgia,serif;color:var(--hot);
+.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
@@ -1899,7 +1898,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.42rem .55rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none}
-.era-chip b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.era-chip b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
 .era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
 .era-chip:hover b{color:var(--hot)}
@@ -1913,7 +1912,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    the song was played there. */
 .r-venue{cursor:pointer}
 .r-venue:hover{color:var(--hot)}
-.count b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 /* Anything a link can land on stops clear of the condensed header, which is
@@ -1996,7 +1995,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    Shown exactly where the header is not. */
 .glabel{display:none;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-right:.4rem}
-.gap{font-family:'Alfa Slab One',Georgia,serif;font-size:1rem}
+.gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 .gap.big{color:var(--hot)}
 .gap.none{color:var(--dim)}
 .set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
@@ -2030,7 +2029,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    scored until a recording of it circulates. */
 .mark{display:block;margin-top:.3rem;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim)}
-.mark b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.mark b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;color:var(--dim);letter-spacing:0}
 .mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
@@ -2083,7 +2082,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stuck .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--dim);margin-left:auto;white-space:nowrap}
-.stuck .n b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.stuck .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
   font-size:.875rem;color:var(--ink);letter-spacing:0}
 @media (prefers-reduced-motion:reduce){.stuck{transition:none}}
 /* Where a link dropped you. Bright for a moment, then gone -- it answers
@@ -2776,7 +2775,7 @@ def render_songs(docs, stamp=None, card=None):
 
 METHOD_CSS = INDEX_CSS + """
 .prose{max-width:68ch;margin:0 0 2.4rem}
-.prose h2{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;
+.prose h2{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:1.25rem;margin:2.2rem 0 .5rem;letter-spacing:0}
 .prose p{margin:0 0 .9rem;font-size:.875rem;line-height:1.65;color:var(--ink-soft)}
 .prose b{color:var(--ink)}
@@ -2786,7 +2785,7 @@ METHOD_CSS = INDEX_CSS + """
 .prose .premature{color:var(--cool)}
 .prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.prose .num{font-family:'Alfa Slab One',Georgia,serif;font-size:1rem;
+.prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
 """
 
@@ -2955,7 +2954,7 @@ h1 em{font-style:normal;color:#c8371b}
 .rule{height:7px;background:#17150f;margin-top:38px}
 .stats{display:flex;gap:58px;margin-top:30px;font-size:23px;letter-spacing:.14em;
   text-transform:uppercase;color:#877e6e}
-.stats b{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:52px;
+.stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:52px;
   letter-spacing:0;color:#17150f;display:block;margin-bottom:4px;white-space:nowrap}
 .stats .hot{color:#c8371b}
 .mark{position:absolute;right:-64px;top:-72px;width:392px;height:392px;opacity:.12}
