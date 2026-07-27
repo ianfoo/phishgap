@@ -719,7 +719,14 @@ h1 a:hover em{color:var(--ink)}
 /* Sits with the tour, not with the date: it is context for the night rather
    than part of naming it. Absent for 1.0, where it cannot be said honestly,
    and for anything phish.net does not count as a show. */
-.show .nth{font-size:.75rem;font-weight:400;letter-spacing:0;color:var(--dim)}
+.show .nth{font-size:.75rem;font-weight:400;letter-spacing:0;color:var(--dim);
+   text-transform:none;white-space:nowrap}
+/* A dim middot, not a second hot bullet. The bullet separates the two things
+   that name the night -- its date and its tour -- and repeating it would make
+   this a third of equal rank. It is an aside about the night, so it attaches
+   with the quieter mark. Its own, because a show with no tour still needs
+   something between the date and this. */
+.show .nth::before{content:"\\00B7";color:var(--dim);margin:0 .45rem}
 .show .tour::before{content:"\\2022";color:var(--hot);font-size:1.25rem;
    margin:0 .7rem}
 .where{margin:.4rem 0 0;font-size:1rem;font-weight:600;letter-spacing:0;
@@ -3008,14 +3015,14 @@ METHOD_SHELL = """<!DOCTYPE html>
 def render_method():
     """The page the footers point at when a number wants explaining."""
     body = """
-<h2 data-tab="What a gap is"></h2>
+<h2 id="what-a-gap-is">What a gap is</h2>
 <p>The number beside a song is how many shows the band played between this
 performance and the one before it. A gap of <b class="num">0</b> means they
 played it again the very next night; <b class="num">485</b> means four hundred
 and eighty-five shows went by. The figure comes from Phish.net, which computes
 it; nothing here is counted a second time.</p>
 
-<h2 data-tab="The median, and why ten years"></h2>
+<h2 id="the-median-and-why-ten-years">The median, and why ten years</h2>
 <p>Under each gap is that song's usual one &mdash; the median of its gaps over
 the <b>ten years</b> before the show, not over all of history. Forty years of a
 working band is several different bands. The 1990s dominate any all-time
@@ -3030,7 +3037,7 @@ have been in rotation lately to be judged at all.</p>
 right-skewed: a staple with a median of 6 carries a handful of 200s, and an
 average over that would call almost anything ordinary.</p>
 
-<h2 data-tab="The verdicts"></h2>
+<h2 id="the-verdicts">The verdicts</h2>
 <p>A gap outside the middle 70% of that ten-year window gets called. Below it,
 <span class="verdict premature">premature</span>; above it,
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
@@ -3040,9 +3047,9 @@ bar is the median, the one figure that is real.</p>
 <p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
 yields roughly 13% premature, 67% expected and 20% overdue.</p>
 
-<h2 data-tab="Which show this was"></h2>
+<h2 id="which-show-this-was">Which show this was</h2>
 <p>A report says where the night sits inside its era &mdash; the
-<span class="num">312</span>th show of 3.0 &mdash; and never where it sits
+<span class="num">312th</span> show of 3.0 &mdash; and never where it sits
 overall. There is no honest overall number to give. phish.net offers three
 defensible totals for how many shows the band has played: <span
 class="num">2,239</span> entries listed, <span class="num">2,114</span> that
@@ -3063,14 +3070,14 @@ estimated. <b>1.0 shows carry no ordinal</b>, which is a decision and not an
 oversight: the number could be produced, and it would be wrong by somewhere
 between one and eight with no way to tell which from the date alone.</p>
 
-<h2 data-tab="Songs with no verdict"></h2>
+<h2 id="songs-with-no-verdict">Songs with no verdict</h2>
 <p>A song needs <b>eight</b> performances inside that ten-year window before
 any of this is said about it. Below that there is no current norm to be early
 or late against, so it gets its numbers and no adjective. Roughly one song in
 eleven falls here, which is the honest answer for something the band has nearly
 stopped playing.</p>
 
-<h2 data-tab="Bustouts"></h2>
+<h2 id="bustouts">Bustouts</h2>
 <p>A gap of <b class="num">100</b> or more is a
 <span class="verdict bust">bustout</span> regardless of everything above. A
 hundred sits where Phish.net's own setlist notes use the word. The gap alone
@@ -3078,7 +3085,7 @@ decides it: a gap counts shows, so a large one already proves the song has been
 in the catalogue a long while &mdash; nothing newly written can reach the
 threshold.</p>
 
-<h2 data-tab="Ratings and jam charts"></h2>
+<h2 id="ratings-and-jam-charts">Ratings and jam charts</h2>
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
 programmatically. Scores are computed from a mix of community signal and audio
@@ -3088,7 +3095,7 @@ own, written months after the fact. Both are treated as optional everywhere
 they appear, which is why a report published the morning after a show carries
 neither.</p>
 
-<h2 data-tab="When a report appears"></h2>
+<h2 id="when-a-report-appears">When a report appears</h2>
 <p>Nothing in the data says whether a setlist is finished. There is no show
 time to reason from, and the format is not promised &mdash; a rained-out show
 can stop mid-second-set with no encore, so counting sets proves nothing.
