@@ -128,8 +128,12 @@ header{padding-bottom:.9rem}
 .row:hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
-.r-date{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1rem;
-        line-height:1.3rem;white-space:nowrap}
+/* Data in a column, so the mono: tabular by construction, which is what makes
+   710 dates present one edge to the venue beside them rather than a soft
+   ragged one. The display face keeps the mastheads, where a date is the name
+   of the page rather than a value in a list. */
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+        font-size:1rem;line-height:1.3rem;white-space:nowrap}
 .r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
          line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
@@ -875,7 +879,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <p class="empty" id="empty" hidden>No songs match that search.</p>
 <footer><span><a href="./method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-25</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div><script>
 (function(){
   var list=document.getElementById('list');
