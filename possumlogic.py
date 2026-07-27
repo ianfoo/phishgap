@@ -2064,8 +2064,12 @@ header{padding-bottom:.9rem}
 .row:hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
-.r-date{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1rem;
-        line-height:1.3rem;white-space:nowrap}
+/* Data in a column, so the mono: tabular by construction, which is what makes
+   710 dates present one edge to the venue beside them rather than a soft
+   ragged one. The display face keeps the mastheads, where a date is the name
+   of the page rather than a value in a list. */
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+        font-size:1rem;line-height:1.3rem;white-space:nowrap}
 .r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
          line-height:1.3rem}
 .r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
@@ -2600,8 +2604,8 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .row:hover{background:var(--hover)}
 /* The row's identifier, in the display face, same as the show index. It is
    the one thing in the row that is not the song. */
-.r-date{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1rem;
-   line-height:1.3rem;white-space:nowrap}
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1rem;line-height:1.3rem;white-space:nowrap}
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .r-date a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -3939,7 +3943,7 @@ def report_card(report):
             "Possum Logic", html.escape(report["date"]),
             html.escape((report.get("venue") or "").upper()),
             ((" ", "Setlist still coming in", "hot"),),
-            size=104, data=True)
+            size=104)
     gaps = [s["gap"] for s in report["songs"] if s["gap"] is not None]
     biggest = max(gaps) if gaps else None
     song = next((s["song"] for s in report["songs"] if s["gap"] == biggest), "")
@@ -3950,7 +3954,10 @@ def report_card(report):
          (_stat(_median(gaps)) if gaps else "&mdash;", "Median gap", ""),
          (_stat(biggest) if gaps else "&mdash;",
           html.escape(song[:22]) or "Longest gap", "hot")),
-        size=104, data=True)
+        # No `data`: the card is a small copy of the masthead, and the masthead
+        # sets its date in the display face. A shared link should look like the
+        # page it opens.
+        size=104)
 
 
 def _card_size(title):

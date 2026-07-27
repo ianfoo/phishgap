@@ -1,14 +1,30 @@
 # possumlogic
 
-Per-song **gap** reports for Phish shows: how many shows passed between each
-song at a given concert and the last time the band played it. A gap of 4 is a
-regular in rotation; a gap of 1,170 is a bustout worth shouting about.
-
-Data comes from the [Phish.net API v5](https://docs.phish.net/), which returns
-each song's gap already computed, so there is no scraping and no arithmetic.
-
-Reports are published at
+A browsable archive of Phish performances, published at
 **[possumlogic.com](https://possumlogic.com/)**.
+
+Every show since the 2009 Hampton reunion has a page: what was played, what each
+song went into, how long since the band last played it, and how that compares to
+how often they usually play it. Every song has a page too — every performance of
+it, oldest to newest, with its debut, its longest absence, and where the best
+recorded version is.
+
+The **gap** is the spine of it: how many shows passed between one performance of
+a song and the one before. A gap of 4 is a regular in rotation; 1,468 is Cold as
+Ice returning in 2026 after last being played in 1992. Gaps come from the
+[Phish.net API v5](https://docs.phish.net/) already computed, so there is no
+scraping and no arithmetic — but which shows *count* toward one is a judgement,
+and the site follows phish.net's own `exclude_from_stats` flag rather than
+inventing a rule. Soundchecks and television sessions are on file and say so.
+
+Ratings and best-version links come from
+[fouldomain](https://fouldomain.com/); listening links point at
+[phish.in](https://phish.in/). A show still being played publishes while it is
+being played, and says so.
+
+Everything is static. There is no server, no database and no build pipeline —
+one Python script writes the whole site from a JSON archive it also maintains,
+and GitHub Pages serves it.
 
 ## Usage
 
