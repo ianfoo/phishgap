@@ -434,6 +434,34 @@ def own_history(rows, artist):
     return rows
 
 
+def _finish_song(s, hist, date):
+    """Fill one song's gap, verdict and previous performance from its history.
+
+    Split out so the archived path and the fetched path cannot drift: they
+    differ in where the rows came from and in nothing else.
+    """
+    idx = next((i for i, h in enumerate(hist) if h["showdate"] == date), None)
+    if idx is not None:
+        # by_show has already found the night's real gap, wherever among the
+        # repeats phish.net happened to file it.
+        g = _gap(hist[idx])
+        if g is not None:
+            s["gap"] = g
+    if idx == 0:
+        s["debut"] = True              # this show IS the first performance
+    # The history is already in hand for the previous-performance lookup, so
+    # the song's own gap distribution costs nothing more. Shows before this one
+    # only, and never the debut, which has no gap to speak of.
+    s.update(_classify(s["gap"], hist[1:idx if idx else 0], date,
+                       plays=None if idx is None else idx + 1))
+    prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
+    if prior:
+        s["prev_date"] = prior.get("showdate")
+        s["prev_venue"] = prior.get("venue") or ""
+        s["prev_place"] = ", ".join(
+            p for p in (prior.get("city"), prior.get("state")) if p)
+
+
 def add_previous(report, apikey, site_dir=None, **kw):
     """Optional second pass: date/venue of each song's prior performance.
 
@@ -447,6 +475,12 @@ def add_previous(report, apikey, site_dir=None, **kw):
     missed = []
     artist = report.get("artist")
     for s in report["songs"]:
+        # Free when the archive already covers this show, which during a
+        # backfill is nearly always.
+        hist = archived_history(site_dir, s["slug"], report["date"])
+        if hist is not None:
+            _finish_song(s, hist, report["date"])
+            continue
         try:
             hist = get("setlists/slug/%s" % s["slug"], apikey, **kw)
         except ApiError as exc:
@@ -462,27 +496,7 @@ def add_previous(report, apikey, site_dir=None, **kw):
         hist = by_show(own_history(hist, artist))
         if site_dir:
             save_song_history(site_dir, s["slug"], s["song"], hist, artist)
-        idx = next((i for i, h in enumerate(hist)
-                    if h["showdate"] == report["date"]), None)
-        if idx is not None:
-            # by_show has already found the night's real gap, wherever among
-            # the repeats phish.net happened to file it.
-            g = _gap(hist[idx])
-            if g is not None:
-                s["gap"] = g
-        if idx == 0:
-            s["debut"] = True          # this show IS the first performance
-        # The history is already in hand for the previous-performance lookup,
-        # so the song's own gap distribution costs nothing more. Shows before
-        # this one only, and never the debut, which has no gap to speak of.
-        s.update(_classify(s["gap"], hist[1:idx if idx else 0], report["date"],
-                           plays=None if idx is None else idx + 1))
-        prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
-        if prior:
-            s["prev_date"] = prior.get("showdate")
-            s["prev_venue"] = prior.get("venue") or ""
-            s["prev_place"] = ", ".join(
-                p for p in (prior.get("city"), prior.get("state")) if p)
+        _finish_song(s, hist, report["date"])
     if missed:
         print("warning: no history for %d of %d songs in %s: %s"
               % (len(missed), len(report["songs"]), report["date"],
@@ -3705,6 +3719,32 @@ def split_archive(reports, calendar):
         aside.append({"report": r, "kind": kind,
                       "before": dates[i] if i < len(dates) else None})
     return shows, aside
+
+
+def archived_history(site_dir, slug, date):
+    """A song's history from disk, in the shape add_previous wants, or None.
+
+    setlists/slug returns a song's *whole* history, so archiving one show's
+    songs archives their 1980s performances too. Backfilling therefore asks
+    phish.net for history it already has: at 21 songs a show, a 440-show
+    backfill of 3.0 is some 9,000 calls to re-read files on this disk.
+
+    Returned only when the stored history already contains the show being
+    built. That is the exact condition under which it is known to be complete
+    for this purpose -- a history missing tonight is a history that predates
+    tonight, and its gaps stop short. Anything else falls through to the API.
+    """
+    if not site_dir:
+        return None
+    doc = song_history(site_dir, slug)
+    perfs = (doc or {}).get("performances") or []
+    if not any(p.get("date") == date for p in perfs):
+        return None
+    # Stored oldest-first and already one row per show, which is what by_show
+    # and own_history would have produced on the way in.
+    return [{"showdate": p["date"], "venue": p.get("venue") or "",
+             "city": p.get("city") or "", "state": p.get("state") or "",
+             "gap": p.get("gap")} for p in perfs]
 
 
 def setlist_neighbours(rows, artist=None):
