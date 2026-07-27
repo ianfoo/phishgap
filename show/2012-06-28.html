@@ -86,7 +86,14 @@ h1 a:hover em{color:var(--ink)}
 /* Sits with the tour, not with the date: it is context for the night rather
    than part of naming it. Absent for 1.0, where it cannot be said honestly,
    and for anything phish.net does not count as a show. */
-.show .nth{font-size:.75rem;font-weight:400;letter-spacing:0;color:var(--dim)}
+.show .nth{font-size:.75rem;font-weight:400;letter-spacing:0;color:var(--dim);
+   text-transform:none;white-space:nowrap}
+/* A dim middot, not a second hot bullet. The bullet separates the two things
+   that name the night -- its date and its tour -- and repeating it would make
+   this a third of equal rank. It is an aside about the night, so it attaches
+   with the quieter mark. Its own, because a show with no tour still needs
+   something between the date and this. */
+.show .nth::before{content:"\00B7";color:var(--dim);margin:0 .45rem}
 .show .tour::before{content:"\2022";color:var(--hot);font-size:1.25rem;
    margin:0 .7rem}
 .where{margin:.4rem 0 0;font-size:1rem;font-weight:600;letter-spacing:0;
