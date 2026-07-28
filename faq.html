@@ -236,7 +236,7 @@ header{padding-bottom:.9rem}
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
 .due{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .due li{border-bottom:1px solid var(--rule-soft)}
-.due .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+.due .row{display:grid;grid-template-columns:1fr 11rem 11rem;column-gap:1.1rem;
    align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
 .due .row:hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
@@ -245,8 +245,8 @@ header{padding-bottom:.9rem}
    font-size:.875rem;white-space:nowrap}
 .d-where{display:block;color:var(--dim);font-size:.75rem}
 .d-n{text-align:right}
-.d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   font-size:1.5rem;line-height:1;color:var(--hot)}
+.d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
 /* Same rule the song pages carry, and it has to be stated here too because
    this sheet does not include theirs. It was missing entirely, so the due and
@@ -287,12 +287,15 @@ header{padding-bottom:.9rem}
   .vn-n b{font-size:1.25rem}
 }
 @media screen and (max-width:620px){
-  .due .row{grid-template-columns:1fr 5.5rem;grid-template-areas:"song n" "last n";
+  /* 5.5rem held one number. It now holds that number and the multiple the
+     list is ordered by, which wraps to two lines here rather than being
+     dropped -- the order is the point of the page at any width. */
+  .due .row{grid-template-columns:1fr 7rem;grid-template-areas:"song n" "last n";
      row-gap:.15rem}
   .d-song{grid-area:song}
   .d-last{grid-area:last}
   .d-n{grid-area:n}
-  .d-n b{font-size:1.25rem}
+  .d-n > b{font-size:1.25rem}
 }
 .aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
 .aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -616,12 +619,22 @@ one not played in ten years at all. The statistics say which.</p>
 <p>Due means past its own recent usual gap &mdash; measured against that
 song&rsquo;s habit, not against a single number for the whole catalogue. A
 staple is late at eight shows and a rarity is not late at eighty.</p>
-<p>A song with no recent habit that has been gone two hundred shows is
-therefore not <em>due</em>. Nobody is expecting it. Those are dormant, which is
-a different fact: they are counted at the foot of the
+<p><em>Recent</em> means the last ten years of shows, counted back from the
+newest show in the archive rather than from the song&rsquo;s own last night on
+stage. That distinction is the whole of the previous paragraph: measured from
+its own last performance, a song that stopped being played in 2011 still has a
+tidy ten-year habit ending in 2011, and would be ranked as running late against
+a band that has since played a thousand shows without it.</p>
+<p>So a song with no recent habit that has been gone two hundred shows is not
+<em>due</em>. Nobody is expecting it. Those are dormant, which is a different
+fact: they are counted at the foot of the
 <a href="./due.html">due page</a> and each song&rsquo;s own page says it, but
 ranking them would bury the songs somebody might actually shout for
 tonight.</p>
+<p>The list is ordered by how far past each song is as a multiple of its own
+usual gap, which is the figure on the right of every row &mdash; not by how
+many shows it has been gone, since a hundred shows is nothing for one song and
+a decade for another.</p>
 <h2 id="eras">What are 1.0, 2.0, 3.0 and 4.0?</h2>
 <p>The four stretches the band has played in, either side of its two long
 breaks. Bounded by date rather than by year, because the hiatuses fall
