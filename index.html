@@ -63,11 +63,11 @@ h1 a:hover em{color:var(--ink)}
 /* A hero card that is also a way in. Only some of them are. */
 a.card{text-decoration:none;color:inherit}
 a.card:hover{background:var(--hover)}
-/* Only one of the four cards is a link, so it needs to say so -- but a rule
-   under a letterspaced label reads as a stray underline rather than an
-   affordance, and it was the one line in the hero not doing structural work.
-   An arrow after the label carries the same message and disappears into the
-   type. */
+/* Some of the cards are links and some are not, so the ones that are need to
+   say so -- but a rule under a letterspaced label reads as a stray underline
+   rather than an affordance, and it was the one line in the hero not doing
+   structural work. An arrow after the label carries the same message and
+   disappears into the type. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
 a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
@@ -81,11 +81,37 @@ header{padding-bottom:.9rem}
 /* The tear line between one set and the next. Never between rows. */
 .perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
    to right,var(--edge) 0 5px,transparent 5px 10px)}
-.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+/* Six cards do not fit on one line, and a wrapping flex row gives the first
+   card of the second line a left rule -- which then separates it from the page
+   margin rather than from another card, and leaves its number indented out of
+   line with the wordmark and every row below it. A grid ties both the rule and
+   the flush left edge to a *column position* rather than to wherever the cards
+   happen to wrap, so the stranded rule is impossible instead of relocated. The
+   column count is written by whoever builds the hero, so it cannot disagree
+   with the number of cards actually in it. */
+/* The class names the column count rather than the card count, so a hero that
+   gains or loses a card only has to say how many columns it now wants, and
+   four cards on the song index and six here share one set of rules. The
+   fallback is the four-across the hero had before any of this. */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);margin:.7rem 0 .3rem;
       border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+.hero-c3{grid-template-columns:repeat(3,1fr)}
+.hero-c4{grid-template-columns:repeat(4,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
    display:flex;flex-direction:column}
-.card:first-child{border-left:0;padding-left:0}
+/* Only above the breakpoint. The narrow layout has always been two columns and
+   already says which cards start a row down there; stating it twice meant the
+   wide rule outranked the narrow one and left card 4 of a six indented half a
+   space out of line with the cards above and below it. Each width states its
+   own row-starts and neither has to undo the other. */
+@media screen and (min-width:621px){
+  .hero-c3>.card:nth-child(3n+1),
+  .hero-c4>.card:nth-child(4n+1){border-left:0;padding-left:0}
+  /* A second row of cards needs a rule over it, or the two rows read as one
+     block with the numbers of the first sitting on the labels of the next. */
+  .hero-c3>.card:nth-child(n+4),
+  .hero-c4>.card:nth-child(n+5){border-top:1px solid var(--rule)}
+}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
      letter-spacing:0;margin-top:auto}
 .num.hot{color:var(--hot)}
@@ -179,6 +205,35 @@ header{padding-bottom:.9rem}
    font-size:1.5rem;line-height:1;color:var(--hot)}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The venue list borrows the due page's three-column shape because it answers
+   the same shape of question: a name, a when, and one figure worth ranking by.
+   Its own class names, though -- .d-* means "due", and a venue row sharing
+   them would make either page impossible to restyle without the other. */
+.vn{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.vn li{border-bottom:1px solid var(--rule-soft)}
+.vn .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.vn .row:hover{background:var(--hover)}
+.vn-venue{font-size:1rem;font-weight:500}
+.vn .row:hover .vn-venue{color:var(--hot)}
+.vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
+.vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
+   color:var(--dim);white-space:nowrap}
+.vn-n{text-align:right}
+.vn-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--ink)}
+.vn-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem;
+   white-space:nowrap}
+@media screen and (max-width:620px){
+  /* "dates", not "span": grid-area:span would be parsed as the span keyword
+     and drop the whole declaration. */
+  .vn .row{grid-template-columns:1fr 5.5rem;
+     grid-template-areas:"venue n" "dates n";row-gap:.15rem}
+  .vn-venue{grid-area:venue}
+  .vn-span{grid-area:dates}
+  .vn-n{grid-area:n}
+  .vn-n b{font-size:1.25rem}
+}
 @media screen and (max-width:620px){
   .due .row{grid-template-columns:1fr 5.5rem;grid-template-areas:"song n" "last n";
      row-gap:.15rem}
@@ -252,7 +307,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .r-top{text-align:left;display:inline}
   .r-top::before{content:" ("}
   .r-top::after{content:")"}
-  .card{flex:1 1 45%;padding:.65rem .55rem}
+  /* Two across, whatever the wide layout asked for. The flex basis that used
+     to be here stopped meaning anything when the hero became a grid. */
+  .hero-c3,.hero-c4{grid-template-columns:repeat(2,1fr)}
+  .card{padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
@@ -323,14 +381,38 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   tick();
   setInterval(tick,20000);
 })();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
 </script></head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./method.html">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">691 reports &middot; 2009-03-06 &rarr; 2026-07-27</p></header>
-<a class='onstage' href='./show/2026-07-27.html'><span class='k'>On stage now</span><span class='w'>Madison Square Garden<span class='p'>New York, NY</span></span><span class='n'><b>16</b> songs so far</span></a>
-<section class="hero"><div class='card'><div class='lbl'>Reports</div><div class='num'>691</div></div><a class='card' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></a><a class='card' href='./songs.html'><div class='lbl'>Song Performances</div><div class='num'>14,038</div></a><a class='card' href='./show/2011-07-02.html'><div class='lbl'>Most Songs</div><div class='num'>45</div></a><div class='card'><div class='lbl'>Venues</div><div class='num'>153</div></div></section>
+<a class='onstage' href='./show/2026-07-27.html'><span class='k'>On stage now</span><span class='w'>Madison Square Garden<span class='p'>New York, NY</span></span><span class='n'><b>20</b> songs so far</span></a>
+<section class="hero hero-c3"><div class='card'><div class='lbl'>Reports</div><div class='num'>691</div></div><a class='card' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></a><a class='card' href='./songs.html'><div class='lbl'>Song Performances</div><div class='num'>14,042</div></a><a class='card' href='./show/2011-07-02.html'><div class='lbl'>Most Songs</div><div class='num'>45</div></a><a class='card' href='./venues.html'><div class='lbl'>Venues</div><div class='num'>153</div></a><a class='card' href='./due.html'><div class='lbl'>Songs Due</div><div class='num hot'>54</div></a></section>
 <div class="rule2"></div>
 <div class="tools">
 <div class="tools-main">
@@ -346,7 +428,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <div class="chips"><button class='chip' type='button' disabled data-era='3.0'>3.0 <span class='chip-n'>444</span></button><button class='chip' type='button' disabled data-era='4.0'>4.0 <span class='chip-n'>247</span></button></div>
 </div>
 <ol class="reports" id="list">
-<li data-date='2026-07-27' data-year='2026' data-era='4.0' data-longest='231' data-search="2026-07-27 07/27/2026 7/27/2026 7/27/26 07/27 7/27 7-27 july 27 2026 july 27 monday madison square garden new york, ny 2026 summer tour wilson timber (jerry the mule) ha ha ha scent of a mule theme from the bottom halley&#x27;s comet the man who stepped into yesterday avenu malkenu nicu funky bitch taste the curtain with prince caspian drowned billy breathes it&#x27;s ice"><a class='row' href='./show/2026-07-27.html'><span class='r-date'>2026-07-27</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>16</b> songs <span class='live-tag'>so far</span></span><span class='st'>median <b>10</b></span><span class='st'>longest <b class='hot'>231</b></span><span class='r-top'>Ha Ha Ha</span></span></a></li>
+<li data-date='2026-07-27' data-year='2026' data-era='4.0' data-longest='927' data-search="2026-07-27 07/27/2026 7/27/2026 7/27/26 07/27 7/27 7-27 july 27 2026 july 27 monday madison square garden new york, ny 2026 summer tour wilson timber (jerry the mule) ha ha ha scent of a mule theme from the bottom halley&#x27;s comet the man who stepped into yesterday avenu malkenu nicu funky bitch taste the curtain with prince caspian drowned billy breathes it&#x27;s ice johnny b. goode free strange design loving cup"><a class='row' href='./show/2026-07-27.html'><span class='r-date'>2026-07-27</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>20</b> songs <span class='live-tag'>so far</span></span><span class='st'>median <b>10.5</b></span><span class='st'>longest <b class='hot'>927</b></span><span class='r-top'>Johnny B. Goode</span></span></a></li>
 <li data-date='2026-07-25' data-year='2026' data-era='4.0' data-longest='659' data-search="2026-07-25 07/25/2026 7/25/2026 7/25/26 07/25 7/25 7-25 july 25 2026 july 25 saturday madison square garden new york, ny 2026 summer tour back in the u.s.s.r. simple rift punch you in the eye wolfman&#x27;s brother highway to hell down with disease tweezer sample in a jar lifeboy julius catapult cavern the squirming coil purple rain tweezer reprise"><a class='row' href='./show/2026-07-25.html'><span class='r-date'>2026-07-25</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>16</b> songs</span><span class='st'>median <b>9.5</b></span><span class='st'>longest <b class='hot'>659</b></span><span class='r-top'>Highway to Hell</span></span></a></li>
 <li data-date='2026-07-24' data-year='2026' data-era='4.0' data-longest='1170' data-search="2026-07-24 07/24/2026 7/24/2026 7/24/26 07/24 7/24 7-24 july 24 2026 july 24 friday madison square garden new york, ny 2026 summer tour llama bathtub gin lengthwise maze gumbo daniel saw the stone weigh guelah papyrus divided sky tube big ball jam la grange also sprach zarathustra chalk dust torture sparks slave to the traffic light the wedge makisupa policeman kung suzy greenberg golgi apparatus good times bad times sweet adeline fluffhead"><a class='row' href='./show/2026-07-24.html'><span class='r-date'>2026-07-24</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>24</b> songs</span><span class='st'>median <b>11</b></span><span class='st'>longest <b class='hot'>1,170</b></span><span class='r-top'>Big Ball Jam</span></span></a></li>
 <li data-date='2026-07-22' data-year='2026' data-era='4.0' data-longest='1468' data-search="2026-07-22 07/22/2026 7/22/2026 7/22/26 07/22 7/22 7-22 july 22 2026 july 22 wednesday madison square garden new york, ny 2026 summer tour glide runaway jim foam axilla stash cold as ice love you hold your head up sparkle ac/dc bag reba possum david bowie the vibration of life mike&#x27;s song i am hydrogen weekapaug groove bouncing around the room my friend, my friend split open and melt the lizards harry hood the horse silent in the morning big black furry creature from mars run like an antelope"><a class='row' href='./show/2026-07-22.html'><span class='r-date'>2026-07-22</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>26</b> songs</span><span class='st'>median <b>10</b></span><span class='st'>longest <b class='hot'>1,468</b></span><span class='r-top'>Cold as Ice</span></span></a></li>
@@ -1042,7 +1124,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <section class='aside'><h2>Also on file</h2><p>Soundchecks, and television and radio sessions. phish.net lists these but does not count them toward a gap, so neither do we &mdash; the figures on their pages describe the entry, not a show the band played.</p><ol><li><a class='ax-row' href='./show/2026-01-27.html'><span class='ax-date'>2026-01-27</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2026-01-28.html'>2026-01-28</a></span></li><li><a class='ax-row' href='./show/2025-01-28.html'><span class='ax-date'>2025-01-28</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2025-01-29.html'>2025-01-29</a></span></li><li><a class='ax-row' href='./show/2024-08-14.html'><span class='ax-date'>2024-08-14</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>The Woodlands, Dover, DE</span></a><span class='for'>for <a href='./show/2024-08-15.html'>2024-08-15</a></span></li><li><a class='ax-row' href='./show/2024-07-17.html'><span class='ax-date'>2024-07-17</span><span class='ax-kind'>session</span><span class='ax-venue'>NPR Headquarters, Washington, DC</span></a></li><li><a class='ax-row' href='./show/2024-07-11.html'><span class='ax-date'>2024-07-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2024-02-20.html'><span class='ax-date'>2024-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2024-02-21.html'>2024-02-21</a></span></li><li><a class='ax-row' href='./show/2022-02-23.html'><span class='ax-date'>2022-02-23</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2022-02-24.html'>2022-02-24</a></span></li><li><a class='ax-row' href='./show/2020-08-11.html'><span class='ax-date'>2020-08-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2020-02-19.html'><span class='ax-date'>2020-02-19</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2020-02-20.html'>2020-02-20</a></span></li><li><a class='ax-row' href='./show/2019-02-20.html'><span class='ax-date'>2019-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2019-02-21.html'>2019-02-21</a></span></li><li><a class='ax-row' href='./show/2017-01-12.html'><span class='ax-date'>2017-01-12</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2017-01-13.html'>2017-01-13</a></span></li><li><a class='ax-row' href='./show/2016-10-10.html'><span class='ax-date'>2016-10-10</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2015-08-20.html'><span class='ax-date'>2015-08-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2015-08-21.html'>2015-08-21</a></span></li><li><a class='ax-row' href='./show/2014-07-14.html'><span class='ax-date'>2014-07-14</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2011-06-30.html'><span class='ax-date'>2011-06-30</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2011-07-01.html'>2011-07-01</a></span></li><li><a class='ax-row' href='./show/2011-05-26.html'><span class='ax-date'>2011-05-26</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bethel Woods Center for the Arts, Bethel, NY</span></a><span class='for'>for <a href='./show/2011-05-27.html'>2011-05-27</a></span></li><li><a class='ax-row' href='./show/2010-05-13.html'><span class='ax-date'>2010-05-13</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2010-03-15.html'><span class='ax-date'>2010-03-15</span><span class='ax-kind'>session</span><span class='ax-venue'>The Waldorf Astoria, New York, NY</span></a></li><li><a class='ax-row' href='./show/2009-10-29.html'><span class='ax-date'>2009-10-29</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Empire Polo Club, Indio, CA</span></a><span class='for'>for <a href='./show/2009-10-30.html'>2009-10-30</a></span></li><li><a class='ax-row' href='./show/2009-06-11.html'><span class='ax-date'>2009-06-11</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bonnaroo Music &amp; Arts Festival, Manchester, TN</span></a><span class='for'>for <a href='./show/2009-06-12.html'>2009-06-12</a></span></li></ol></section>
 <footer><span><a href="./method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
-
+<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>
 (function(){
   var list=document.getElementById('list');

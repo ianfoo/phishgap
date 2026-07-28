@@ -98,6 +98,7 @@
   {"date": "2022-04-20", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 50, "set": "1"},
   {"date": "2022-07-29", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 22, "set": "e"},
   {"date": "2024-08-30", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 99, "set": "1"},
-  {"date": "2025-06-20", "venue": "SNHU Arena", "city": "Manchester", "state": "NH", "gap": 21, "set": "e", "out": ">"}
+  {"date": "2025-06-20", "venue": "SNHU Arena", "city": "Manchester", "state": "NH", "gap": 21, "set": "e", "out": ">"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 61, "set": "e"}
  ]
 }

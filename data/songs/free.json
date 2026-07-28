@@ -270,6 +270,7 @@
   {"date": "2026-01-30", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 3, "set": "1", "out": ">", "prev": "Water in the Sky", "next": "Bathtub Gin"},
   {"date": "2026-04-17", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 2, "set": "1", "next": "Birds of a Feather"},
   {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 7, "set": "1", "prev": "Back on the Train", "in": ">", "next": "Mike's Song"},
-  {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 7, "set": "2", "prev": "Boogie On Reggae Woman", "in": ">"}
+  {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 7, "set": "2", "prev": "Boogie On Reggae Woman", "in": ">"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "2"}
  ]
 }

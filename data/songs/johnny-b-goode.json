@@ -1,0 +1,34 @@
+{
+ "song": "Johnny B. Goode",
+ "slug": "johnny-b-goode",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1995-06-17", "venue": "Nissan Pavilion at Stone Ridge", "city": "Bristow", "state": "VA", "gap": 954, "set": "2", "jamchart": true, "jam": "-&gt; in from &quot;Tweezer.&quot; The debut of &quot;JBG&quot; is sandwiched in this &quot;Tweezer&quot; jam.", "note": "Phish debut.", "out": "->"},
+  {"date": "1995-07-03", "venue": "Summerstage at Sugarbush North", "city": "Fayston", "state": "VT", "gap": 13, "set": "2", "jamchart": true, "jam": "-&gt; in from &quot;DB.&quot; A spirited rendition, only the second ever, springs out suddenly in the middle of a monster &quot;Bowie.&quot; -&gt; back to &quot;DB.&quot;", "out": "->"},
+  {"date": "1995-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 58, "set": "e"},
+  {"date": "1996-07-12", "venue": "Melkweg", "city": "Amsterdam", "state": "North Holland", "gap": 10, "set": "e"},
+  {"date": "1996-07-21", "venue": "The Forum", "city": "N\u00fcremberg", "state": "Bavaria", "gap": 6, "set": "1"},
+  {"date": "1996-08-06", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 8, "set": "e"},
+  {"date": "1996-10-16", "venue": "Olympic Center", "city": "Lake Placid", "state": "NY", "gap": 8, "set": "2"},
+  {"date": "1996-10-25", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 7, "set": "e"},
+  {"date": "1996-11-02", "venue": "Coral Sky Amphitheater", "city": "West Palm Beach", "state": "FL", "gap": 5, "set": "1", "note": "Karl Perazzo on percussion."},
+  {"date": "1996-11-18", "venue": "Mid-South Coliseum", "city": "Memphis", "state": "TN", "gap": 11, "set": "e", "note": "Gary Gazaway on trumpet."},
+  {"date": "1996-12-01", "venue": "Pauley Pavilion, University of California Los Angeles", "city": "Los Angeles", "state": "CA", "gap": 8, "set": "2", "out": ">"},
+  {"date": "1996-12-28", "venue": "CoreStates Spectrum", "city": "Philadelphia", "state": "PA", "gap": 4, "set": "e"},
+  {"date": "1997-02-13", "venue": "Shepherd's Bush Empire", "city": "London", "state": "England", "gap": 4, "set": "e"},
+  {"date": "1997-02-16", "venue": "Alter Wartesaal", "city": "Cologne", "state": "NRW", "gap": 2, "set": "e"},
+  {"date": "1997-02-22", "venue": "Teatro Olimpico", "city": "Rome", "state": "Lazio", "gap": 5, "set": "e"},
+  {"date": "1997-03-02", "venue": "Pumpehuset", "city": "Copenhagen", "state": "Capital Region", "gap": 6, "set": "1"},
+  {"date": "1997-07-11", "venue": "Doctor Music Festival", "city": "Escalarre", "state": "Catalonia", "gap": 20, "set": "1", "out": ">"},
+  {"date": "1997-07-26", "venue": "South Park Meadows", "city": "Austin", "state": "TX", "gap": 5, "set": "2", "note": "Bob Gullotti on a second drum set."},
+  {"date": "1997-08-02", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 4, "set": "2", "out": ">"},
+  {"date": "1997-11-17", "venue": "McNichols Arena", "city": "Denver", "state": "CO", "gap": 14, "set": "2", "jamchart": true, "jam": "After concluding the song proper, the band launches into a high-quality jam which retains Fall 97's tone and timbre but is also a bit of a throwback to an earlier era with its spiraling, \"DEG\"-laced opening segment. The second half finds a space more emblematic of the tour with Trey's ethereal wah chord washes and eventually calms down, landing delicately -> \"JJLC\".", "out": "->"},
+  {"date": "1997-11-28", "venue": "Worcester Centrum Centre", "city": "Worcester", "state": "MA", "gap": 6, "set": "2"},
+  {"date": "1997-12-11", "venue": "Rochester War Memorial", "city": "Rochester", "state": "NY", "gap": 9, "set": "2"},
+  {"date": "1998-07-08", "venue": "Zeleste", "city": "Barcelona", "state": "Catalonia", "gap": 17, "set": "2"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 927, "set": "2"}
+ ]
+}

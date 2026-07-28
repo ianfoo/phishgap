@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Venues &mdash; Possum Logic</title>
+<meta property="og:type" content="website"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every venue in the archive: 153 of them, over 691 nights."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Venues &mdash; Possum Logic"><meta property="og:description" content="Every venue in the archive: 153 of them, over 691 nights."><meta property="og:url" content="https://possumlogic.com/venues.html"><meta property="og:image" content="https://possumlogic.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every venue in the archive: 153 of them, over 691 nights."><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
+<link href="./fonts.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
+@media screen and (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
+}
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+:root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled):not(.on){color:var(--ink);
+   border-color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+/* The selected one is already ink-on-paper reversed, so hovering it must not
+   set the text to the colour it is sitting on. It brightens its edge instead. */
+.theme button.on:hover:not(:disabled){color:var(--paper);
+   box-shadow:0 0 0 2px var(--hot)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
+
+*{box-sizing:border-box}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:.875rem;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto}
+/* Which of the two lists you are looking at, and the way to the other one.
+   Above the wordmark because that is where a reader looks for it, and because
+   the footer link that used to be the only route was found by nobody. */
+.crumb{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem;
+   font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
+   border-bottom:1px solid var(--rule)}
+.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:clamp(2rem,7vw,4rem);line-height:1.06;margin:0 0 .7rem;
+   letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home, as a wordmark does, without looking like a link. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
+/* A hero card that is also a way in. Only some of them are. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+/* Some of the cards are links and some are not, so the ones that are need to
+   say so -- but a rule under a letterspaced label reads as a stray underline
+   rather than an affordance, and it was the one line in the hero not doing
+   structural work. An arrow after the label carries the same message and
+   disappears into the type. */
+a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+header{padding-bottom:.9rem}
+.show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
+      text-transform:uppercase;color:var(--ink-soft)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+/* Six cards do not fit on one line, and a wrapping flex row gives the first
+   card of the second line a left rule -- which then separates it from the page
+   margin rather than from another card, and leaves its number indented out of
+   line with the wordmark and every row below it. A grid ties both the rule and
+   the flush left edge to a *column position* rather than to wherever the cards
+   happen to wrap, so the stranded rule is impossible instead of relocated. The
+   column count is written by whoever builds the hero, so it cannot disagree
+   with the number of cards actually in it. */
+/* The class names the column count rather than the card count, so a hero that
+   gains or loses a card only has to say how many columns it now wants, and
+   four cards on the song index and six here share one set of rules. The
+   fallback is the four-across the hero had before any of this. */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);margin:.7rem 0 .3rem;
+      border-bottom:1px solid var(--ink)}
+.hero-c3{grid-template-columns:repeat(3,1fr)}
+.hero-c4{grid-template-columns:repeat(4,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
+/* Only above the breakpoint. The narrow layout has always been two columns and
+   already says which cards start a row down there; stating it twice meant the
+   wide rule outranked the narrow one and left card 4 of a six indented half a
+   space out of line with the cards above and below it. Each width states its
+   own row-starts and neither has to undo the other. */
+@media screen and (min-width:621px){
+  .hero-c3>.card:nth-child(3n+1),
+  .hero-c4>.card:nth-child(4n+1){border-left:0;padding-left:0}
+  /* A second row of cards needs a rule over it, or the two rows read as one
+     block with the numbers of the first sitting on the labels of the next. */
+  .hero-c3>.card:nth-child(n+4),
+  .hero-c4>.card:nth-child(n+5){border-top:1px solid var(--rule)}
+}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+     letter-spacing:0;margin-top:auto}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
+   color:var(--dim);margin-bottom:.35rem}
+.tools{margin:1.9rem 0 .9rem}
+/* Two rows rather than one wrapping run. The things you operate -- the search
+   box and the sort -- sit together on the first; the filter chips are a
+   different kind of control and get their own line instead of pushing sort to
+   wherever the chips happen to stop. */
+.tools-main{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem}
+.tools .chips{margin-top:.6rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
+        padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
+        background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.chip:focus-visible,.sort:focus-visible{
+  outline:2px solid var(--hot);outline-offset:1px}
+/* Shown only once there is something to clear. The song page has carried this
+   button for a while; the index only ever had the line of script that hides
+   it, which is why that line referred to an element that was never here. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+      padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
+      color:var(--dim);cursor:pointer}
+.chip:hover{color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* How many shows the era holds, so four chips carry the information the
+   forty years did without the forty buttons. */
+.chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   letter-spacing:0;color:var(--dim);margin-left:.3rem}
+.chip.on .chip-n{color:var(--paper)}
+.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
+      color:var(--ink);border:1px solid var(--edge);border-radius:0}
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);margin-left:auto}
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+         font-size:1rem;color:var(--ink)}
+.reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;column-gap:1.1rem;
+     align-items:baseline;padding:.7rem .25rem;text-decoration:none;
+     color:inherit;border-bottom:1px solid var(--rule-soft)}
+.row:hover{background:var(--hover)}
+/* Same rule, same reason: this is the one place the site still spoke two
+   languages, since the song pages had already moved. */
+/* Data in a column, so the mono: tabular by construction, which is what makes
+   710 dates present one edge to the venue beside them rather than a soft
+   ragged one. The display face keeps the mastheads, where a date is the name
+   of the page rather than a value in a list. */
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+        font-size:1rem;line-height:1.3rem;white-space:nowrap}
+.r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
+         line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+/* Deliberately not a report row. These are on file, not on the bill: smaller,
+   dimmer, no figures, and below the empty-search message so a search matching
+   nothing cannot look as though it matched these. */
+/* The due list. Same row grammar as the show index -- identity, context,
+   figure -- so the two pages read as the same object seen from two sides. */
+.onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
+   margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
+   border-left:4px solid var(--hot);background:var(--hover)}
+.onstage:hover{background:var(--hot);color:var(--paper)}
+.onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text);font-weight:600}
+.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
+.onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
+.onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
+   text-transform:none;letter-spacing:0}
+.onstage .n{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+.due{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.due li{border-bottom:1px solid var(--rule-soft)}
+.due .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.due .row:hover{background:var(--hover)}
+.d-song{font-size:1rem;font-weight:500}
+.due .row:hover .d-song{color:var(--hot)}
+.d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;white-space:nowrap}
+.d-where{display:block;color:var(--dim);font-size:.75rem}
+.d-n{text-align:right}
+.d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot)}
+.d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The venue list borrows the due page's three-column shape because it answers
+   the same shape of question: a name, a when, and one figure worth ranking by.
+   Its own class names, though -- .d-* means "due", and a venue row sharing
+   them would make either page impossible to restyle without the other. */
+.vn{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.vn li{border-bottom:1px solid var(--rule-soft)}
+.vn .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.vn .row:hover{background:var(--hover)}
+.vn-venue{font-size:1rem;font-weight:500}
+.vn .row:hover .vn-venue{color:var(--hot)}
+.vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
+.vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
+   color:var(--dim);white-space:nowrap}
+.vn-n{text-align:right}
+.vn-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--ink)}
+.vn-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem;
+   white-space:nowrap}
+@media screen and (max-width:620px){
+  /* "dates", not "span": grid-area:span would be parsed as the span keyword
+     and drop the whole declaration. */
+  .vn .row{grid-template-columns:1fr 5.5rem;
+     grid-template-areas:"venue n" "dates n";row-gap:.15rem}
+  .vn-venue{grid-area:venue}
+  .vn-span{grid-area:dates}
+  .vn-n{grid-area:n}
+  .vn-n b{font-size:1.25rem}
+}
+@media screen and (max-width:620px){
+  .due .row{grid-template-columns:1fr 5.5rem;grid-template-areas:"song n" "last n";
+     row-gap:.15rem}
+  .d-song{grid-area:song}
+  .d-last{grid-area:last}
+  .d-n{grid-area:n}
+  .d-n b{font-size:1.25rem}
+}
+.aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
+.aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin:0 0 .3rem;font-weight:400}
+.aside>p{margin:0 0 .7rem;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside ol{list-style:none;margin:0;padding:0}
+.aside li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+   padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
+.ax-row{display:contents;color:inherit;text-decoration:none}
+.ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
+   border-bottom:1px solid var(--rule)}
+a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
+.ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+.ax-venue{color:var(--dim)}
+.aside .for{color:var(--dim)}
+.aside .for a{color:inherit}
+/* A grid, not a right-aligned sentence. Right-alignment pins only the right
+   edge; every figure to the left of it still moved row to row with the width
+   of the numbers beside it. */
+.r-stats{font-size:.75rem;color:var(--dim);line-height:1.3rem;
+         display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
+         justify-items:end;column-gap:.6rem}
+.r-stats .st{white-space:nowrap}
+/* Tabular numerals do the aligning; the widths these used to be given by hand
+   were a workaround for not having asked the face for them. */
+.r-stats .st b{display:inline-block;text-align:right}
+.r-stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+           font-size:1rem;color:var(--ink)}
+.r-stats b.hot{color:var(--hot-text)}
+/* A show still being played, said in the one place on the row where the
+   number it qualifies already is: 24 songs means something different
+   tonight than it will tomorrow. */
+.live-tag{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+/* The song that held the longest gap, under the figures it belongs to. Named
+   for what it is: ".r-song" also means "the song this row is about" on the
+   song index, which inherits this stylesheet, and one grid-column rule meant
+   for this was enough to wreck that. */
+.r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
+   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);display:flex;justify-content:space-between;
+       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+@media screen{
+}
+/* Same lesson as the report tables: stack instead of squeezing columns, so
+   the rules still run the full width and nothing has to be hidden. */
+@media screen and (max-width:620px){
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
+  .r-stats{display:block;text-align:left;white-space:normal}
+  .r-stats .st{display:inline;white-space:normal}
+  /* Before each but the first, never after: the last .st is not the last
+     child -- the song name follows it -- so a trailing separator was left
+     stranded at the end of the line with the name wrapped beneath it. */
+  .r-stats .st:empty{display:none}
+  /* --dim, not --rule: rule is a hairline colour and a glyph drawn in it is
+     invisible on the dark paper, the way the separators were. */
+  .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\00b7";
+    color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
+  .r-stats .st b{min-width:0!important;text-align:left}
+  .r-top{text-align:left;display:inline}
+  .r-top::before{content:" ("}
+  .r-top::after{content:")"}
+  /* Two across, whatever the wide layout asked for. The flex basis that used
+     to be here stopped meaning anything when the hero became a grid. */
+  .hero-c3,.hero-c4{grid-template-columns:repeat(2,1fr)}
+  .card{padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  .show{font-size:.75rem;letter-spacing:0}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+</style><script>
+(function(){
+  // Deliberately not renamed: this is a private key in a reader's own
+  // browser, and changing it would silently reset the light/dark choice
+  // of everyone who has ever set one, to rename a string nobody sees.
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script><script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('time.ago'));
+  if(!els.length) return;
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function tick(){
+    var now=Date.now();
+    els.forEach(function(e){
+      var t=Date.parse(e.getAttribute('datetime'));
+      if(!isNaN(t)) e.textContent=say((now-t)/1000);
+    });
+  }
+  tick();
+  setInterval(tick,20000);
+})();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
+</script></head><body><div class="wrap">
+<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a><a class="here">Venues</a>
+<a href="./method.html">How this is worked out</a></nav>
+<div class="rule2"></div>
+<header><h1>Venues</h1>
+<p class="show">153 venues, 691 nights</p>
+<p class="dek">Every room the archive holds a report from, most nights first.
+A venue opens the show list filtered to it rather than a page of its own: the
+search is already that page, and one that cannot fall out of step with the
+archive. What is here is what a search cannot tell you &mdash; how many nights,
+over what span, and the longest gap the room has heard.</p></header>
+<div class="rule2"></div>
+<ol class="vn">
+<li><a class='row' href='./index.html?q=Madison%20Square%20Garden'><span class='vn-venue'>Madison Square Garden<span class='vn-place'>New York, NY</span></span><span class='vn-span'>2009-12-02 &rarr; 2026-07-27</span><span class='vn-n'><b>82</b><span class='typ'>longest 1,468</span></span></a></li>
+<li><a class='row' href='./index.html?q=Dick%27s%20Sporting%20Goods%20Park'><span class='vn-venue'>Dick&#x27;s Sporting Goods Park<span class='vn-place'>Commerce City, CO</span></span><span class='vn-span'>2011-09-02 &rarr; 2024-09-01</span><span class='vn-n'><b>42</b><span class='typ'>longest 770</span></span></a></li>
+<li><a class='row' href='./index.html?q=Moon%20Palace'><span class='vn-venue'>Moon Palace<span class='vn-place'>Cancun, Quintana Roo</span></span><span class='vn-span'>2020-02-20 &rarr; 2026-01-31</span><span class='vn-n'><b>24</b><span class='typ'>longest 1,001</span></span></a></li>
+<li><a class='row' href='./index.html?q=Merriweather%20Post%20Pavilion'><span class='vn-venue'>Merriweather Post Pavilion<span class='vn-place'>Columbia, MD</span></span><span class='vn-span'>2009-08-15 &rarr; 2026-07-19</span><span class='vn-n'><b>19</b><span class='typ'>longest 354</span></span></a></li>
+<li><a class='row' href='./index.html?q=Alpine%20Valley%20Music%20Theatre'><span class='vn-venue'>Alpine Valley Music Theatre<span class='vn-place'>East Troy, WI</span></span><span class='vn-span'>2009-06-20 &rarr; 2024-07-28</span><span class='vn-n'><b>17</b><span class='typ'>longest 694</span></span></a></li>
+<li><a class='row' href='./index.html?q=Saratoga%20Performing%20Arts%20Center'><span class='vn-venue'>Saratoga Performing Arts Center<span class='vn-place'>Saratoga Springs, NY</span></span><span class='vn-span'>2009-08-16 &rarr; 2019-07-03</span><span class='vn-n'><b>17</b><span class='typ'>longest 392</span></span></a></li>
+<li><a class='row' href='./index.html?q=Bill%20Graham%20Civic%20Auditorium'><span class='vn-venue'>Bill Graham Civic Auditorium<span class='vn-place'>San Francisco, CA</span></span><span class='vn-span'>2012-08-17 &rarr; 2025-04-23</span><span class='vn-n'><b>16</b><span class='typ'>longest 498</span></span></a></li>
+<li><a class='row' href='./index.html?q=MGM%20Grand%20Garden%20Arena'><span class='vn-venue'>MGM Grand Garden Arena<span class='vn-place'>Las Vegas, NV</span></span><span class='vn-span'>2014-10-31 &rarr; 2021-10-31</span><span class='vn-n'><b>15</b><span class='typ'>longest 436</span></span></a></li>
+<li><a class='row' href='./index.html?q=Gorge%20Amphitheatre'><span class='vn-venue'>Gorge Amphitheatre<span class='vn-place'>George, WA</span></span><span class='vn-span'>2009-08-07 &rarr; 2021-08-29</span><span class='vn-n'><b>14</b><span class='typ'>longest 216</span></span></a></li>
+<li><a class='row' href='./index.html?q=Sphere'><span class='vn-venue'>Sphere<span class='vn-place'>Las Vegas, NV</span></span><span class='vn-span'>2024-04-18 &rarr; 2026-05-02</span><span class='vn-n'><b>13</b><span class='typ'>longest 168</span></span></a></li>
+<li><a class='row' href='./index.html?q=Hampton%20Coliseum'><span class='vn-venue'>Hampton Coliseum<span class='vn-place'>Hampton, VA</span></span><span class='vn-span'>2009-03-06 &rarr; 2025-09-21</span><span class='vn-n'><b>12</b><span class='typ'>longest 190</span></span></a></li>
+<li><a class='row' href='./index.html?q=Ruoff%20Music%20Center'><span class='vn-venue'>Ruoff Music Center<span class='vn-place'>Noblesville, IN</span></span><span class='vn-span'>2021-08-06 &rarr; 2026-07-12</span><span class='vn-n'><b>12</b><span class='typ'>longest 161</span></span></a></li>
+<li><a class='row' href='./index.html?q=Verizon%20Wireless%20Amphitheatre%20at%20Encore%20Park'><span class='vn-venue'>Verizon Wireless Amphitheatre at Encore Park<span class='vn-place'>Alpharetta, GA</span></span><span class='vn-span'>2010-07-03 &rarr; 2018-08-05</span><span class='vn-n'><b>12</b><span class='typ'>longest 109</span></span></a></li>
+<li><a class='row' href='./index.html?q=North%20Charleston%20Coliseum'><span class='vn-venue'>North Charleston Coliseum<span class='vn-place'>North Charleston, SC</span></span><span class='vn-span'>2010-10-15 &rarr; 2025-07-13</span><span class='vn-n'><b>10</b><span class='typ'>longest 524</span></span></a></li>
+<li><a class='row' href='./index.html?q=Barcel%C3%B3%20Maya%20Beach'><span class='vn-venue'>Barceló Maya Beach<span class='vn-place'>Riviera Maya, Quintana Roo</span></span><span class='vn-span'>2016-01-15 &rarr; 2019-02-23</span><span class='vn-n'><b>9</b><span class='typ'>longest 604</span></span></a></li>
+<li><a class='row' href='./index.html?q=American%20Airlines%20Arena'><span class='vn-venue'>American Airlines Arena<span class='vn-place'>Miami, FL</span></span><span class='vn-span'>2009-12-28 &rarr; 2015-01-03</span><span class='vn-n'><b>8</b><span class='typ'>longest 394</span></span></a></li>
+<li><a class='row' href='./index.html?q=Bethel%20Woods%20Center%20for%20the%20Arts'><span class='vn-venue'>Bethel Woods Center for the Arts<span class='vn-place'>Bethel, NY</span></span><span class='vn-span'>2011-05-27 &rarr; 2024-08-11</span><span class='vn-n'><b>8</b><span class='typ'>longest 800</span></span></a></li>
+<li><a class='row' href='./index.html?q=Hollywood%20Bowl'><span class='vn-venue'>Hollywood Bowl<span class='vn-place'>Hollywood, CA</span></span><span class='vn-span'>2011-08-08 &rarr; 2025-04-27</span><span class='vn-n'><b>8</b><span class='typ'>longest 110</span></span></a></li>
+<li><a class='row' href='./index.html?q=Nikon%20at%20Jones%20Beach%20Theater'><span class='vn-venue'>Nikon at Jones Beach Theater<span class='vn-place'>Wantagh, NY</span></span><span class='vn-span'>2009-06-02 &rarr; 2013-07-12</span><span class='vn-n'><b>8</b><span class='typ'>longest 1,424</span></span></a></li>
+<li><a class='row' href='./index.html?q=Ameris%20Bank%20Amphitheatre'><span class='vn-venue'>Ameris Bank Amphitheatre<span class='vn-place'>Alpharetta, GA</span></span><span class='vn-span'>2021-07-31 &rarr; 2025-09-17</span><span class='vn-n'><b>7</b><span class='typ'>longest 51</span></span></a></li>
+<li><a class='row' href='./index.html?q=Ascend%20Amphitheater'><span class='vn-venue'>Ascend Amphitheater<span class='vn-place'>Nashville, TN</span></span><span class='vn-span'>2015-08-04 &rarr; 2021-08-04</span><span class='vn-n'><b>7</b><span class='typ'>longest 383</span></span></a></li>
+<li><a class='row' href='./index.html?q=Xfinity%20Center'><span class='vn-venue'>Xfinity Center<span class='vn-place'>Mansfield, MA</span></span><span class='vn-span'>2014-07-01 &rarr; 2024-07-21</span><span class='vn-n'><b>7</b><span class='typ'>longest 150</span></span></a></li>
+<li><a class='row' href='./index.html?q=Atlantic%20City%20Beach'><span class='vn-venue'>Atlantic City Beach<span class='vn-place'>Atlantic City, NJ</span></span><span class='vn-span'>2021-08-13 &rarr; 2022-08-07</span><span class='vn-n'><b>6</b><span class='typ'>longest 253</span></span></a></li>
+<li><a class='row' href='./index.html?q=Blossom%20Music%20Center'><span class='vn-venue'>Blossom Music Center<span class='vn-place'>Cuyahoga Falls, OH</span></span><span class='vn-span'>2010-06-12 &rarr; 2022-08-02</span><span class='vn-n'><b>6</b><span class='typ'>longest 168</span></span></a></li>
+<li><a class='row' href='./index.html?q=Boardwalk%20Hall'><span class='vn-venue'>Boardwalk Hall<span class='vn-place'>Atlantic City, NJ</span></span><span class='vn-span'>2010-10-29 &rarr; 2013-11-02</span><span class='vn-n'><b>6</b><span class='typ'>longest 1,037</span></span></a></li>
+<li><a class='row' href='./index.html?q=DCU%20Center'><span class='vn-venue'>DCU Center<span class='vn-place'>Worcester, MA</span></span><span class='vn-span'>2010-12-27 &rarr; 2013-10-26</span><span class='vn-n'><b>6</b><span class='typ'>longest 325</span></span></a></li>
+<li><a class='row' href='./index.html?q=FirstMerit%20Bank%20Pavilion%20at%20Northerly%20Island'><span class='vn-venue'>FirstMerit Bank Pavilion at Northerly Island<span class='vn-place'>Chicago, IL</span></span><span class='vn-span'>2013-07-19 &rarr; 2014-07-20</span><span class='vn-n'><b>6</b><span class='typ'>longest 70</span></span></a></li>
+<li><a class='row' href='./index.html?q=Lake%20Tahoe%20Outdoor%20Arena%20at%20Harveys'><span class='vn-venue'>Lake Tahoe Outdoor Arena at Harveys<span class='vn-place'>Stateline, NV</span></span><span class='vn-span'>2011-08-09 &rarr; 2018-07-18</span><span class='vn-n'><b>6</b><span class='typ'>longest 167</span></span></a></li>
+<li><a class='row' href='./index.html?q=TD%20Pavilion%20at%20the%20Mann'><span class='vn-venue'>TD Pavilion at the Mann<span class='vn-place'>Philadelphia, PA</span></span><span class='vn-span'>2022-07-19 &rarr; 2025-07-16</span><span class='vn-n'><b>6</b><span class='typ'>longest 154</span></span></a></li>
+<li><a class='row' href='./index.html?q=The%20Forum'><span class='vn-venue'>The Forum<span class='vn-place'>Inglewood, CA</span></span><span class='vn-span'>2014-10-24 &rarr; 2021-10-24</span><span class='vn-n'><b>6</b><span class='typ'>longest 492</span></span></a></li>
+<li><a class='row' href='./index.html?q=The%20Mann%20Center%20for%20the%20Performing%20Arts'><span class='vn-venue'>The Mann Center for the Performing Arts<span class='vn-place'>Philadelphia, PA</span></span><span class='vn-span'>2014-07-08 &rarr; 2016-06-29</span><span class='vn-n'><b>6</b><span class='typ'>longest 224</span></span></a></li>
+<li><a class='row' href='./index.html?q=United%20Center'><span class='vn-venue'>United Center<span class='vn-place'>Chicago, IL</span></span><span class='vn-span'>2023-10-13 &rarr; 2025-07-20</span><span class='vn-n'><b>6</b><span class='typ'>longest 536</span></span></a></li>
+<li><a class='row' href='./index.html?q=Watkins%20Glen%20International'><span class='vn-venue'>Watkins Glen International<span class='vn-place'>Watkins Glen, NY</span></span><span class='vn-span'>2011-07-01 &rarr; 2015-08-23</span><span class='vn-n'><b>6</b><span class='typ'>longest 475</span></span></a></li>
+<li><a class='row' href='./index.html?q=William%20Randolph%20Hearst%20Greek%20Theatre%2C%20University%20of%20California%2C%20Berkeley%20'><span class='vn-venue'>William Randolph Hearst Greek Theatre, University of California, Berkeley <span class='vn-place'>Berkeley, CA</span></span><span class='vn-span'>2010-08-05 &rarr; 2023-04-19</span><span class='vn-n'><b>6</b><span class='typ'>longest 117</span></span></a></li>
+<li><a class='row' href='./index.html?q=nTelos%20Pavilion'><span class='vn-venue'>nTelos Pavilion<span class='vn-place'>Portsmouth, VA</span></span><span class='vn-span'>2010-06-15 &rarr; 2014-07-30</span><span class='vn-n'><b>6</b><span class='typ'>longest 172</span></span></a></li>
+<li><a class='row' href='./index.html?q=BB%26T%20Pavilion'><span class='vn-venue'>BB&amp;T Pavilion<span class='vn-place'>Camden, NJ</span></span><span class='vn-span'>2018-08-07 &rarr; 2019-06-30</span><span class='vn-n'><b>5</b><span class='typ'>longest 82</span></span></a></li>
+<li><a class='row' href='./index.html?q=Bonnaroo%20Music%20%26%20Arts%20Festival'><span class='vn-venue'>Bonnaroo Music &amp; Arts Festival<span class='vn-place'>Manchester, TN</span></span><span class='vn-span'>2009-06-12 &rarr; 2019-06-16</span><span class='vn-n'><b>5</b><span class='typ'>longest 1,280</span></span></a></li>
+<li><a class='row' href='./index.html?q=Broadview%20Stage%20at%20SPAC'><span class='vn-venue'>Broadview Stage at SPAC<span class='vn-place'>Saratoga Springs, NY</span></span><span class='vn-span'>2023-08-25 &rarr; 2025-07-27</span><span class='vn-n'><b>5</b><span class='typ'>longest 55</span></span></a></li>
+<li><a class='row' href='./index.html?q=Chaifetz%20Arena%2C%20Saint%20Louis%20University'><span class='vn-venue'>Chaifetz Arena, Saint Louis University<span class='vn-place'>St. Louis, MO</span></span><span class='vn-span'>2012-08-28 &rarr; 2024-07-31</span><span class='vn-n'><b>5</b><span class='typ'>longest 70</span></span></a></li>
+<li><a class='row' href='./index.html?q=Climate%20Pledge%20Arena'><span class='vn-venue'>Climate Pledge Arena<span class='vn-place'>Seattle, WA</span></span><span class='vn-span'>2023-04-14 &rarr; 2025-04-19</span><span class='vn-n'><b>4</b><span class='typ'>longest 97</span></span></a></li>
+<li><a class='row' href='./index.html?q=Mohegan%20Sun%20Arena'><span class='vn-venue'>Mohegan Sun Arena<span class='vn-place'>Uncasville, CT</span></span><span class='vn-span'>2019-07-09 &rarr; 2024-07-24</span><span class='vn-n'><b>4</b><span class='typ'>longest 226</span></span></a></li>
+<li><a class='row' href='./index.html?q=Red%20Rocks%20Amphitheatre'><span class='vn-venue'>Red Rocks Amphitheatre<span class='vn-place'>Morrison, CO</span></span><span class='vn-span'>2009-07-30 &rarr; 2009-08-02</span><span class='vn-n'><b>4</b><span class='typ'>longest 89</span></span></a></li>
+<li><a class='row' href='./index.html?q=Shoreline%20Amphitheatre'><span class='vn-venue'>Shoreline Amphitheatre<span class='vn-place'>Mountain View, CA</span></span><span class='vn-span'>2009-08-05 &rarr; 2021-09-01</span><span class='vn-n'><b>4</b><span class='typ'>longest 858</span></span></a></li>
+<li><a class='row' href='./index.html?q=Susquehanna%20Bank%20Center'><span class='vn-venue'>Susquehanna Bank Center<span class='vn-place'>Camden, NJ</span></span><span class='vn-span'>2009-06-07 &rarr; 2011-06-10</span><span class='vn-n'><b>4</b><span class='typ'>longest 590</span></span></a></li>
+<li><a class='row' href='./index.html?q=The%20Woodlands'><span class='vn-venue'>The Woodlands<span class='vn-place'>Dover, DE</span></span><span class='vn-span'>2024-08-15 &rarr; 2024-08-18</span><span class='vn-n'><b>4</b><span class='typ'>longest 78</span></span></a></li>
+<li><a class='row' href='./index.html?q=Times%20Union%20Center'><span class='vn-venue'>Times Union Center<span class='vn-place'>Albany, NY</span></span><span class='vn-span'>2009-11-27 &rarr; 2018-10-17</span><span class='vn-n'><b>4</b><span class='typ'>longest 129</span></span></a></li>
+<li><a class='row' href='./index.html?q=1stBank%20Center'><span class='vn-venue'>1stBank Center<span class='vn-place'>Broomfield, CO</span></span><span class='vn-span'>2010-10-10 &rarr; 2010-10-12</span><span class='vn-n'><b>3</b><span class='typ'>longest 41</span></span></a></li>
+<li><a class='row' href='./index.html?q=Aaron%27s%20Amphitheatre%20at%20Lakewood'><span class='vn-venue'>Aaron&#x27;s Amphitheatre at Lakewood<span class='vn-place'>Atlanta, GA</span></span><span class='vn-span'>2012-08-25 &rarr; 2015-08-01</span><span class='vn-n'><b>3</b><span class='typ'>longest 48</span></span></a></li>
+<li><a class='row' href='./index.html?q=Allstate%20Arena'><span class='vn-venue'>Allstate Arena<span class='vn-place'>Rosemont, IL</span></span><span class='vn-span'>2018-10-26 &rarr; 2018-10-28</span><span class='vn-n'><b>3</b><span class='typ'>longest 91</span></span></a></li>
+<li><a class='row' href='./index.html?q=Bader%20Field'><span class='vn-venue'>Bader Field<span class='vn-place'>Atlantic City, NJ</span></span><span class='vn-span'>2012-06-15 &rarr; 2012-06-17</span><span class='vn-n'><b>3</b><span class='typ'>longest 85</span></span></a></li>
+<li><a class='row' href='./index.html?q=Bridgestone%20Arena'><span class='vn-venue'>Bridgestone Arena<span class='vn-place'>Nashville, TN</span></span><span class='vn-span'>2023-10-06 &rarr; 2023-10-08</span><span class='vn-n'><b>3</b><span class='typ'>longest 219</span></span></a></li>
+<li><a class='row' href='./index.html?q=Coastal%20Credit%20Union%20Music%20Park%20at%20Walnut%20Creek'><span class='vn-venue'>Coastal Credit Union Music Park at Walnut Creek<span class='vn-place'>Raleigh, NC</span></span><span class='vn-span'>2018-08-10 &rarr; 2026-07-17</span><span class='vn-n'><b>3</b><span class='typ'>longest 47</span></span></a></li>
+<li><a class='row' href='./index.html?q=Comcast%20Center'><span class='vn-venue'>Comcast Center<span class='vn-place'>Mansfield, MA</span></span><span class='vn-span'>2009-06-06 &rarr; 2011-06-07</span><span class='vn-n'><b>3</b><span class='typ'>longest 56</span></span></a></li>
+<li><a class='row' href='./index.html?q=Darling%27s%20Waterfront%20Pavilion'><span class='vn-venue'>Darling&#x27;s Waterfront Pavilion<span class='vn-place'>Bangor, ME</span></span><span class='vn-span'>2013-07-03 &rarr; 2019-06-26</span><span class='vn-n'><b>3</b><span class='typ'>longest 45</span></span></a></li>
+<li><a class='row' href='./index.html?q=Dunkin%27%20Donuts%20Center'><span class='vn-venue'>Dunkin&#x27; Donuts Center<span class='vn-place'>Providence, RI</span></span><span class='vn-span'>2010-10-22 &rarr; 2019-11-30</span><span class='vn-n'><b>3</b><span class='typ'>longest 707</span></span></a></li>
+<li><a class='row' href='./index.html?q=Empire%20Polo%20Club'><span class='vn-venue'>Empire Polo Club<span class='vn-place'>Indio, CA</span></span><span class='vn-span'>2009-10-30 &rarr; 2009-11-01</span><span class='vn-n'><b>3</b><span class='typ'>longest 175</span></span></a></li>
+<li><a class='row' href='./index.html?q=Ervin%20J.%20Nutter%20Center%2C%20Wright%20State%20University'><span class='vn-venue'>Ervin J. Nutter Center, Wright State University<span class='vn-place'>Dayton, OH</span></span><span class='vn-span'>2017-07-18 &rarr; 2023-10-11</span><span class='vn-n'><b>3</b><span class='typ'>longest 131</span></span></a></li>
+<li><a class='row' href='./index.html?q=Fenway%20Park'><span class='vn-venue'>Fenway Park<span class='vn-place'>Boston, MA</span></span><span class='vn-span'>2009-05-31 &rarr; 2019-07-06</span><span class='vn-n'><b>3</b><span class='typ'>longest 628</span></span></a></li>
+<li><a class='row' href='./index.html?q=Folsom%20Field'><span class='vn-venue'>Folsom Field<span class='vn-place'>Boulder, CO</span></span><span class='vn-span'>2025-07-03 &rarr; 2025-07-05</span><span class='vn-n'><b>3</b><span class='typ'>longest 198</span></span></a></li>
+<li><a class='row' href='./index.html?q=Hersheypark%20Stadium'><span class='vn-venue'>Hersheypark Stadium<span class='vn-place'>Hershey, PA</span></span><span class='vn-span'>2010-06-13 &rarr; 2021-08-11</span><span class='vn-n'><b>3</b><span class='typ'>longest 32</span></span></a></li>
+<li><a class='row' href='./index.html?q=Huntington%20Bank%20Pavilion%20at%20Northerly%20Island'><span class='vn-venue'>Huntington Bank Pavilion at Northerly Island<span class='vn-place'>Chicago, IL</span></span><span class='vn-span'>2017-07-14 &rarr; 2017-07-16</span><span class='vn-n'><b>3</b><span class='typ'>longest 22</span></span></a></li>
+<li><a class='row' href='./index.html?q=Klipsch%20Music%20Center'><span class='vn-venue'>Klipsch Music Center<span class='vn-place'>Noblesville, IN</span></span><span class='vn-span'>2012-06-28 &rarr; 2016-06-26</span><span class='vn-n'><b>3</b><span class='typ'>longest 354</span></span></a></li>
+<li><a class='row' href='./index.html?q=MVP%20Arena'><span class='vn-venue'>MVP Arena<span class='vn-place'>Albany, NY</span></span><span class='vn-span'>2024-10-25 &rarr; 2024-10-27</span><span class='vn-n'><b>3</b><span class='typ'>longest 184</span></span></a></li>
+<li><a class='row' href='./index.html?q=Matthew%20Knight%20Arena'><span class='vn-venue'>Matthew Knight Arena<span class='vn-place'>Eugene, OR</span></span><span class='vn-span'>2014-10-17 &rarr; 2021-10-20</span><span class='vn-n'><b>3</b><span class='typ'>longest 127</span></span></a></li>
+<li><a class='row' href='./index.html?q=Oak%20Mountain%20Amphitheatre'><span class='vn-venue'>Oak Mountain Amphitheatre<span class='vn-place'>Pelham, AL</span></span><span class='vn-span'>2012-08-24 &rarr; 2021-07-30</span><span class='vn-n'><b>3</b><span class='typ'>longest 33</span></span></a></li>
+<li><a class='row' href='./index.html?q=PNC%20Bank%20Arts%20Center'><span class='vn-venue'>PNC Bank Arts Center<span class='vn-place'>Holmdel, NJ</span></span><span class='vn-span'>2011-05-31 &rarr; 2013-07-10</span><span class='vn-n'><b>3</b><span class='typ'>longest 33</span></span></a></li>
+<li><a class='row' href='./index.html?q=Petersen%20Events%20Center'><span class='vn-venue'>Petersen Events Center<span class='vn-place'>Pittsburgh, PA</span></span><span class='vn-span'>2017-07-19 &rarr; 2025-06-24</span><span class='vn-n'><b>3</b><span class='typ'>longest 436</span></span></a></li>
+<li><a class='row' href='./index.html?q=Randall%27s%20Island'><span class='vn-venue'>Randall&#x27;s Island<span class='vn-place'>New York, NY</span></span><span class='vn-span'>2014-07-11 &rarr; 2014-07-13</span><span class='vn-n'><b>3</b><span class='typ'>longest 24</span></span></a></li>
+<li><a class='row' href='./index.html?q=SNHU%20Arena'><span class='vn-venue'>SNHU Arena<span class='vn-place'>Manchester, NH</span></span><span class='vn-span'>2025-06-20 &rarr; 2025-06-22</span><span class='vn-n'><b>3</b><span class='typ'>longest 62</span></span></a></li>
+<li><a class='row' href='./index.html?q=Santa%20Barbara%20Bowl'><span class='vn-venue'>Santa Barbara Bowl<span class='vn-place'>Santa Barbara, CA</span></span><span class='vn-span'>2014-10-21 &rarr; 2021-10-26</span><span class='vn-n'><b>3</b><span class='typ'>longest 94</span></span></a></li>
+<li><a class='row' href='./index.html?q=The%20Comcast%20Theatre'><span class='vn-venue'>The Comcast Theatre<span class='vn-place'>Hartford, CT</span></span><span class='vn-span'>2009-08-14 &rarr; 2010-06-18</span><span class='vn-n'><b>3</b><span class='typ'>longest 284</span></span></a></li>
+<li><a class='row' href='./index.html?q=The%20Wharf%20Amphitheater'><span class='vn-venue'>The Wharf Amphitheater<span class='vn-place'>Orange Beach, AL</span></span><span class='vn-span'>2022-05-27 &rarr; 2022-05-29</span><span class='vn-n'><b>3</b><span class='typ'>longest 606</span></span></a></li>
+<li><a class='row' href='./index.html?q=UIC%20Pavilion%2C%20University%20of%20Illinois'><span class='vn-venue'>UIC Pavilion, University of Illinois<span class='vn-place'>Chicago, IL</span></span><span class='vn-span'>2011-08-15 &rarr; 2011-08-17</span><span class='vn-n'><b>3</b><span class='typ'>longest 105</span></span></a></li>
+<li><a class='row' href='./index.html?q=Verizon%20Theatre%20at%20Grand%20Prairie'><span class='vn-venue'>Verizon Theatre at Grand Prairie<span class='vn-place'>Grand Prairie, TX</span></span><span class='vn-span'>2015-07-29 &rarr; 2016-10-25</span><span class='vn-n'><b>3</b><span class='typ'>longest 325</span></span></a></li>
+<li><a class='row' href='./index.html?q=Verizon%20Wireless%20Amphitheatre%20-%20Charlotte'><span class='vn-venue'>Verizon Wireless Amphitheatre - Charlotte<span class='vn-place'>Charlotte, NC</span></span><span class='vn-span'>2010-07-02 &rarr; 2012-08-26</span><span class='vn-n'><b>3</b><span class='typ'>longest 1,424</span></span></a></li>
+<li><a class='row' href='./index.html?q=Verizon%20Wireless%20Music%20Center'><span class='vn-venue'>Verizon Wireless Music Center<span class='vn-place'>Noblesville, IN</span></span><span class='vn-span'>2009-06-19 &rarr; 2010-08-13</span><span class='vn-n'><b>3</b><span class='typ'>longest 88</span></span></a></li>
+<li><a class='row' href='./index.html?q=Austin360%20Amphitheater'><span class='vn-venue'>Austin360 Amphitheater<span class='vn-place'>Del Valle, TX</span></span><span class='vn-span'>2015-07-28 &rarr; 2018-07-31</span><span class='vn-n'><b>2</b><span class='typ'>longest 57</span></span></a></li>
+<li><a class='row' href='./index.html?q=Budweiser%20Stage'><span class='vn-venue'>Budweiser Stage<span class='vn-place'>Toronto, Ontario</span></span><span class='vn-span'>2019-06-18 &rarr; 2022-08-10</span><span class='vn-n'><b>2</b><span class='typ'>longest 37</span></span></a></li>
+<li><a class='row' href='./index.html?q=CMAC%20Performing%20Arts%20Center'><span class='vn-venue'>CMAC Performing Arts Center<span class='vn-place'>Canandaigua, NY</span></span><span class='vn-span'>2010-06-29 &rarr; 2014-07-15</span><span class='vn-n'><b>2</b><span class='typ'>longest 29</span></span></a></li>
+<li><a class='row' href='./index.html?q=Chase%20Center'><span class='vn-venue'>Chase Center<span class='vn-place'>San Francisco, CA</span></span><span class='vn-span'>2021-10-16 &rarr; 2021-10-17</span><span class='vn-n'><b>2</b><span class='typ'>longest 197</span></span></a></li>
+<li><a class='row' href='./index.html?q=Coca-Cola%20Amphitheater'><span class='vn-venue'>Coca-Cola Amphitheater<span class='vn-place'>Birmingham, AL</span></span><span class='vn-span'>2025-09-13 &rarr; 2025-09-14</span><span class='vn-n'><b>2</b><span class='typ'>longest 64</span></span></a></li>
+<li><a class='row' href='./index.html?q=Credit%20One%20Stadium'><span class='vn-venue'>Credit One Stadium<span class='vn-place'>Charleston, SC</span></span><span class='vn-span'>2022-05-31 &rarr; 2022-06-01</span><span class='vn-n'><b>2</b><span class='typ'>longest 158</span></span></a></li>
+<li><a class='row' href='./index.html?q=DTE%20Energy%20Music%20Theatre'><span class='vn-venue'>DTE Energy Music Theatre<span class='vn-place'>Clarkston, MI</span></span><span class='vn-span'>2011-06-03 &rarr; 2014-07-16</span><span class='vn-n'><b>2</b><span class='typ'>longest 32</span></span></a></li>
+<li><a class='row' href='./index.html?q=Darien%20Lake%20Performing%20Arts%20Center'><span class='vn-venue'>Darien Lake Performing Arts Center<span class='vn-place'>Darien Center, NY</span></span><span class='vn-span'>2009-08-13 &rarr; 2011-06-08</span><span class='vn-n'><b>2</b><span class='typ'>longest 714</span></span></a></li>
+<li><a class='row' href='./index.html?q=Enmarket%20Arena'><span class='vn-venue'>Enmarket Arena<span class='vn-place'>Savannah, GA</span></span><span class='vn-span'>2026-07-14 &rarr; 2026-07-15</span><span class='vn-n'><b>2</b><span class='typ'>longest 132</span></span></a></li>
+<li><a class='row' href='./index.html?q=Forest%20Hills%20Stadium'><span class='vn-venue'>Forest Hills Stadium<span class='vn-place'>Forest Hills, NY</span></span><span class='vn-span'>2025-07-22 &rarr; 2025-07-23</span><span class='vn-n'><b>2</b><span class='typ'>longest 15</span></span></a></li>
+<li><a class='row' href='./index.html?q=Kohl%20Center'><span class='vn-venue'>Kohl Center<span class='vn-place'>Madison, WI</span></span><span class='vn-span'>2026-07-07 &rarr; 2026-07-08</span><span class='vn-n'><b>2</b><span class='typ'>longest 190</span></span></a></li>
+<li><a class='row' href='./index.html?q=Les%20Schwab%20Amphitheater'><span class='vn-venue'>Les Schwab Amphitheater<span class='vn-place'>Bend, OR</span></span><span class='vn-span'>2015-07-21 &rarr; 2015-07-22</span><span class='vn-n'><b>2</b><span class='typ'>longest 17</span></span></a></li>
+<li><a class='row' href='./index.html?q=Live%20Oak%20Bank%20Pavilion%20at%20Riverfront%20Park'><span class='vn-venue'>Live Oak Bank Pavilion at Riverfront Park<span class='vn-place'>Wilmington, NC</span></span><span class='vn-span'>2023-07-18 &rarr; 2023-07-19</span><span class='vn-n'><b>2</b><span class='typ'>longest 251</span></span></a></li>
+<li><a class='row' href='./index.html?q=Moody%20Center'><span class='vn-venue'>Moody Center<span class='vn-place'>Austin, TX</span></span><span class='vn-span'>2025-06-27 &rarr; 2025-06-28</span><span class='vn-n'><b>2</b><span class='typ'>longest 283</span></span></a></li>
+<li><a class='row' href='./index.html?q=Mullins%20Center%2C%20University%20of%20Massachusetts'><span class='vn-venue'>Mullins Center, University of Massachusetts<span class='vn-place'>Amherst, MA</span></span><span class='vn-span'>2010-10-23 &rarr; 2010-10-24</span><span class='vn-n'><b>2</b><span class='typ'>longest 216</span></span></a></li>
+<li><a class='row' href='./index.html?q=Northwell%20Health%20at%20Jones%20Beach%20Theater'><span class='vn-venue'>Northwell Health at Jones Beach Theater<span class='vn-place'>Wantagh, NY</span></span><span class='vn-span'>2022-07-26 &rarr; 2022-07-27</span><span class='vn-n'><b>2</b><span class='typ'>longest 52</span></span></a></li>
+<li><a class='row' href='./index.html?q=Oak%20Ridge%20Farm'><span class='vn-venue'>Oak Ridge Farm<span class='vn-place'>Arrington, VA</span></span><span class='vn-span'>2016-08-26 &rarr; 2016-08-28</span><span class='vn-n'><b>2</b><span class='typ'>longest 16</span></span></a></li>
+<li><a class='row' href='./index.html?q=Orion%20Amphitheater'><span class='vn-venue'>Orion Amphitheater<span class='vn-place'>Huntsville, AL</span></span><span class='vn-span'>2023-07-11 &rarr; 2023-07-12</span><span class='vn-n'><b>2</b><span class='typ'>longest 64</span></span></a></li>
+<li><a class='row' href='./index.html?q=PNC%20Music%20Pavilion'><span class='vn-venue'>PNC Music Pavilion<span class='vn-place'>Charlotte, NC</span></span><span class='vn-span'>2014-07-25 &rarr; 2019-06-21</span><span class='vn-n'><b>2</b><span class='typ'>longest 63</span></span></a></li>
+<li><a class='row' href='./index.html?q=Riverbend%20Music%20Center'><span class='vn-venue'>Riverbend Music Center<span class='vn-place'>Cincinnati, OH</span></span><span class='vn-span'>2011-06-05 &rarr; 2012-06-22</span><span class='vn-n'><b>2</b><span class='typ'>longest 576</span></span></a></li>
+<li><a class='row' href='./index.html?q=Sleep%20Train%20Amphitheatre'><span class='vn-venue'>Sleep Train Amphitheatre<span class='vn-place'>Chula Vista, CA</span></span><span class='vn-span'>2014-10-25 &rarr; 2016-07-23</span><span class='vn-n'><b>2</b><span class='typ'>longest 62</span></span></a></li>
+<li><a class='row' href='./index.html?q=Starlight%20Theatre'><span class='vn-venue'>Starlight Theatre<span class='vn-place'>Kansas City, MO</span></span><span class='vn-span'>2012-08-22 &rarr; 2015-08-05</span><span class='vn-n'><b>2</b><span class='typ'>longest 28</span></span></a></li>
+<li><a class='row' href='./index.html?q=Telluride%20Town%20Park'><span class='vn-venue'>Telluride Town Park<span class='vn-place'>Telluride, CO</span></span><span class='vn-span'>2010-08-09 &rarr; 2010-08-10</span><span class='vn-n'><b>2</b><span class='typ'>longest 211</span></span></a></li>
+<li><a class='row' href='./index.html?q=The%20Pavilion%20at%20Star%20Lake'><span class='vn-venue'>The Pavilion at Star Lake<span class='vn-place'>Burgettstown, PA</span></span><span class='vn-span'>2023-07-21 &rarr; 2023-07-22</span><span class='vn-n'><b>2</b><span class='typ'>longest 51</span></span></a></li>
+<li><a class='row' href='./index.html?q=Time%20Warner%20Cable%20Music%20Pavilion%20at%20Walnut%20Creek%20'><span class='vn-venue'>Time Warner Cable Music Pavilion at Walnut Creek <span class='vn-place'>Raleigh, NC</span></span><span class='vn-span'>2010-07-01 &rarr; 2011-06-18</span><span class='vn-n'><b>2</b><span class='typ'>longest 300</span></span></a></li>
+<li><a class='row' href='./index.html?q=Toyota%20Park'><span class='vn-venue'>Toyota Park<span class='vn-place'>Bridgeview, IL</span></span><span class='vn-span'>2009-08-11 &rarr; 2010-06-11</span><span class='vn-n'><b>2</b><span class='typ'>longest 211</span></span></a></li>
+<li><a class='row' href='./index.html?q=U.S.%20Bank%20Arena'><span class='vn-venue'>U.S. Bank Arena<span class='vn-place'>Cincinnati, OH</span></span><span class='vn-span'>2009-11-20 &rarr; 2009-11-21</span><span class='vn-n'><b>2</b><span class='typ'>longest 115</span></span></a></li>
+<li><a class='row' href='./index.html?q=Van%20Andel%20Arena'><span class='vn-venue'>Van Andel Arena<span class='vn-place'>Grand Rapids, MI</span></span><span class='vn-span'>2024-08-06 &rarr; 2024-08-07</span><span class='vn-n'><b>2</b><span class='typ'>longest 189</span></span></a></li>
+<li><a class='row' href='./index.html?q=Wachovia%20Center'><span class='vn-venue'>Wachovia Center<span class='vn-place'>Philadelphia, PA</span></span><span class='vn-span'>2009-11-24 &rarr; 2009-11-25</span><span class='vn-n'><b>2</b><span class='typ'>longest 51</span></span></a></li>
+<li><a class='row' href='./index.html?q=Wrigley%20Field'><span class='vn-venue'>Wrigley Field<span class='vn-place'>Chicago, IL</span></span><span class='vn-span'>2016-06-24 &rarr; 2016-06-25</span><span class='vn-n'><b>2</b><span class='typ'>longest 229</span></span></a></li>
+<li><a class='row' href='./index.html?q=Xfinity%20Theatre'><span class='vn-venue'>Xfinity Theatre<span class='vn-place'>Hartford, CT</span></span><span class='vn-span'>2016-07-09 &rarr; 2022-07-24</span><span class='vn-n'><b>2</b><span class='typ'>longest 229</span></span></a></li>
+<li><a class='row' href='./index.html?q=Ak-Chin%20Pavilion'><span class='vn-venue'>Ak-Chin Pavilion<span class='vn-place'>Phoenix, AZ</span></span><span class='vn-span'>2021-10-22</span><span class='vn-n'><b>1</b><span class='typ'>longest 39</span></span></a></li>
+<li><a class='row' href='./index.html?q=Amphitheater%20at%20the%20Wharf'><span class='vn-venue'>Amphitheater at the Wharf<span class='vn-place'>Orange Beach, AL</span></span><span class='vn-span'>2014-08-01</span><span class='vn-n'><b>1</b><span class='typ'>longest 36</span></span></a></li>
+<li><a class='row' href='./index.html?q=Asheville%20Civic%20Center'><span class='vn-venue'>Asheville Civic Center<span class='vn-place'>Asheville, NC</span></span><span class='vn-span'>2009-06-09</span><span class='vn-n'><b>1</b><span class='typ'>longest 235</span></span></a></li>
+<li><a class='row' href='./index.html?q=Augusta%20Civic%20Center'><span class='vn-venue'>Augusta Civic Center<span class='vn-place'>Augusta, ME</span></span><span class='vn-span'>2010-10-19</span><span class='vn-n'><b>1</b><span class='typ'>longest 50</span></span></a></li>
+<li><a class='row' href='./index.html?q=BlueCross%20Arena'><span class='vn-venue'>BlueCross Arena<span class='vn-place'>Rochester, NY</span></span><span class='vn-span'>2013-10-22</span><span class='vn-n'><b>1</b><span class='typ'>longest 14</span></span></a></li>
+<li><a class='row' href='./index.html?q=Champlain%20Valley%20Exposition'><span class='vn-venue'>Champlain Valley Exposition<span class='vn-place'>Essex Junction, VT</span></span><span class='vn-span'>2011-09-14</span><span class='vn-n'><b>1</b><span class='typ'>longest 15</span></span></a></li>
+<li><a class='row' href='./index.html?q=Cobo%20Arena'><span class='vn-venue'>Cobo Arena<span class='vn-place'>Detroit, MI</span></span><span class='vn-span'>2009-11-18</span><span class='vn-n'><b>1</b><span class='typ'>longest 16</span></span></a></li>
+<li><a class='row' href='./index.html?q=Cross%20Insurance%20Arena'><span class='vn-venue'>Cross Insurance Arena<span class='vn-place'>Portland, ME</span></span><span class='vn-span'>2016-07-06</span><span class='vn-n'><b>1</b><span class='typ'>longest 146</span></span></a></li>
+<li><a class='row' href='./index.html?q=Cumberland%20County%20Civic%20Center'><span class='vn-venue'>Cumberland County Civic Center<span class='vn-place'>Portland, ME</span></span><span class='vn-span'>2009-11-29</span><span class='vn-n'><b>1</b><span class='typ'>longest 144</span></span></a></li>
+<li><a class='row' href='./index.html?q=Ed%20Sullivan%20Theater'><span class='vn-venue'>Ed Sullivan Theater<span class='vn-place'>New York, NY</span></span><span class='vn-span'>2014-06-24</span><span class='vn-n'><b>1</b><span class='typ'>longest 13</span></span></a></li>
+<li><a class='row' href='./index.html?q=Empower%20Federal%20Credit%20Union%20Amphitheater%20at%20Lakeview'><span class='vn-venue'>Empower Federal Credit Union Amphitheater at Lakeview<span class='vn-place'>Syracuse, NY</span></span><span class='vn-span'>2026-07-21</span><span class='vn-n'><b>1</b><span class='typ'>longest 45</span></span></a></li>
+<li><a class='row' href='./index.html?q=First%20Niagara%20Pavilion'><span class='vn-venue'>First Niagara Pavilion<span class='vn-place'>Burgettstown, PA</span></span><span class='vn-span'>2012-06-23</span><span class='vn-n'><b>1</b><span class='typ'>longest 41</span></span></a></li>
+<li><a class='row' href='./index.html?q=Glens%20Falls%20Civic%20Center'><span class='vn-venue'>Glens Falls Civic Center<span class='vn-place'>Glens Falls, NY</span></span><span class='vn-span'>2013-10-23</span><span class='vn-n'><b>1</b><span class='typ'>longest 689</span></span></a></li>
+<li><a class='row' href='./index.html?q=Golden%201%20Center'><span class='vn-venue'>Golden 1 Center<span class='vn-place'>Sacramento, CA</span></span><span class='vn-span'>2021-10-15</span><span class='vn-n'><b>1</b><span class='typ'>longest 108</span></span></a></li>
+<li><a class='row' href='./index.html?q=Highland%20Festival%20Grounds%20at%20Kentucky%20Expo%20Center'><span class='vn-venue'>Highland Festival Grounds at Kentucky Expo Center<span class='vn-place'>Louisville, KY</span></span><span class='vn-span'>2025-09-12</span><span class='vn-n'><b>1</b><span class='typ'>longest 14</span></span></a></li>
+<li><a class='row' href='./index.html?q=Jacksonville%20Veterans%20Memorial%20Arena'><span class='vn-venue'>Jacksonville Veterans Memorial Arena<span class='vn-place'>Jacksonville, FL</span></span><span class='vn-span'>2016-10-16</span><span class='vn-n'><b>1</b><span class='typ'>longest 23</span></span></a></li>
+<li><a class='row' href='./index.html?q=Jerome%20Schottenstein%20Center'><span class='vn-venue'>Jerome Schottenstein Center<span class='vn-place'>Columbus, OH</span></span><span class='vn-span'>2025-07-09</span><span class='vn-n'><b>1</b><span class='typ'>longest 164</span></span></a></li>
+<li><a class='row' href='./index.html?q=John%20Paul%20Jones%20Arena'><span class='vn-venue'>John Paul Jones Arena<span class='vn-place'>Charlottesville, VA</span></span><span class='vn-span'>2009-12-05</span><span class='vn-n'><b>1</b><span class='typ'>longest 63</span></span></a></li>
+<li><a class='row' href='./index.html?q=Key%20Arena'><span class='vn-venue'>Key Arena<span class='vn-place'>Seattle, WA</span></span><span class='vn-span'>2014-10-18</span><span class='vn-n'><b>1</b><span class='typ'>longest 21</span></span></a></li>
+<li><a class='row' href='./index.html?q=Lakeview%20Amphitheater'><span class='vn-venue'>Lakeview Amphitheater<span class='vn-place'>Syracuse, NY</span></span><span class='vn-span'>2016-07-10</span><span class='vn-n'><b>1</b><span class='typ'>longest 70</span></span></a></li>
+<li><a class='row' href='./index.html?q=Long%20Beach%20Arena'><span class='vn-venue'>Long Beach Arena<span class='vn-place'>Long Beach, CA</span></span><span class='vn-span'>2012-08-15</span><span class='vn-n'><b>1</b><span class='typ'>longest 13</span></span></a></li>
+<li><a class='row' href='./index.html?q=Maine%20Savings%20Amphitheater'><span class='vn-venue'>Maine Savings Amphitheater<span class='vn-place'>Bangor, ME</span></span><span class='vn-span'>2022-07-16</span><span class='vn-n'><b>1</b><span class='typ'>longest 20</span></span></a></li>
+<li><a class='row' href='./index.html?q=Met%20Philadelphia'><span class='vn-venue'>Met Philadelphia<span class='vn-place'>Philadelphia, PA</span></span><span class='vn-span'>2019-12-03</span><span class='vn-n'><b>1</b><span class='typ'>longest 417</span></span></a></li>
+<li><a class='row' href='./index.html?q=Moda%20Center'><span class='vn-venue'>Moda Center<span class='vn-place'>Portland, OR</span></span><span class='vn-span'>2025-04-20</span><span class='vn-n'><b>1</b><span class='typ'>longest 23</span></span></a></li>
+<li><a class='row' href='./index.html?q=Molson%20Canadian%20Amphitheatre'><span class='vn-venue'>Molson Canadian Amphitheatre<span class='vn-place'>Toronto, Ontario</span></span><span class='vn-span'>2013-07-22</span><span class='vn-n'><b>1</b><span class='typ'>longest 20</span></span></a></li>
+<li><a class='row' href='./index.html?q=Nassau%20Veterans%20Memorial%20Coliseum'><span class='vn-venue'>Nassau Veterans Memorial Coliseum<span class='vn-place'>Uniondale, NY</span></span><span class='vn-span'>2019-12-01</span><span class='vn-n'><b>1</b><span class='typ'>longest 44</span></span></a></li>
+<li><a class='row' href='./index.html?q=New%20Orleans%20Fairgrounds'><span class='vn-venue'>New Orleans Fairgrounds<span class='vn-place'>New Orleans, LA</span></span><span class='vn-span'>2014-04-26</span><span class='vn-n'><b>1</b><span class='typ'>longest 10</span></span></a></li>
+<li><a class='row' href='./index.html?q=North%20Island%20Credit%20Union%20Amphitheatre'><span class='vn-venue'>North Island Credit Union Amphitheatre<span class='vn-place'>Chula Vista, CA</span></span><span class='vn-span'>2021-10-23</span><span class='vn-n'><b>1</b><span class='typ'>longest 43</span></span></a></li>
+<li><a class='row' href='./index.html?q=Oklahoma%20City%20Zoo%20Amphitheatre'><span class='vn-venue'>Oklahoma City Zoo Amphitheatre<span class='vn-place'>Oklahoma City, OK</span></span><span class='vn-span'>2012-08-29</span><span class='vn-n'><b>1</b><span class='typ'>longest 22</span></span></a></li>
+<li><a class='row' href='./index.html?q=Pine%20Knob%20Music%20Theatre'><span class='vn-venue'>Pine Knob Music Theatre<span class='vn-place'>Clarkston, MI</span></span><span class='vn-span'>2022-08-03</span><span class='vn-n'><b>1</b><span class='typ'>longest 16</span></span></a></li>
+<li><a class='row' href='./index.html?q=Polo%20Fields%2C%20Golden%20Gate%20Park'><span class='vn-venue'>Polo Fields, Golden Gate Park<span class='vn-place'>San Francisco, CA</span></span><span class='vn-span'>2011-08-12</span><span class='vn-n'><b>1</b><span class='typ'>longest 14</span></span></a></li>
+<li><a class='row' href='./index.html?q=Post-Gazette%20Pavilion'><span class='vn-venue'>Post-Gazette Pavilion<span class='vn-place'>Burgettstown, PA</span></span><span class='vn-span'>2009-06-18</span><span class='vn-n'><b>1</b><span class='typ'>longest 95</span></span></a></li>
+<li><a class='row' href='./index.html?q=Rock%20Lititz'><span class='vn-venue'>Rock Lititz<span class='vn-place'>Lititz, PA</span></span><span class='vn-span'>2021-12-31</span><span class='vn-n'><b>1</b><span class='typ'>longest 1,312</span></span></a></li>
+<li><a class='row' href='./index.html?q=Santander%20Arena'><span class='vn-venue'>Santander Arena<span class='vn-place'>Reading, PA</span></span><span class='vn-span'>2013-10-29</span><span class='vn-n'><b>1</b><span class='typ'>longest 28</span></span></a></li>
+<li><a class='row' href='./index.html?q=St.%20Joseph%27s%20Health%20Amphitheater%20at%20Lakeview'><span class='vn-venue'>St. Joseph&#x27;s Health Amphitheater at Lakeview<span class='vn-place'>Syracuse, NY</span></span><span class='vn-span'>2023-07-23</span><span class='vn-n'><b>1</b><span class='typ'>longest 47</span></span></a></li>
+<li><a class='row' href='./index.html?q=The%20Fox%20Theatre'><span class='vn-venue'>The Fox Theatre<span class='vn-place'>St. Louis, MO</span></span><span class='vn-span'>2009-06-16</span><span class='vn-n'><b>1</b><span class='typ'>longest 62</span></span></a></li>
+<li><a class='row' href='./index.html?q=Thompson-Boling%20Arena'><span class='vn-venue'>Thompson-Boling Arena<span class='vn-place'>Knoxville, TN</span></span><span class='vn-span'>2009-06-10</span><span class='vn-n'><b>1</b><span class='typ'>longest 140</span></span></a></li>
+<li><a class='row' href='./index.html?q=Tuscaloosa%20Amphitheater'><span class='vn-venue'>Tuscaloosa Amphitheater<span class='vn-place'>Tuscaloosa, AL</span></span><span class='vn-span'>2015-08-02</span><span class='vn-n'><b>1</b><span class='typ'>longest 31</span></span></a></li>
+<li><a class='row' href='./index.html?q=Utica%20Memorial%20Auditorium'><span class='vn-venue'>Utica Memorial Auditorium<span class='vn-place'>Utica, NY</span></span><span class='vn-span'>2010-10-20</span><span class='vn-n'><b>1</b><span class='typ'>longest 27</span></span></a></li>
+<li><a class='row' href='./index.html?q=Verizon%20Wireless%20Arena'><span class='vn-venue'>Verizon Wireless Arena<span class='vn-place'>Manchester, NH</span></span><span class='vn-span'>2010-10-26</span><span class='vn-n'><b>1</b><span class='typ'>longest 208</span></span></a></li>
+<li><a class='row' href='./index.html?q=Walmart%20Arkansas%20Music%20Pavilion'><span class='vn-venue'>Walmart Arkansas Music Pavilion<span class='vn-place'>Rogers, AR</span></span><span class='vn-span'>2021-07-28</span><span class='vn-n'><b>1</b><span class='typ'>longest 38</span></span></a></li>
+<li><a class='row' href='./index.html?q=Walnut%20Creek%20Amphitheater'><span class='vn-venue'>Walnut Creek Amphitheater<span class='vn-place'>Raleigh, NC</span></span><span class='vn-span'>2015-08-14</span><span class='vn-n'><b>1</b><span class='typ'>longest 85</span></span></a></li>
+<li><a class='row' href='./index.html?q=War%20Memorial%20at%20Oncenter'><span class='vn-venue'>War Memorial at Oncenter<span class='vn-place'>Syracuse, NY</span></span><span class='vn-span'>2009-11-22</span><span class='vn-n'><b>1</b><span class='typ'>longest 77</span></span></a></li>
+<li><a class='row' href='./index.html?q=XL%20Center'><span class='vn-venue'>XL Center<span class='vn-place'>Hartford, CT</span></span><span class='vn-span'>2013-10-27</span><span class='vn-n'><b>1</b><span class='typ'>longest 13</span></span></a></li>
+<li><a class='row' href='./index.html?q=Xcel%20Energy%20Center'><span class='vn-venue'>Xcel Energy Center<span class='vn-place'>St. Paul, MN</span></span><span class='vn-span'>2016-06-22</span><span class='vn-n'><b>1</b><span class='typ'>longest 799</span></span></a></li>
+<li><a class='row' href='./index.html?q=Zilker%20Park'><span class='vn-venue'>Zilker Park<span class='vn-place'>Austin, TX</span></span><span class='vn-span'>2010-10-08</span><span class='vn-n'><b>1</b><span class='typ'>longest 8</span></span></a></li>
+</ol>
+<footer><span><a href="./method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<span>Updated 2026-07-27</span></footer>
+<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</div></body></html>
