@@ -218,6 +218,17 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
+/* What the song sits between, counted over its whole history. Two short rows
+   rather than a table: this is context for the list below, not a finding of
+   its own, and it earns its place only because the answer is usually
+   surprising -- Harry Hood comes out of Hold Your Head Up 31 times. */
+.pairs{margin:.7rem 0 0;display:flex;flex-wrap:wrap;gap:.15rem 2rem}
+.pair{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .7rem}
+.pair .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.pair .p{font-size:.8125rem;color:var(--ink-soft);white-space:nowrap}
+.pair .p b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.75rem;color:var(--dim);margin-left:.3rem}
 .caveat{margin:.6rem 0 0;padding-left:.8rem;border-left:2px solid var(--hot);
    font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
    font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:58ch}
@@ -303,7 +314,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
    transform:translateX(-50%);background:var(--ink);border-radius:1px;
    box-shadow:0 0 0 2px var(--paper)}
-.bar .at.big{background:var(--hot)}
+.bar .at.late{background:var(--hot)}
+.bar .at.early{background:var(--cool)}
+.bar .at.usual{background:var(--ink)}
 /* Only the rated versions carry these, which is 25 rows out of however many
    hundred -- and only they are known to have audio, since a version cannot be
    scored until a recording of it circulates. */
@@ -471,8 +484,34 @@ footer a{color:var(--dim)}
     mark();
   });
 })();
+</script><script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('time.ago'));
+  if(!els.length) return;
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function tick(){
+    var now=Date.now();
+    els.forEach(function(e){
+      var t=Date.parse(e.getAttribute('datetime'));
+      if(!isNaN(t)) e.textContent=say((now-t)/1000);
+    });
+  }
+  tick();
+  setInterval(tick,20000);
+})();
 </script></head><body id="top"><div class="wrap">
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">Bold As Love</span>
 <span class="n"><b>85</b> shows &middot; median gap <b>10</b></span></div>
@@ -481,7 +520,7 @@ footer a{color:var(--dim)}
 <header><h1>Bold As Love</h1>
 <p class="show">Debut 1988-07-07 &middot; Last played 2025-06-21 &middot; 85 performances</p>
 <p class="dek">Gap &mdash; the number of shows the band played between one
-performance of this song and the one before it.</p>
+performance of this song and the one before it.</p><div class='pairs'><div class='pair'><span class='cap'>Usually out of</span><span class='p'>Golgi Apparatus<b>4</b></span> <span class='p'>The Oh Kee Pa Ceremony<b>2</b></span> <span class='p'>Fee<b>2</b></span></div><div class='pair'><span class='cap'>Usually into</span><span class='p'>The Lizards<b>4</b></span> <span class='p'>AC/DC Bag<b>2</b></span> <span class='p'>Take the ’A’ Train<b>2</b></span></div></div>
 <p class="dek key"><span class="k">&#8592;&#8201;&#8594;</span> the songs either
 side, played as separate songs. <span class="k">&gt;</span> and
 <span class="k">&#8211;&gt;</span> are phish.net&rsquo;s own marks, and mean the
@@ -597,7 +636,7 @@ band ran them together rather than stopping between them.</p></header>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Current through 2025-06-21</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div><script>
 /* How long this song has been waiting, read from one small file rather than
    rendered into the page. It is the only figure here that moves when some

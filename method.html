@@ -140,6 +140,45 @@ header{padding-bottom:.9rem}
 /* Deliberately not a report row. These are on file, not on the bill: smaller,
    dimmer, no figures, and below the empty-search message so a search matching
    nothing cannot look as though it matched these. */
+/* The due list. Same row grammar as the show index -- identity, context,
+   figure -- so the two pages read as the same object seen from two sides. */
+.onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
+   margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
+   border-left:4px solid var(--hot);background:var(--hover)}
+.onstage:hover{background:var(--hot);color:var(--paper)}
+.onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text);font-weight:600}
+.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
+.onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
+.onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
+   text-transform:none;letter-spacing:0}
+.onstage .n{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+.due{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.due li{border-bottom:1px solid var(--rule-soft)}
+.due .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.due .row:hover{background:var(--hover)}
+.d-song{font-size:1rem;font-weight:500}
+.due .row:hover .d-song{color:var(--hot)}
+.d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;white-space:nowrap}
+.d-where{display:block;color:var(--dim);font-size:.75rem}
+.d-n{text-align:right}
+.d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot)}
+.d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.dek.foot{margin-top:1.4rem;max-width:64ch}
+@media screen and (max-width:620px){
+  .due .row{grid-template-columns:1fr 5.5rem;grid-template-areas:"song n" "last n";
+     row-gap:.15rem}
+  .d-song{grid-area:song}
+  .d-last{grid-area:last}
+  .d-n{grid-area:n}
+  .d-n b{font-size:1.25rem}
+}
 .aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
 .aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin:0 0 .3rem;font-weight:400}
@@ -274,9 +313,35 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     mark();
   });
 })();
+</script><script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('time.ago'));
+  if(!els.length) return;
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function tick(){
+    var now=Date.now();
+    els.forEach(function(e){
+      var t=Date.parse(e.getAttribute('datetime'));
+      if(!isNaN(t)) e.textContent=say((now-t)/1000);
+    });
+  }
+  tick();
+  setInterval(tick,20000);
+})();
 </script></head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a class="here">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a class="here">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -309,8 +374,10 @@ average over that would call almost anything ordinary.</p>
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
 most songs. The band's ends are interpolated values that appear nowhere in the
 song's actual gaps, which is why they are not printed as numbers.</p>
-<p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
-yields roughly 13% premature, 67% expected and 20% overdue.</p>
+<p>The band is wide enough that a verdict stays worth reading: roughly
+<span class="num">13%</span> of performances come out premature,
+<span class="num">67%</span> expected and <span class="num">20%</span>
+overdue.</p>
 
 <h2 id="before-and-after">What came before and after</h2>
 <p>A song page shows what each performance sat between. A plain
@@ -331,15 +398,13 @@ the median, and the mark is the performance being reported. Left of the shading
 is sooner than usual for that song, right of it is later. Past three times the
 upper edge the mark stops at the end and stays there, because beyond a point
 &ldquo;very late&rdquo; is the whole of the message.</p>
-<p>Every row is drawn against its own song, which is the reason it works.
-Earlier the bar was a fraction of the longest gap in the show, and one bustout
-would take the scale with it: on <span class="num">168</span> of
-<span class="num">690</span> shows the longest gap is at least twenty times the
-median, so about <span class="num">95%</span> of that night's bars collapsed
-into an identical stub two pixels long. A scale a single row can destroy for
-every other row is not a scale. Magnitude was also the one thing that did not
-need drawing, since the number is printed beside it &mdash; what the number
-cannot say is whether it was early or late <em>for this song</em>.</p>
+<p>Every row is drawn against its own song rather than against the night, so
+one bustout cannot flatten the rest of the bill &mdash; on
+<span class="num">168</span> of <span class="num">690</span> shows the longest
+gap is at least twenty times the median. It shows position rather than
+magnitude because the number beside it already gives the magnitude exactly;
+what the number cannot say is whether this was early or late
+<em>for this song</em>.</p>
 <p>A song with fewer than <b>eight</b> performances in the ten-year window has
 no band to be measured against, so its track is drawn empty rather than
 implying a comparison that was never made.</p>
@@ -413,5 +478,5 @@ shared mid-show does not freeze a half-finished number into somebody else's
 timeline.</p></div>
 <footer><span><a href="./index.html">All reports</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div></body></html>
