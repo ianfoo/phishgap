@@ -2158,11 +2158,11 @@ h1 a:hover em{color:var(--ink)}
 /* A hero card that is also a way in. Only some of them are. */
 a.card{text-decoration:none;color:inherit}
 a.card:hover{background:var(--hover)}
-/* Only one of the four cards is a link, so it needs to say so -- but a rule
-   under a letterspaced label reads as a stray underline rather than an
-   affordance, and it was the one line in the hero not doing structural work.
-   An arrow after the label carries the same message and disappears into the
-   type. */
+/* Some of the cards are links and some are not, so the ones that are need to
+   say so -- but a rule under a letterspaced label reads as a stray underline
+   rather than an affordance, and it was the one line in the hero not doing
+   structural work. An arrow after the label carries the same message and
+   disappears into the type. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
 a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
@@ -2176,11 +2176,37 @@ header{padding-bottom:.9rem}
 /* The tear line between one set and the next. Never between rows. */
 .perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
    to right,var(--edge) 0 5px,transparent 5px 10px)}
-.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+/* Six cards do not fit on one line, and a wrapping flex row gives the first
+   card of the second line a left rule -- which then separates it from the page
+   margin rather than from another card, and leaves its number indented out of
+   line with the wordmark and every row below it. A grid ties both the rule and
+   the flush left edge to a *column position* rather than to wherever the cards
+   happen to wrap, so the stranded rule is impossible instead of relocated. The
+   column count is written by whoever builds the hero, so it cannot disagree
+   with the number of cards actually in it. */
+/* The class names the column count rather than the card count, so a hero that
+   gains or loses a card only has to say how many columns it now wants, and
+   four cards on the song index and six here share one set of rules. The
+   fallback is the four-across the hero had before any of this. */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);margin:.7rem 0 .3rem;
       border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+.hero-c3{grid-template-columns:repeat(3,1fr)}
+.hero-c4{grid-template-columns:repeat(4,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
    display:flex;flex-direction:column}
-.card:first-child{border-left:0;padding-left:0}
+/* Only above the breakpoint. The narrow layout has always been two columns and
+   already says which cards start a row down there; stating it twice meant the
+   wide rule outranked the narrow one and left card 4 of a six indented half a
+   space out of line with the cards above and below it. Each width states its
+   own row-starts and neither has to undo the other. */
+@media screen and (min-width:621px){
+  .hero-c3>.card:nth-child(3n+1),
+  .hero-c4>.card:nth-child(4n+1){border-left:0;padding-left:0}
+  /* A second row of cards needs a rule over it, or the two rows read as one
+     block with the numbers of the first sitting on the labels of the next. */
+  .hero-c3>.card:nth-child(n+4),
+  .hero-c4>.card:nth-child(n+5){border-top:1px solid var(--rule)}
+}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
      letter-spacing:0;margin-top:auto}
 .num.hot{color:var(--hot)}
@@ -2274,6 +2300,35 @@ header{padding-bottom:.9rem}
    font-size:1.5rem;line-height:1;color:var(--hot)}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The venue list borrows the due page's three-column shape because it answers
+   the same shape of question: a name, a when, and one figure worth ranking by.
+   Its own class names, though -- .d-* means "due", and a venue row sharing
+   them would make either page impossible to restyle without the other. */
+.vn{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.vn li{border-bottom:1px solid var(--rule-soft)}
+.vn .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.vn .row:hover{background:var(--hover)}
+.vn-venue{font-size:1rem;font-weight:500}
+.vn .row:hover .vn-venue{color:var(--hot)}
+.vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
+.vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
+   color:var(--dim);white-space:nowrap}
+.vn-n{text-align:right}
+.vn-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--ink)}
+.vn-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem;
+   white-space:nowrap}
+@media screen and (max-width:620px){
+  /* "dates", not "span": grid-area:span would be parsed as the span keyword
+     and drop the whole declaration. */
+  .vn .row{grid-template-columns:1fr 5.5rem;
+     grid-template-areas:"venue n" "dates n";row-gap:.15rem}
+  .vn-venue{grid-area:venue}
+  .vn-span{grid-area:dates}
+  .vn-n{grid-area:n}
+  .vn-n b{font-size:1.25rem}
+}
 @media screen and (max-width:620px){
   .due .row{grid-template-columns:1fr 5.5rem;grid-template-areas:"song n" "last n";
      row-gap:.15rem}
@@ -2347,7 +2402,10 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .r-top{text-align:left;display:inline}
   .r-top::before{content:" ("}
   .r-top::after{content:")"}
-  .card{flex:1 1 45%;padding:.65rem .55rem}
+  /* Two across, whatever the wide layout asked for. The flex basis that used
+     to be here stopped meaning anything when the hero became a grid. */
+  .hero-c3,.hero-c4{grid-template-columns:repeat(2,1fr)}
+  .card{padding:.65rem .55rem}
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
@@ -2501,12 +2559,13 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./method.html">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
 {onstage}
-<section class="hero">{hero}</section>
+<section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
 <div class="tools">
 <div class="tools-main">
@@ -2675,7 +2734,17 @@ def weekday(iso):
         return ""
 
 
-def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
+def hero_cols(n):
+    """How many columns a hero of n cards wants.
+
+    Four across is the widest that keeps a five-figure number on one line at
+    the page's measure, so anything past four goes to three and wraps.
+    """
+    return "hero-c3" if n > 4 else "hero-c4"
+
+
+def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
+                 n_due=None):
     """A single self-contained index page over every saved report."""
     entries = sorted((summarize(r) for r in reports),
                      key=lambda e: e["date"], reverse=True)
@@ -2738,24 +2807,31 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
     most = max(entries, key=lambda e: e["songs"], default=None)
     # The songs card doubles as the way to the song index, since a reader who
     # has just noticed how many songs are logged is the reader who wants it.
+    cards = [
+        (len(entries), "Reports", "", ""),
+        (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
+         page_href % peak["date"] if peak else ""),
+        # Performances, not songs: this sums every song slot across every
+        # report. Labelled "Songs Logged" it read 4,593 and linked to a
+        # page saying 379, which is the same word counting two things.
+        ("{:,}".format(sum(e["songs"] for e in entries)),
+         "Song Performances", "", "./songs.html"),
+        (most["songs"] if most else "n/a", "Most Songs", "",
+         page_href % most["date"] if most else ""),
+        (len({e["venue"] for e in entries if e["venue"]}), "Venues", "",
+         "./venues.html"),
+    ]
+    # What is overdue going into tonight, counted once by due_rows() and shown
+    # here only if the due page was actually built -- a card offering a figure
+    # and a link to a page that is not there is worse than no card.
+    if n_due is not None:
+        cards.append((n_due, "Songs Due", " hot", "./due.html"))
     hero = "".join(
         ("<a class='card' href='%s'>" % html.escape(href, quote=True)
          if href else "<div class='card'>")
         + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
         + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in (
-            (len(entries), "Reports", "", ""),
-            (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
-             page_href % peak["date"] if peak else ""),
-            # Performances, not songs: this sums every song slot across every
-            # report. Labelled "Songs Logged" it read 4,593 and linked to a
-            # page saying 379, which is the same word counting two things.
-            ("{:,}".format(sum(e["songs"] for e in entries)),
-             "Song Performances", "", "./songs.html"),
-            (most["songs"] if most else "n/a", "Most Songs", "",
-             page_href % most["date"] if most else ""),
-            (len({e["venue"] for e in entries if e["venue"]}), "Venues", "", ""),
-        ))
+        for val, lbl, cls, href in cards)
 
     # Not concerts, and kept off the list above rather than out of the site:
     # the pages exist, the gap figures on them do not describe a show, and a
@@ -2814,7 +2890,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
         analytics=ANALYTICS,
         css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
         fonts=WEB_FONTS, sheet="./fonts.css",
-        hero=hero, years=chips,
+        hero=hero, hero_cls=hero_cols(len(cards)), years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         aside=aside_html, subtitle=subtitle, onstage=onstage,
         share=share_meta("Possum Logic", html.escape(blurb, quote=True),
@@ -3857,11 +3933,12 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
-<a href="./due.html">Due</a><a href="./method.html">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
-<section class="hero">{hero}</section>
+<section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
 <div class="tools">
 <label class="count" for="sort">Sort
@@ -3938,7 +4015,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a class="here">Due</a>
+<a class="here">Due</a><a href="./venues.html">Venues</a>
 <a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
@@ -3959,7 +4036,7 @@ at eighty.</p></header>
 """
 
 
-def render_due(docs, counting, since, card=None):
+def due_rows(docs, counting, since):
     """Songs past their own norm, longest overdue first.
 
     Deliberately not every song that has been gone a while. A song with no
@@ -3967,6 +4044,14 @@ def render_due(docs, counting, since, card=None):
     is expecting it, and calling it due would bury the fifty-five songs someone
     might actually shout for tonight under three hundred that nobody would.
     Dormant is a different fact and the song's own page says it.
+
+    One selection, shared by the due page, its preview card and the index hero.
+    It was written out twice before the hero wanted it, and a third copy is
+    three chances for the number on the front page to disagree with the page
+    it links to.
+
+    Returns (rows, dormant): each row is (over, n, high, doc, last), and
+    dormant counts the songs held back for having no recent norm to be past.
     """
     rows, dormant = [], 0
     for doc in docs:
@@ -3988,9 +4073,14 @@ def render_due(docs, counting, since, card=None):
         high = _quantile(recent, BAND[1])
         if high <= 0 or n <= high:
             continue
-        last = played[-1]
-        rows.append((n / high, n, high, doc, last))
+        rows.append((n / high, n, high, doc, played[-1]))
     rows.sort(key=lambda r: -r[0])
+    return rows, dormant
+
+
+def render_due(docs, counting, since, card=None):
+    """The page listing what is overdue going into tonight."""
+    rows, dormant = due_rows(docs, counting, since)
 
     out = []
     for over, n, high, doc, last in rows:
@@ -4016,7 +4106,7 @@ def render_due(docs, counting, since, card=None):
             % dormant) if dormant else ""
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
-        analytics=ANALYTICS, ago_js=AGO_JS,
+        analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, fonts=WEB_FONTS, sheet="./fonts.css",
         theme_js=THEME_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(out), dormant=tail,
@@ -4028,30 +4118,110 @@ def render_due(docs, counting, since, card=None):
 DUE_SHELL_END = None
 
 
+VENUES_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Venues &mdash; Possum Logic</title>
+<meta property="og:type" content="website">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a><a class="here">Venues</a>
+<a href="./method.html">How this is worked out</a></nav>
+<div class="rule2"></div>
+<header><h1>Venues</h1>
+<p class="show">{subtitle}</p>
+<p class="dek">Every room the archive holds a report from, most nights first.
+A venue opens the show list filtered to it rather than a page of its own: the
+search is already that page, and one that cannot fall out of step with the
+archive. What is here is what a search cannot tell you &mdash; how many nights,
+over what span, and the longest gap the room has heard.</p></header>
+<div class="rule2"></div>
+<ol class="vn">
+{rows}
+</ol>
+<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+
+def render_venues(reports, card=None):
+    """Every venue the archive holds a report from, most nights first.
+
+    Deliberately not a page tree. The ruling was that URL-addressable search
+    gets a reader to one venue's shows with no new build output and nothing to
+    fall out of sync, and it does -- so each row here is a search, not a page.
+    What this adds is the part a search cannot: the counts and the spans, in
+    one place, ranked.
+    """
+    by_venue = {}
+    for e in (summarize(r) for r in reports):
+        if e["venue"]:
+            by_venue.setdefault(e["venue"], []).append(e)
+
+    rows = []
+    for venue, shows in sorted(by_venue.items(),
+                               key=lambda kv: (-len(kv[1]), kv[0])):
+        shows.sort(key=lambda e: e["date"])
+        # The most recent spelling of where the room is. Cities get renamed and
+        # reports from the eighties spell them differently; the latest report
+        # is the one to believe.
+        place = next((e["place"] for e in reversed(shows) if e["place"]), "")
+        span = ("%s &rarr; %s" % (shows[0]["date"], shows[-1]["date"])
+                if len(shows) > 1 else shows[0]["date"])
+        longest = max((e["longest"] for e in shows if e["longest"]), default=None)
+        # The venue name as typed, not lowercased: the haystack and the query
+        # are both folded before they meet, so the box can show the real name.
+        href = "./index.html?q=%s" % urllib.parse.quote(venue)
+        rows.append(
+            "<li><a class='row' href='%s'>"
+            "<span class='vn-venue'>%s<span class='vn-place'>%s</span></span>"
+            "<span class='vn-span'>%s</span>"
+            "<span class='vn-n'><b>%d</b><span class='typ'>%s</span></span>"
+            "</a></li>"
+            % (html.escape(href, quote=True),
+               html.escape(venue), html.escape(place), span, len(shows),
+               # "longest", not "longest gap": the index rows already say it
+               # that way, and the extra word wrapped the four-figure gaps onto
+               # a second line while the three-figure ones stayed on one.
+               ("longest %s" % _stat(longest)) if longest
+               else "no gap on file"))
+
+    n = len(by_venue)
+    total = sum(len(s) for s in by_venue.values())
+    subtitle = ("%d venue%s, %s night%s"
+                % (n, "" if n == 1 else "s",
+                   "{:,}".format(total), "" if total == 1 else "s"))
+    blurb = ("Every venue in the archive: %d of them, over %s nights."
+             % (n, "{:,}".format(total)))
+    return VENUES_SHELL.format(
+        analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
+        css=INDEX_CSS, fonts=WEB_FONTS, sheet="./fonts.css",
+        theme_js=THEME_JS, theme_ui=THEME_UI,
+        subtitle=subtitle, rows="\n".join(rows),
+        share=share_meta("Venues &mdash; Possum Logic",
+                         html.escape(blurb, quote=True), "venues.html",
+                         card=card),
+        stamp="Updated %s" % (max((e["date"] for s in by_venue.values()
+                                   for e in s), default="&mdash;")))
+
+
 def due_card(docs, counting, since):
     """The due page's preview: how many, and the one that has waited longest."""
-    best, n_due = None, 0
-    for doc in docs:
-        n = since.get(doc["slug"])
-        perfs = [p for p in (doc.get("performances") or [])
-                 if not counting or p["date"] in counting]
-        if n is None or not perfs or doc["slug"] in NOT_A_SONG:
-            continue
-        cutoff = _years_before(perfs[-1]["date"], RECENT_YEARS)
-        recent = [p["gap"] for p in perfs[1:]
-                  if p.get("gap") is not None and p["date"] >= cutoff]
-        if len(recent) < MIN_HISTORY:
-            continue
-        high = _quantile(recent, BAND[1])
-        if high > 0 and n > high:
-            n_due += 1
-            if best is None or n / high > best[0]:
-                best = (n / high, n, doc["song"])
+    rows, _ = due_rows(docs, counting, since)
+    # Sorted by how far past its own norm each song is, so the head of the list
+    # is the longest wait by definition.
+    best = rows[0] if rows else None
     return card_markup(
         "Phish", "What&rsquo;s <em>due</em>", "Songs past their own usual gap",
-        (("%d" % n_due, "Songs due", ""),
+        (("%d" % len(rows), "Songs due", ""),
          ("{:,}".format(best[1]) if best else "&mdash;",
-          html.escape(typographic(best[2][:22])) if best else "Longest wait",
+          html.escape(typographic(best[3]["song"][:22])) if best else "Longest wait",
           "hot")),
         size=104)
 
@@ -4107,19 +4277,20 @@ def render_songs(docs, stamp=None, card=None):
     # 27,966 of those would be some tour. The count is of songs played, so it
     # says so -- and the best version is some particular song's, so it names it
     # rather than leaving a bare 97 to be a superlative about nothing.
+    cards = [
+        (len(entries), "Songs", ""),
+        ("{:,}".format(total), "Song Performances", ""),
+        (_stat(max((e["longest"] or 0) for e in entries)) if entries else "n/a",
+         "Longest Gap", " hot"),
+        (top["score"] if top and top["score"] else "n/a",
+         "Best Rated Version%s" % ("<span class='of'>%s</span>"
+                                   % html.escape(top["song"])
+                                   if top and top["score"] else ""), ""),
+    ]
     hero = "".join(
         "<div class='card'><div class='lbl'>%s</div>"
         "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-        for val, lbl, cls in (
-            (len(entries), "Songs", ""),
-            ("{:,}".format(total), "Song Performances", ""),
-            (_stat(max((e["longest"] or 0) for e in entries)) if entries else "n/a",
-             "Longest Gap", " hot"),
-            (top["score"] if top and top["score"] else "n/a",
-             "Best Rated Version%s" % ("<span class='of'>%s</span>"
-                                       % html.escape(top["song"])
-                                       if top and top["score"] else ""), ""),
-        ))
+        for val, lbl, cls in cards)
     subtitle = ("%d song%s, played %s time%s"
                 % (len(entries), "" if len(entries) == 1 else "s",
                    "{:,}".format(total), "" if total == 1 else "s"))
@@ -4130,7 +4301,8 @@ def render_songs(docs, stamp=None, card=None):
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS,
-        theme_ui=THEME_UI, hero=hero, count=len(entries),
+        theme_ui=THEME_UI, hero=hero, hero_cls=hero_cols(len(cards)),
+        count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
         share=share_meta("Songs &mdash; Possum Logic",
                          html.escape(blurb, quote=True), "songs.html", card=card),
@@ -4176,7 +4348,8 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a class="here">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a class="here">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -5918,12 +6091,17 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 since = json.load(fh).get("since") or {}
         except ValueError:
             pass
+    # Stays None when the due page was not built, so the index hero leaves the
+    # card out rather than offering a figure and a link to a page that is not
+    # there.
+    n_due = None
     if docs and since:
         due_page = os.path.join(site_dir, "due.html")
         if write_if_changed(due_page, render_due(docs, counting, since,
                                                  card="due")):
             log("wrote %s", due_page)
         want_card("due", due_card(docs, counting, since))
+        n_due = len(due_rows(docs, counting, since)[0])
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
@@ -5935,8 +6113,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # meant the index counted 259 shows the band had not played 259 of, and
     # opened on a 2020 Moon Palace soundcheck.
     shows, aside = split_archive(known, load_calendar(site_dir))
+    venues_page = os.path.join(site_dir, "venues.html")
+    if write_if_changed(venues_page, render_venues(shows)):
+        log("wrote %s", venues_page)
     changed = write_if_changed(
-        index, render_index(shows, card="index", aside=aside))
+        index, render_index(shows, card="index", aside=aside, n_due=n_due))
     want_card("index", index_card(shows))
     if jobs:
         made = shoot_cards(exe, jobs, site_dir)

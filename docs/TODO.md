@@ -1,5 +1,10 @@
 # Outstanding work
 
+**Read §3b before deciding what to work on.** It holds the work agreed with Ian
+*before* the two design reviews arrived, which a mid-session rewrite of this
+file dropped. It is not lower priority than the review findings; it is older.
+
+
 Written 2026-07-28 during the first live-show test. Ordered by the sequence
 agreed with Ian. Anything marked **[ruling]** is a decision I made without him
 so work could continue; he wants to review these, not be blocked by them.
@@ -26,6 +31,15 @@ so work could continue; he wants to review these, not be blocked by them.
   is always the same and always cheap — look at the artifact the reader gets.
 - Verify the *published* thing, not the local one. The live site and a local
   build disagreed for over an hour tonight and every local check passed.
+- **Carry the whole backlog forward, not the most recent conversation.** This
+  file was written mid-session and captured only what was being discussed at
+  that moment; a batch of work Ian had asked for earlier was silently dropped
+  and he had to notice it was gone. Anything he has asked for stays here until
+  he says otherwise, whether or not it is what is currently being worked on.
+  §3b exists because of that failure.
+- GitHub Pages adds 60–90 seconds of deployment lag after each publish, on top
+  of the polling interval. It is a floor on how live the live show can be and
+  is not a bug to chase.
 
 ## 1. ~~Song page enrichment — preceded by / followed by~~ DONE 2026-07-28
 
@@ -63,6 +77,104 @@ percentile (>= 8 plays in the ten-year window) that are past it count as due.
   claiming in progress and say "just ended". Set labels are in each song's
   `set` field. Ian accepts a ~30-minute lie window for now; tightening it
   further needs an external signal and is explicitly out of scope.
+
+## 3b. Work agreed before the reviews — do not lose this again
+
+These predate the UX and visual reviews and were discussed with Ian directly.
+They are not review findings and none of them has been started.
+
+### Rename "reports"
+
+The site stopped being a gap calculator and the vocabulary did not follow.
+"Reports" survives in: the index hero card label and subtitle, `--catch-up`'s
+output, `publish.sh`'s tally, `SHOW_DIR`, `saved_reports()`, `REPORT_NAME`,
+`report_card()`, `render_html`'s docstrings, and the pager's aria-labels. Pick
+the replacement once and change it in one pass — a half-renamed vocabulary is
+worse than the old one. Ian raised this; it is not cosmetic to him.
+
+### More charts on show and song pages
+
+Ian's words: "some cool stats… like song era distribution and debut years for
+songs", explicitly inspired by what phish.net and fouldomain publish, with the
+goal of making the archive rewarding to explore rather than merely correct.
+Everything needed is already in the archive:
+
+- **Era distribution of a show's setlist** — how much of tonight came from 1.0,
+  2.0, 3.0, 4.0. `era()` already exists and every song has a debut date.
+- **Debut-year spread** — the oldest and newest song played, and the shape
+  between them. A show that opens with a 1988 song and closes with a 2024 one
+  is a different night from one drawn entirely from *Sigma Oasis*.
+- Ian was clear this is about delight, not completeness. Do not turn it into a
+  dashboard.
+
+### Bagnard alternatives specimen — ASKED FOR AND NEVER DELIVERED
+
+Ian asked for a specimen of display-face alternatives: "I'd be game to look at
+a specimen for Bagnard alternatives. I want something that has style and
+personality." It was promised and never built. The visual review has since
+narrowed the brief usefully — the masthead date has moved to Plex Mono, so a
+replacement only has to set the wordmark, song titles and method headings,
+which are words. Candidates the reviewer named, with the checks to run before
+committing to any of them: `'GSUB' in TTFont(f)`, the digit-advance spread from
+`hmtx`, and U+0027 in the cmap.
+
+- **Fraunces** (OFL, variable; `SOFT` and `WONK` axes)
+- **Instrument Serif** (OFL; more poster, verify the digits)
+- **Redaction** (OFL; ships in halftone grades, conceptually close to the
+  ephemera direction, riskiest)
+
+Bagnard is not bad — the reviewer measured the method page as the best-typeset
+page on the site and Bagnard sets its headings. The open question is only
+whether something with more personality would serve the wordmark better.
+
+### Video enrichment — filed, not started
+
+GitHub issues #1 (show pages) and #2 (song pages). Official Phish YouTube and
+The Pharchive post a day or two after a show; titles carry date and song name
+but not phish.net slugs, so matching is fuzzy and must decline rather than
+guess. Needs a YouTube Data API key and its own sweep pass, like ratings. The
+config already supports per-service keys.
+
+### Config reporting is still too coarse
+
+Ian: "'config from environment' feels broad… what if two values are env vars,
+and one is a command line switch, or API key from a file?" It currently prints
+one line naming the sources collectively. It should name each setting and where
+that setting came from, so a mixed setup reads correctly.
+
+### Backfill further back
+
+The archive starts at the 2009 Hampton reunion. Ian has said repeatedly he
+wants to keep going back; 1.0 alone is ~1,360 shows. **Do the DOM work in §5
+first** — the index is already 664 KB at 690 shows. Note that song pages are
+already at full scale and do not grow: backfilling converts 271 outbound
+phish.net links on Tweezer's page into internal ones and adds no rows.
+
+### Year and tour pages for scale
+
+Ian's stated preference, from before the reviews: **years as the browse spine,
+tours as context**. The UX review argues against building page trees and for
+URL-addressable search instead (§4). These are not the same answer and Ian's
+preference predates the review — his call, not the reviewer's.
+
+### Smaller items from the original backlog
+
+- **Song page breakpoint is 820px**; every other page breaks at 620px. Ian
+  asked for this to match.
+- **`songs.html` accent thresholding** — roughly 750 orange numerals across
+  587 rows, which spends the accent colour on everything and therefore on
+  nothing.
+- **`method.html` carries INDEX_CSS wholesale**, of which the great majority is
+  unused. Strip it.
+- **Mexico start times.** phish.net has no start time and setlist.fm exposes it
+  only on the page, not the API, so it is not scraped. The Mexico runs are the
+  standing exception — night 1 late, middle nights early, last night earliest —
+  and the watch window is currently widened to cover all of them rather than
+  encoding which night is which. Revisit only if the window proves too wide.
+- **The `--html` single-file output must stay self-contained.** The hosted site
+  dropped that requirement and uses `fonts.css`; the single file still inlines
+  the face, because that one is meant to survive being handed to somebody with
+  nothing beside it. Do not "simplify" it into the shared sheet.
 
 ## 4. Navigation
 
