@@ -1147,22 +1147,61 @@ have one, sharing each page's grid template through a paired selector
   width where skipping matters most. The id is back on the `<ol>`, which is
   the content anyway.
 
-## 3d. Keyboard: hotkeys, not just tab order — NOT STARTED
+## 3d. Keyboard: hotkeys, not just tab order — DONE 2026-07-28
 
 §7b did the accessibility floor (focus ring, skip link, everything reachable).
-Ian wants the next layer: **jumping**, not advancing.
+This is the jumping layer, and it is deliberately three keys rather than a
+keyboard interface — Ian was explicit that the point is not being *forced* to
+reach for a pointer.
 
-- `/` to focus the search box. **Already exists** on the index, songs and song
-  pages — but not on `due`, `venues` or `method`, and it is undocumented.
-- `[` and `]`, or `←` and `→`, to step through the current collection —
-  previous/next show on a show page, previous/next song on a song page. Show
-  pages already have a prev/next pager in the markup; song pages have none
-  (§4 notes that gap).
-- Whatever is added needs to be discoverable — a `?` overlay listing the keys
-  is the usual answer, and would pair with the FAQ page above.
-- Do not let keyboard control define the site: Ian was explicit that this is
-  about not being *forced* to reach for a pointer, not about building a modal
-  keyboard interface.
+- **`[` / `←` and `]` / `→` step through the collection.** Bound to whatever
+  the page marks `rel="prev"` and `rel="next"`, so a show page steps through
+  shows and any page that grows a pager gets the keys for free. **Verified with
+  a real key press, not a synthetic one**: `←` on 2026-07-22 landed on
+  2026-07-21.
+- **`?` opens an overlay listing the keys** — and *the list is read off the
+  page rather than written down*, which is the FAQ contents-block discipline
+  applied to a help panel. A page with no search box does not claim `/` focuses
+  one; a show page with no later show shows only **Previous show**. Measured:
+  index and song pages offer 3 rows, a show page 2, and the FAQ 1 plus a line
+  saying where the others apply.
+- **A `Keys ?` button in every footer**, because a shortcut nobody can find is
+  a shortcut nobody has. 65×26, above the 24×24 floor, on every page type at
+  320/375/1400px.
+- **`<dialog>`, not a div.** It brings the modal semantics, Escape, the focus
+  move on open and the focus restore on close from the browser rather than from
+  a focus trap here that would be wrong on some platform nobody tested.
+  Verified: opening puts focus inside, closing returns it to the button that
+  opened it, and the keys form one column (`display:contents` on the rows, or
+  each `<div>` is a single grid item and they never line up).
+- **Nothing fires while you are typing.** Checked by focusing a field and
+  dispatching `[` and `?`: no navigation, no overlay.
+- The styling lives in `BASE_CSS`, the block every sheet shares — which is what
+  §8e.1 was for. Three copies is how four rules on this site came to disagree.
+
+### Two things this did not do
+
+- **`/` still only works where there is a search box** — index, songs and song
+  pages. Due, venues, dormant, method and FAQ have no search input for it to
+  focus, so the overlay does not offer it there rather than binding a key that
+  would do nothing. The older note in this section read as though those pages
+  were missing a binding; they are missing a search box, which is a different
+  and larger question.
+- **Song pages still have no prev/next.** The keys are ready for one — they
+  bind to `rel` — but the stepper itself is §4's item and wants a decision:
+  baking neighbours into each page goes stale the moment a new song debuts
+  unless every neighbour is re-rendered, which is the "record that outlives the
+  work it records" shape this file already has four instances of. The safe
+  shape is a client-side lookup from a small JSON, like `current.json`.
+
+### One measurement of mine that was wrong, kept as a warning
+
+A first sweep reported the footer button hanging off the right edge of every
+page at every width. It was measuring before `DOMContentLoaded` had run the
+script that creates it. Re-measured with a settle: the button is inside the
+footer on every page at every width. **`overflow-x:clip` now hides exactly this
+class of mistake from the eye**, which is an argument for measuring positions
+rather than looking for a scrollbar.
 
 
 ## 4. Navigation

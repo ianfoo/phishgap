@@ -1105,6 +1105,82 @@ THEME_JS = """<script>
 })();
 </script>"""
 
+# The jumping layer, on top of the accessibility floor: not being forced to
+# reach for a pointer, rather than a keyboard interface that takes the site
+# over. Three keys, and the page decides which of them it offers.
+#
+# The list in the overlay is read off the page rather than written down here,
+# which is the same discipline the FAQ's contents block follows for the same
+# reason: a help panel that names a key the page does not bind is worse than no
+# help panel. A page with no search box does not claim "/" focuses one.
+#
+# <dialog> rather than a div: it brings the modal semantics, the Escape key,
+# the focus move on open and the focus restore on close, and it does all of
+# that in the browser rather than in a focus trap here that would be wrong on
+# some platform nobody tested.
+KEYS_JS = """<script>
+(function(){
+  function ready(fn){
+    if(document.readyState!=='loading') fn();
+    else document.addEventListener('DOMContentLoaded',fn);
+  }
+  ready(function(){
+    var search=document.querySelector('input.search');
+    var prev=document.querySelector('a[rel="prev"]');
+    var next=document.querySelector('a[rel="next"]');
+    var foot=document.querySelector('footer');
+    if(!foot) return;
+    // "Previous show, 2026-07-25" -> "Previous show". The pager already writes
+    // a label saying what it steps through, so the overlay does not have to
+    // guess whether this page is a list of shows or of anything else.
+    function what(a,fallback){
+      var s=(a&&a.getAttribute('aria-label'))||'';
+      s=s.split(',')[0].trim();
+      return s||fallback;
+    }
+    var rows=[];
+    if(search){
+      rows.push(['/','Jump to the search box']);
+      rows.push(['Esc','Clear the search']);
+    }
+    if(prev) rows.push(['[  \\u2190', what(prev,'Previous')]);
+    if(next) rows.push([']  \\u2192', what(next,'Next')]);
+    rows.push(['?','This list']);
+    var dlg=document.createElement('dialog');
+    dlg.className='keys';
+    dlg.setAttribute('aria-label','Keyboard shortcuts');
+    dlg.innerHTML='<p class="cap">Keyboard</p><dl>'
+      + rows.map(function(r){
+          return '<div><dt><kbd>'+r[0].split('  ').join('</kbd> <kbd>')
+                 +'</kbd></dt><dd>'+r[1]+'</dd></div>'; }).join('')
+      + '</dl>'
+      + (rows.length>1?'':'<p class="none">This page has nothing else to '
+         + 'step through. The show and song lists have more.</p>')
+      + '<form method="dialog"><button>Close</button></form>';
+    document.body.appendChild(dlg);
+    // A button as well as a key, because a shortcut nobody can find is a
+    // shortcut nobody has. It carries the key it stands for.
+    var hint=document.createElement('button');
+    hint.type='button';
+    hint.className='keyhint';
+    hint.setAttribute('aria-haspopup','dialog');
+    hint.innerHTML='Keys <kbd>?</kbd>';
+    hint.addEventListener('click',function(){ dlg.showModal(); });
+    foot.appendChild(hint);
+    document.addEventListener('keydown',function(e){
+      if(e.metaKey||e.ctrlKey||e.altKey||dlg.open) return;
+      var t=e.target;
+      // While typing, every one of these is a character somebody meant.
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'
+             ||t.tagName==='SELECT'||t.isContentEditable)) return;
+      if(e.key==='?'){ e.preventDefault(); dlg.showModal(); return; }
+      if(prev&&(e.key==='['||e.key==='ArrowLeft')){ e.preventDefault(); prev.click(); }
+      if(next&&(e.key===']'||e.key==='ArrowRight')){ e.preventDefault(); next.click(); }
+    });
+  });
+})();
+</script>"""
+
 # --------------------------------------------------------------------------
 # The blocks every stylesheet shares.
 #
@@ -1170,6 +1246,37 @@ html{font-size:112.5%}
    three (see docs/TODO.md 8c), and invisible until somebody asked why a
    column of numbers with decimals in it would not line up. */
 body{font-variant-numeric:tabular-nums}
+/* The keyboard overlay and the button that opens it. In the block every sheet
+   shares, because it is page furniture like the skip link above it and there
+   is no page it does not belong on -- and because stating it three times is
+   how four rules on this site came to disagree with themselves. */
+.keyhint{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
+   cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
+.keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+dialog.keys{border:1px solid var(--ink);background:var(--paper);
+   color:var(--ink);padding:1.2rem 1.4rem 1rem;max-width:24rem;width:calc(100% - 2rem)}
+dialog.keys::backdrop{background:rgba(0,0,0,.5)}
+dialog.keys .cap{margin:0 0 .8rem;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600}
+dialog.keys dl{margin:0;display:grid;grid-template-columns:max-content 1fr;
+   gap:.5rem .9rem}
+/* display:contents so the two cells of a row land in the outer grid's columns
+   -- otherwise every <div> is one grid item and the keys never form a column. */
+dialog.keys dl > div{display:contents}
+dialog.keys dt{margin:0}
+dialog.keys dd{margin:0;font-size:.75rem;color:var(--ink-soft)}
+dialog.keys .none{margin:.9rem 0 0;font-size:.75rem;color:var(--dim)}
+kbd{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6875rem;
+   line-height:1;padding:.25rem .4rem;border:1px solid var(--edge);
+   color:var(--ink);background:var(--hover);white-space:nowrap}
+dialog.keys form{margin:1rem 0 0;text-align:right}
+dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
+dialog.keys button:hover{color:var(--hot);border-color:var(--hot)}
+@media print{.keyhint,dialog.keys{display:none}}
 """
 
 #: The page box and its measure.
@@ -1800,7 +1907,7 @@ SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <div class="rule2"></div>
 <header>{crumb}<h1>{date}<span class="dow">{dow}</span></h1>
@@ -2511,7 +2618,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
+        css=CSS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
         dow=_full_weekday(report["date"]),
         # A tab left open all night should say what it is holding. Without
@@ -3093,7 +3200,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -3435,7 +3542,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
+        css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         hero=hero, hero_cls=hero_cols(len(cards)), years=chips,
         count=len(entries), rows="\n".join(rows) or "",
@@ -4065,7 +4172,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
@@ -4512,7 +4619,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../fonts.css"),
-        cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS,
+        cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(countable), eras=chips,
         share=share_meta(html.escape(typographic(song)),
@@ -4564,7 +4671,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -4650,7 +4757,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
@@ -4922,7 +5029,7 @@ def render_due(docs, counting, since, card=None):
     return DUE_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
-        theme_js=THEME_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         mult=_stat(DUE_MULTIPLE), hero=hero, hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, rows="\n".join(out), shelf=shelf, dormant=tail,
         share=share_meta("What's due &mdash; Possum Logic",
@@ -4986,7 +5093,7 @@ DORMANT_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
@@ -5110,7 +5217,7 @@ def render_dormant(docs, counting, since):
     return DORMANT_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=DORMANT_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
-        theme_js=THEME_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         floor=MIN_HISTORY, years_n=RECENT_YEARS, years="".join(strip),
         hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         rows="\n".join(body),
@@ -5128,7 +5235,7 @@ VENUES_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a class="here">Venues</a>
@@ -5211,7 +5318,7 @@ def render_venues(reports, card=None):
     return VENUES_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
-        theme_js=THEME_JS, theme_ui=THEME_UI,
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(rows),
         share=share_meta("Venues &mdash; Possum Logic",
                          html.escape(blurb, quote=True), "venues.html",
@@ -5311,7 +5418,7 @@ def render_songs(docs, stamp=None, card=None):
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS,
+        css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, hero=hero, hero_cls=hero_cols(len(cards)),
         count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
@@ -5418,7 +5525,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -5611,7 +5718,7 @@ def render_method():
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=METHOD_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
-        theme_js=THEME_JS, theme_ui=THEME_UI,
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
                          "method.html"))
@@ -5656,7 +5763,7 @@ FAQ_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -5857,7 +5964,7 @@ def render_faq():
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=FAQ_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
-        theme_js=THEME_JS, theme_ui=THEME_UI,
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
                          "faq.html"))
