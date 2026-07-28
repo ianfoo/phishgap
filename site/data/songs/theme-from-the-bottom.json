@@ -231,6 +231,7 @@
   {"date": "2025-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "2", "jamchart": true, "jam": "Around 6:45 we shift from \"Theme\" to a seedy funk groove. From there the band builds into a shimmery strut behind ominous chords from Trey & Page's focus on the Clav. What develops is a very focused and singular theme which will guide the extended cut of \"Theme\" into easily the longest version played to date. Reminiscent in focus to the extended jams of Natural Information Society. Deep chin stroke groove jamming. Around 21min, Mike helps guide a shift to dreamlike bliss which is quickly overtaken by shards of noise and effects. The jam moves into a final uplifting space before -> \"Simple.\"", "note": "Unfinished.", "out": "->", "prev": "Gotta Jibboo", "next": "Simple"},
   {"date": "2026-01-27", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 3, "set": "1", "prev": "My Soul"},
   {"date": "2026-04-16", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 7, "set": "1", "prev": "Foam", "next": "Rift"},
-  {"date": "2026-07-11", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 11, "set": "1", "note": "Unfinished.", "out": "->", "prev": "Punch You in the Eye", "in": ">", "next": "Timber (Jerry the Mule)"}
+  {"date": "2026-07-11", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 11, "set": "1", "note": "Unfinished.", "out": "->", "prev": "Punch You in the Eye", "in": ">", "next": "Timber (Jerry the Mule)"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 10, "set": "1"}
  ]
 }
