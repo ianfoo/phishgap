@@ -1459,14 +1459,22 @@ SHOW_LINKS = (
 )
 
 
-def _show_links(date):
-    """Badge links out to the sites that hold the rest of the story."""
+def _show_links(date, on_phishin=None):
+    """Badge links out to the sites that hold the rest of the story.
+
+    phish.in only appears once they actually have the show. They post audio a
+    while after the night, so the page most likely to be shared -- tonight's,
+    while it is being played -- was the one guaranteed to link to a 404. When
+    the catalogue has not been fetched the link is shown as before, because a
+    missing local file is not evidence of a missing recording.
+    """
     return "".join(
         "<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
         "<img class='%s' src='data:image/png;base64,%s' alt='' "
         "width='13' height='13'><span>%s</span></a>"
         % (url % date, "flip" if flip else "", icon, label)
-        for label, url, icon, flip in SHOW_LINKS)
+        for label, url, icon, flip in SHOW_LINKS
+        if label != "phish.in" or on_phishin is None or date in on_phishin)
 
 
 # Below this many prior performances a song has no meaningful "typical", so it
@@ -1673,7 +1681,8 @@ def _ordinal(n):
 
 def render_html(report, bar_scale="linear", index_href=None,
                 prev_date=None, next_date=None, songs=(), card=None,
-                archived_show=(), sheet="../fonts.css", calendar=()):
+                archived_show=(), sheet="../fonts.css", calendar=(),
+                on_phishin=None):
     # Whether this is a show at all. A soundcheck's songs are real and its
     # gaps are phish.net's, but nothing here feeds the rest of the site, and a
     # count of bustouts is a verdict wearing a number's clothes.
@@ -1963,7 +1972,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         dow=_full_weekday(report["date"]),
         live=live, refresh=refresh, aside=aside,
         venue=html.escape(report["venue"]), hero=hero, rating=rating,
-        links=_show_links(report["date"]), blurb=html.escape(blurb, quote=True),
+        links=_show_links(report["date"], on_phishin), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
         sheet=('<link href="%s" rel="stylesheet">' % sheet if sheet
                else inline_font_css()),
@@ -4283,7 +4292,7 @@ def add_ratings(report, **kw):
     try:
         report.update(show_ratings(report["date"], **kw))
     except ApiError as exc:
-        log("warning: no ratings for %s: %s", (report["date"], exc))
+        log("warning: no ratings for %s: %s", report["date"], exc)
     return report
 
 
@@ -4300,6 +4309,64 @@ def show_ratings(date, **kw):
     if data.get("showScore") is not None:
         out["foul_score"] = data["showScore"]
     return out
+
+
+PHISHIN = ("data", "phishin.json")
+
+
+def phishin_dates(site_dir):
+    """Show dates phish.in holds audio for, from disk. Empty if never fetched."""
+    path = os.path.join(site_dir, *PHISHIN)
+    if not os.path.isfile(path):
+        return set()
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return set(json.load(fh).get("dates") or [])
+    except ValueError:
+        log("warning: unreadable %s", path)
+        return set()
+
+
+def fetch_phishin(site_dir, **kw):
+    """Refresh the list of shows phish.in has. -> the set of dates.
+
+    Three calls at a thousand a page for the whole catalogue, which is cheaper
+    than asking about one show and far cheaper than being wrong: a link to
+    phish.in for a show they do not have is a 404, and the show most likely to
+    be missing is the one being played tonight, which is exactly the page most
+    likely to be shared.
+    """
+    dates, page = set(), 1
+    while True:
+        got = foulless_json(
+            "https://phish.in/api/v2/shows?per_page=1000&page=%d" % page, **kw)
+        if not got:
+            break
+        dates |= {s["date"] for s in got.get("shows") or [] if s.get("date")}
+        if page >= (got.get("total_pages") or 1):
+            break
+        page += 1
+    if not dates:
+        return phishin_dates(site_dir)
+    path = os.path.join(site_dir, *PHISHIN)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    write_if_changed(path, json.dumps({"dates": sorted(dates)},
+                                      separators=(",", ":")) + "\n")
+    log("phish.in has audio for %d shows", len(dates))
+    return dates
+
+
+def foulless_json(url, cache_dir=DEFAULT_CACHE, refresh=False, **_):
+    """One JSON GET with no API key, uncached. -> parsed body, or None."""
+    req = urllib.request.Request(
+        url, headers={"User-Agent": "possumlogic/1.0 (+personal use)",
+                      "Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except Exception as exc:                                   # noqa: BLE001
+        log("phish.in: %s", exc)
+        return None
 
 
 def write_if_changed(path, text):
@@ -4928,12 +4995,12 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
         fetched += 1
         if i % NEIGHBOUR_FLUSH == 0:
             flush()
-            log("  %d/%d shows", (i, len(todo)))
+            log("  %d/%d shows", i, len(todo))
     flush()
     if missed:
         log("warning: no setlist for %d show%s: %s",
             len(missed), "" if len(missed) == 1 else "s", "; ".join(missed[:5]))
-    log("neighbours: %d show%s fetched", (fetched, "" if fetched == 1 else "s"))
+    log("neighbours: %d show%s fetched", fetched, "" if fetched == 1 else "s")
     return fetched
 
 
@@ -4966,7 +5033,7 @@ def sweep_ratings(site_dir, days=RATING_CHASE_DAYS, **kw):
         try:
             got = show_ratings(report["date"], **kw)
         except ApiError as exc:
-            log("  %s: %s", (report["date"], exc))
+            log("  %s: %s", report["date"], exc)
         if not got:
             continue
         # fouldomain answers with whatever it has, and it has its own score for
@@ -5212,6 +5279,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     have_dates = {r["date"] for r in known}
     calendar = load_calendar(site_dir)
     counting = set(calendar)
+    on_phishin = phishin_dates(site_dir) or None
     rebuilt = 0
     live_now = [r["date"] for r in known if r.get("provisional")]
     if live_now:
@@ -5226,7 +5294,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 report, bar_scale=bar_scale, index_href="../index.html",
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates,
-                sheet="../fonts.css", calendar=calendar)):
+                sheet="../fonts.css", calendar=calendar,
+                on_phishin=on_phishin)):
             if date in fresh:
                 log("wrote %s", page)
             else:
@@ -5264,7 +5333,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         songs_page = os.path.join(site_dir, "songs.html")
         moved = write_if_changed(songs_page, render_songs(docs, card="songs"))
         if moved:
-            log("wrote %s (%d songs)", (songs_page, len(docs)))
+            log("wrote %s (%d songs)", songs_page, len(docs))
         want_card("songs", songs_card(docs))
 
     if rebuilt:
@@ -5298,7 +5367,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     want_card("index", index_card(shows))
     if jobs:
         made = shoot_cards(exe, jobs, site_dir)
-        log("preview cards: %d of %d drawn", (made, len(jobs)))
+        log("preview cards: %d of %d drawn", made, len(jobs))
         # Only what was actually drawn, so a batch that died partway is
         # retried next run rather than recorded as done.
         for name, markup in jobs[:made]:
@@ -5675,6 +5744,10 @@ def main():
                     help="with --site, print watching=true when a scheduled "
                          "show is inside its watch window and watching=false "
                          "otherwise, then exit (no API calls)")
+    ap.add_argument("--phishin", action="store_true",
+                    help="with --site, refresh the list of shows phish.in has "
+                         "audio for, so links to them are only shown when they "
+                         "will resolve (three calls, no key)")
     ap.add_argument("--schedule", action="store_true",
                     help="with --site, refresh the list of announced shows "
                          "that have not happened yet, with each venue's time "
@@ -5716,7 +5789,7 @@ def main():
     if (args.rebuild or args.force or args.catch_up or args.seed_songs
             or args.seed_scores or args.seed_setlists or args.sweep_ratings
             or args.calendar is not None or args.schedule
-            or args.remeasure) and not args.site:
+            or args.remeasure or args.phishin) and not args.site:
         sys.exit("error: --rebuild, --force, --catch-up, --seed-songs, "
                  "--seed-scores, --seed-setlists, --sweep-ratings and "
                  "--calendar need --site DIR")
@@ -5744,7 +5817,7 @@ def main():
                 w[0].strftime("%H:%M"), w[1].strftime("%H:%M"))
         if not live:
             nxt = next_show(args.site)
-            log("nothing playing%s", (" -- next is %s %s" % (nxt["date"], nxt["venue"]))
+            log("nothing playing%s", " -- next is %s %s" % (nxt["date"], nxt["venue"])
                 if nxt else "")
         # stdout stays machine-readable: a workflow reads this one line. Named
         # for what it actually reports -- whether a scheduled show is inside
@@ -5757,7 +5830,7 @@ def main():
     if not (args.showdate or args.from_json or args.rebuild or args.catch_up
             or args.seed_songs or args.seed_scores or args.seed_setlists
             or args.sweep_ratings or args.calendar is not None
-            or args.schedule or args.remeasure):
+            or args.schedule or args.remeasure or args.phishin):
         sys.exit("error: give at least one show date (YYYY-MM-DD)")
     if args.html and args.pdf and \
             os.path.abspath(args.html) == os.path.abspath(args.pdf):
@@ -5801,7 +5874,7 @@ def main():
                 # setlist posted yet.
                 if not args.site:
                     raise
-                log("skipping %s: %s", (date, exc))
+                log("skipping %s: %s", date, exc)
                 continue
             if args.previous:
                 add_previous(report, key, site_dir=args.site, **kw)
@@ -5834,6 +5907,8 @@ def main():
                         if args.force and args.seed_scores else None, **kw)
         if args.remeasure:
             remeasure(args.site, artist=args.artist)
+        if args.phishin:
+            fetch_phishin(args.site, **kw)
         if args.schedule:
             key = key or load_key(args.apikey)
             fetch_schedule(args.site, key, artist=args.artist, **kw)
@@ -5871,7 +5946,7 @@ def main():
                                  single_page=args.single_page)
             except ApiError as exc:
                 sys.exit("error: %s" % exc)
-            log("wrote %s (via %s)", (args.pdf, used))
+            log("wrote %s (via %s)", args.pdf, used)
     if args.json:
         with open(args.json, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)

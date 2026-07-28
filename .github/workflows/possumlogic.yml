@@ -116,7 +116,7 @@ jobs:
             # moved run correct itself.
             python possumlogic.py --site site --previous --rebuild \
               --catch-up "${{ github.event.inputs.days || 21 }}" --recheck \
-              --sweep-ratings --calendar --schedule
+              --sweep-ratings --calendar --schedule --phishin
           else
             python possumlogic.py --site site --previous --rebuild --catch-up 2
           fi
