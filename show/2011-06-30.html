@@ -63,17 +63,15 @@ header{padding-bottom:.9rem}
    inheriting the link underline that made it sit differently from its
    neighbours on the song pages. */
 .crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
-/* Two cells, not three. The middle one held an "All reports" link that the
-   section row above already provides, and once that came out it was an empty
-   grid cell on every page in the archive. */
-.crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
+.crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb .prev{grid-column:1;justify-self:start}
-.crumb .next{grid-column:2;justify-self:end}
+.crumb .all{grid-column:2;justify-self:center}
+.crumb .next{grid-column:3;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
    small beside a tour and an ordinal, so the one thing that identified the
@@ -121,10 +119,6 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    just a dot. The ordinal brings its own, which is the only join left. */
 .where{margin:0 0 .45rem;font-size:1.125rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink)}
-/* Two elements, so there is no separator to strand. The locality steps back
-   rather than being joined by punctuation that has nowhere safe to break. */
-.where .v-name{display:block}
-.where .v-place{display:block;font-size:.875rem;color:var(--ink-soft)}
 /* Below the stats rather than in the masthead: the header stays a tight block
    of identity, and the links get their own air on the first screen. */
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
@@ -219,6 +213,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    it is judged against already is. Narrow: beside the title, because the
    gap column there is 3.7rem and the word is wider than that. */
 .verdict.at-gap{display:block;margin:.1rem 0 0}
+.verdict.at-song{display:none}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
@@ -275,12 +270,8 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
    transform:translateX(-50%);background:var(--ink);border-radius:1px;
    box-shadow:0 0 0 2px var(--paper)}
-.bar .at.late{background:var(--hot)}
-.bar .at.early{background:var(--cool)}
-/* Inside its own band is the ordinary case and gets no colour at all -- ink,
-   like the figures. Two thirds of rows land here, and colouring them would
-   spend the palette on "nothing to report". */
-.bar .at.usual{background:var(--ink)}
+.bar .at.big{background:var(--hot)}
+.bar .at.small{background:var(--cool)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Named only where the column header is not doing it -- on a wide screen the
@@ -363,13 +354,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      min-width:auto and a long unbreakable run would widen it. Not the cause of
      anything observed -- the tracks measure 267 + 59 against a 338 row -- but
      the row has no business being able to grow. */
-  /* 4.6rem, not 3.7. The verdict lives in this cell at every width -- one
-     element rather than a visible copy and a hidden one, which is what let an
-     aria-hidden end up on the copy the phone actually shows. "premature" is
-     the widest word it can hold, 63px at this size, so the track is sized for
-     it: 73.6px. The song column gives up 0.9rem, which it can afford; the
-     alternative costs a screen reader the verdict entirely. */
-  tr{display:grid;grid-template-columns:minmax(0,1fr) 4.6rem;column-gap:.7rem;
+  tr{display:grid;grid-template-columns:minmax(0,1fr) 3.7rem;column-gap:.7rem;
      grid-template-areas:"song gap" "meta gap";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   /* And nothing inside may refuse to break, or the track has no smaller size
@@ -392,6 +377,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.75rem;margin-top:.2rem}
   .verdict{font-size:.625rem}
+  .verdict.at-gap{display:none}
+  .verdict.at-song{display:inline-block}
   .verdict.bustout{font-size:.625rem}
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
@@ -413,14 +400,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      risk pushing the page sideways. */
   .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
   h1{margin-bottom:.45rem}
-  /* At this width the whole thing fits on one line, so it reads better joined
-     -- and a middot cannot be orphaned the way a comma was, because it only
-     exists when the two parts are already side by side. */
-  .where .v-name,.where .v-place{display:inline}
-  /* Margin rather than spaces inside content: a leading or trailing space in
-     a generated string collapses, which left "GARDEN ·NEW YORK". */
-  .where .v-place::before{content:"\00B7";color:var(--dim);
-     margin:0 .45rem 0 .55rem}
   .show .date{font-size:1.25rem}
   .show .tour{font-size:.625rem;font-weight:400;letter-spacing:.14em}
   .show .tour::before{font-size:1rem;margin:0 .5rem}
@@ -516,8 +495,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 })();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
-<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2011-06-19.html' aria-label='Previous show, 2011-06-19'>&larr; 2011-06-19</a><a class='next' rel='next' href='./2011-07-01.html' aria-label='Next show, 2011-07-01'>2011-07-01 &rarr;</a></nav><h1>2011-06-30<span class="dow">Thursday</span></h1>
-<p class="where"><span class='v-name'>Watkins Glen International</span><span class='v-place'>Watkins Glen, NY</span></p>
+<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2011-06-19.html' aria-label='Previous show, 2011-06-19'>&larr; 2011-06-19</a><span class='all'></span><a class='next' rel='next' href='./2011-07-01.html' aria-label='Next show, 2011-07-01'>2011-07-01 &rarr;</a></nav><h1>2011-06-30<span class="dow">Thursday</span></h1>
+<p class="where">Watkins Glen International, Watkins Glen, NY</p>
 <p class="show"><span class='tour'>2011 Early Summer Tour</span><span class='nth'>117th show of 3.0</span></p><p class='rating'>Phish.net rating <b>4.25</b><span> via fouldomain</span></p><p class='aside-note'><b>Not counted</b><span>phish.net does not count this toward a gap, so neither do we. Nothing here feeds any figure on the rest of the site.</span></p></header>
 <section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>5</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>0</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>0</div></div></section>
 <div class="rule2"></div>
