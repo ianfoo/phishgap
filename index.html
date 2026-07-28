@@ -70,11 +70,19 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem;
+/* Wrapping, with the same row gap the song pages use. This row did not wrap
+   before, and did not need to at five sections: each label simply broke inside
+   itself and the row stayed within the viewport. At six it stopped fitting and
+   the due page ran 401px wide inside a 375px phone -- the whole page scrolling
+   sideways for one nav item. Breaking between labels rather than inside them
+   is what the song pages have always done; the two sheets disagreed only
+   because nothing had ever pushed this one. */
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
+   margin-bottom:1.1rem;
    font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
-   border-bottom:1px solid var(--rule)}
+   white-space:nowrap;border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
@@ -239,6 +247,14 @@ header{padding-bottom:.9rem}
 .d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.5rem;line-height:1;color:var(--hot)}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+/* Same rule the song pages carry, and it has to be stated here too because
+   this sheet does not include theirs. It was missing entirely, so the due and
+   venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
+   while the identical class on a song page was 12px and dim. One class, two
+   appearances, by accident. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
+   color:var(--dim);max-width:56ch}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
 /* The venue list borrows the due page's three-column shape because it answers
    the same shape of question: a name, a when, and one figure worth ranking by.
@@ -322,6 +338,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 @media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
@@ -467,7 +486,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./method.html">How this is worked out</a></nav>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">Method</a></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">691 reports &middot; 2009-03-06 &rarr; 2026-07-27</p></header>
@@ -1183,7 +1203,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
 <section class='aside'><h2>Also on file</h2><p>Soundchecks, and television and radio sessions. phish.net lists these but does not count them toward a gap, so neither do we &mdash; the figures on their pages describe the entry, not a show the band played.</p><ol><li><a class='ax-row' href='./show/2026-01-27.html'><span class='ax-date'>2026-01-27</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2026-01-28.html'>2026-01-28</a></span></li><li><a class='ax-row' href='./show/2025-01-28.html'><span class='ax-date'>2025-01-28</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2025-01-29.html'>2025-01-29</a></span></li><li><a class='ax-row' href='./show/2024-08-14.html'><span class='ax-date'>2024-08-14</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>The Woodlands, Dover, DE</span></a><span class='for'>for <a href='./show/2024-08-15.html'>2024-08-15</a></span></li><li><a class='ax-row' href='./show/2024-07-17.html'><span class='ax-date'>2024-07-17</span><span class='ax-kind'>session</span><span class='ax-venue'>NPR Headquarters, Washington, DC</span></a></li><li><a class='ax-row' href='./show/2024-07-11.html'><span class='ax-date'>2024-07-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2024-02-20.html'><span class='ax-date'>2024-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2024-02-21.html'>2024-02-21</a></span></li><li><a class='ax-row' href='./show/2022-02-23.html'><span class='ax-date'>2022-02-23</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2022-02-24.html'>2022-02-24</a></span></li><li><a class='ax-row' href='./show/2020-08-11.html'><span class='ax-date'>2020-08-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2020-02-19.html'><span class='ax-date'>2020-02-19</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2020-02-20.html'>2020-02-20</a></span></li><li><a class='ax-row' href='./show/2019-02-20.html'><span class='ax-date'>2019-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2019-02-21.html'>2019-02-21</a></span></li><li><a class='ax-row' href='./show/2017-01-12.html'><span class='ax-date'>2017-01-12</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2017-01-13.html'>2017-01-13</a></span></li><li><a class='ax-row' href='./show/2016-10-10.html'><span class='ax-date'>2016-10-10</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2015-08-20.html'><span class='ax-date'>2015-08-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2015-08-21.html'>2015-08-21</a></span></li><li><a class='ax-row' href='./show/2014-07-14.html'><span class='ax-date'>2014-07-14</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2011-06-30.html'><span class='ax-date'>2011-06-30</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2011-07-01.html'>2011-07-01</a></span></li><li><a class='ax-row' href='./show/2011-05-26.html'><span class='ax-date'>2011-05-26</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bethel Woods Center for the Arts, Bethel, NY</span></a><span class='for'>for <a href='./show/2011-05-27.html'>2011-05-27</a></span></li><li><a class='ax-row' href='./show/2010-05-13.html'><span class='ax-date'>2010-05-13</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2010-03-15.html'><span class='ax-date'>2010-03-15</span><span class='ax-kind'>session</span><span class='ax-venue'>The Waldorf Astoria, New York, NY</span></a></li><li><a class='ax-row' href='./show/2009-10-29.html'><span class='ax-date'>2009-10-29</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Empire Polo Club, Indio, CA</span></a><span class='for'>for <a href='./show/2009-10-30.html'>2009-10-30</a></span></li><li><a class='ax-row' href='./show/2009-06-11.html'><span class='ax-date'>2009-06-11</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bonnaroo Music &amp; Arts Festival, Manchester, TN</span></a><span class='for'>for <a href='./show/2009-06-12.html'>2009-06-12</a></span></li></ol></section>
-<footer><span><a href="./method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="./method.html">Method</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

@@ -70,11 +70,19 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem;
+/* Wrapping, with the same row gap the song pages use. This row did not wrap
+   before, and did not need to at five sections: each label simply broke inside
+   itself and the row stayed within the viewport. At six it stopped fitting and
+   the due page ran 401px wide inside a 375px phone -- the whole page scrolling
+   sideways for one nav item. Breaking between labels rather than inside them
+   is what the song pages have always done; the two sheets disagreed only
+   because nothing had ever pushed this one. */
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
+   margin-bottom:1.1rem;
    font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
-   border-bottom:1px solid var(--rule)}
+   white-space:nowrap;border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
@@ -239,6 +247,14 @@ header{padding-bottom:.9rem}
 .d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.5rem;line-height:1;color:var(--hot)}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+/* Same rule the song pages carry, and it has to be stated here too because
+   this sheet does not include theirs. It was missing entirely, so the due and
+   venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
+   while the identical class on a song page was 12px and dim. One class, two
+   appearances, by accident. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
+   color:var(--dim);max-width:56ch}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
 /* The venue list borrows the due page's three-column shape because it answers
    the same shape of question: a name, a when, and one figure worth ranking by.
@@ -322,6 +338,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 @media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
@@ -378,6 +397,12 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
+/* Stated here rather than on the FAQ's sheet, because this page links out too
+   and had no rule for a link in running prose -- the first one added to it
+   would have come out in the browser's default blue. */
+.prose a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 </style><script>
 (function(){
   // Deliberately not renamed: this is a private key in a reader's own
@@ -491,7 +516,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a class="here">How this is worked out</a></nav>
+<a href="./faq.html">FAQ</a>
+<a class="here">Method</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -540,6 +566,12 @@ appears in place of the arrow &mdash; <span class="num">&gt;</span> or
 it joins, the way it does in a written setlist. So an arrow is the absence of a
 segue rather than the presence of anything, which is worth saying because the
 two look equally deliberate on the page.</p>
+<p>The two marks are <em>not</em> the same claim.
+<span class="num">&#8211;&gt;</span> is a real segue, one song jamming without
+interruption into the next; <span class="num">&gt;</span> is everything else
+that runs together, and is also used by convention between songs that are
+simply always played as a set.
+<a href="./faq.html#segues">The difference, in phish.net's own words.</a></p>
 
 <h2 id="the-bar">The bar</h2>
 <p>The bar is a <b>position, not a length</b>. Its shaded middle is the band
