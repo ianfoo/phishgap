@@ -178,15 +178,26 @@ def check_env():
     prefix, and the fallback will hide the mistake by quietly working.
     """
     known = set(env_all_names())
-    for name in env_all_names():
-        raw = os.environ.get(name)
-        if not (raw and raw.strip()):
-            continue
-        if name.startswith(ENV_PREFIX):
-            log("env: %s is set", name)
-        elif not os.environ.get(ENV_PREFIX + name):
-            log("env: %s is set, and %s%s is not -- using the unprefixed one",
-                name, ENV_PREFIX, name)
+    # One line naming where the configuration came from, not an inventory of
+    # what is set. The only per-variable thing worth saying is when a value
+    # arrived under a name this program did not ask for by, because that value
+    # may be older than whoever set the prefixed one intended.
+    plain = [n for n in env_all_names()
+             if not n.startswith(ENV_PREFIX)
+             and (os.environ.get(n) or "").strip()
+             and not (os.environ.get(ENV_PREFIX + n) or "").strip()]
+    sources = []
+    if any((os.environ.get(n) or "").strip() for n in known):
+        sources.append("environment")
+    if _config_keys():
+        sources.append(os.path.basename(CONFIG_FILE))
+    if not sources and os.path.isfile(LEGACY_KEY_FILE):
+        sources.append(LEGACY_KEY_FILE)
+    if sources:
+        log("config from %s", " and ".join(sources))
+    for name in plain:
+        log("config: %s came from the unprefixed %s -- %s%s is not set",
+            name.split("_")[0].lower(), name, ENV_PREFIX, name)
     # Two kinds of near-miss. A wrong name under the right prefix -- and a
     # right name under the wrong prefix, which is the one that hides: PH_ for
     # PL_ sets a variable that starts with neither of our forms, so a check
@@ -313,9 +324,8 @@ def _http_json(url, label, cache_dir=DEFAULT_CACHE, refresh=False,
                 except ValueError:
                     pause = 0.0
                 pause = pause or min(30.0, 2.0 ** attempt)
-                print("HTTP %s from %s, retrying in %.0fs (%d/%d)"
-                      % (exc.code, label, pause, attempt, MAX_TRIES),
-                      file=sys.stderr)
+                log("HTTP %s from %s, retrying in %.0fs (%d/%d)",
+                    exc.code, label, pause, attempt, MAX_TRIES)
                 time.sleep(pause)
             except urllib.error.URLError as exc:
                 # Wifi dropping out mid-run used to abandon a tour-length fetch
@@ -325,9 +335,8 @@ def _http_json(url, label, cache_dir=DEFAULT_CACHE, refresh=False,
                                    % (urllib.parse.urlsplit(url).netloc,
                                       exc.reason)) from None
                 pause = min(30.0, 2.0 ** attempt)
-                print("%s, retrying in %.0fs (%d/%d)"
-                      % (exc.reason, pause, attempt, MAX_TRIES),
-                      file=sys.stderr)
+                log("%s, retrying in %.0fs (%d/%d)",
+                    exc.reason, pause, attempt, MAX_TRIES)
                 time.sleep(pause)
         if cache_dir:
             with open(cache_file, "w", encoding="utf-8") as fh:
@@ -693,8 +702,8 @@ def remeasure(site_dir, artist="Phish"):
             with open(path, "w", encoding="utf-8") as fh:
                 json.dump(report, fh, indent=2)
             changed += 1
-    print("remeasured: %d report%s rewritten, %d song rows had no stored history"
-          % (changed, "" if changed == 1 else "s", skipped), file=sys.stderr)
+    log("remeasured: %d report%s rewritten, %d song rows had no stored history",
+        changed, "" if changed == 1 else "s", skipped)
     return changed
 
 
@@ -809,9 +818,8 @@ def add_previous(report, apikey, site_dir=None, **kw):
             save_song_history(site_dir, s["slug"], s["song"], hist, artist)
         _finish_song(s, hist, report["date"], counting)
     if missed:
-        print("warning: no history for %d of %d songs in %s: %s"
-              % (len(missed), len(report["songs"]), report["date"],
-                 "; ".join(missed)), file=sys.stderr)
+        log("warning: no history for %d of %d songs in %s: %s",
+            len(missed), len(report["songs"]), report["date"], "; ".join(missed))
     return report
 
 
@@ -3681,8 +3689,10 @@ average over that would call almost anything ordinary.</p>
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
 most songs. The band's ends are interpolated values that appear nowhere in the
 song's actual gaps, which is why they are not printed as numbers.</p>
-<p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
-yields roughly 13% premature, 67% expected and 20% overdue.</p>
+<p>The band is wide enough that a verdict stays worth reading: roughly
+<span class="num">13%</span> of performances come out premature,
+<span class="num">67%</span> expected and <span class="num">20%</span>
+overdue.</p>
 
 <h2 id="before-and-after">What came before and after</h2>
 <p>A song page shows what each performance sat between. A plain
@@ -3703,15 +3713,13 @@ the median, and the mark is the performance being reported. Left of the shading
 is sooner than usual for that song, right of it is later. Past three times the
 upper edge the mark stops at the end and stays there, because beyond a point
 &ldquo;very late&rdquo; is the whole of the message.</p>
-<p>Every row is drawn against its own song, which is the reason it works.
-Earlier the bar was a fraction of the longest gap in the show, and one bustout
-would take the scale with it: on <span class="num">168</span> of
-<span class="num">690</span> shows the longest gap is at least twenty times the
-median, so about <span class="num">95%</span> of that night's bars collapsed
-into an identical stub two pixels long. A scale a single row can destroy for
-every other row is not a scale. Magnitude was also the one thing that did not
-need drawing, since the number is printed beside it &mdash; what the number
-cannot say is whether it was early or late <em>for this song</em>.</p>
+<p>Every row is drawn against its own song rather than against the night, so
+one bustout cannot flatten the rest of the bill &mdash; on
+<span class="num">168</span> of <span class="num">690</span> shows the longest
+gap is at least twenty times the median. It shows position rather than
+magnitude because the number beside it already gives the magnitude exactly;
+what the number cannot say is whether this was early or late
+<em>for this song</em>.</p>
 <p>A song with fewer than <b>eight</b> performances in the ten-year window has
 no band to be measured against, so its track is drawn empty rather than
 implying a comparison that was never made.</p>
@@ -3897,7 +3905,7 @@ def shoot_cards(exe, jobs, site_dir):
     try:
         from PIL import Image
     except ImportError:
-        print("cards: Pillow not installed, skipping previews", file=sys.stderr)
+        log("cards: Pillow not installed, skipping previews")
         return 0
     out_dir = os.path.join(site_dir, CARD_DIR)
     os.makedirs(out_dir, exist_ok=True)
@@ -3928,7 +3936,7 @@ def shoot_cards(exe, jobs, site_dir):
                                    stderr=subprocess.DEVNULL)
                 sheet = Image.open(shot)
             except (subprocess.SubprocessError, OSError) as exc:
-                print("cards: %s" % exc, file=sys.stderr)
+                log("cards: %s", exc)
                 return written
             for i, (name, _) in enumerate(batch):
                 top = i * CARD_H
@@ -4124,7 +4132,7 @@ def saved_reports(site_dir):
             try:
                 out.append(json.load(fh))
             except ValueError:
-                print("warning: skipping unreadable %s" % name, file=sys.stderr)
+                log("warning: skipping unreadable %s", name)
     return out
 
 
@@ -4275,8 +4283,7 @@ def add_ratings(report, **kw):
     try:
         report.update(show_ratings(report["date"], **kw))
     except ApiError as exc:
-        print("warning: no ratings for %s: %s" % (report["date"], exc),
-              file=sys.stderr)
+        log("warning: no ratings for %s: %s", (report["date"], exc))
     return report
 
 
@@ -4384,7 +4391,7 @@ def song_history(site_dir, slug):
         try:
             return json.load(fh)
         except ValueError:
-            print("warning: skipping unreadable %s" % path, file=sys.stderr)
+            log("warning: skipping unreadable %s", path)
             return None
 
 
@@ -4561,7 +4568,7 @@ def watching(site_dir, now=None):
         with open(path, encoding="utf-8") as fh:
             shows = json.load(fh).get("shows") or []
     except ValueError:
-        print("warning: unreadable %s" % path, file=sys.stderr)
+        log("warning: unreadable %s", path)
         return []
     live = []
     for s in shows:
@@ -4612,10 +4619,8 @@ def fetch_schedule(site_dir, apikey, artist="Phish", **kw):
         {"fetched": today.isoformat(), "shows": out}, indent=1) + "\n")
     unknown = [s for s in out if not s["tz"]]
     if unknown:
-        print("warning: no time zone for %d scheduled venue(s): %s"
-              % (len(unknown),
-                 "; ".join("%s %s" % (s["date"], s["venue"]) for s in unknown[:4])),
-              file=sys.stderr)
+        log("warning: no time zone for %d scheduled venue(s): %s",
+            len(unknown), "; ".join("%s %s" % (s["date"], s["venue"]) for s in unknown[:4]))
     return out
 
 
@@ -4648,7 +4653,7 @@ def load_calendar(site_dir):
         try:
             return json.load(fh).get("shows") or []
         except ValueError:
-            print("warning: skipping unreadable %s" % path, file=sys.stderr)
+            log("warning: skipping unreadable %s", path)
             return []
 
 
@@ -4889,11 +4894,11 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
     todo = sorted({p["date"] for d in songs.values() for p in d["performances"]
                    if force or not p.get("nb")})
     if not todo:
-        print("neighbours: nothing to fetch", file=sys.stderr)
+        log("neighbours: nothing to fetch")
         return 0
 
-    print("neighbours: %d show%s to fetch"
-          % (len(todo), "" if len(todo) == 1 else "s"), file=sys.stderr)
+    log("neighbours: %d show%s to fetch",
+        len(todo), "" if len(todo) == 1 else "s")
     pending, fetched, missed = {}, 0, []
 
     def flush():
@@ -4923,14 +4928,12 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
         fetched += 1
         if i % NEIGHBOUR_FLUSH == 0:
             flush()
-            print("  %d/%d shows" % (i, len(todo)), file=sys.stderr)
+            log("  %d/%d shows", (i, len(todo)))
     flush()
     if missed:
-        print("warning: no setlist for %d show%s: %s"
-              % (len(missed), "" if len(missed) == 1 else "s",
-                 "; ".join(missed[:5])), file=sys.stderr)
-    print("neighbours: %d show%s fetched" % (fetched, "" if fetched == 1 else "s"),
-          file=sys.stderr)
+        log("warning: no setlist for %d show%s: %s",
+            len(missed), "" if len(missed) == 1 else "s", "; ".join(missed[:5]))
+    log("neighbours: %d show%s fetched", (fetched, "" if fetched == 1 else "s"))
     return fetched
 
 
@@ -4955,15 +4958,15 @@ def sweep_ratings(site_dir, days=RATING_CHASE_DAYS, **kw):
             if r["date"] >= cutoff and r.get("pnet_rating") is None]
     if not todo:
         return []
-    print("ratings: %d recent show%s still without one"
-          % (len(todo), "" if len(todo) == 1 else "s"), file=sys.stderr)
+    log("ratings: %d recent show%s still without one",
+        len(todo), "" if len(todo) == 1 else "s")
     found = []
     for report in todo:
         got = {}
         try:
             got = show_ratings(report["date"], **kw)
         except ApiError as exc:
-            print("  %s: %s" % (report["date"], exc), file=sys.stderr)
+            log("  %s: %s", (report["date"], exc))
         if not got:
             continue
         # fouldomain answers with whatever it has, and it has its own score for
@@ -4999,8 +5002,8 @@ def seed_scores(site_dir, songs=None, **kw):
                         if not (song_history(site_dir, s) or {}).get("best")))
     if not todo:
         return 0
-    print("scores: %d song%s to ask fouldomain about"
-          % (len(todo), "" if len(todo) == 1 else "s"), file=sys.stderr)
+    log("scores: %d song%s to ask fouldomain about",
+        len(todo), "" if len(todo) == 1 else "s")
     written, missed = 0, []
     for i, slug in enumerate(todo, 1):
         doc = song_history(site_dir, slug)
@@ -5016,14 +5019,11 @@ def seed_scores(site_dir, songs=None, **kw):
                         doc["performances"], best)
         written += 1
         top = best[0] if best else None
-        print("  [%d/%d] %-34s %2d rated%s"
-              % (i, len(todo), doc["song"], len(best),
-                 "  best %s (%s)" % (top["date"], top["score"]) if top else ""),
-              file=sys.stderr)
+        log(" [%d/%d] %-34s %2d rated%s",
+            i, len(todo), doc["song"], len(best), " best %s (%s)" % (top["date"], top["score"]) if top else "")
     if missed:
-        print("warning: no scores for %d song%s: %s"
-              % (len(missed), "" if len(missed) == 1 else "s",
-                 "; ".join(missed[:5])), file=sys.stderr)
+        log("warning: no scores for %d song%s: %s",
+            len(missed), "" if len(missed) == 1 else "s", "; ".join(missed[:5]))
     return written
 
 
@@ -5042,9 +5042,8 @@ def seed_songs(site_dir, apikey, artist="Phish", force=False, **kw):
             wanted.setdefault(s["slug"], s["song"])
     have = set() if force else archived_songs(site_dir)
     todo = sorted(slug for slug in wanted if slug not in have)
-    print("seeding: %d song%s named by the archive, %d already held, %d to fetch"
-          % (len(wanted), "" if len(wanted) == 1 else "s",
-             len(wanted) - len(todo), len(todo)), file=sys.stderr)
+    log("seeding: %d song%s named by the archive, %d already held, %d to fetch",
+        len(wanted), "" if len(wanted) == 1 else "s", len(wanted) - len(todo), len(todo))
 
     missed, written = [], 0
     for i, slug in enumerate(todo, 1):
@@ -5062,20 +5061,13 @@ def seed_songs(site_dir, apikey, artist="Phish", force=False, **kw):
         save_song_history(site_dir, slug, wanted[slug], rows, artist)
         written += 1
         shows = len(by_show(rows))
-        print("  [%d/%d] %-34s %4d show%s%s"
-              % (i, len(todo), wanted[slug], shows, " " if shows == 1 else "s",
-                 "" if shows == len(rows)
-                 else "  (+%d same-night repeat%s)"
-                      % (len(rows) - shows,
-                         "" if len(rows) - shows == 1 else "s")),
-              file=sys.stderr)
+        log(" [%d/%d] %-34s %4d show%s%s",
+            i, len(todo), wanted[slug], shows, " " if shows == 1 else "s", "" if shows == len(rows) else " (+%d same-night repeat%s)" % (len(rows) - shows, "" if len(rows) - shows == 1 else "s"))
     if missed:
-        print("warning: no history for %d song%s: %s"
-              % (len(missed), "" if len(missed) == 1 else "s",
-                 "; ".join(missed)), file=sys.stderr)
-    print("seeded %d song histor%s into %s"
-          % (written, "y" if written == 1 else "ies",
-             os.path.join(site_dir, "data", "songs")), file=sys.stderr)
+        log("warning: no history for %d song%s: %s",
+            len(missed), "" if len(missed) == 1 else "s", "; ".join(missed))
+    log("seeded %d song histor%s into %s",
+        written, "y" if written == 1 else "ies", os.path.join(site_dir, "data", "songs"))
     return written
 
 
@@ -5101,9 +5093,8 @@ def is_fuller(report, prior):
     was, now = _coverage(prior), _coverage(report)
     if now >= was:
         return True
-    print("keeping archived %s: %d songs/%d with history beats the %d/%d just "
-          "fetched" % (report["date"], was[0], was[1], now[0], now[1]),
-          file=sys.stderr)
+    log("keeping archived %s: %d songs/%d with history beats the %d/%d just " "fetched",
+        report["date"], was[0], was[1], now[0], now[1])
     return False
 
 
@@ -5266,15 +5257,14 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         wrote += 1 if moved else 0
         want_card(name, song_card(doc))
     if considered:
-        print("song pages: %d rendered, %d changed"
-              % (considered, wrote), file=sys.stderr)
+        log("song pages: %d rendered, %d changed",
+            considered, wrote)
 
     if docs:
         songs_page = os.path.join(site_dir, "songs.html")
         moved = write_if_changed(songs_page, render_songs(docs, card="songs"))
         if moved:
-            print("wrote %s (%d songs)" % (songs_page, len(docs)),
-                  file=sys.stderr)
+            log("wrote %s (%d songs)", (songs_page, len(docs)))
         want_card("songs", songs_card(docs))
 
     if rebuilt:
@@ -5295,7 +5285,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
-        print("wrote %s" % method, file=sys.stderr)
+        log("wrote %s", method)
 
     index = os.path.join(site_dir, "index.html")
     # Nine of the archive's entries are soundchecks or TV and radio sessions,
@@ -5308,8 +5298,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     want_card("index", index_card(shows))
     if jobs:
         made = shoot_cards(exe, jobs, site_dir)
-        print("preview cards: %d of %d drawn" % (made, len(jobs)),
-              file=sys.stderr)
+        log("preview cards: %d of %d drawn", (made, len(jobs)))
         # Only what was actually drawn, so a batch that died partway is
         # retried next run rather than recorded as done.
         for name, markup in jobs[:made]:
@@ -5317,9 +5306,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         save_card_prints(site_dir, prints)
     # Serve the directory verbatim on GitHub Pages, Jekyll out of the way.
     open(os.path.join(site_dir, ".nojekyll"), "a").close()
-    print("%s %s (%d report%s)"
-          % ("wrote" if changed else "unchanged", index, len(known),
-             "" if len(known) == 1 else "s"), file=sys.stderr)
+    log("%s %s (%d report%s)",
+        "wrote" if changed else "unchanged", index, len(known), "" if len(known) == 1 else "s")
     return index
 
 
@@ -5792,11 +5780,8 @@ def main():
                 recheck |= {d for d in played if d >= cutoff and d in have}
             fresh = [d for d in played
                      if (d not in have or d in recheck) and d not in dates]
-            print("catch-up: %d show%s played in the last %d days, "
-                  "%d new, %d re-fetched"
-                  % (len(played), "" if len(played) == 1 else "s",
-                     args.catch_up, len(fresh) - len(recheck), len(recheck)),
-                  file=sys.stderr)
+            log("catch-up: %d show%s played in the last %d days, " "%d new, %d re-fetched",
+                len(played), "" if len(played) == 1 else "s", args.catch_up, len(fresh) - len(recheck), len(recheck))
             dates += fresh
 
         if args.from_json:
@@ -5806,8 +5791,7 @@ def main():
             if args.site and not args.force and date not in recheck:
                 _, blob = site_paths(args.site, date)
                 if os.path.exists(blob):
-                    print("%s is already in the site (--force to re-fetch)"
-                          % date, file=sys.stderr)
+                    log("%s is already in the site (--force to re-fetch)", date)
                     continue
             key = key or load_key(args.apikey)   # not needed for --rebuild
             try:
@@ -5817,7 +5801,7 @@ def main():
                 # setlist posted yet.
                 if not args.site:
                     raise
-                print("skipping %s: %s" % (date, exc), file=sys.stderr)
+                log("skipping %s: %s", (date, exc))
                 continue
             if args.previous:
                 add_previous(report, key, site_dir=args.site, **kw)
@@ -5880,18 +5864,18 @@ def main():
         if args.html:
             with open(args.html, "w", encoding="utf-8") as fh:
                 fh.write(markup)
-            print("wrote %s" % args.html, file=sys.stderr)
+            log("wrote %s", args.html)
         if args.pdf:
             try:
                 used = write_pdf(markup, args.pdf, prefer=args.pdf_backend,
                                  single_page=args.single_page)
             except ApiError as exc:
                 sys.exit("error: %s" % exc)
-            print("wrote %s (via %s)" % (args.pdf, used), file=sys.stderr)
+            log("wrote %s (via %s)", (args.pdf, used))
     if args.json:
         with open(args.json, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)
-        print("wrote %s" % args.json, file=sys.stderr)
+        log("wrote %s", args.json)
 
 
 if __name__ == "__main__":
