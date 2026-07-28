@@ -18,6 +18,14 @@ so work could continue; he wants to review these, not be blocked by them.
   `.ax-*` called dead CSS when it is live on the index). Measure first.
 - Never claim something is done without rendering it. Counting elements in
   HTML proves markup exists, not that it is styled or visible.
+- **Report from observation, not from intent.** The recurring failure in this
+  project has not been bad code, it has been saying a thing was done because it
+  had been typed. Instances in one night: song pages were twice reported as
+  carrying a treatment whose CSS was never added; code was pushed without
+  compiling; an item was reported as added to this file and was not. The check
+  is always the same and always cheap — look at the artifact the reader gets.
+- Verify the *published* thing, not the local one. The live site and a local
+  build disagreed for over an hour tonight and every local check passed.
 
 ## 1. ~~Song page enrichment — preceded by / followed by~~ DONE 2026-07-28
 
@@ -116,19 +124,35 @@ free anchors.
 - Method page: ordering is scattered (the bar is discussed mid-gap-calculation)
   and it needs a table of contents.
 
-## 8. Watch for this — it bit once
+## 8. The watcher needs a real test before it is trusted again
 
-`watch.yml` committed the archive then ran `git pull --rebase || true`. A
-conflicting rebase was swallowed, leaving conflict markers inside
-`site/data/<date>.json`; that file is then unreadable JSON, the show drops out
-of the archive, and the watcher publishes a site *without the show it is
-watching* — every five minutes, over the top of correct publishes. Fixed: a
-conflict aborts and retries next pass, and the tree is checked clean before the
-site is built. `saved_reports()` also records unreadable files now and the
-build reports the count at the end, so this cannot be silent again.
+Three separate bugs in one night, each of which made the live feature quietly
+not work while looking like it did:
 
-If the live site ever shows fewer reports than a local build, this is the first
-thing to check.
+1. **It never refreshed the calendar.** A show only counts as a concert if the
+   counting calendar holds its date, and that calendar comes from phish.net's
+   show list — so the show being played was not in it, and landed under "Also
+   on file" instead of at the top of the index.
+2. **A conflicted `git pull --rebase` was swallowed by `|| true`**, writing
+   conflict markers into `site/data/<date>.json`. That file is then unreadable
+   JSON, the show drops out of the archive, and the watcher publishes a site
+   *without the show it is watching* — every five minutes, over the top of
+   correct publishes.
+3. **It served the setlist from a six-hour cache.** A watch job runs five
+   hours, so after its first pass it re-read the same response forever. The log
+   said "1 re-fetched" every pass and meant it; the fetch happened and never
+   left the disk. The song count only ever moved when some *other* run — the
+   hourly workflow, or a manual dispatch — started on a fresh runner with an
+   empty cache.
+
+All three are fixed. The point is that three of them existed at once, each
+invisible from the logs, and tonight is unlikely to have found the last.
+
+**Write an end-to-end test before adding anything else to the watcher.** Drive
+`write_site` against a synthetic show whose setlist grows across passes, and
+assert the *published* page changes — not that a function was called, not that
+markup contains a class. The bugs above all pass any test that stops short of
+reading the output.
 
 ## 9. Known and deliberately not fixed
 

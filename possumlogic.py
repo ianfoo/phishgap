@@ -2155,6 +2155,14 @@ header{padding-bottom:.9rem}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.chip:focus-visible,.sort:focus-visible{
   outline:2px solid var(--hot);outline-offset:1px}
+/* Shown only once there is something to clear. The song page has carried this
+   button for a while; the index only ever had the line of script that hides
+   it, which is why that line referred to an element that was never here. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
       padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
@@ -2316,8 +2324,15 @@ INDEX_JS = """
   var rows=Array.prototype.slice.call(list.children);
   var q=document.getElementById('q'), sort=document.getElementById('sort'),
       shown=document.getElementById('shown'), empty=document.getElementById('empty'),
+      clear=document.getElementById('clear'),
       chips=Array.prototype.slice.call(document.querySelectorAll('.chip')),
       era='';
+  // Only the eras and the sorts the page actually offers. A hand-typed
+  // ?era=90s matching no chip would otherwise hide every row at once, with
+  // nothing on screen saying why and no lit chip to click back off.
+  var eraOK={}, sortOK={};
+  chips.forEach(function(c){ eraOK[c.getAttribute('data-era')]=1; });
+  Array.prototype.forEach.call(sort.options, function(o){ sortOK[o.value]=1; });
   // A bare number means that number: searching 8 should find the 8th, not the
   // 18th. Anything else is a plain substring, which is what makes partial
   // venue and song typing work.
@@ -2339,32 +2354,95 @@ INDEX_JS = """
     });
     shown.textContent=n;
     empty.hidden=n>0;
+    // The way out of a filter appears only once there is one to leave. This
+    // line referred to an undeclared `clear` for as long as it has existed --
+    // copied from the song page without the element or the declaration that
+    // make it work there. Every keystroke threw a ReferenceError; nothing
+    // showed because apply() had already done all its visible work by this
+    // point, and there was nothing after it to lose.
     if(clear) clear.hidden=!q.value;
   }
+  // The order the rows are actually in, so a page load in the order the server
+  // already rendered does not re-append all 691 of them to prove it.
+  var ordered='newest';
   function order(){
     var k=sort.value;
+    if(k===ordered) return;
     rows.slice().sort(function(a,b){
       if(k==='gap') return b.getAttribute('data-longest')-a.getAttribute('data-longest');
       var x=a.getAttribute('data-date'), y=b.getAttribute('data-date');
       return k==='oldest' ? x.localeCompare(y) : y.localeCompare(x);
     }).forEach(function(r){ list.appendChild(r); });
+    ordered=k;
   }
-  q.addEventListener('input', apply);
-  sort.addEventListener('change', order);
+
+  /* The search is how this archive is read, and none of it was addressable:
+     81 shows at MSG, 171 with a Tweezer, 33 in 2015 -- every one a state you
+     can reach and cannot send to anybody. q, era and sort now ride in the
+     query string.
+
+     Typing replaces rather than pushes. One history entry per character would
+     bury the back button -- eight presses to leave a search you typed once.
+     A chip and the sort are each a single deliberate act, so those push, and
+     back undoes them one at a time. */
+  var HIST=!!(window.history&&window.history.replaceState);
+  function write(push){
+    if(!HIST) return;
+    var p=[];
+    if(q.value) p.push('q='+encodeURIComponent(q.value));
+    if(era) p.push('era='+encodeURIComponent(era));
+    if(sort.value!=='newest') p.push('sort='+encodeURIComponent(sort.value));
+    // A bare path when nothing is filtered, so the front door keeps a clean
+    // URL rather than growing ?q=&era=&sort= just from being looked at.
+    var url=location.pathname+(p.length?'?'+p.join('&'):'')+location.hash;
+    try{ window.history[push?'pushState':'replaceState'](null,'',url); }
+    catch(e){}          // opaque origins (file://) refuse; the page still works
+  }
+  function read(){
+    var out={};
+    location.search.replace(/^\\?/,'').split('&').forEach(function(kv){
+      if(!kv) return;
+      var i=kv.indexOf('='), k=i<0?kv:kv.slice(0,i), v=i<0?'':kv.slice(i+1);
+      try{ out[decodeURIComponent(k)]=decodeURIComponent(v.replace(/\\+/g,' ')); }
+      catch(e){}        // a stray % is a bad query string, not a broken page
+    });
+    return out;
+  }
+  // The page follows the URL, rather than only ever writing to it -- which is
+  // what makes both a pasted link and the back button land in the same state.
+  function restore(){
+    var st=read();
+    q.value=st.q||'';
+    era=st.era&&eraOK[st.era]?st.era:'';
+    sort.value=st.sort&&sortOK[st.sort]?st.sort:'newest';
+    chips.forEach(function(c){
+      c.classList.toggle('on', c.getAttribute('data-era')===era);
+    });
+    order();
+    apply();
+  }
+
+  function setQuery(v){ q.value=v; apply(); write(false); }
+  q.addEventListener('input', function(){ apply(); write(false); });
+  sort.addEventListener('change', function(){ order(); write(true); });
   chips.forEach(function(c){
     c.addEventListener('click', function(){
       era = c.classList.contains('on') ? '' : c.getAttribute('data-era');
       chips.forEach(function(o){ o.classList.toggle('on', o.getAttribute('data-era')===era); });
       apply();
+      write(true);
     });
   });
+  if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
   document.addEventListener('keydown', function(e){
     if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
-    if(e.key==='Escape' && document.activeElement===q){ q.value=''; apply(); q.blur(); }
+    if(e.key==='Escape' && document.activeElement===q){ setQuery(''); q.blur(); }
   });
+  window.addEventListener('popstate', restore);
   q.disabled=false; sort.disabled=false;
   chips.forEach(function(c){ c.disabled=false; });
-  apply();
+  // Whatever the link asked for, before the first paint the reader sees.
+  restore();
 })();
 """
 
@@ -2390,6 +2468,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <div class="tools-main">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search date, venue, city, song, year&hellip;" aria-label="Search reports">
+<button id="clear" class="clear" type="button" hidden>Clear</button>
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="newest">Newest</option><option value="oldest">Oldest</option>
@@ -2603,21 +2682,34 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
         "%s <span class='chip-n'>%d</span></button>" % (x, x, counts[x])
         for x in present)
 
-    every = [g for e in entries for g in ([e["longest"]] if e["longest"] else [])]
+    # A figure in the hero that cannot be followed is an advertisement for a
+    # page that does not exist. The show holding the longest gap is a page the
+    # site already builds, so the number points at it rather than just sitting
+    # there being large.
+    peak = max((e for e in entries if e["longest"]),
+               key=lambda e: e["longest"], default=None)
+    # The fullest single night is a different question from the longest gap,
+    # and one the index had no way of asking. Labelled by song count rather
+    # than "longest" so it does not read as a second gap figure.
+    most = max(entries, key=lambda e: e["songs"], default=None)
     # The songs card doubles as the way to the song index, since a reader who
     # has just noticed how many songs are logged is the reader who wants it.
     hero = "".join(
-        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
+        ("<a class='card' href='%s'>" % html.escape(href, quote=True)
+         if href else "<div class='card'>")
         + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
         + ("</a>" if href else "</div>")
         for val, lbl, cls, href in (
             (len(entries), "Reports", "", ""),
-            (_stat(max(every)) if every else "n/a", "Longest Gap", " hot", ""),
+            (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
+             page_href % peak["date"] if peak else ""),
             # Performances, not songs: this sums every song slot across every
             # report. Labelled "Songs Logged" it read 4,593 and linked to a
             # page saying 379, which is the same word counting two things.
             ("{:,}".format(sum(e["songs"] for e in entries)),
              "Song Performances", "", "./songs.html"),
+            (most["songs"] if most else "n/a", "Most Songs", "",
+             page_href % most["date"] if most else ""),
             (len({e["venue"] for e in entries if e["venue"]}), "Venues", "", ""),
         ))
 
