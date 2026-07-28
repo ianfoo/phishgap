@@ -918,6 +918,35 @@ THEME_CSS = """
 @media print{.theme{display:none}}
 """
 
+AGO_JS = """<script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('time.ago'));
+  if(!els.length) return;
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function tick(){
+    var now=Date.now();
+    els.forEach(function(e){
+      var t=Date.parse(e.getAttribute('datetime'));
+      if(!isNaN(t)) e.textContent=say((now-t)/1000);
+    });
+  }
+  tick();
+  setInterval(tick,20000);
+})();
+</script>"""
+
+
 ROW_JS = """<script>
 (function(){
   // On a phone the song title is a very small target for a link that is the
@@ -1037,9 +1066,17 @@ header{padding-bottom:.9rem}
    not the front door.
    Tabular figures because a date is eight digits: without them the 1s pull the
    whole string crooked at this size. */
-h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(1.9rem,5.5vw,3.25rem);line-height:1.06;margin:0 0 .25rem;
-   letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+/* Plex Mono, not the display face. A show's masthead is a date -- eight
+   digits and two hyphens -- and the display face has no GSUB table at all, so
+   font-variant-numeric here did nothing and its digits run 254 to 1151 units.
+   Because the h1 sits in the grid's auto column, that spread moved the venue
+   column by up to 45px depending on which digits the date happened to contain.
+   The mono is already loaded, already tabular, and already sets every other
+   date on the site. The display face keeps the wordmark, the song titles and
+   the method page's headings -- words, which is what it is for. */
+h1{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:clamp(1.7rem,5vw,2.75rem);line-height:1.1;margin:0 0 .25rem;
+   letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 /* The day of the week, which the index has always shown and this page never
    did. Set against the date rather than under it: the masthead is already
    two blocks at width, and a third line would make it three. */
@@ -1052,10 +1089,6 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    variable-length part, so it gets a line to wrap inside, with no separator to
    strand at the break. */
 .show{margin:0;display:flex;flex-wrap:wrap;align-items:baseline}
-/* Aleo, per the house rule: where a display face is used, the heavy one sets
-   the wordmark, the section headings and bare figures, and Aleo sets anything
-   you read as data -- a date or a title. A date is eight digits and two
-   hyphens, which is more punctuation than Alfa Slab One wants to carry. */
 .show .date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;
    line-height:1;color:var(--ink)}
 .show .tour{font-size:1rem;font-weight:600;letter-spacing:0;
@@ -1438,13 +1471,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{date} &mdash; Possum Logic</title>{refresh}
+<title>{titlestate}{date} &mdash; Possum Logic</title>{refresh}
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
 <div class="rule2"></div>
 <header>{crumb}<h1>{date}<span class="dow">{dow}</span></h1>
 <p class="where">{venue}</p>
@@ -1946,7 +1979,15 @@ def render_html(report, bar_scale="linear", index_href=None,
 
     # What a chat client shows when someone drops the link in a thread. Plain
     # text, entities and all, because html.escape has the last word on it.
-    blurb = "%s · %d songs" % (report["venue"], len(report["songs"]))
+    # The share text must agree with the share image. The card for a show in
+    # progress deliberately carries no figures, so a description asserting a
+    # song count and a longest gap contradicts the picture above it -- and both
+    # are frozen into somebody else's timeline the moment they paste the link.
+    if report.get("provisional"):
+        blurb = "%s \u00b7 being played now, setlist still coming in" % report["venue"]
+        allg = []
+    else:
+        blurb = "%s \u00b7 %d songs" % (report["venue"], len(report["songs"]))
     if allg:
         blurb += " · longest gap %s (%s)" % (
             longest, next((s["song"] for s in report["songs"]
@@ -1984,12 +2025,23 @@ def render_html(report, bar_scale="linear", index_href=None,
 
     live = refresh = ""
     if report.get("provisional"):
+        # Two clocks, and the second is the one that matters. When the last
+        # song arrived says how the show is going; when we last looked says
+        # whether this page is still being fed. Without the second, a reader
+        # cannot tell a gap between sets from a build that has stopped -- and
+        # both look like a page that has not changed for forty minutes.
         since = report.get("count_since") or ""
-        when = (" &middot; last new song %s UTC" % since[11:16]) if since else ""
-        live = ("<p class='live'><b>Setlist still coming in</b>"
-                "<span>%d song%s so far%s. This page reloads itself.</span></p>"
-                % (len(report["songs"]),
-                   "" if len(report["songs"]) == 1 else "s", when))
+        checked = _utcnow().isoformat(timespec="seconds")
+        n = len(report["songs"])
+        live = ("<p class='live' role='status' aria-live='polite'>"
+                "<b>Setlist still coming in</b>"
+                "<span>%d song%s so far &middot; last one "
+                "<time class='ago' datetime='%s'>%s</time>"
+                " &middot; checked <time class='ago' datetime='%s'>%s</time>"
+                "</span></p>"
+                % (n, "" if n == 1 else "s",
+                   html.escape(since, quote=True), _clock(since),
+                   html.escape(checked, quote=True), _clock(checked)))
         refresh = '\n<meta http-equiv="refresh" content="120">'
 
     rating = ""
@@ -1998,10 +2050,15 @@ def render_html(report, bar_scale="linear", index_href=None,
                   "<span> via fouldomain</span></p>" % report["pnet_rating"])
 
     return SHELL.format(
+        ago_js=AGO_JS,
         analytics=ANALYTICS,
         css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
         dow=_full_weekday(report["date"]),
+        # A tab left open all night should say what it is holding. Without
+        # this the live show's tab is indistinguishable from any archived one.
+        titlestate=("(%d) " % len(report["songs"])
+                    if report.get("provisional") else ""),
         live=live, refresh=refresh, aside=aside,
         venue=_venue_lines(report), hero=hero, rating=rating,
         links=_show_links(report["date"], on_phishin), blurb=html.escape(blurb, quote=True),
@@ -2009,7 +2066,9 @@ def render_html(report, bar_scale="linear", index_href=None,
         sheet=('<link href="%s" rel="stylesheet">' % sheet if sheet
                else inline_font_css()),
         row_js=ROW_JS,
-        share=share_meta("%s &mdash; Possum Logic" % html.escape(report["date"]),
+        share=share_meta("%s%s &mdash; Possum Logic"
+                         % ("Live: " if report.get("provisional") else "",
+                            html.escape(report["date"])),
                          html.escape(blurb, quote=True),
                          "%s/%s.html" % (SHOW_DIR, report["date"]), card=card),
         # Dated by the report's own data, not by the clock. A build stamp made
@@ -2274,7 +2333,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
@@ -2371,6 +2430,11 @@ def typographic(text):
     face is in use, so this is worth doing even if the face changes.
     """
     return (text or "").replace("'", "\u2019")
+
+
+def _clock(iso):
+    """A bare HH:MM fallback for a stamp that JavaScript will make relative."""
+    return html.escape(iso[11:16]) if iso else ""
 
 
 def _venue_lines(report):
@@ -2524,6 +2588,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
         subtitle, blurb = "No reports yet", "Per-song gaps for Phish shows."
 
     return INDEX_SHELL.format(
+        ago_js=AGO_JS,
         analytics=ANALYTICS,
         css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
         fonts=WEB_FONTS, sheet="./fonts.css",
@@ -3111,7 +3176,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}</head><body id="top"><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}</head><body id="top"><div class="wrap">
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
@@ -3486,6 +3551,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         for label, url, icon, flip in SONG_LINKS)
 
     return SONG_SHELL.format(
+        ago_js=AGO_JS,
         analytics=ANALYTICS,
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
         cols=cols, caveat=caveat, theme_js=THEME_JS,
@@ -3540,7 +3606,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
@@ -3681,6 +3747,7 @@ def render_songs(docs, stamp=None, card=None):
     blurb = ("Every song in the archive: %d of them, played %s times."
              % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
+        ago_js=AGO_JS,
         analytics=ANALYTICS,
         css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS,
         theme_ui=THEME_UI, hero=hero, count=len(entries),
@@ -3727,7 +3794,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">How this is worked out</a></nav>
 <div class="rule2"></div>
@@ -3879,6 +3946,7 @@ timeline.</p>
     blurb = ("How the gaps, the medians and the verdicts on this site are "
              "worked out.")
     return METHOD_SHELL.format(
+        ago_js=AGO_JS,
         analytics=ANALYTICS,
         css=METHOD_CSS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS, theme_ui=THEME_UI,
         body=body.strip(),
