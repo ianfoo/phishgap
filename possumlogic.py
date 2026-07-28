@@ -1966,6 +1966,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                  "<span class='mark'>Possum Logic</span>"
                  "<a href='../index.html'>Shows</a>"
                  "<a href='../songs.html'>Songs</a>"
+                 "<a href='../due.html'>Due</a>"
                  "<a href='../method.html'>How this is worked out</a></nav>"
                  # No "All reports" in the middle: the row above already has
                  # Shows, pointing at the same page under the name the rest of
@@ -2186,6 +2187,31 @@ header{padding-bottom:.9rem}
 /* Deliberately not a report row. These are on file, not on the bill: smaller,
    dimmer, no figures, and below the empty-search message so a search matching
    nothing cannot look as though it matched these. */
+/* The due list. Same row grammar as the show index -- identity, context,
+   figure -- so the two pages read as the same object seen from two sides. */
+.due{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.due li{border-bottom:1px solid var(--rule-soft)}
+.due .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.due .row:hover{background:var(--hover)}
+.d-song{font-size:1rem;font-weight:500}
+.due .row:hover .d-song{color:var(--hot)}
+.d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;white-space:nowrap}
+.d-where{display:block;color:var(--dim);font-size:.75rem}
+.d-n{text-align:right}
+.d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot)}
+.d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.dek.foot{margin-top:1.4rem;max-width:64ch}
+@media screen and (max-width:620px){
+  .due .row{grid-template-columns:1fr 5.5rem;grid-template-areas:"song n" "last n";
+     row-gap:.15rem}
+  .d-song{grid-area:song}
+  .d-last{grid-area:last}
+  .d-n{grid-area:n}
+  .d-n b{font-size:1.25rem}
+}
 .aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
 .aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin:0 0 .3rem;font-weight:400}
@@ -2335,7 +2361,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
-<a href="./method.html">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
@@ -2430,6 +2456,30 @@ def typographic(text):
     face is in use, so this is worth doing even if the face changes.
     """
     return (text or "").replace("'", "\u2019")
+
+
+def neighbours(perfs, counting=None, top=3):
+    """What this song most often came out of and went into.
+
+    Every row on a song page already names both, and nothing has ever added
+    them up -- which is the question this audience asks most: what does Tweezer
+    come out of? Counted over performances that count toward a gap, so a
+    soundcheck pairing does not enter a statistic the rest of the site would
+    not recognise.
+
+    -> ([(song, n), ...] before, [(song, n), ...] after)
+    """
+    before, after = collections.Counter(), collections.Counter()
+    for p in perfs:
+        if counting and p.get("date") not in counting:
+            continue
+        if p.get("prev"):
+            before[p["prev"]] += 1
+        if p.get("next"):
+            after[p["next"]] += 1
+    # A pairing seen once says nothing; it is a coincidence with a name.
+    keep = lambda c: [(s, n) for s, n in c.most_common(top) if n > 1]
+    return keep(before), keep(after)
 
 
 def _clock(iso):
@@ -2791,6 +2841,17 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
+/* What the song sits between, counted over its whole history. Two short rows
+   rather than a table: this is context for the list below, not a finding of
+   its own, and it earns its place only because the answer is usually
+   surprising -- Harry Hood comes out of Hold Your Head Up 31 times. */
+.pairs{margin:.7rem 0 0;display:flex;flex-wrap:wrap;gap:.15rem 2rem}
+.pair{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .7rem}
+.pair .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.pair .p{font-size:.8125rem;color:var(--ink-soft);white-space:nowrap}
+.pair .p b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.75rem;color:var(--dim);margin-left:.3rem}
 .caveat{margin:.6rem 0 0;padding-left:.8rem;border-left:2px solid var(--hot);
    font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
    font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:58ch}
@@ -3177,7 +3238,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}</head><body id="top"><div class="wrap">
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../method.html">How this is worked out</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -3186,7 +3247,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
 <p class="dek">Gap &mdash; the number of shows the band played between one
-performance of this song and the one before it.</p>
+performance of this song and the one before it.</p>{pairs}
 <p class="dek key"><span class="k">&#8592;&#8201;&#8594;</span> the songs either
 side, played as separate songs. <span class="k">&gt;</span> and
 <span class="k">&#8211;&gt;</span> are phish.net&rsquo;s own marks, and mean the
@@ -3529,6 +3590,21 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     first = debut_date or ""
     last = countable[0]["date"] if countable else ""
     n = len(countable)
+    # What it usually sits between. Counted from the same rows the page
+    # already prints, so nothing new is fetched or stored.
+    before, after = neighbours(perfs, counting)
+    pairs = ""
+    if before or after:
+        def _side(label, items):
+            if not items:
+                return ""
+            return ("<div class='pair'><span class='cap'>%s</span>%s</div>"
+                    % (label, " ".join(
+                        "<span class='p'>%s<b>%d</b></span>"
+                        % (html.escape(typographic(s)), n) for s, n in items)))
+        pairs = ("<div class='pairs'>%s%s</div>"
+                 % (_side("Usually out of", before), _side("Usually into", after)))
+
     caveat = NOT_A_SONG.get(doc.get("slug") or "")
     caveat = "<p class='caveat'>%s</p>" % html.escape(caveat) if caveat else ""
     subtitle = " &middot; ".join(x for x in (
@@ -3554,7 +3630,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         ago_js=AGO_JS,
         analytics=ANALYTICS,
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
-        cols=cols, caveat=caveat, theme_js=THEME_JS,
+        cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS,
         theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(countable), eras=chips,
         share=share_meta(html.escape(typographic(song)),
@@ -3608,7 +3684,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
-<a href="./method.html">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
@@ -3675,6 +3751,136 @@ SONGS_JS = """
   apply();
 })();
 """
+
+
+DUE_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What&rsquo;s due &mdash; Possum Logic</title>
+<meta property="og:type" content="website">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
+<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
+<nav class="crumb sections"><span class="mark">Possum Logic</span>
+<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a class="here">Due</a>
+<a href="./method.html">How this is worked out</a></nav>
+<div class="rule2"></div>
+<header><h1>What&rsquo;s due</h1>
+<p class="show">{subtitle}</p>
+<p class="dek">Songs the band plays often enough to have a habit, which are now
+past it. Measured against each song&rsquo;s own recent gaps, not against a
+single number &mdash; a staple is late at eight shows and a rarity is not late
+at eighty.</p></header>
+<div class="rule2"></div>
+<ol class="due">
+{rows}
+</ol>
+<p class="dek foot">{dormant}</p>
+<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+
+def render_due(docs, counting, since, card=None):
+    """Songs past their own norm, longest overdue first.
+
+    Deliberately not every song that has been gone a while. A song with no
+    recent habit that has not been played in 274 shows is not *due* -- nobody
+    is expecting it, and calling it due would bury the fifty-five songs someone
+    might actually shout for tonight under three hundred that nobody would.
+    Dormant is a different fact and the song's own page says it.
+    """
+    rows, dormant = [], 0
+    for doc in docs:
+        slug = doc["slug"]
+        n = since.get(slug)
+        perfs = doc.get("performances") or []
+        if n is None or not perfs or slug in NOT_A_SONG:
+            continue
+        played = [p for p in perfs if not counting or p["date"] in counting]
+        if not played:
+            continue
+        cutoff = _years_before(played[-1]["date"], RECENT_YEARS)
+        recent = [p["gap"] for p in played[1:]
+                  if p.get("gap") is not None and p["date"] >= cutoff]
+        if len(recent) < MIN_HISTORY:
+            if n >= BUSTOUT_GAP:
+                dormant += 1
+            continue
+        high = _quantile(recent, BAND[1])
+        if high <= 0 or n <= high:
+            continue
+        last = played[-1]
+        rows.append((n / high, n, high, doc, last))
+    rows.sort(key=lambda r: -r[0])
+
+    out = []
+    for over, n, high, doc, last in rows:
+        place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
+        out.append(
+            "<li><a class='row' href='./song/%s.html'>"
+            "<span class='d-song'>%s</span>"
+            "<span class='d-last'><span class='d-date'>%s</span>"
+            "<span class='d-where'>%s</span></span>"
+            "<span class='d-n'><b>%s</b><span class='typ'>usually by %s</span>"
+            "</span></a></li>"
+            % (html.escape(doc["slug"], quote=True),
+               html.escape(typographic(doc["song"])),
+               last["date"], html.escape(place),
+               "{:,}".format(n), _stat(high)))
+
+    n_due = len(rows)
+    subtitle = ("%d song%s past %s own usual gap"
+                % (n_due, "" if n_due == 1 else "s",
+                   "its" if n_due == 1 else "their"))
+    tail = ("A further %d have been gone long enough to be bustouts but have no "
+            "recent habit to be late against. They are dormant rather than due."
+            % dormant) if dormant else ""
+    blurb = "Phish songs that are overdue, measured against their own habits."
+    return DUE_SHELL.format(
+        analytics=ANALYTICS, ago_js=AGO_JS,
+        css=INDEX_CSS, fonts=WEB_FONTS, sheet="./fonts.css",
+        theme_js=THEME_JS, theme_ui=THEME_UI,
+        subtitle=subtitle, rows="\n".join(out), dormant=tail,
+        share=share_meta("What's due &mdash; Possum Logic",
+                         html.escape(blurb, quote=True), "due.html", card=card),
+        stamp="Updated %s" % _utcnow().date().isoformat())
+
+
+DUE_SHELL_END = None
+
+
+def due_card(docs, counting, since):
+    """The due page's preview: how many, and the one that has waited longest."""
+    best, n_due = None, 0
+    for doc in docs:
+        n = since.get(doc["slug"])
+        perfs = [p for p in (doc.get("performances") or [])
+                 if not counting or p["date"] in counting]
+        if n is None or not perfs or doc["slug"] in NOT_A_SONG:
+            continue
+        cutoff = _years_before(perfs[-1]["date"], RECENT_YEARS)
+        recent = [p["gap"] for p in perfs[1:]
+                  if p.get("gap") is not None and p["date"] >= cutoff]
+        if len(recent) < MIN_HISTORY:
+            continue
+        high = _quantile(recent, BAND[1])
+        if high > 0 and n > high:
+            n_due += 1
+            if best is None or n / high > best[0]:
+                best = (n / high, n, doc["song"])
+    return card_markup(
+        "Phish", "What&rsquo;s <em>due</em>", "Songs past their own usual gap",
+        (("%d" % n_due, "Songs due", ""),
+         ("{:,}".format(best[1]) if best else "&mdash;",
+          html.escape(typographic(best[2][:22])) if best else "Longest wait",
+          "hot")),
+        size=104)
 
 
 def render_songs(docs, stamp=None, card=None):
@@ -3796,7 +4002,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a class="here">How this is worked out</a></nav>
+<a href="./due.html">Due</a><a class="here">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -5503,6 +5709,22 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # Rewritten every run, but it is one small file and write_if_changed means
     # a run that moved nothing publishes nothing.
     write_current(site_dir)
+
+    # After write_current, because it reads what that just wrote.
+    since = {}
+    cur_path = os.path.join(site_dir, "data", "current.json")
+    if os.path.isfile(cur_path):
+        try:
+            with open(cur_path, encoding="utf-8") as fh:
+                since = json.load(fh).get("since") or {}
+        except ValueError:
+            pass
+    if docs and since:
+        due_page = os.path.join(site_dir, "due.html")
+        if write_if_changed(due_page, render_due(docs, counting, since,
+                                                 card="due")):
+            log("wrote %s", due_page)
+        want_card("due", due_card(docs, counting, since))
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
