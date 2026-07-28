@@ -381,8 +381,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    correct without JavaScript and correct after the tab has been open an hour;
    this only renders it. */
 (function(){
-  var els=[].slice.call(document.querySelectorAll('time.ago'));
-  if(!els.length) return;
   function say(sec){
     if(sec<45) return 'just now';
     var m=Math.round(sec/60);
@@ -390,15 +388,27 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     var h=Math.round(m/60);
     return h+' hour'+(h===1?'':'s')+' ago';
   }
-  function tick(){
-    var now=Date.now();
-    els.forEach(function(e){
-      var t=Date.parse(e.getAttribute('datetime'));
-      if(!isNaN(t)) e.textContent=say((now-t)/1000);
-    });
+  function start(){
+    var els=[].slice.call(document.querySelectorAll('time.ago'));
+    if(!els.length) return;
+    function tick(){
+      var now=Date.now();
+      els.forEach(function(e){
+        var t=Date.parse(e.getAttribute('datetime'));
+        if(!isNaN(t)) e.textContent=say((now-t)/1000);
+      });
+    }
+    tick();
+    setInterval(tick,20000);
   }
-  tick();
-  setInterval(tick,20000);
+  /* This ships in the head, so on a first load it runs before the body it is
+     looking for exists: querySelectorAll found nothing, the function returned,
+     and every reader saw the bare 03:41 UTC fallback the markup carries for
+     readers with no JavaScript at all. The stamp has been a clock reading on
+     every live page since it was written. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
 </script><script>
 /* Which rows are new since this reader last looked. A reload of a growing
@@ -407,21 +417,28 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    closed. The count last seen is kept in this browser only; nothing is sent
    anywhere and nothing is stored server-side. */
 (function(){
-  var live=document.querySelector('.live');
-  if(!live||!window.localStorage) return;
-  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
-  if(!rows.length) return;
-  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
-  var seen=parseInt(localStorage.getItem(key)||'0',10);
-  if(seen>0&&rows.length>seen){
-    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
-    var n=rows.length-seen;
-    var tag=document.createElement('span');
-    tag.className='since-you';
-    tag.textContent=n+' new since you last looked';
-    live.appendChild(tag);
+  function start(){
+    var live=document.querySelector('.live');
+    if(!live||!window.localStorage) return;
+    var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+    if(!rows.length) return;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+    var seen=parseInt(localStorage.getItem(key)||'0',10);
+    if(seen>0&&rows.length>seen){
+      rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+      var n=rows.length-seen;
+      var tag=document.createElement('span');
+      tag.className='since-you';
+      tag.textContent=n+' new since you last looked';
+      live.appendChild(tag);
+    }
+    try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
   }
-  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+  /* Same trap as the relative stamp beside it: this ships in the head, so it
+     ran before .live or a single row existed and returned every time. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
 </script></head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
