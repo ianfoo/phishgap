@@ -266,6 +266,7 @@
   {"date": "2025-01-30", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 16, "set": "1"},
   {"date": "2025-07-20", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 28, "set": "1"},
   {"date": "2025-07-27", "venue": "Broadview Stage at SPAC", "city": "Saratoga Springs", "state": "NY", "gap": 5, "set": "1"},
-  {"date": "2025-09-20", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 6, "set": "1"}
+  {"date": "2025-09-20", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 6, "set": "1"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 32, "set": "1"}
  ]
 }

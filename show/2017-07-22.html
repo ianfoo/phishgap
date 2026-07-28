@@ -63,15 +63,17 @@ header{padding-bottom:.9rem}
    inheriting the link underline that made it sit differently from its
    neighbours on the song pages. */
 .crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
-.crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
+/* Two cells, not three. The middle one held an "All reports" link that the
+   section row above already provides, and once that came out it was an empty
+   grid cell on every page in the archive. */
+.crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb .prev{grid-column:1;justify-self:start}
-.crumb .all{grid-column:2;justify-self:center}
-.crumb .next{grid-column:3;justify-self:end}
+.crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
    small beside a tour and an ordinal, so the one thing that identified the
@@ -80,9 +82,17 @@ header{padding-bottom:.9rem}
    not the front door.
    Tabular figures because a date is eight digits: without them the 1s pull the
    whole string crooked at this size. */
-h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(1.9rem,5.5vw,3.25rem);line-height:1.06;margin:0 0 .25rem;
-   letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+/* Plex Mono, not the display face. A show's masthead is a date -- eight
+   digits and two hyphens -- and the display face has no GSUB table at all, so
+   font-variant-numeric here did nothing and its digits run 254 to 1151 units.
+   Because the h1 sits in the grid's auto column, that spread moved the venue
+   column by up to 45px depending on which digits the date happened to contain.
+   The mono is already loaded, already tabular, and already sets every other
+   date on the site. The display face keeps the wordmark, the song titles and
+   the method page's headings -- words, which is what it is for. */
+h1{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:clamp(1.7rem,5vw,2.75rem);line-height:1.1;margin:0 0 .25rem;
+   letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 /* The day of the week, which the index has always shown and this page never
    did. Set against the date rather than under it: the masthead is already
    two blocks at width, and a third line would make it three. */
@@ -95,10 +105,6 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    variable-length part, so it gets a line to wrap inside, with no separator to
    strand at the break. */
 .show{margin:0;display:flex;flex-wrap:wrap;align-items:baseline}
-/* Aleo, per the house rule: where a display face is used, the heavy one sets
-   the wordmark, the section headings and bare figures, and Aleo sets anything
-   you read as data -- a date or a title. A date is eight digits and two
-   hyphens, which is more punctuation than Alfa Slab One wants to carry. */
 .show .date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;
    line-height:1;color:var(--ink)}
 .show .tour{font-size:1rem;font-weight:600;letter-spacing:0;
@@ -119,6 +125,10 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    just a dot. The ordinal brings its own, which is the only join left. */
 .where{margin:0 0 .45rem;font-size:1.125rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink)}
+/* Two elements, so there is no separator to strand. The locality steps back
+   rather than being joined by punctuation that has nowhere safe to break. */
+.where .v-name{display:block}
+.where .v-place{display:block;font-size:.875rem;color:var(--ink-soft)}
 /* Below the stats rather than in the masthead: the header stays a tight block
    of identity, and the links get their own air on the first screen. */
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
@@ -213,7 +223,6 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    it is judged against already is. Narrow: beside the title, because the
    gap column there is 3.7rem and the word is wider than that. */
 .verdict.at-gap{display:block;margin:.1rem 0 0}
-.verdict.at-song{display:none}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
@@ -270,8 +279,12 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
    transform:translateX(-50%);background:var(--ink);border-radius:1px;
    box-shadow:0 0 0 2px var(--paper)}
-.bar .at.big{background:var(--hot)}
-.bar .at.small{background:var(--cool)}
+.bar .at.late{background:var(--hot)}
+.bar .at.early{background:var(--cool)}
+/* Inside its own band is the ordinary case and gets no colour at all -- ink,
+   like the figures. Two thirds of rows land here, and colouring them would
+   spend the palette on "nothing to report". */
+.bar .at.usual{background:var(--ink)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Named only where the column header is not doing it -- on a wide screen the
@@ -354,7 +367,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      min-width:auto and a long unbreakable run would widen it. Not the cause of
      anything observed -- the tracks measure 267 + 59 against a 338 row -- but
      the row has no business being able to grow. */
-  tr{display:grid;grid-template-columns:minmax(0,1fr) 3.7rem;column-gap:.7rem;
+  /* 4.6rem, not 3.7. The verdict lives in this cell at every width -- one
+     element rather than a visible copy and a hidden one, which is what let an
+     aria-hidden end up on the copy the phone actually shows. "premature" is
+     the widest word it can hold, 63px at this size, so the track is sized for
+     it: 73.6px. The song column gives up 0.9rem, which it can afford; the
+     alternative costs a screen reader the verdict entirely. */
+  tr{display:grid;grid-template-columns:minmax(0,1fr) 4.6rem;column-gap:.7rem;
      grid-template-areas:"song gap" "meta gap";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   /* And nothing inside may refuse to break, or the track has no smaller size
@@ -377,8 +396,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.75rem;margin-top:.2rem}
   .verdict{font-size:.625rem}
-  .verdict.at-gap{display:none}
-  .verdict.at-song{display:inline-block}
   .verdict.bustout{font-size:.625rem}
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
@@ -400,6 +417,14 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      risk pushing the page sideways. */
   .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
   h1{margin-bottom:.45rem}
+  /* At this width the whole thing fits on one line, so it reads better joined
+     -- and a middot cannot be orphaned the way a comma was, because it only
+     exists when the two parts are already side by side. */
+  .where .v-name,.where .v-place{display:inline}
+  /* Margin rather than spaces inside content: a leading or trailing space in
+     a generated string collapses, which left "GARDEN ·NEW YORK". */
+  .where .v-place::before{content:"\00B7";color:var(--dim);
+     margin:0 .45rem 0 .55rem}
   .show .date{font-size:1.25rem}
   .show .tour{font-size:.625rem;font-weight:400;letter-spacing:.14em}
   .show .tour::before{font-size:1rem;margin:0 .5rem}
@@ -493,10 +518,36 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     mark();
   });
 })();
+</script><script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('time.ago'));
+  if(!els.length) return;
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function tick(){
+    var now=Date.now();
+    els.forEach(function(e){
+      var t=Date.parse(e.getAttribute('datetime'));
+      if(!isNaN(t)) e.textContent=say((now-t)/1000);
+    });
+  }
+  tick();
+  setInterval(tick,20000);
+})();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
-<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2017-07-21.html' aria-label='Previous show, 2017-07-21'>&larr; 2017-07-21</a><span class='all'></span><a class='next' rel='next' href='./2017-07-23.html' aria-label='Next show, 2017-07-23'>2017-07-23 &rarr;</a></nav><h1>2017-07-22<span class="dow">Saturday</span></h1>
-<p class="where">Madison Square Garden, New York, NY</p>
+<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2017-07-21.html' aria-label='Previous show, 2017-07-21'>&larr; 2017-07-21</a><a class='next' rel='next' href='./2017-07-23.html' aria-label='Next show, 2017-07-23'>2017-07-23 &rarr;</a></nav><h1>2017-07-22<span class="dow">Saturday</span></h1>
+<p class="where"><span class='v-name'>Madison Square Garden</span><span class='v-place'>New York, NY</span></p>
 <p class="show"><span class='tour'>2017 Summer Tour</span><span class='nth'>342nd show of 3.0</span></p><p class='rating'>Phish.net rating <b>4.25</b><span> via fouldomain</span></p></header>
 <section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>19</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>251</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>5</div></div><div class='card'><div class='lbl'>Bustouts</div><div class='num'>1</div></div></section>
 <div class="rule2"></div>
@@ -504,30 +555,30 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <h2><span class='tab'>SET 1</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr><td class='song'><a href='../song/strawberry-fields-forever.html#2017-07-22'>Strawberry Fields Forever</a></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
-<tr><td class='song'><a href='../song/halleys-comet.html#2017-07-22'>Halley&#x27;s Comet</a><span class='seg'>&gt;</span><span class='verdict premature at-song' aria-hidden='true'>premature</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-19.html'>2017-07-19</a></span><span class='venue'>Petersen Events Center</span><span class='place'>Pittsburgh, PA</span></td><td class='bar' data-tip='2 shows; usually 3 to 9' aria-label='2 shows; usually 3 to 9'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:20.00%'></span></span></td><td class='n' data-tip='2 shows; usually 3 to 9' aria-label='2 shows; usually 3 to 9'><span class='gap small'>2</span><span class='typ'>med 6</span><span class='verdict premature at-gap'>premature</span></td></tr>
-<tr><td class='song'><a href='../song/the-moma-dance.html#2017-07-22'>The Moma Dance</a><span class='seg'>&gt;</span><a class='jc-chip' href='../song/the-moma-dance.html#2017-07-22'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-15.html'>2017-07-15</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='5 shows; usually 2 to 6' aria-label='5 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:60.00%'></span></span></td><td class='n' data-tip='5 shows; usually 2 to 6' aria-label='5 shows; usually 2 to 6'><span class='gap small'>5</span><span class='typ'>med 4</span></td></tr>
-<tr><td class='song'><a href='../song/breath-and-burning.html#2017-07-22'>Breath and Burning</a><span class='seg'>&gt;</span><a class='jc-chip' href='../song/breath-and-burning.html#2017-07-22'>Jam chart</a><span class='verdict overdue at-song' aria-hidden='true'>overdue</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-14.html'>2017-07-14</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='6 shows; usually 2 to 6' aria-label='6 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:70.93%'></span></span></td><td class='n' data-tip='6 shows; usually 2 to 6' aria-label='6 shows; usually 2 to 6'><span class='gap small'>6</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
-<tr><td class='song'><a href='../song/funky-bitch.html#2017-07-22'>Funky Bitch</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-16.html'>2017-07-16</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='4 shows; usually 2 to 8' aria-label='4 shows; usually 2 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:43.33%'></span></span></td><td class='n' data-tip='4 shows; usually 2 to 8' aria-label='4 shows; usually 2 to 8'><span class='gap small'>4</span><span class='typ'>med 4</span></td></tr>
-<tr><td class='song'><a href='../song/mound.html#2017-07-22'>Mound</a><span class='verdict overdue at-song' aria-hidden='true'>overdue</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-07-10.html'>2016-07-10</a></span><span class='venue'>Lakeview Amphitheater</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='39 shows; usually 4 to 24' aria-label='39 shows; usually 4 to 24'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:79.38%'></span></span></td><td class='n' data-tip='39 shows; usually 4 to 24' aria-label='39 shows; usually 4 to 24'><span class='gap small'>39</span><span class='typ'>med 7</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
-<tr><td class='song'><a href='../song/foam.html#2017-07-22'>Foam</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-10-25.html'>2016-10-25</a></span><span class='venue'>Verizon Theatre at Grand Prairie</span><span class='place'>Grand Prairie, TX</span></td><td class='bar' data-tip='18 shows; usually 6 to 27' aria-label='18 shows; usually 6 to 27'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:52.80%'></span></span></td><td class='n' data-tip='18 shows; usually 6 to 27' aria-label='18 shows; usually 6 to 27'><span class='gap small'>18</span><span class='typ'>med 14</span></td></tr>
-<tr><td class='song'><a href='../song/roggae.html#2017-07-22'>Roggae</a><a class='jc-chip' href='../song/roggae.html#2017-07-22'>Jam chart</a><span class='verdict premature at-song' aria-hidden='true'>premature</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='2 shows; usually 3 to 14' aria-label='2 shows; usually 3 to 14'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:20.34%'></span></span></td><td class='n' data-tip='2 shows; usually 3 to 14' aria-label='2 shows; usually 3 to 14'><span class='gap small'>2</span><span class='typ'>med 7.5</span><span class='verdict premature at-gap'>premature</span></td></tr>
-<tr><td class='song'><a href='../song/the-squirming-coil.html#2017-07-22'>The Squirming Coil</a><span class='verdict premature at-song' aria-hidden='true'>premature</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='3 shows; usually 5 to 16' aria-label='3 shows; usually 5 to 16'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:18.00%'></span></span></td><td class='n' data-tip='3 shows; usually 5 to 16' aria-label='3 shows; usually 5 to 16'><span class='gap small'>3</span><span class='typ'>med 8</span><span class='verdict premature at-gap'>premature</span></td></tr>
+<tr><td class='song'><a href='../song/halleys-comet.html#2017-07-22'>Halley’s Comet</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-19.html'>2017-07-19</a></span><span class='venue'>Petersen Events Center</span><span class='place'>Pittsburgh, PA</span></td><td class='bar' data-tip='2 shows; usually 3 to 9' aria-label='2 shows; usually 3 to 9'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:20.00%'></span></span></td><td class='n' data-tip='2 shows; usually 3 to 9' aria-label='2 shows; usually 3 to 9'><span class='gap small'>2</span><span class='typ'>med 6</span><span class='verdict premature at-gap'>premature</span></td></tr>
+<tr><td class='song'><a href='../song/the-moma-dance.html#2017-07-22'>The Moma Dance</a><span class='seg'>&gt;</span><a class='jc-chip' href='../song/the-moma-dance.html#2017-07-22'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-15.html'>2017-07-15</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='5 shows; usually 2 to 6' aria-label='5 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:60.00%'></span></span></td><td class='n' data-tip='5 shows; usually 2 to 6' aria-label='5 shows; usually 2 to 6'><span class='gap small'>5</span><span class='typ'>med 4</span></td></tr>
+<tr><td class='song'><a href='../song/breath-and-burning.html#2017-07-22'>Breath and Burning</a><span class='seg'>&gt;</span><a class='jc-chip' href='../song/breath-and-burning.html#2017-07-22'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-14.html'>2017-07-14</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='6 shows; usually 2 to 6' aria-label='6 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:70.93%'></span></span></td><td class='n' data-tip='6 shows; usually 2 to 6' aria-label='6 shows; usually 2 to 6'><span class='gap small'>6</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
+<tr><td class='song'><a href='../song/funky-bitch.html#2017-07-22'>Funky Bitch</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-16.html'>2017-07-16</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='4 shows; usually 2 to 8' aria-label='4 shows; usually 2 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:43.33%'></span></span></td><td class='n' data-tip='4 shows; usually 2 to 8' aria-label='4 shows; usually 2 to 8'><span class='gap small'>4</span><span class='typ'>med 4</span></td></tr>
+<tr><td class='song'><a href='../song/mound.html#2017-07-22'>Mound</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-07-10.html'>2016-07-10</a></span><span class='venue'>Lakeview Amphitheater</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='39 shows; usually 4 to 24' aria-label='39 shows; usually 4 to 24'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:79.38%'></span></span></td><td class='n' data-tip='39 shows; usually 4 to 24' aria-label='39 shows; usually 4 to 24'><span class='gap small'>39</span><span class='typ'>med 7</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
+<tr><td class='song'><a href='../song/foam.html#2017-07-22'>Foam</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-10-25.html'>2016-10-25</a></span><span class='venue'>Verizon Theatre at Grand Prairie</span><span class='place'>Grand Prairie, TX</span></td><td class='bar' data-tip='18 shows; usually 6 to 27' aria-label='18 shows; usually 6 to 27'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:52.80%'></span></span></td><td class='n' data-tip='18 shows; usually 6 to 27' aria-label='18 shows; usually 6 to 27'><span class='gap small'>18</span><span class='typ'>med 14</span></td></tr>
+<tr><td class='song'><a href='../song/roggae.html#2017-07-22'>Roggae</a><a class='jc-chip' href='../song/roggae.html#2017-07-22'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='2 shows; usually 3 to 14' aria-label='2 shows; usually 3 to 14'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:20.34%'></span></span></td><td class='n' data-tip='2 shows; usually 3 to 14' aria-label='2 shows; usually 3 to 14'><span class='gap small'>2</span><span class='typ'>med 7.5</span><span class='verdict premature at-gap'>premature</span></td></tr>
+<tr><td class='song'><a href='../song/the-squirming-coil.html#2017-07-22'>The Squirming Coil</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='3 shows; usually 5 to 16' aria-label='3 shows; usually 5 to 16'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:18.00%'></span></span></td><td class='n' data-tip='3 shows; usually 5 to 16' aria-label='3 shows; usually 5 to 16'><span class='gap small'>3</span><span class='typ'>med 8</span><span class='verdict premature at-gap'>premature</span></td></tr>
 </tbody></table>
 <div class='perf'></div><h2><span class='tab'>SET 2</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
-<tr><td class='song'><a href='../song/down-with-disease.html#2017-07-22'>Down with Disease</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='2 shows; usually 1 to 4' aria-label='2 shows; usually 1 to 4'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:43.33%'></span></span></td><td class='n' data-tip='2 shows; usually 1 to 4' aria-label='2 shows; usually 1 to 4'><span class='gap small'>2</span><span class='typ'>med 2</span></td></tr>
+<tr><td class='song'><a href='../song/down-with-disease.html#2017-07-22'>Down with Disease</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='2 shows; usually 1 to 4' aria-label='2 shows; usually 1 to 4'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:43.33%'></span></span></td><td class='n' data-tip='2 shows; usually 1 to 4' aria-label='2 shows; usually 1 to 4'><span class='gap small'>2</span><span class='typ'>med 2</span></td></tr>
 <tr><td class='song'><a href='../song/strawberry-letter-23.html#2017-07-22'>Strawberry Letter 23</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
-<tr><td class='song'><a href='../song/birds-of-a-feather.html#2017-07-22'>Birds of a Feather</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-16.html'>2017-07-16</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='4 shows; usually 3 to 10' aria-label='4 shows; usually 3 to 10'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:35.71%'></span></span></td><td class='n' data-tip='4 shows; usually 3 to 10' aria-label='4 shows; usually 3 to 10'><span class='gap small'>4</span><span class='typ'>med 5</span></td></tr>
+<tr><td class='song'><a href='../song/birds-of-a-feather.html#2017-07-22'>Birds of a Feather</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-16.html'>2017-07-16</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='4 shows; usually 3 to 10' aria-label='4 shows; usually 3 to 10'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:35.71%'></span></span></td><td class='n' data-tip='4 shows; usually 3 to 10' aria-label='4 shows; usually 3 to 10'><span class='gap small'>4</span><span class='typ'>med 5</span></td></tr>
 <tr><td class='song'><a href='../song/i-always-wanted-it-this-way.html#2017-07-22'>I Always Wanted It This Way</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-10-29.html'>2016-10-29</a></span><span class='venue'>MGM Grand Garden Arena</span><span class='place'>Las Vegas, NV</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap small'>16</span><span class='typ'><span class='full'>2 in 10 yr</span><span class='abbr'>2/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/all-of-these-dreams.html#2017-07-22'>All of These Dreams</a><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2010-10-26.html'>2010-10-26</a></span><span class='venue'>Verizon Wireless Arena</span><span class='place'>Manchester, NH</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>251</span><span class='typ'><span class='full'>2 in 10 yr</span><span class='abbr'>2/10y</span></span></td></tr>
-<tr><td class='song'><a href='../song/split-open-and-melt.html#2017-07-22'>Split Open and Melt</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-12-29.html'>2016-12-29</a></span><span class='venue'>Madison Square Garden</span><span class='place'>New York, NY</span></td><td class='bar' data-tip='12 shows; usually 4 to 14' aria-label='12 shows; usually 4 to 14'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:63.33%'></span></span></td><td class='n' data-tip='12 shows; usually 4 to 14' aria-label='12 shows; usually 4 to 14'><span class='gap small'>12</span><span class='typ'>med 8</span></td></tr>
-<tr><td class='song'><a href='../song/shine-a-light.html#2017-07-22'>Shine a Light</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-14.html'>2017-07-14</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='6 shows; usually 6 to 17' aria-label='6 shows; usually 6 to 17'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:30.56%'></span></span></td><td class='n' data-tip='6 shows; usually 6 to 17' aria-label='6 shows; usually 6 to 17'><span class='gap small'>6</span><span class='typ'>med 10</span></td></tr>
+<tr><td class='song'><a href='../song/split-open-and-melt.html#2017-07-22'>Split Open and Melt</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-12-29.html'>2016-12-29</a></span><span class='venue'>Madison Square Garden</span><span class='place'>New York, NY</span></td><td class='bar' data-tip='12 shows; usually 4 to 14' aria-label='12 shows; usually 4 to 14'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:63.33%'></span></span></td><td class='n' data-tip='12 shows; usually 4 to 14' aria-label='12 shows; usually 4 to 14'><span class='gap small'>12</span><span class='typ'>med 8</span></td></tr>
+<tr><td class='song'><a href='../song/shine-a-light.html#2017-07-22'>Shine a Light</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-14.html'>2017-07-14</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='6 shows; usually 6 to 17' aria-label='6 shows; usually 6 to 17'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:30.56%'></span></span></td><td class='n' data-tip='6 shows; usually 6 to 17' aria-label='6 shows; usually 6 to 17'><span class='gap small'>6</span><span class='typ'>med 10</span></td></tr>
 </tbody></table>
 <div class='perf'></div><h2><span class='tab'>ENCORE</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
-<tr><td class='song'><a href='../song/peaches-en-regalia.html#2017-07-22'>Peaches en Regalia</a><span class='seg'>&gt;</span><span class='verdict premature at-song' aria-hidden='true'>premature</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='3 shows; usually 4 to 132' aria-label='3 shows; usually 4 to 132'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:24.32%'></span></span></td><td class='n' data-tip='3 shows; usually 4 to 132' aria-label='3 shows; usually 4 to 132'><span class='gap small'>3</span><span class='typ'>med 10</span><span class='verdict premature at-gap'>premature</span></td></tr>
-<tr><td class='song'><a href='../song/cities.html#2017-07-22'>Cities</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-15.html'>2017-07-15</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='5 shows; usually 4 to 13' aria-label='5 shows; usually 4 to 13'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:34.44%'></span></span></td><td class='n' data-tip='5 shows; usually 4 to 13' aria-label='5 shows; usually 4 to 13'><span class='gap small'>5</span><span class='typ'>med 7</span></td></tr>
-<tr><td class='song'><a href='../song/my-sweet-one.html#2017-07-22'>My Sweet One</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-10-19.html'>2016-10-19</a></span><span class='venue'>Ascend Amphitheater</span><span class='place'>Nashville, TN</span></td><td class='bar' data-tip='22 shows; usually 10 to 27' aria-label='22 shows; usually 10 to 27'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:59.07%'></span></span></td><td class='n' data-tip='22 shows; usually 10 to 27' aria-label='22 shows; usually 10 to 27'><span class='gap small'>22</span><span class='typ'>med 22</span></td></tr>
+<tr><td class='song'><a href='../song/peaches-en-regalia.html#2017-07-22'>Peaches en Regalia</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-18.html'>2017-07-18</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='3 shows; usually 4 to 132' aria-label='3 shows; usually 4 to 132'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:24.32%'></span></span></td><td class='n' data-tip='3 shows; usually 4 to 132' aria-label='3 shows; usually 4 to 132'><span class='gap small'>3</span><span class='typ'>med 10</span><span class='verdict premature at-gap'>premature</span></td></tr>
+<tr><td class='song'><a href='../song/cities.html#2017-07-22'>Cities</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2017-07-15.html'>2017-07-15</a></span><span class='venue'>Huntington Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='5 shows; usually 4 to 13' aria-label='5 shows; usually 4 to 13'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:34.44%'></span></span></td><td class='n' data-tip='5 shows; usually 4 to 13' aria-label='5 shows; usually 4 to 13'><span class='gap small'>5</span><span class='typ'>med 7</span></td></tr>
+<tr><td class='song'><a href='../song/my-sweet-one.html#2017-07-22'>My Sweet One</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-10-19.html'>2016-10-19</a></span><span class='venue'>Ascend Amphitheater</span><span class='place'>Nashville, TN</span></td><td class='bar' data-tip='22 shows; usually 10 to 27' aria-label='22 shows; usually 10 to 27'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:59.07%'></span></span></td><td class='n' data-tip='22 shows; usually 10 to 27' aria-label='22 shows; usually 10 to 27'><span class='gap small'>22</span><span class='typ'>med 22</span></td></tr>
 </tbody></table><div class='notes'><p>This show was night two of Phish&#39;s Baker&#39;s Dozen run at Madison Square Garden and consisted of a Strawberry donut theme. Strawberry donuts were given to fans arriving at the venue and the show featured the Phish debuts of&nbsp;Strawberry Fields Forever and Strawberry Letter 23. Moma Dance was unfinished.&nbsp;Trey teased Pictures of Matchstick Men in the first DWD. I Always&nbsp;Wanted It This Way featured Trey on the Marimba Lumina.&nbsp;All of These Dreams was last played on October 26, 2010&nbsp;(251 shows). Mike teased Dave&#39;s Energy Guide in Split Open and&nbsp;Melt.</p></div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
