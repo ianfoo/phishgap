@@ -756,7 +756,13 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
         bust=parseFloat(box.getAttribute('data-bustout')),
         v=box.querySelector('.v');
     if(high>0){
-      if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
+      /* Past its norm AND past the bustout line is not "overdue" -- it is a
+         song whose return would be the headline of the night. The due page
+         draws the same line and files these under On the shelf, and the two
+         must not disagree about the same song. */
+      if(n>high&&n>=bust){ box.classList.add('dormant');
+        if(v){ v.textContent='on the shelf'; v.className='v dim'; } }
+      else if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
       // "line 10" was the site talking to itself: the reader has no way to
       // know which line, and the number is the one this song becomes overdue
       // at. Say that.

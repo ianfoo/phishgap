@@ -278,6 +278,7 @@ header{padding-bottom:.9rem}
 .d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.d-n .typ span{display:block;white-space:nowrap}
 /* Same rule the song pages carry, and it has to be stated here too because
    this sheet does not include theirs. It was missing entirely, so the due and
    venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
@@ -287,6 +288,14 @@ header{padding-bottom:.9rem}
    font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
    color:var(--dim);max-width:56ch}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The shelf, under the due list. Set as a section heading rather than as a
+   second masthead: it is the same kind of thing as the list above it, held
+   back for one reason, and a heading the size of the page title would say it
+   was a second subject. */
+.shelf-h{margin:2.6rem 0 .4rem;font-family:'Bagnard',Georgia,serif;
+   font-weight:400;font-size:1.5rem;line-height:1.2;
+   scroll-margin-top:2.6rem}
+.shelf-h+.dek{margin-bottom:1.1rem}
 /* The venue list borrows the due page's three-column shape because it answers
    the same shape of question: a name, a when, and one figure worth ranking by.
    Its own class names, though -- .d-* means "due", and a venue row sharing
@@ -702,16 +711,28 @@ stage. That distinction is the whole of the previous paragraph: measured from
 its own last performance, a song that stopped being played in 2011 still has a
 tidy ten-year habit ending in 2011, and would be ranked as running late against
 a band that has since played a thousand shows without it.</p>
-<p>So a song with no recent habit that has been gone two hundred shows is not
-<em>due</em>. Nobody is expecting it. Those are dormant, which is a different
-fact: they are counted at the foot of the
-<a href="./due.html">due page</a> and each song&rsquo;s own page says it, but
-ranking them would bury the songs somebody might actually shout for
-tonight.</p>
-<p>The list is ordered by how far past each song is as a multiple of its own
-usual gap, which is the figure on the right of every row &mdash; not by how
-many shows it has been gone, since a hundred shows is nothing for one song and
-a decade for another.</p>
+<p>Being late is also not enough on its own, because a song can be so late that
+its return would be an event rather than a song turning up. The
+<a href="./due.html">due page</a> sorts songs into three:</p>
+<dl class="defs">
+<dt>Due</dt><dd>Still in rotation and past its own usual gap.</dd>
+<dt>On the shelf</dt><dd>Past its usual gap as well, but gone more than a
+hundred shows &mdash; far enough that hearing it would be a bustout.</dd>
+<dt>Dormant</dt><dd>No recent habit at all, and gone a bustout&rsquo;s worth.
+Nobody is expecting it, and ranking these would bury the songs somebody might
+actually shout for tonight.</dd>
+</dl>
+<p>The line between the first two is a hundred shows, which is where this site
+already draws a bustout. It is counted in shows rather than in months on
+purpose: a gap of thirty-six shows is thirty-six chances to hear it, whether
+the band took eight months over them or two years. The band averaged about
+ninety-five shows a year through the 1990s and about forty-four across
+2021&ndash;2025, so counting in time would quietly mean something different in
+each era.</p>
+<p>Within each list the order is how far past each song is as a multiple of its
+own usual gap &mdash; the figure on the right of every row &mdash; not how many
+shows it has been gone, since a hundred shows is nothing for one song and a
+decade for another.</p>
 <p class="backtop"><a href="#questions">&uarr; All questions</a></p>
 <h2 id="eras">What are the eras &mdash; 1.0, 2.0, 3.0 and 4.0?</h2>
 <p><em>Era</em> is the word this site uses for them, and the one on the chips

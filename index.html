@@ -278,6 +278,7 @@ header{padding-bottom:.9rem}
 .d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.d-n .typ span{display:block;white-space:nowrap}
 /* Same rule the song pages carry, and it has to be stated here too because
    this sheet does not include theirs. It was missing entirely, so the due and
    venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
@@ -287,6 +288,14 @@ header{padding-bottom:.9rem}
    font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
    color:var(--dim);max-width:56ch}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The shelf, under the due list. Set as a section heading rather than as a
+   second masthead: it is the same kind of thing as the list above it, held
+   back for one reason, and a heading the size of the page title would say it
+   was a second subject. */
+.shelf-h{margin:2.6rem 0 .4rem;font-family:'Bagnard',Georgia,serif;
+   font-weight:400;font-size:1.5rem;line-height:1.2;
+   scroll-margin-top:2.6rem}
+.shelf-h+.dek{margin-bottom:1.1rem}
 /* The venue list borrows the due page's three-column shape because it answers
    the same shape of question: a name, a when, and one figure worth ranking by.
    Its own class names, though -- .d-* means "due", and a venue row sharing
@@ -540,7 +549,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">691 reports &middot; 2009-03-06 &rarr; 2026-07-27</p></header>
 
-<section class="hero hero-c3"><div class='card'><div class='lbl'>Reports</div><div class='num'>691</div></div><a class='card' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></a><a class='card' href='./songs.html'><div class='lbl'>Song Performances</div><div class='num'>14,042</div></a><a class='card' href='./venues.html'><div class='lbl'>Venues</div><div class='num'>153</div></a><a class='card' href='./due.html'><div class='lbl'>Songs Due</div><div class='num hot'>40</div></a></section>
+<section class="hero hero-c3"><div class='card'><div class='lbl'>Reports</div><div class='num'>691</div></div><a class='card' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></a><a class='card' href='./songs.html'><div class='lbl'>Song Performances</div><div class='num'>14,042</div></a><a class='card' href='./venues.html'><div class='lbl'>Venues</div><div class='num'>153</div></a><a class='card' href='./due.html'><div class='lbl'>Songs Due</div><div class='num hot'>35</div></a></section>
 <div class="rule2"></div>
 <div class="tools" id="main" tabindex="-1">
 <div class="tools-main">
