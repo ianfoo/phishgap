@@ -1438,6 +1438,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     /* The last-performed block is its own destination once the row stacks, so
        it gets its own edge rather than reading as more of the row above it. */
     td.last:has(a){padding-left:.55rem;border-left:2px solid var(--rule)}
+    /* A 2px edge was the only thing saying this block goes somewhere else than
+       the rest of the row -- tap the venue expecting the song page and you get
+       the previous show instead. The arrow is the mark the hero cards already
+       use for "this is a way in", put on the block's own label so it describes
+       the whole block rather than the date alone, which is the only part that
+       looked like a link. */
+    td.last:has(a) .cap::after{content:" \\2192";color:var(--dim)}
   }
 }
 /* Narrow viewports: the four-column table becomes a list of stacked rows.
@@ -2099,6 +2106,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                  "<a href='../index.html'>Shows</a>"
                  "<a href='../songs.html'>Songs</a>"
                  "<a href='../due.html'>Due</a>"
+                 "<a href='../venues.html'>Venues</a>"
                  "<a href='../method.html'>How this is worked out</a></nav>"
                  # No "All reports" in the middle: the row above already has
                  # Shows, pointing at the same page under the name the rest of
@@ -3641,7 +3649,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../method.html">How this is worked out</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
