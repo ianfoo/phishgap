@@ -80,7 +80,14 @@ jobs:
             pass=$(( pass + 1 ))
             echo "::group::pass $pass"
             # Two days is enough: this only ever runs during a show.
-            python possumlogic.py --site site --previous --rebuild --catch-up 2 || true
+            # --calendar matters more here than it looks. A show only counts
+            # as a concert if the counting calendar holds its date, and the
+            # calendar is built from phish.net's show list -- so a show played
+            # tonight is not in it until something asks. Without this the show
+            # being played lands under "Also on file" instead of at the top of
+            # the index, on the one night it is worth looking at. One call.
+            python possumlogic.py --site site --previous --rebuild \
+              --catch-up 2 --calendar || true
 
             # The archive first, so a crash after this point still leaves the
             # data recorded and only costs a publish.

@@ -1018,15 +1018,17 @@ header{padding-bottom:.9rem}
    inheriting the link underline that made it sit differently from its
    neighbours on the song pages. */
 .crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
-.crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
+/* Two cells, not three. The middle one held an "All reports" link that the
+   section row above already provides, and once that came out it was an empty
+   grid cell on every page in the archive. */
+.crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb .prev{grid-column:1;justify-self:start}
-.crumb .all{grid-column:2;justify-self:center}
-.crumb .next{grid-column:3;justify-self:end}
+.crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
    small beside a tour and an ordinal, so the one thing that identified the
@@ -1168,7 +1170,6 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    it is judged against already is. Narrow: beside the title, because the
    gap column there is 3.7rem and the word is wider than that. */
 .verdict.at-gap{display:block;margin:.1rem 0 0}
-.verdict.at-song{display:none}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
@@ -1309,7 +1310,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      min-width:auto and a long unbreakable run would widen it. Not the cause of
      anything observed -- the tracks measure 267 + 59 against a 338 row -- but
      the row has no business being able to grow. */
-  tr{display:grid;grid-template-columns:minmax(0,1fr) 3.7rem;column-gap:.7rem;
+  /* 4.6rem, not 3.7. The verdict lives in this cell at every width -- one
+     element rather than a visible copy and a hidden one, which is what let an
+     aria-hidden end up on the copy the phone actually shows. "premature" is
+     the widest word it can hold, 63px at this size, so the track is sized for
+     it: 73.6px. The song column gives up 0.9rem, which it can afford; the
+     alternative costs a screen reader the verdict entirely. */
+  tr{display:grid;grid-template-columns:minmax(0,1fr) 4.6rem;column-gap:.7rem;
      grid-template-areas:"song gap" "meta gap";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   /* And nothing inside may refuse to break, or the track has no smaller size
@@ -1332,8 +1339,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.75rem;margin-top:.2rem}
   .verdict{font-size:.625rem}
-  .verdict.at-gap{display:none}
-  .verdict.at-song{display:inline-block}
   .verdict.bustout{font-size:.625rem}
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
@@ -1780,21 +1785,23 @@ def render_html(report, bar_scale="linear", index_href=None,
         # they belong against the number, under the median they are measured
         # from.
         #
-        # Except at 390px, where "premature" is 63px against a 39px figure and
-        # the gap column is 3.7rem wide: put it there and the least important
-        # thing in the row sets the column's width for every row. So the timing
-        # verdicts are emitted twice and the layout picks one -- under the
-        # figure where there is room, back beside the title where there is not.
-        # The duplicate is hidden from assistive technology rather than merely
-        # from view, so it is never announced twice.
+        # At 390px "premature" is 63px against a 39px figure in a 3.7rem
+        # column, so at that width the row's grid moves it out of the figure's
+        # cell rather than letting it set the column's width -- see the narrow
+        # rules, where it becomes its own line in the song area.
         tag = verdict = ""
         v = s.get("verdict")
         if v == "bustout":
             verdict = "<span class='verdict bustout'>bustout</span>"
         elif v in ("premature", "overdue"):
+            # One span, not two. Shipping a copy in each cell and hiding one
+            # with CSS meant the aria-hidden was baked into whichever copy the
+            # markup called the spare -- so on a phone, where the layout shows
+            # that one, the visible verdict was hidden from assistive
+            # technology and the exposed one was display:none. No verdict was
+            # announced at all on the width where it is the only one shown.
+            # It lives in the gap cell and the narrow layout moves it.
             tag = "<span class='verdict %s at-gap'>%s</span>" % (v, v)
-            verdict = ("<span class='verdict %s at-song' aria-hidden='true'>%s"
-                       "</span>" % (v, v))
         if g is None:
             gap_cell = "<span class='gap none'>&mdash;</span>" + typical + tag
             bar = "<td class='bar'></td>"
@@ -1905,7 +1912,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                  # No "All reports" in the middle: the row above already has
                  # Shows, pointing at the same page under the name the rest of
                  # the site uses for it. The pager is for the two neighbours.
-                 "<nav class='crumb pager'>%s<span class='all'></span>%s"
+                 "<nav class='crumb pager'>%s%s"
                  "</nav>") % (
             step % ("prev", "prev", prev_date, "Previous", prev_date,
                     "&larr; " + prev_date) if prev_date else "",
