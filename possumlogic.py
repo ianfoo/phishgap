@@ -4537,11 +4537,11 @@ def saved_reports(site_dir):
             try:
                 out.append(json.load(fh))
             except ValueError:
-                # Loud, and counted by the caller: an unreadable report is a show
-            # missing from the site, and the site will otherwise publish
-            # cheerfully without it.
-            log("warning: skipping unreadable %s", name)
-            _UNREADABLE.append(name)
+                # Loud, and counted, because an unreadable report is a show
+                # missing from the site and the build will otherwise publish
+                # cheerfully without it.
+                log("warning: skipping unreadable %s", name)
+                _UNREADABLE.append(name)
     return out
 
 
