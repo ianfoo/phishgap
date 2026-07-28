@@ -1147,6 +1147,22 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
 .reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
 a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
+/* The whole scale, pitched one step up from where it started.
+   Ian: "the prose text feels small even by these standards... I feel this way
+   on iPhone and on desktop." He was right, and the figures said so: body was
+   .875rem against a 16px default, so running text set at 14px and the labels
+   -- the size used more than any other on the site, 101 declarations of it --
+   set at 10px.
+   It is stated once, here, rather than as 300 edited declarations. Everything
+   on this site is already sized in rem, so lifting the root lifts all of it in
+   proportion and no two sizes can change their relationship to each other. It
+   is also relative rather than absolute: a reader who has set their browser to
+   20px gets 22.5, not 18.
+   The top of the scale is held rather than lifted -- see the h1 clamps, whose
+   rem endpoints are pulled back by exactly this factor. A wordmark at 64px was
+   never the complaint; a scale should compress at the display end and open up
+   at the reading end, and this one now does both. */
+html{font-size:112.5%}
 /* Every figure on this site sits in a column beside another figure. Tabular
    numerals are what makes that work. This lived in the show-page sheet only,
    so the index, songs, due, venues and every song page were setting their
@@ -1161,7 +1177,31 @@ BODY_BOX_CSS = """body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
-.wrap{max-width:960px;margin:0 auto}
+/* The measure in rem rather than px, so it travels with the type. Stated as
+   960px it would have held still while the scale went up a step, which quietly
+   shortens every line and tightens every column -- the same page with less room
+   in it. 60rem is the 960px this has always been, at the root above. */
+.wrap{max-width:60rem;margin:0 auto}
+/* clip, not hidden, and the difference is the whole reason this is safe:
+   overflow:hidden would make the body a scroll container and break every
+   position:sticky header on the site, where clip does not.
+
+   It is here because a hidden thing was still taking up room. The show pages'
+   hover tooltip is position:absolute and white-space:nowrap, and it is hidden
+   with visibility:hidden -- which still lays out. That was found once and fixed
+   only for phones, by dropping the tooltip below 620px; above 620px every show
+   page has been scrollable sideways ever since. Measured on the live build at
+   1280px: 1,627px of scroll width, so the page slid 347px into nothing.
+   The general shape is what earns a rule rather than a patch -- an off-screen
+   or invisible decoration extends the scrollable area exactly as a visible one
+   does, and the page it does it to looks completely normal.
+
+   On html as well as body, and that is not belt and braces. An overflow set on
+   body alone is *propagated* to the viewport, and body is then treated as
+   visible -- so `body{overflow-x:clip}` by itself clips nothing, which is
+   exactly what the first attempt at this measured: the rule shipped, the page
+   still scrolled 347px. */
+html,body{overflow-x:clip}
 """
 
 #: The navigation's hover and its 24x24 hit area (WCAG 2.5.8). The three sheets
@@ -1196,6 +1236,25 @@ RULE2_CSS = """
 FIGURE_CSS = """.num.hot{color:var(--hot)}
 .lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);margin-bottom:.35rem}
+"""
+
+#: The standfirst. Two sheets stated this identically, which is how it comes to
+#: be one block; and it is the one size that does not simply ride the root lift
+#: above. A dek introduces the page's body text, so setting it *smaller* than
+#: that text -- 13px over 14 -- had it apologising for the thing it announces.
+#: It is a step above body now. The optical size axis follows the point size,
+#: which is what the axis is for.
+DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 16;
+   color:var(--dim);max-width:56ch}
+/* And its links, which is the fifth time a rule has been found living in one
+   sheet of three. This one was in SONG_CSS alone, so the two links in the due
+   page's standfirst -- "slipping" and "on the shelf", both pointing at sections
+   of the page they introduce -- rendered in the browser's default link blue
+   with a browser underline, on the one page on the site that has them. */
+.dek a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 """
 
 #: Footer links, drawn the way every other link on the site is drawn.
@@ -1247,7 +1306,7 @@ header{padding-bottom:.9rem}
    date on the site. The display face keeps the wordmark, the song titles and
    the method page's headings -- words, which is what it is for. */
 h1{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   font-size:clamp(1.7rem,5vw,2.75rem);line-height:1.1;margin:0 0 .25rem;
+   font-size:clamp(1.5111rem,5vw,2.4444rem);line-height:1.1;margin:0 0 .25rem;
    letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 /* The day of the week, which the index has always shown and this page never
    did. Set against the date rather than under it: the masthead is already
@@ -1416,16 +1475,25 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    on it. No delay, no JavaScript; hidden from print, where nothing hovers. */
 @media screen{
   td[data-tip]{position:relative}
+  /* max-content up to a limit, then wrap. It was nowrap, which is right for
+     "9 shows; usually 5 to 13" and hopeless for the sentence a song with no
+     range bar carries: 648px of unbreakable text hung off a cell four fifths
+     of the way across the table, so on every viewport narrower than about
+     1,600px the end of the explanation was somewhere off the side of the page.
+     Two lines of tooltip is not a problem; a tooltip you have to scroll to is.
+     line-height goes back to something a second line can live in. */
   td[data-tip]::after{content:attr(data-tip);position:absolute;left:.25rem;
-    bottom:calc(100% - .35rem);z-index:5;white-space:nowrap;
+    bottom:calc(100% - .35rem);z-index:5;
+    width:max-content;max-width:min(24rem,calc(100vw - 3rem));
     padding:.3rem .5rem;background:var(--ink);color:var(--paper);
-    font-size:.75rem;letter-spacing:0;line-height:1;
+    font-size:.75rem;letter-spacing:0;line-height:1.35;
     opacity:0;visibility:hidden;transition:opacity .09s ease-out}
   td[data-tip]:hover::after,td[data-tip]:focus-visible::after{
     opacity:1;visibility:visible}
-  /* The last column's tip would run off the right edge, so it hangs the other
-     way. */
-  td.bar[data-tip]::after{left:auto;right:1.2rem}
+  /* The two right-hand columns hang their tips the other way, or they run off
+     the edge -- and now that the page clips rather than scrolling, running off
+     the edge means the words are simply gone rather than merely awkward. */
+  td.bar[data-tip]::after,td.n[data-tip]::after{left:auto;right:1.2rem}
 }
 /* Visually hidden, still announced. Not display:none and not visibility:
    hidden -- both remove it from the accessibility tree, which is the opposite
@@ -2437,7 +2505,7 @@ INDEX_CSS = BASE_CSS + BODY_BOX_CSS + """/* Which of the two lists you are looki
    white-space:nowrap;border-bottom:1px solid var(--rule)}
 """ + NAV_HIT_CSS + """.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(2rem,7vw,4rem);line-height:1.06;margin:0 0 .7rem;
+   font-size:clamp(1.7778rem,7vw,3.5556rem);line-height:1.06;margin:0 0 .7rem;
    letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
 /* The wordmark goes home, as a wordmark does, without looking like a link. */
@@ -2612,10 +2680,7 @@ header{padding-bottom:.9rem}
    venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
    while the identical class on a song page was 12px and dim. One class, two
    appearances, by accident. */
-.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
-   font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
-   color:var(--dim);max-width:56ch}
-.dek.foot{margin-top:1.4rem;max-width:64ch}
+""" + DEK_CSS + """.dek.foot{margin-top:1.4rem;max-width:64ch}
 /* A section heading, under the due list. At 1.5rem it was barely larger than
    the 1rem song titles it headed, which made a new section read as another
    row. 2.125rem sits clearly between the page title and the data. */
@@ -2658,12 +2723,31 @@ header{padding-bottom:.9rem}
 @media screen and (max-width:620px){
   /* "dates", not "span": grid-area:span would be parsed as the span keyword
      and drop the whole declaration. */
-  .vn .row{grid-template-columns:1fr 5.5rem;
+  /* max-content rather than 5.5rem, and it was the fixed figure that made this
+     worth measuring. 5.5rem was cut to fit "longest 1,468" at the old scale and
+     did not fit it at the new one -- 99px of column for 106px of label -- so
+     the figures column was quietly overflowing its own track. A column asked to
+     be exactly as wide as its content cannot be cut to fit anything. */
+  .vn .row{grid-template-columns:1fr max-content;
      grid-template-areas:"venue n" "dates n";row-gap:.15rem}
   .vn-venue{grid-area:venue}
   .vn-span{grid-area:dates}
   .vn-n{grid-area:n}
   .vn-n b{font-size:1.25rem}
+}
+/* Below this the two columns cannot both be honest. The dates are a span --
+   "2009-12-02 -> 2026-07-27", 23 characters of mono that must not break, since
+   a date split across a line is unreadable and the arrow between them would be
+   stranded -- so the left column has a hard floor of about 217px, and the
+   figure wants another 106 beside it. At 320px there are 288 to share. The
+   answer is the one this site already gives everywhere else: stack, and let the
+   rules run the full width, rather than squeeze columns until something is
+   clipped or pushed off the screen. */
+@media screen and (max-width:400px){
+  .vn .row{grid-template-columns:1fr;
+     grid-template-areas:"venue" "dates" "n";row-gap:.2rem}
+  .vn-n{text-align:left}
+  .vn-n .typ{display:inline;margin-left:.5rem}
 }
 @media screen and (max-width:620px){
   /* 5.5rem held one number. It now holds that number and the multiple the
@@ -2751,7 +2835,16 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\\00b7";
     color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
   .r-stats .st b{min-width:0!important;text-align:left}
-  .r-top{text-align:left;display:inline}
+  /* white-space, and it is the reason this rule is three declarations rather
+     than two. The wide layout gives .r-top a column of its own and clips the
+     overflow with an ellipsis, so nowrap is right up there. Down here it is an
+     inline run inside a paragraph, and nowrap made one row as wide as its
+     longest song title: "She Caught the Katy and Left Me a Mule to Ride" is 45
+     characters, which is 344px of mono at the old size and 389px at the new
+     one. The index was six pixels from scrolling sideways at 375px before the
+     scale went up a step, and 33 past it afterwards -- so the type change did
+     not cause this, it collected on it. */
+  .r-top{text-align:left;display:inline;white-space:normal}
   .r-top::before{content:" ("}
   .r-top::after{content:")"}
   /* Two across, whatever the wide layout asked for. The flex basis that used
@@ -3316,7 +3409,7 @@ SONG_CSS = (BASE_CSS + BODY_BOX_CSS + """.crumb{display:flex;flex-wrap:wrap;alig
 """ + NAV_HIT_CSS + """/* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.14;margin:0 0 .5rem;
+   font-size:clamp(1.7778rem,6.5vw,3.0222rem);line-height:1.14;margin:0 0 .5rem;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
@@ -3477,13 +3570,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    the method page's .prose each opted out where reading matters. The dek never
    did, so a standfirst sat in the figure face. A shade larger than the .75rem
    it was set at, because the serif reads smaller at the same size. */
-.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
-   font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
-   color:var(--dim);max-width:56ch}
-.dek a{color:var(--ink-soft);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* Said where the page explains itself, in the same voice as the gap note above
+""" + DEK_CSS + """/* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
 /* What the song sits between, counted over its whole history. Two short rows
@@ -3706,6 +3793,14 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    for the Arts" came out over four lines. */
 @media screen and (max-width:820px){
   .head{display:none}
+  /* The caption goes above its list rather than beside it, so the pairings get
+     the whole measure. A pairing must not break -- the count belongs to the
+     song it terminates, which is the point of setting it that way at all -- so
+     "Bouncing Around the Room 24x" is one unbreakable 240px run, and beside a
+     caption there was not 240px to give it at 375px. */
+  .pairs{grid-template-columns:minmax(0,1fr)}
+  .pair .cap,.pair .ps{grid-column:1}
+  .pair .cap{margin-top:.35rem}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.35rem}
   .nb>span{white-space:normal;overflow:visible}

@@ -382,16 +382,8 @@ Fixed in the same pass:
 
 ### Still open from that review
 
-- **Type size, site-wide.** Ian: the prose "is incredibly small… I feel this
-  way on iPhone and on desktop. This site is already full of small elements
-  and text (too small in many cases)… I think an accessibility review of the
-  entire site is in order soon." `.dek` is **.8125rem (13px)** and `body` is
-  .875rem (14px), against a 16px default. **Not done here** — it is a
-  site-wide typographic change and wants doing as one deliberate pass with
-  measurements, not by nudging one page. It should take in the 10px labels
-  (`.lbl`, `.crumb`, `.lhead`, `.typ`) at the same time. **This is the single
-  largest open item on the site and it is Ian's, not a reviewer's, so it
-  should not be quietly narrowed.**
+- ~~**Type size, site-wide.**~~ **DONE 2026-07-28.** See §2i below — it grew
+  large enough to want its own section, and it found five bugs on the way.
 - **[ruling] The masthead's three faces stay as they are.** He asked for a
   design call: `h1` in Bagnard, subtitle in large mono caps, prose in
   Literata, and "a designer might have a fit". The call is to keep it, and the
@@ -407,6 +399,102 @@ Fixed in the same pass:
   exactly §8d's open question. Settle that and this stops being a question.
 - **Dormant needs somewhere to go.** Its hero cell states 283 and links
   nowhere. See §2f.
+
+## 2i. The type scale, site-wide — Ian's largest ask. DONE 2026-07-28
+
+Ian: "the prose text feels small even by these standards… I feel this way on
+iPhone and on desktop… I think an accessibility review of the entire site is in
+order soon."
+
+**Stated once rather than as 300 edited declarations.** Everything on this site
+was already sized in `rem`, so the whole scale moves from the root:
+`html{font-size:112.5%}` in `BASE_CSS`. Nothing can drift out of proportion
+with anything else, and it is relative rather than absolute — a reader whose
+browser is set to 20px gets 22.5, not 18.
+
+| | before | after | |
+|---|---|---|---|
+| root | 16px | **18px** | |
+| `body` — every row, cell and paragraph | 14px | **15.75px** | |
+| `.lbl` / `.crumb` / `.lhead` — the labels | 10px | **11.25px** | 101 declarations, the most-used size on the site |
+| footer, captions | 12px | **13.5px** | |
+| `.dek` — the standfirst | 13px | **16.875px** | its own step; see below |
+| `.num` — hero figures | 36px | 40.5px | |
+| `h1` | 64px | **64px** | held deliberately |
+| `.wrap` | 960px | 1080px (`60rem`) | |
+
+- **The top of the scale is held, not lifted.** The three `h1` clamps have their
+  rem endpoints divided by exactly 1.125, so every heading renders at the pixel
+  size it did before at every viewport width — measured, 64px → 64.0008px. A
+  wordmark at 64px was never the complaint. A scale should compress at the
+  display end and open at the reading end.
+- **`.dek` is the one size that does not simply ride the lift.** A standfirst
+  introduces the body text under it, and this one was set *smaller* than that
+  text — 13px over 14 — so it apologised for the thing it announced. It is a
+  step above body now, with `opsz` moved 12 → 16 to follow the point size.
+- **The measure is in rem too.** `max-width:960px` would have held still while
+  the type went up a step, which is the same page with less room in it.
+
+### It found five bugs, and three of them were already shipping
+
+Every one was invisible until the type grew into it. **The pattern is worth
+carrying: a layout tuned to fit is a layout six pixels from not fitting**, and
+nothing tells you which until something moves.
+
+1. **Every show page has been scrollable sideways on desktop.** `[data-tip]`'s
+   tooltip is `position:absolute` and `white-space:nowrap`, hidden with
+   `visibility:hidden` — which still takes part in layout. This was found once
+   before and fixed *only for phones*, by dropping the tooltip below 620px; so
+   above 620px it kept doing exactly what the comment says it used to do.
+   Measured on the live build at 1280px: **1,627px of scroll width, a page that
+   slid 347px into nothing.** Fixed with `html,body{overflow-x:clip}` — `clip`
+   rather than `hidden` because `hidden` would make the body a scroll container
+   and break every `position:sticky` header on the site.
+   - **On `html` as well as `body`, and that is not belt and braces.** An
+     overflow set on `body` alone is *propagated* to the viewport and `body` is
+     then treated as `visible`, so the first attempt shipped the rule and
+     changed nothing. The check caught it because it re-measured rather than
+     re-reading the CSS.
+2. **The tooltip was 648px of unbreakable text.** The sentence a song with no
+   range bar carries could not fit any viewport under about 1,600px, so its end
+   was off the side of the page. It wraps now (`width:max-content` up to
+   `min(24rem,100vw - 3rem)`), and both right-hand columns hang their tips the
+   other way. Checked at 700/820/1100/1400px: every tooltip on the page is fully
+   on screen, where before the clip they were unreachable and after it they
+   would have been cut.
+3. **The index scrolled sideways at 375px.** `.r-top` keeps `white-space:nowrap`
+   in the narrow layout, where it is an inline run rather than a column with an
+   ellipsis. "She Caught the Katy and Left Me a Mule to Ride" is 45 characters —
+   344px of mono at the old size, 389px at the new. The page was **six pixels**
+   from scrolling before this change and 33 past it after.
+4. **The venues rows could not fit their own labels.** The narrow layout gives
+   the figures a fixed `5.5rem`, cut to fit "longest 1,468" at the old scale:
+   99px of column for 106px of label. It is `max-content` now, and below 400px
+   the row stacks — the left column has a hard 217px floor (a date range that
+   must not break) and 320px does not have 217 + 106 to give.
+5. **`.dek a` was styled in one sheet of three** — the fifth instance. The due
+   page's standfirst has the only two links of their kind on the site
+   ("slipping", "on the shelf"), and both rendered in **the browser's default
+   link blue with a browser underline**. Folded into `DEK_CSS`, so there is now
+   one place to say it. Checked afterwards across all eight page types: of
+   2,103 links, none resolves to a browser default colour.
+
+### What was re-checked afterwards, and held
+
+- **No page scrolls sideways** at 320, 375, 414, 620, 820 or 1400px — six root
+  pages, three shows and three songs, twelve pages × six widths.
+- **Sticky headers still hand off.** `overflow-x:clip` does not create a scroll
+  container, and the proof is behavioural: on a show page exactly one table's
+  header row is stuck at a time, and it changes over as you scroll.
+- **The skip link still lands clear of the sticky header** — first row top 47px,
+  header bottom 47px, on the due page at the new scale.
+- **Nav hit areas** on all eight page types at 375px: every one still 24×24 or
+  better, none overlapping.
+- One measurement of my own was wrong first time and is worth recording, since
+  the file already warns about it: reading the skip link's colour with
+  `element.focus()` reported browser blue on all eight page types. A real Tab
+  press showed it correctly — `--ink` on `--paper`, 163×43, with the hot ring.
+  **Programmatic focus is not focus.**
 
 ## 2h. Three things Ian noticed elsewhere, 2026-07-28. NOT STARTED
 
