@@ -191,6 +191,7 @@
   {"date": "2025-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 21, "set": "1", "prev": "Bathtub Gin", "next": "Evolve"},
   {"date": "2026-01-29", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 4, "set": "1", "out": ">", "prev": "Gumbo", "next": "Prince Caspian"},
   {"date": "2026-04-30", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 8, "set": "1", "prev": "The Wedge", "next": "Halfway to the Moon"},
-  {"date": "2026-07-19", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 11, "set": "1", "out": ">", "prev": "Fast Enough for You", "next": "Oblivion"}
+  {"date": "2026-07-19", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 11, "set": "1", "out": ">", "prev": "Fast Enough for You", "next": "Oblivion"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "1"}
  ]
 }
