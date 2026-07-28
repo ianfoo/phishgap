@@ -104,6 +104,14 @@ header{padding-bottom:.9rem}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.chip:focus-visible,.sort:focus-visible{
   outline:2px solid var(--hot);outline-offset:1px}
+/* Shown only once there is something to clear. The song page has carried this
+   button for a while; the index only ever had the line of script that hides
+   it, which is why that line referred to an element that was never here. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
       padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
@@ -322,7 +330,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
-<p class="show">55 songs past their own usual gap</p>
+<p class="show">54 songs past their own usual gap</p>
 <p class="dek">Songs the band plays often enough to have a habit, which are now
 past it. Measured against each song&rsquo;s own recent gaps, not against a
 single number &mdash; a staple is late at eight shows and a rarity is not late
@@ -358,7 +366,6 @@ at eighty.</p></header>
 <li><a class='row' href='./song/poor-heart.html'><span class='d-song'>Poor Heart</span><span class='d-last'><span class='d-date'>2024-12-28</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>78</b><span class='typ'>usually by 32.6</span></span></a></li>
 <li><a class='row' href='./song/show-of-life.html'><span class='d-song'>Show of Life</span><span class='d-last'><span class='d-date'>2023-08-31</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>131</b><span class='typ'>usually by 55</span></span></a></li>
 <li><a class='row' href='./song/set-your-soul-free.html'><span class='d-song'>Set Your Soul Free</span><span class='d-last'><span class='d-date'>2026-04-24</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>19</b><span class='typ'>usually by 8.1</span></span></a></li>
-<li><a class='row' href='./song/drowned.html'><span class='d-song'>Drowned</span><span class='d-last'><span class='d-date'>2023-10-15</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>120</b><span class='typ'>usually by 54.3</span></span></a></li>
 <li><a class='row' href='./song/train-song.html'><span class='d-song'>Train Song</span><span class='d-last'><span class='d-date'>2024-08-06</span><span class='d-where'>Grand Rapids, MI</span></span><span class='d-n'><b>94</b><span class='typ'>usually by 44.0</span></span></a></li>
 <li><a class='row' href='./song/lawn-boy.html'><span class='d-song'>Lawn Boy</span><span class='d-last'><span class='d-date'>2025-07-25</span><span class='d-where'>Saratoga Springs, NY</span></span><span class='d-n'><b>42</b><span class='typ'>usually by 19.9</span></span></a></li>
 <li><a class='row' href='./song/sanity.html'><span class='d-song'>Sanity</span><span class='d-last'><span class='d-date'>2024-02-24</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>112</b><span class='typ'>usually by 53.6</span></span></a></li>
