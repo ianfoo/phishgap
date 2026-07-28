@@ -1105,7 +1105,23 @@ THEME_JS = """<script>
 })();
 </script>"""
 
-CSS = PALETTE_CSS + THEME_CSS + """
+# --------------------------------------------------------------------------
+# The blocks every stylesheet shares.
+#
+# These used to be three copies of the same rule text, one per sheet, and the
+# copies drifted: a nav that could not wrap, a footer link left in the browser
+# default blue on seven page types of eight, a sticky-header hide out-specified
+# by a modifier class, and tabular figures set on show pages only. Every one of
+# those was invisible until a page leaned on it, and every one was found by a
+# reader rather than by a check. A block named once cannot diverge from itself.
+#
+# Order is load-bearing: each sheet splices these in at the position its own
+# copy occupied, so the cascade is unchanged. See docs/TODO.md 8e.
+# --------------------------------------------------------------------------
+
+#: Skip link, the site's own focus ring, the box model and tabular figures --
+#: what every page type wants before it states anything of its own.
+BASE_CSS = PALETTE_CSS + THEME_CSS + """
 /* Off-screen until it is focused, then a real control in the corner. The
    index puts 691 rows between the search box and the footer, and a keyboard
    arriving on any page had to walk the whole navigation first. */
@@ -1132,16 +1148,64 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
 a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
 /* Every figure on this site sits in a column beside another figure. Tabular
-   numerals are what makes that work; the alternative is a hand-measured
-   min-width per field, re-measured the first time a four-digit gap turns up. */
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
 body{font-variant-numeric:tabular-nums}
-h1,h2,.title{text-wrap:balance}
-body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+"""
+
+#: The page box and its measure.
+BODY_BOX_CSS = """body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
-/* The header is a grid so the tour, which lives in the show line where there
+"""
+
+#: The navigation's hover and its 24x24 hit area (WCAG 2.5.8). The three sheets
+#: lay .crumb out differently -- show pages carry a pager row the others do not
+#: -- but the target and the hover are the same everywhere.
+NAV_HIT_CSS = """.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centred on the label, 24px tall and never
+   narrower than 24px. It sits inside the anchor, so it is the same target.
+   Row gaps below are widened to match: two rows 4.8px apart would have had
+   their 24px areas overlapping, which trades one failure for a worse one. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+"""
+
+#: The two horizontal rules: the letterpress double, and the tear line.
+RULE2_CSS = """
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+"""
+
+#: A hero figure's accent and its label.
+FIGURE_CSS = """.num.hot{color:var(--hot)}
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
+   color:var(--dim);margin-bottom:.35rem}
+"""
+
+#: Footer links, drawn the way every other link on the site is drawn.
+FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+"""
+
+CSS = BASE_CSS + """h1,h2,.title{text-wrap:balance}
+""" + BODY_BOX_CSS + """/* The header is a grid so the tour, which lives in the show line where there
    is room for it, can be lifted out to ride the breadcrumb row where there is
    not -- see the max-width block. One element either way. */
 header{padding-bottom:.9rem}
@@ -1164,19 +1228,7 @@ header{padding-bottom:.9rem}
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
-.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
-   Padding is the obvious fix and the wrong one here: the border-bottom *is*
-   the affordance, and padding-bottom would push that underline away from the
-   word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
-.crumb a{position:relative}
-.crumb a::before{content:"";position:absolute;left:50%;top:50%;
-   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
-.crumb .prev{grid-column:1;justify-self:start}
+""" + NAV_HIT_CSS + """.crumb .prev{grid-column:1;justify-self:start}
 .crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
@@ -1247,25 +1299,14 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft);
    background:var(--hover)}
-
-/* Letterpress: a thick rule with a hairline under it. Three to a page at most
-   -- a double rule that turns up six times is wallpaper. */
-.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
-   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
-/* The tear line between one set and the next. Never between rows. */
-.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
-   to right,var(--edge) 0 5px,transparent 5px 10px)}
-.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+""" + RULE2_CSS + """.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
       border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
    display:flex;flex-direction:column}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
      letter-spacing:0;margin-top:auto;color:var(--ink)}
-.num.hot{color:var(--hot)}
-.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
-   color:var(--dim);margin-bottom:.35rem}
-/* A tab struck in reverse, hung on a rule that runs out to the margin. Lighter
+""" + FIGURE_CSS + """/* A tab struck in reverse, hung on a rule that runs out to the margin. Lighter
    on the page than slab caps, and it leaves the display face one job. */
 h2{display:flex;align-items:center;gap:.6rem;margin:1.5rem 0 .3rem;padding:0;
    border:0;font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
@@ -1496,10 +1537,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-footer a{color:var(--dim);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-@media screen{
+""" + FOOTER_LINK_CSS + """@media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
   tr:hover td{background:var(--hover)}
@@ -2381,45 +2419,7 @@ def render_html(report, bar_scale="linear", index_href=None,
 
 # ------------------------------------------------------------------ index ---
 
-INDEX_CSS = PALETTE_CSS + THEME_CSS + """
-/* Off-screen until it is focused, then a real control in the corner. The
-   index puts 691 rows between the search box and the footer, and a keyboard
-   arriving on any page had to walk the whole navigation first. */
-.skip{position:absolute;left:-9999px;top:0;z-index:10}
-.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
-   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
-   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
-/* One focus ring for everything that takes focus, in the site's own accent.
-   The controls -- search, sort, chips -- already had this; links, rows and
-   hero cards fell through to the browser default, which is a 1px ring in
-   Chrome blue. On cream paper and on charcoal that is both off-palette and
-   thin, and rows and cards are the things a keyboard actually travels
-   between. :focus-visible, so a pointer click does not draw it. */
-a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
-summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
-  outline:2px solid var(--hot);outline-offset:2px}
-/* The skip link's landing spot takes focus so the next Tab continues from
-   the content rather than from the top of the page again -- but it is a
-   place, not a control, so it does not wear the control's ring. */
-[tabindex="-1"]:focus{outline:none}
-/* A row is a wide, short target and the ring reads better tucked against it
-   than floating two pixels off a full-width band. */
-.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
-a.card:focus-visible{outline-offset:-2px}
-*{box-sizing:border-box}
-/* Every figure on this site sits in a column beside another figure. Tabular
-   numerals are what makes that work. This lived in the show-page sheet only,
-   so the index, songs, due, venues and every song page were setting their
-   figures in proportional digits -- the fourth rule found in one sheet of
-   three (see docs/TODO.md 8c), and invisible until somebody asked why a
-   column of numbers with decimals in it would not line up. */
-body{font-variant-numeric:tabular-nums}
-body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
-     background:var(--paper);color:var(--ink);
-     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:.875rem;line-height:1.55}
-.wrap{max-width:960px;margin:0 auto}
-/* Which of the two lists you are looking at, and the way to the other one.
+INDEX_CSS = BASE_CSS + BODY_BOX_CSS + """/* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
 /* Wrapping, with the same row gap the song pages use. This row did not wrap
@@ -2435,19 +2435,7 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
    letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
    white-space:nowrap;border-bottom:1px solid var(--rule)}
-.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
-   Padding is the obvious fix and the wrong one here: the border-bottom *is*
-   the affordance, and padding-bottom would push that underline away from the
-   word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
-.crumb a{position:relative}
-.crumb a::before{content:"";position:absolute;left:50%;top:50%;
-   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
-.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+""" + NAV_HIT_CSS + """.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:1.06;margin:0 0 .7rem;
    letter-spacing:-.01em}
@@ -2468,15 +2456,7 @@ a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
-
-/* Letterpress: a thick rule with a hairline under it. Three to a page at most
-   -- a double rule that turns up six times is wallpaper. */
-.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
-   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
-/* The tear line between one set and the next. Never between rows. */
-.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
-   to right,var(--edge) 0 5px,transparent 5px 10px)}
-/* Six cards do not fit on one line, and a wrapping flex row gives the first
+""" + RULE2_CSS + """/* Six cards do not fit on one line, and a wrapping flex row gives the first
    card of the second line a left rule -- which then separates it from the page
    margin rather than from another card, and leaves its number indented out of
    line with the wordmark and every row below it. A grid ties both the rule and
@@ -2509,10 +2489,7 @@ header{padding-bottom:.9rem}
 }
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
      letter-spacing:0;margin-top:auto}
-.num.hot{color:var(--hot)}
-.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
-   color:var(--dim);margin-bottom:.35rem}
-.tools{margin:1.9rem 0 .9rem}
+""" + FIGURE_CSS + """.tools{margin:1.9rem 0 .9rem}
 /* Two rows rather than one wrapping run. The things you operate -- the search
    box and the sort -- sit together on the first; the filter chips are a
    different kind of control and get their own line instead of pushing sort to
@@ -2744,10 +2721,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-footer a{color:var(--dim);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-@media screen{
+""" + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
    the rules still run the full width and nothing has to be hidden. */
@@ -3334,87 +3308,26 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
 # song title; the gap figures and the hero numbers stay in the slab.
 SONG_FONTS = WEB_FONTS
 
-SONG_CSS = (PALETTE_CSS + THEME_CSS + """
-/* Off-screen until it is focused, then a real control in the corner. The
-   index puts 691 rows between the search box and the footer, and a keyboard
-   arriving on any page had to walk the whole navigation first. */
-.skip{position:absolute;left:-9999px;top:0;z-index:10}
-.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
-   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
-   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
-/* One focus ring for everything that takes focus, in the site's own accent.
-   The controls -- search, sort, chips -- already had this; links, rows and
-   hero cards fell through to the browser default, which is a 1px ring in
-   Chrome blue. On cream paper and on charcoal that is both off-palette and
-   thin, and rows and cards are the things a keyboard actually travels
-   between. :focus-visible, so a pointer click does not draw it. */
-a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
-summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
-  outline:2px solid var(--hot);outline-offset:2px}
-/* The skip link's landing spot takes focus so the next Tab continues from
-   the content rather than from the top of the page again -- but it is a
-   place, not a control, so it does not wear the control's ring. */
-[tabindex="-1"]:focus{outline:none}
-/* A row is a wide, short target and the ring reads better tucked against it
-   than floating two pixels off a full-width band. */
-.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
-a.card:focus-visible{outline-offset:-2px}
-*{box-sizing:border-box}
-/* Every figure on this site sits in a column beside another figure. Tabular
-   numerals are what makes that work. This lived in the show-page sheet only,
-   so the index, songs, due, venues and every song page were setting their
-   figures in proportional digits -- the fourth rule found in one sheet of
-   three (see docs/TODO.md 8c), and invisible until somebody asked why a
-   column of numbers with decimals in it would not line up. */
-body{font-variant-numeric:tabular-nums}
-body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
-     background:var(--paper);color:var(--ink);
-     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-     font-size:.875rem;line-height:1.55}
-.wrap{max-width:960px;margin:0 auto}
-.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
+SONG_CSS = (BASE_CSS + BODY_BOX_CSS + """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
    margin-bottom:1.1rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
-   Padding is the obvious fix and the wrong one here: the border-bottom *is*
-   the affordance, and padding-bottom would push that underline away from the
-   word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
-.crumb a{position:relative}
-.crumb a::before{content:"";position:absolute;left:50%;top:50%;
-   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
-/* One of the three slots the display face is allowed: the wordmark, a show's
+""" + NAV_HIT_CSS + """/* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.14;margin:0 0 .5rem;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
-
-/* Letterpress: a thick rule with a hairline under it. Three to a page at most
-   -- a double rule that turns up six times is wallpaper. */
-.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
-   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
-/* The tear line between one set and the next. Never between rows. */
-.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
-   to right,var(--edge) 0 5px,transparent 5px 10px)}
-.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
+""" + RULE2_CSS + """.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
    border-bottom:1px solid var(--ink)}
 .card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
    display:flex;flex-direction:column}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
    letter-spacing:0;margin-top:auto}
-.num.hot{color:var(--hot)}
-.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
-   color:var(--dim);margin-bottom:.35rem}
-.lbl .abbr{display:none}
+""" + FIGURE_CSS + """.lbl .abbr{display:none}
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
    number. */
@@ -3784,10 +3697,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-footer a{color:var(--dim);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-@media screen{
+""" + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -3822,9 +3732,13 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
-""".replace("__PNET__", ICON_PNET)
-   .replace("__PIN__", ICON_PIN)
-   .replace("__FOUL__", ICON_FOUL))
+""")
+# After the sheet is composed, not inside its last segment: the placeholders sit
+# near the top of it, and a .replace() hung off the closing literal would only
+# ever see the text below the last shared block.
+SONG_CSS = (SONG_CSS.replace("__PNET__", ICON_PNET)
+                    .replace("__PIN__", ICON_PIN)
+                    .replace("__FOUL__", ICON_FOUL))
 
 SONG_JS = """
 /* How long this song has been waiting, read from one small file rather than

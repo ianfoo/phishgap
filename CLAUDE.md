@@ -16,14 +16,18 @@ there, which makes local verification lie.
 
 ## Gotchas
 
-**Three base stylesheets carry identical rule text.** `CSS` (show pages),
-`INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and `FAQ_CSS` extend
-`INDEX_CSS`. A plain string replace on a CSS rule will hit two or three of
-them. Anchor on a neighbouring line that differs and assert the match count.
-The reverse costs more: a rule added to one sheet and not the others is
-invisible until something leans on it — two bugs in one night that way, a nav
-that could not wrap and a footer link left in the browser's default blue.
-Measured and costed in `docs/TODO.md` §8e; fix the composition, not the copies.
+**There are still three base stylesheets, but what they share is now named.**
+`CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and
+`FAQ_CSS` extend `INDEX_CSS`. The rules that were identical in all three live
+in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS` and
+`FOOTER_LINK_CSS` — edit those once. **Everything else is still copied**:
+32–46 rules repeat pairwise, and the near-misses (`footer{…}`, `.crumb{…}`,
+`.hero{…}`) differ by real amounts. So a plain string replace on any rule
+outside a named block will still hit two or three sheets, or — worse — one.
+Anchor on a neighbouring line that differs and assert the match count. Four
+bugs have come out of the copies: a nav that could not wrap, a footer link in
+the browser's default blue, a sticky-header hide out-specified by a modifier
+class, and tabular figures on show pages only. `docs/TODO.md` §8e.
 
 **Drawing preview cards locally poisons CI.** `site/data/cards.json` records
 what each card was drawn from and is tracked; `site/card/*.png` is gitignored.

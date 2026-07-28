@@ -1459,7 +1459,7 @@ the record could no longer disagree with the artifacts because they would
 travel together. Until that lands: **after any local rebuild that draws cards,
 do not commit `site/data/cards.json`** — take the version CI produced.
 
-## 8e. The three stylesheets — Ian's question, measured. NOT STARTED
+## 8e. The three stylesheets — Ian's question, measured. §1 DONE 2026-07-28
 
 Ian, 2026-07-27: "why are there three stylesheets that contain duplicate
 definitions? … The fact that you need to call out the triplicate definitions in
@@ -1482,10 +1482,31 @@ build step producing a bespoke sheet per page. **Measured before answering:**
 
 **These are two different problems and they want different fixes.**
 
-1. **Source duplication** — the actual smell, and the cause of both bugs in
-   §8c. Fix by composing sheets from named blocks (`BASE` + per-page blocks)
-   instead of copy-pasted rule text. No output change, no risk, and it is what
-   stops an edit landing in one sheet of three. **Do this first.**
+1. ~~**Source duplication**~~ **DONE 2026-07-28.** Six named blocks now hold
+   every rule that was byte-identical in all three sheets, and each sheet
+   splices them in where its own copy sat, so the cascade is unchanged:
+   `BASE_CSS` (skip link, focus ring, box model, tabular figures),
+   `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS`,
+   `FOOTER_LINK_CSS`. 5,983 bytes of triplicated source gone.
+   - **Verified by string equality, not by eye**: all six composed sheets
+     (`CSS`, `INDEX_CSS`, `SONG_CSS`, `SONGS_CSS`, `METHOD_CSS`, `FAQ_CSS`)
+     come out byte-identical to what they were, with one deliberate exception —
+     the show sheet's tabular-numerals comment now carries the same wording as
+     the other two, which is the §8c bug written down where it can be read.
+     A change that cannot alter a byte of any stylesheet cannot alter a page.
+   - **One trap found on the way, and it is the kind that ships quietly.**
+     `SONG_CSS` ended `""".replace("__PNET__", ICON_PNET)…` — three base64
+     icons substituted into the closing literal. Splitting the literal to
+     splice a block left that `.replace` seeing only the last segment, so the
+     three placeholders survived into the published sheet and every external
+     link icon would have rendered as a broken image. The substitution now
+     runs over the composed string. Caught because the check compared the
+     built sheet against the old one instead of asking whether the file
+     compiled.
+   - Not done, and worth knowing: this covers only what was identical in
+     **all three**. Pairwise, 32–46 rules still repeat, and the near-misses
+     (`footer{…}`, `.crumb{…}`, `.hero{…}`) differ by real amounts, so they
+     want a decision per rule rather than another mechanical pass.
 2. **Wire duplication** — 45.6 MB. Fix by linking one `site.css` instead of
    inlining. The site already links `fonts.css`. A show page would go 62 KB →
    ~29 KB, the FAQ 39 → ~14 KB, and it is cached after the first page.
