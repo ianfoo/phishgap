@@ -929,21 +929,28 @@ NEW_ROWS_JS = """<script>
    closed. The count last seen is kept in this browser only; nothing is sent
    anywhere and nothing is stored server-side. */
 (function(){
-  var live=document.querySelector('.live');
-  if(!live||!window.localStorage) return;
-  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
-  if(!rows.length) return;
-  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
-  var seen=parseInt(localStorage.getItem(key)||'0',10);
-  if(seen>0&&rows.length>seen){
-    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
-    var n=rows.length-seen;
-    var tag=document.createElement('span');
-    tag.className='since-you';
-    tag.textContent=n+' new since you last looked';
-    live.appendChild(tag);
+  function start(){
+    var live=document.querySelector('.live');
+    if(!live||!window.localStorage) return;
+    var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+    if(!rows.length) return;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+    var seen=parseInt(localStorage.getItem(key)||'0',10);
+    if(seen>0&&rows.length>seen){
+      rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+      var n=rows.length-seen;
+      var tag=document.createElement('span');
+      tag.className='since-you';
+      tag.textContent=n+' new since you last looked';
+      live.appendChild(tag);
+    }
+    try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
   }
-  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+  /* Same trap as the relative stamp beside it: this ships in the head, so it
+     ran before .live or a single row existed and returned every time. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
 </script>"""
 
@@ -955,8 +962,6 @@ AGO_JS = """<script>
    correct without JavaScript and correct after the tab has been open an hour;
    this only renders it. */
 (function(){
-  var els=[].slice.call(document.querySelectorAll('time.ago'));
-  if(!els.length) return;
   function say(sec){
     if(sec<45) return 'just now';
     var m=Math.round(sec/60);
@@ -964,15 +969,27 @@ AGO_JS = """<script>
     var h=Math.round(m/60);
     return h+' hour'+(h===1?'':'s')+' ago';
   }
-  function tick(){
-    var now=Date.now();
-    els.forEach(function(e){
-      var t=Date.parse(e.getAttribute('datetime'));
-      if(!isNaN(t)) e.textContent=say((now-t)/1000);
-    });
+  function start(){
+    var els=[].slice.call(document.querySelectorAll('time.ago'));
+    if(!els.length) return;
+    function tick(){
+      var now=Date.now();
+      els.forEach(function(e){
+        var t=Date.parse(e.getAttribute('datetime'));
+        if(!isNaN(t)) e.textContent=say((now-t)/1000);
+      });
+    }
+    tick();
+    setInterval(tick,20000);
   }
-  tick();
-  setInterval(tick,20000);
+  /* This ships in the head, so on a first load it runs before the body it is
+     looking for exists: querySelectorAll found nothing, the function returned,
+     and every reader saw the bare 03:41 UTC fallback the markup carries for
+     readers with no JavaScript at all. The stamp has been a clock reading on
+     every live page since it was written. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
 </script>"""
 
@@ -2435,19 +2452,32 @@ INDEX_JS = """
   var eraOK={}, sortOK={};
   chips.forEach(function(c){ eraOK[c.getAttribute('data-era')]=1; });
   Array.prototype.forEach.call(sort.options, function(o){ sortOK[o.value]=1; });
+  /* Terms are whitespace-separated, except inside double quotes, where the
+     whole run is one term and has to appear together. Unquoted words are
+     ANDed substrings and can match in any order and any field, which is what
+     makes partial typing work -- and is also why "Key Arena" unquoted returns
+     eight shows rather than the one played there, and why the two rooms named
+     The Wharf Amphitheater and Amphitheater at the Wharf each answer for the
+     other. A quoted phrase is the way to ask for a room by name. */
+  function terms(s){
+    var out=[], re=/"([^"]*)"|(\\S+)/g, m;
+    while((m=re.exec(s))){
+      var quoted=m[1]!==undefined, t=(quoted?m[1]:m[2]).toLowerCase().trim();
+      if(t) out.push(matcher(t, quoted));
+    }
+    return out;
+  }
   // A bare number means that number: searching 8 should find the 8th, not the
-  // 18th. Anything else is a plain substring, which is what makes partial
-  // venue and song typing work.
-  function matcher(t){
-    if(!/^\\d+$/.test(t)) return function(hay){ return hay.indexOf(t)>-1; };
+  // 18th. Inside quotes it is just text, because the reader has said so.
+  function matcher(t, quoted){
+    if(quoted||!/^\\d+$/.test(t)) return function(hay){ return hay.indexOf(t)>-1; };
     var re=new RegExp('(^|[^0-9])'+t+'([^0-9]|$)');
     return function(hay){ return re.test(hay); };
   }
   function apply(){
-    var terms=q.value.toLowerCase().split(/\\s+/).filter(Boolean).map(matcher),
-        n=0;
+    var ts=terms(q.value), n=0;
     rows.forEach(function(r){
-      var hay=r.getAttribute('data-search'), ok=terms.every(function(t){
+      var hay=r.getAttribute('data-search'), ok=ts.every(function(t){
         return t(hay);
       });
       if(ok&&era) ok=r.getAttribute('data-era')===era;
@@ -4175,9 +4205,13 @@ def render_venues(reports, card=None):
         span = ("%s &rarr; %s" % (shows[0]["date"], shows[-1]["date"])
                 if len(shows) > 1 else shows[0]["date"])
         longest = max((e["longest"] for e in shows if e["longest"]), default=None)
-        # The venue name as typed, not lowercased: the haystack and the query
-        # are both folded before they meet, so the box can show the real name.
-        href = "./index.html?q=%s" % urllib.parse.quote(venue)
+        # Quoted, so the index matches the name as a phrase rather than as
+        # loose words: unquoted, "Key Arena" answers with every arena that
+        # also has a "key" somewhere in its setlist, and the two rooms called
+        # The Wharf Amphitheater and Amphitheater at the Wharf each return the
+        # other's nights. The name is not lowercased -- both sides are folded
+        # before they meet, so the box can show the room as it is spelled.
+        href = "./index.html?q=%s" % urllib.parse.quote('"%s"' % venue)
         rows.append(
             "<li><a class='row' href='%s'>"
             "<span class='vn-venue'>%s<span class='vn-place'>%s</span></span>"
