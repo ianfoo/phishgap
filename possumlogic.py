@@ -6300,8 +6300,17 @@ def main():
                     log("%s is already in the site (--force to re-fetch)", date)
                     continue
             key = key or load_key(args.apikey)   # not needed for --rebuild
+            # A show being re-fetched is one that is still changing, so its
+            # setlist must not come from the cache. The cache holds a response
+            # for six hours and a watch job runs for five, so without this the
+            # first pass froze the setlist and every pass after it republished
+            # that same copy -- the watcher reporting 13 songs while phish.net
+            # had 16, unable to ever see another. Only this call bypasses it;
+            # song histories and the calendar stay cached, which is most of the
+            # traffic and none of the volatility.
+            live = dict(kw, refresh=True) if date in recheck else kw
             try:
-                report = build(date, key, artist=args.artist, **kw)
+                report = build(date, key, artist=args.artist, **live)
             except ApiError as exc:
                 # A tour-length run should not die on tonight's show having no
                 # setlist posted yet.

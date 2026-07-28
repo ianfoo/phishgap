@@ -53,6 +53,7 @@
   {"date": "2018-08-10", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 28, "set": "2", "out": "->"},
   {"date": "2019-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 61, "set": "2", "jamchart": true, "jam": "The jam first turns for dark, goopy textures on the coattails of Page's synths and Trey's effects. Eventually, this yields way to a spirited \"Guy Forget\" quote driven by Fishman.", "out": ">"},
   {"date": "2021-08-14", "venue": "Atlantic City Beach", "city": "Atlantic City", "state": "NJ", "gap": 19, "set": "2", "jamchart": true, "jam": "While staying somewhat close to typical \"Drowned\" jamming, the music explores those bounds widely until 10:30, when there is a distinctive shift to new terrain. The jam becomes pulsing and percussive before finally settling to quiet transition space.", "out": ">"},
-  {"date": "2023-10-15", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 113, "set": "2", "out": ">"}
+  {"date": "2023-10-15", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 113, "set": "2", "out": ">"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 119, "set": "2", "note": "Trey on mini drum kit", "out": ">"}
  ]
 }
