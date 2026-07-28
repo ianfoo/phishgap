@@ -385,7 +385,23 @@ not work while looking like it did:
    `schedule` event actually appears in `gh run list --workflow=watch.yml`
    before believing the watcher is live.**
 
-All four are fixed. The point is that they existed at once, each invisible
+5. **It republished the whole site from a frozen checkout.** A resident job
+   checks the repository out once and then lives for hours, rebuilding and
+   publishing *everything* every five minutes -- but it only ran `git pull`
+   inside the branch that fires when `site/data` changed. So once a show
+   settles and no new songs arrive, it stops tracking main altogether, which
+   is precisely when it is still publishing on a five-minute cadence. Tonight
+   the live site flip-flopped for forty minutes: each watcher pass put the
+   03:55 build back, each push put the new one up again. The published page
+   was never wrong for long, which is what made it hard to see. Fixed by
+   pulling main at the top of every pass, before the build.
+
+   **This is the third variant of the same failure** -- §8.2 published a site
+   with the show missing, §8.3 served a cached setlist, and this republished
+   stale code. The shape is always "a long-lived job keeps publishing from
+   something it read once".
+
+All five are fixed. The point is that they existed at once, each invisible
 from the logs, and tonight is unlikely to have found the last.
 
 ### Two more, in the page rather than the job

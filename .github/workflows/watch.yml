@@ -89,6 +89,24 @@ jobs:
           while :; do
             pass=$(( pass + 1 ))
             echo "::group::pass $pass"
+
+            # Track main before building. This job checks the repository out
+            # once and then lives for up to five hours, rebuilding and
+            # republishing the *whole site* every pass -- so without this it
+            # publishes from the code it started with, and any change pushed
+            # during a show is reverted on the live site every five minutes
+            # until the job exits. Tonight it flip-flopped the published site
+            # against the ordinary workflow for forty minutes: watcher passes
+            # put the old build back, pushes put the new one up again.
+            #
+            # There is a pull further down, but only inside the branch that
+            # runs when site/data changed -- so once a show settles and no new
+            # songs arrive, the watcher stops tracking main entirely, which is
+            # exactly when it is still publishing every five minutes.
+            if ! git pull --rebase -q origin main; then
+              echo "rebase conflicted on pull; aborting, building from the tree as-is"
+              git rebase --abort || true
+            fi
             # Two days is enough: this only ever runs during a show.
             # --calendar matters more here than it looks. A show only counts
             # as a concert if the counting calendar holds its date, and the
