@@ -113,7 +113,6 @@
   {"date": "2022-04-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 23, "set": "1", "times": 2, "out": ">", "prev": "Plasma", "next": "Avenu Malkenu", "nb": 1},
   {"date": "2023-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 89, "set": "2", "note": "Off-stage backing chorus.", "out": ">", "prev": "Harpua", "in": ">", "next": "The Lizards", "nb": 1},
   {"date": "2026-04-24", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 97, "set": "1", "out": ">", "next": "The Lizards", "nb": 1},
-  {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 4, "set": "1", "out": ">", "prev": "Mike's Song", "next": "Avenu Malkenu", "nb": 1},
-  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "1"}
+  {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 4, "set": "1", "out": ">", "prev": "Mike's Song", "next": "Avenu Malkenu", "nb": 1}
  ]
 }
