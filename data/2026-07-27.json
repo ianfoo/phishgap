@@ -216,7 +216,7 @@
       "prev_date": "2026-07-14",
       "prev_venue": "Enmarket Arena",
       "prev_place": "Savannah, GA",
-      "out": "",
+      "out": ">",
       "plays": 47,
       "recent_plays": 13,
       "gap_median": 17,
@@ -245,5 +245,6 @@
     }
   ],
   "count_since": "2026-07-28T02:14:32+00:00",
+  "encored": false,
   "provisional": true
 }
