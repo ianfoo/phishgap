@@ -1,0 +1,125 @@
+name: watch a show
+
+# GitHub throttles frequent schedules hard. A cron of */5 fired 57 minutes
+# apart on the night this was written, which is most of a set -- so a schedule
+# cannot be the thing that polls. It can only be the thing that *starts* a
+# poller.
+#
+# So this workflow is one resident job. It wakes, asks whether a show is inside
+# its watch window, and if so stays alive polling every five minutes until the
+# show settles or the window closes. The schedule below is a restarter rather
+# than a poller: it only has to land inside the window once.
+#
+# The ordinary workflow is untouched and keeps doing the thorough, expensive
+# things on its own cadence. This one does exactly one job, so a mistake here
+# cannot stop shows being archived.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every half hour across the window a show can be running. Only one of
+    # these has to actually fire for the night to be covered, because the run
+    # it starts stays up.
+    - cron: "*/30 22-23,0-9 * * *"
+
+permissions:
+  contents: write
+
+# Its own group, so a long watch does not block the ordinary run from
+# archiving, and a second watcher does not start on top of a live one.
+concurrency:
+  group: possumlogic-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    # Below the 6h job ceiling with room to spare. A show plus its settling
+    # period is about six hours; if this ends first, the next schedule restarts
+    # it and no data is lost, because everything is written to the archive as
+    # it arrives rather than at the end.
+    timeout-minutes: 320
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Is a show playing?
+        id: gate
+        run: |
+          watching=$(python possumlogic.py --site site --watching | cut -d= -f2)
+          echo "watching=$watching" >> "$GITHUB_OUTPUT"
+
+      - name: Install what the preview cards need
+        if: steps.gate.outputs.watching == 'true'
+        run: python -m pip install --quiet pillow
+
+      - name: Restore the published preview cards
+        if: steps.gate.outputs.watching == 'true'
+        run: |
+          git fetch --depth=1 origin gh-pages || exit 0
+          mkdir -p site/card
+          git archive origin/gh-pages card 2>/dev/null | tar -x -C site || true
+
+      - name: Follow the show
+        if: steps.gate.outputs.watching == 'true'
+        env:
+          PL_PHISHNET_API_KEY: ${{ secrets.PHISHNET_API_KEY }}
+          PL_GOATCOUNTER: ${{ vars.PL_GOATCOUNTER }}
+          PL_DOMAIN: ${{ vars.PL_DOMAIN }}
+        run: |
+          set -u
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          deadline=$(( $(date +%s) + 300*60 ))
+          pass=0
+          while :; do
+            pass=$(( pass + 1 ))
+            echo "::group::pass $pass"
+            # Two days is enough: this only ever runs during a show.
+            python possumlogic.py --site site --previous --rebuild --catch-up 2 || true
+
+            # The archive first, so a crash after this point still leaves the
+            # data recorded and only costs a publish.
+            git add site/data
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Archive gap reports for new shows"
+              # Another run may have pushed while this one was fetching.
+              git pull --rebase -q origin main || true
+              git push -q origin main || true
+            fi
+
+            # Publish onto whatever is on the remote right now, not onto
+            # whatever this checkout last saw -- the ordinary workflow may have
+            # published in between.
+            git fetch -q origin gh-pages
+            rm -rf ../pages
+            git worktree add -q --detach ../pages origin/gh-pages
+            find ../pages -mindepth 1 -maxdepth 1 -not -name .git -exec rm -rf {} +
+            cp -R site/. ../pages/
+            ( cd ../pages
+              git add -A
+              if ! git diff --cached --quiet; then
+                git commit -q -m "Publish $(date -u +%FT%TZ)"
+                git push -q origin HEAD:gh-pages && echo "published"
+              else
+                echo "nothing changed"
+              fi )
+            git worktree remove --force ../pages
+            echo "::endgroup::"
+
+            # Stop when the show is out of its window, or the shift is over.
+            still=$(python possumlogic.py --site site --watching | cut -d= -f2)
+            if [ "$still" != "true" ]; then
+              echo "window closed; stopping"
+              break
+            fi
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "shift over; the next schedule picks it up"
+              break
+            fi
+            sleep 300
+          done

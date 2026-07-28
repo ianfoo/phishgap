@@ -1885,11 +1885,13 @@ def render_html(report, bar_scale="linear", index_href=None,
                  "<a href='../index.html'>Shows</a>"
                  "<a href='../songs.html'>Songs</a>"
                  "<a href='../method.html'>How this is worked out</a></nav>"
-                 "<nav class='crumb pager'>%s<a class='all' href='%s'>All reports</a>%s"
+                 # No "All reports" in the middle: the row above already has
+                 # Shows, pointing at the same page under the name the rest of
+                 # the site uses for it. The pager is for the two neighbours.
+                 "<nav class='crumb pager'>%s<span class='all'></span>%s"
                  "</nav>") % (
             step % ("prev", "prev", prev_date, "Previous", prev_date,
                     "&larr; " + prev_date) if prev_date else "",
-            html.escape(index_href, quote=True),
             step % ("next", "next", next_date, "Next", next_date,
                     next_date + " &rarr;") if next_date else "")
 
@@ -3642,7 +3644,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <div class="prose">{body}</div>
 <footer><span><a href="./index.html">All reports</a></span>{theme_ui}
-<span>Data: Phish.net &middot; ratings fouldomain</span></footer>
+<span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
 </div></body></html>
 """
@@ -3987,7 +3989,11 @@ def index_card(reports):
     entries = [summarize(r) for r in reports]
     longest = max((e["longest"] or 0) for e in entries) if entries else 0
     return card_markup(
-        "Phish", "Possum <em>Logic</em>", "How long since they last played it",
+        # "How long since they last played it" described a gap calculator. The
+        # site stopped being one a while ago; the gap is the spine of an
+        # archive rather than the whole of it, and the card was the last place
+        # still saying otherwise.
+        "Phish", "Possum <em>Logic</em>", "An archive of every performance",
         (("%d" % len(entries), "Shows", ""),
          ("{:,}".format(sum(e["songs"] for e in entries)), "Songs logged", ""),
          (_stat(longest) if longest else "&mdash;", "Longest gap", "hot")))
