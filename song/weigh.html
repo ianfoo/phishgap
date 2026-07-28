@@ -63,6 +63,13 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
 .reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
 a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;

@@ -63,6 +63,13 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
 .reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
 a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
@@ -288,14 +295,25 @@ header{padding-bottom:.9rem}
    font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
    color:var(--dim);max-width:56ch}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
-/* The shelf, under the due list. Set as a section heading rather than as a
-   second masthead: it is the same kind of thing as the list above it, held
-   back for one reason, and a heading the size of the page title would say it
-   was a second subject. */
-.shelf-h{margin:2.6rem 0 .4rem;font-family:'Bagnard',Georgia,serif;
-   font-weight:400;font-size:1.5rem;line-height:1.2;
+/* A section heading, under the due list. At 1.5rem it was barely larger than
+   the 1rem song titles it headed, which made a new section read as another
+   row. 2.125rem sits clearly between the page title and the data. */
+.shelf-h{margin:3rem 0 .5rem;font-family:'Bagnard',Georgia,serif;
+   font-weight:400;font-size:2.125rem;line-height:1.15;
    scroll-margin-top:2.6rem}
 .shelf-h+.dek{margin-bottom:1.1rem}
+/* The way back up. This is the fourth place it has been wanted -- the FAQ's
+   answers, and now each section here -- so it is a house idiom rather than a
+   page's own trick: jumping somewhere should never maroon a reader there, and
+   these pages are long. Mono and small: a control, not a sentence. */
+.backtop{margin:1rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative;display:inline-block}
+.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
 /* The venue list borrows the due page's three-column shape because it answers
    the same shape of question: a name, a when, and one figure worth ranking by.
    Its own class names, though -- .d-* means "due", and a venue row sharing
