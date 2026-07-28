@@ -210,6 +210,18 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .head .nhead{color:var(--dim)}
+/* The marks set in the face the setlists print them in, so the label is a
+   specimen of the thing it explains. Underlined like every other link here.
+
+   Its own line, not the tail of the label's: this column is narrow enough that
+   inline it wrapped anyway, and a wrap that was going to happen is better
+   declared than discovered. `width:max-content` keeps the underline on the two
+   marks rather than running the width of the column. */
+.head .marks{display:block;width:max-content;margin-top:.15rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;
+   letter-spacing:0;text-transform:none;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);white-space:nowrap}
+.head .marks:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .head .ghead{grid-column:4/-1;text-align:right}
 /* Every row is its own grid, so an `auto` last column sizes to its own content
    and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
@@ -251,12 +263,6 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
    font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
    color:var(--dim);max-width:56ch}
-/* The notation legend. The arrows read as decoration unless something says
-   they are load-bearing: an arrow means the songs merely followed one another,
-   and phish.net's mark in its place means they did not stop. Worth one line,
-   because the alternative is a reader inventing a meaning for it. */
-.dek.key .k{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   color:var(--ink-soft);padding:0 .1rem}
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -627,15 +633,11 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">The Ballad of Curtis Loew</span>
 <span class="n"><b>48</b> shows &middot; median gap <b>14.5</b></span></div>
-<div class="in cols"><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap</span></div></div></div>
+<div class="in cols"><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap</span></div></div></div>
 <div class="rule2"></div>
 <header><h1>The Ballad of Curtis Loew</h1>
 <p class="show">Debut 1987-04-29 &middot; Last played 2019-12-30 &middot; 47 performances</p>
-
-<p class="dek key">Marks between songs:
-<span class="k">&#8592;&#8201;&#8594;</span> separate,
-<span class="k">&gt;</span> and <span class="k">&#8211;&gt;</span> run together
-&mdash; <a href="../faq.html#segues">how they differ</a>.</p></header>
+</header>
 <section class="hero"><div class='card'><div class='lbl'>Times Played</div><div class='num'>47</div></div><div class='card'><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div><div class='num'>68</div></div><div class='card'><div class='lbl'>Median Gap, All-Time</div><div class='num'>14.5</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>628</div></div><div class='card since' hidden data-slug='the-ballad-of-curtis-loew' data-high='' data-bustout='100'><div class='lbl'>Current Gap<span class='v'></span></div><div class='num'></div></div></section>
 <div class="rule2"></div>
 
@@ -652,7 +654,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 </select></label>
 <span class="count"><b id="shown">47</b> of 47 shows</span>
 </div>
-<div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap</span></div>
+<div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap</span></div>
 <ol class="perfs" id="list">
 <li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>14 shows</span><span>2009&ndash;2019</span></h2></li>
 <li id='2019-12-30' data-date='2019-12-30' data-era='3.0' data-gap='121' data-score='' data-search="2019-12-30 12/30/2019 12/30/2019 12/30/19 12/30 12/30 12-30 december 30 2019 december 30 monday madison square garden new york ny  "><div class='row'><span class='r-date'><a href='../show/2019-12-30.html'>2019-12-30</a><span class='dow'>Mon</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>121</span><span class='set'>SET 1</span></span></div></li>
@@ -738,7 +740,10 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
         v=box.querySelector('.v');
     if(high>0){
       if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
-      else if(v){ v.textContent='line '+Math.round(high); v.className='v quiet'; }
+      // "line 10" was the site talking to itself: the reader has no way to
+      // know which line, and the number is the one this song becomes overdue
+      // at. Say that.
+      else if(v){ v.textContent='due at '+Math.round(high); v.className='v quiet'; }
     }else if(n>=bust){
       box.classList.add('dormant');
       if(v){ v.textContent='dormant'; v.className='v dim'; }

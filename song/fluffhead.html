@@ -210,6 +210,18 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .head .nhead{color:var(--dim)}
+/* The marks set in the face the setlists print them in, so the label is a
+   specimen of the thing it explains. Underlined like every other link here.
+
+   Its own line, not the tail of the label's: this column is narrow enough that
+   inline it wrapped anyway, and a wrap that was going to happen is better
+   declared than discovered. `width:max-content` keeps the underline on the two
+   marks rather than running the width of the column. */
+.head .marks{display:block;width:max-content;margin-top:.15rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;
+   letter-spacing:0;text-transform:none;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);white-space:nowrap}
+.head .marks:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .head .ghead{grid-column:4/-1;text-align:right}
 /* Every row is its own grid, so an `auto` last column sizes to its own content
    and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
@@ -251,12 +263,6 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
    font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
    color:var(--dim);max-width:56ch}
-/* The notation legend. The arrows read as decoration unless something says
-   they are load-bearing: an arrow means the songs merely followed one another,
-   and phish.net's mark in its place means they did not stop. Worth one line,
-   because the alternative is a reader inventing a meaning for it. */
-.dek.key .k{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   color:var(--ink-soft);padding:0 .1rem}
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -627,15 +633,11 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">Fluffhead</span>
 <span class="n"><b>293</b> shows &middot; median gap <b>5</b></span></div>
-<div class="in cols"><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap &middot; mark at median 5</span></div></div></div>
+<div class="in cols"><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap &middot; mark at median 5</span></div></div></div>
 <div class="rule2"></div>
 <header><h1>Fluffhead</h1>
 <p class="show">Debut 1984-12-01 &middot; Last played 2026-07-24 &middot; 293 performances</p>
-<div class='pairs'><div class='pair'><span class='cap'>Most often out of</span><span class='ps'><span class='p'>Split Open and Melt<b>10&times;</b></span> <span class='p'>Maze<b>7&times;</b></span> <span class='p'>Stash<b>7&times;</b></span></span></div><div class='pair'><span class='cap'>Most often into</span><span class='ps'><span class='p'>Run Like an Antelope<b>8&times;</b></span> <span class='p'>Mike’s Song<b>6&times;</b></span> <span class='p'>Uncle Pen<b>6&times;</b></span></span></div></div>
-<p class="dek key">Marks between songs:
-<span class="k">&#8592;&#8201;&#8594;</span> separate,
-<span class="k">&gt;</span> and <span class="k">&#8211;&gt;</span> run together
-&mdash; <a href="../faq.html#segues">how they differ</a>.</p></header>
+<div class='pairs'><div class='pair'><span class='cap'>Most often out of</span><span class='ps'><span class='p'>Split Open and Melt<b>10&times;</b></span> <span class='p'>Maze<b>7&times;</b></span> <span class='p'>Stash<b>7&times;</b></span></span></div><div class='pair'><span class='cap'>Most often into</span><span class='ps'><span class='p'>Run Like an Antelope<b>8&times;</b></span> <span class='p'>Mike’s Song<b>6&times;</b></span> <span class='p'>Uncle Pen<b>6&times;</b></span></span></div></div></header>
 <section class="hero"><div class='card'><div class='lbl'>Times Played</div><div class='num'>293</div></div><div class='card'><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div><div class='num'>7</div></div><div class='card'><div class='lbl'>Median Gap, All-Time</div><div class='num'>5</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>70</div></div><div class='card since' hidden data-slug='fluffhead' data-high='14.699999999999996' data-bustout='100'><div class='lbl'>Current Gap<span class='v'></span></div><div class='num'></div></div></section>
 <div class="rule2"></div>
 <p class='best'><span class='field'><span class='cap'>Best version</span><a class='when' href='#1989-03-30'>1989-03-30</a></span><span class='field'><span class='cap'>Venue</span><span class='where'>The Front, Burlington</span></span><span class='field'><span class='cap'>Score</span><span class='score'>89</span></span><span class='field'><span class='cap'>Hear it</span><span class='cap'><a class='ext i-pin' href='https://phish.in/1989-03-30' target='_blank' rel='noopener noreferrer'>Listen</a> &middot; <a class='ext i-foul' href='https://fouldomain.com/tracks/3289' target='_blank' rel='noopener noreferrer'>Details</a></span></span></p>
@@ -652,7 +654,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 </select></label>
 <span class="count"><b id="shown">293</b> of 293 shows</span>
 </div>
-<style>.perfs{--med:7.14%}</style><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap &middot; mark at median 5</span></div>
+<style>.perfs{--med:7.14%}</style><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap &middot; mark at median 5</span></div>
 <ol class="perfs" id="list">
 <li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>33 shows</span><span>2021&ndash;2026</span></h2></li>
 <li id='2026-07-24' data-date='2026-07-24' data-era='4.0' data-gap='7' data-score='' data-search="2026-07-24 07/24/2026 7/24/2026 7/24/26 07/24 7/24 7-24 july 24 2026 july 24 friday madison square garden new york ny  "><div class='row'><span class='r-date'><a href='../show/2026-07-24.html'>2026-07-24</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Sweet Adeline</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:38.25%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>7</span><span class='set'>ENCORE</span></span></div></li>
@@ -992,7 +994,10 @@ throughout the Woodlands of Dover.</span></summary></details></span><span class=
         v=box.querySelector('.v');
     if(high>0){
       if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
-      else if(v){ v.textContent='line '+Math.round(high); v.className='v quiet'; }
+      // "line 10" was the site talking to itself: the reader has no way to
+      // know which line, and the number is the one this song becomes overdue
+      // at. Say that.
+      else if(v){ v.textContent='due at '+Math.round(high); v.className='v quiet'; }
     }else if(n>=bust){
       box.classList.add('dormant');
       if(v){ v.textContent='dormant'; v.className='v dim'; }

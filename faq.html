@@ -421,17 +421,46 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    color:var(--ink);scroll-margin-top:1rem}
 .prose h2:first-child{margin-top:0}
 /* The contents. Generated from the same list the entries are, so it cannot
-   name a question the page does not answer or miss one it does. */
-.toc{max-width:66ch;margin:0 0 2.6rem}
+   name a question the page does not answer or miss one it does.
+
+   It used to be a bare caption over eight hairline-separated lines set in the
+   reading face, one size down from the h2 under it and in a softer ink -- so
+   the whole block read as continuous prose and, in Ian's words, "sort of looks
+   like the answer to the first question". Three things separate it now: it is
+   enclosed rather than merely ruled, the entries are numbered, and the numbers
+   are mono, which is this site's voice for a figure. A reader can tell an
+   index from an answer before reading a word of either. */
+.toc{max-width:66ch;margin:0 0 3rem;padding:1rem 1.2rem 1.1rem;
+   border:1px solid var(--rule);background:var(--rule-soft)}
 .toc .cap{display:block;font-size:.625rem;letter-spacing:.14em;
-   text-transform:uppercase;color:var(--dim);margin:0 0 .5rem}
-.toc ol{list-style:none;margin:0;padding:0;
-   border-top:1px solid var(--rule-soft)}
-.toc li{border-bottom:1px solid var(--rule-soft)}
-.toc a{display:block;padding:.42rem 0;font-family:'Literata',Georgia,serif;
+   text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .6rem}
+/* Counter rather than list-style:decimal, so the number is a column of its own
+   and a question that wraps aligns under itself instead of under its number. */
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:q}
+.toc li{counter-increment:q;border-top:1px solid var(--rule-soft)}
+.toc li:first-child{border-top:0}
+.toc a{display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;
+   padding:.4rem 0;font-family:'Literata',Georgia,serif;
    font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
    color:var(--ink-soft);text-decoration:none;border:0}
+.toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.75rem;font-weight:600;color:var(--dim)}
 .toc a:hover{color:var(--hot)}
+.toc a:hover::before{color:var(--hot)}
+/* The way back up. Every answer gets one, because the point of an index is
+   being able to pick a second question after the first -- and without this the
+   only route was scrolling back yourself. Mono and small: it is a control, not
+   a sentence, and it must not read as another paragraph of the answer. */
+.backtop{margin:.8rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* 24x24, the same floor the nav links were held to, without moving the ink. */
+.backtop a{position:relative;display:inline-block}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
 /* A mark and what it means. The mark is mono because it is a mark -- the same
    glyph the setlists print -- and the gloss is prose. */
 .defs{margin:0 0 1rem}
@@ -564,8 +593,8 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 do not.</p></header>
 <div class="rule2"></div>
 <div class="prose" id="main" tabindex="-1">
-<nav class="toc" aria-label="Questions on this page"><span class="cap">On this page</span>
-<ol><li><a href="#what-is-a-gap">What is a gap?</a></li><li><a href="#shows-since">Why does a song page say &ldquo;shows since&rdquo; rather than giving a current gap?</a></li><li><a href="#segues">What do <span class="num">&gt;</span> and <span class="num">&#8211;&gt;</span> mean, and how do they differ?</a></li><li><a href="#no-bar">Why does this row have no range bar?</a></li><li><a href="#due">What does &ldquo;due&rdquo; mean, and why is a song that has been gone for years not on the list?</a></li><li><a href="#eras">What are 1.0, 2.0, 3.0 and 4.0?</a></li><li><a href="#not-part-of-a-tour">Why do some shows say &ldquo;Not Part of a Tour&rdquo;?</a></li><li><a href="#still-coming-in">Why does a show page say &ldquo;setlist still coming in&rdquo;?</a></li></ol></nav>
+<nav class="toc" id="questions" tabindex="-1" aria-label="Questions on this page"><span class="cap">Questions on this page</span>
+<ol><li><a href="#what-is-a-gap"><span>What is a gap?</span></a></li><li><a href="#shows-since"><span>Why does a song page say &ldquo;shows since&rdquo; rather than giving a current gap?</span></a></li><li><a href="#segues"><span>What do <span class="num">&gt;</span> and <span class="num">&#8211;&gt;</span> mean, and how do they differ?</span></a></li><li><a href="#no-bar"><span>Why does this row have no range bar?</span></a></li><li><a href="#due"><span>What does &ldquo;due&rdquo; mean, and why is a song that has been gone for years not on the list?</span></a></li><li><a href="#eras"><span>What are the eras &mdash; 1.0, 2.0, 3.0 and 4.0?</span></a></li><li><a href="#not-part-of-a-tour"><span>Why do some shows say &ldquo;Not Part of a Tour&rdquo;?</span></a></li><li><a href="#still-coming-in"><span>Why does a show page say &ldquo;setlist still coming in&rdquo;?</span></a></li></ol></nav>
 <h2 id="what-is-a-gap">What is a gap?</h2>
 <p>The number beside a song on a show page is how many shows the band played
 between that performance and the one before it. A gap of
@@ -574,6 +603,7 @@ between that performance and the one before it. A gap of
 phish.net&rsquo;s own figure and nothing here recomputes it.</p>
 <p>A gap is not a length of time. A song with a gap of 30 in 1995 had been gone
 about five weeks; the same gap today is closer to a year.</p>
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p>
 <h2 id="shows-since">Why does a song page say &ldquo;shows since&rdquo; rather than giving a current gap?</h2>
 <p>Because they are not the same number, and only one of them can be checked
 here. phish.net&rsquo;s gap is not reproducible from a show calendar &mdash;
@@ -583,6 +613,7 @@ with theirs under their name would be worse than printing our own under
 ours.</p>
 <p>So the live figure counts shows the band has played since this song was last
 played, and calls it that. It is exact, because this site defines it.</p>
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p>
 <h2 id="segues">What do <span class="num">&gt;</span> and <span class="num">&#8211;&gt;</span> mean, and how do they differ?</h2>
 <p>Both are phish.net&rsquo;s marks, both say the band did not stop between two
 songs, and they are not interchangeable. Their definitions:</p>
@@ -607,6 +638,7 @@ absence of a segue rather than the presence of anything.</p>
 <p class="src">Definitions are phish.net&rsquo;s, from
 <a href="https://phish.net/faq/segues" target="_blank"
 rel="noopener noreferrer">their FAQ on segues</a>.</p>
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p>
 <h2 id="no-bar">Why does this row have no range bar?</h2>
 <p>A song needs <b>eight</b> performances inside the ten-year window before
 there is a usual range to draw. Below that there is no norm for a performance
@@ -615,6 +647,7 @@ to be early or late against, so the cell carries a dim
 comparison that was never made.</p>
 <p>Two quite different songs land there: one played six times in ten years, and
 one not played in ten years at all. The statistics say which.</p>
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p>
 <h2 id="due">What does &ldquo;due&rdquo; mean, and why is a song that has been gone for years not on the list?</h2>
 <p>Due means past its own recent usual gap &mdash; measured against that
 song&rsquo;s habit, not against a single number for the whole catalogue. A
@@ -635,20 +668,27 @@ tonight.</p>
 usual gap, which is the figure on the right of every row &mdash; not by how
 many shows it has been gone, since a hundred shows is nothing for one song and
 a decade for another.</p>
-<h2 id="eras">What are 1.0, 2.0, 3.0 and 4.0?</h2>
-<p>The four stretches the band has played in, either side of its two long
-breaks. Bounded by date rather than by year, because the hiatuses fall
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p>
+<h2 id="eras">What are the eras &mdash; 1.0, 2.0, 3.0 and 4.0?</h2>
+<p><em>Era</em> is the word this site uses for them, and the one on the chips
+that group a song&rsquo;s performances and filter the show list. There are four
+of them, and they are separated by the <em>three</em> long breaks between them:
+the hiatus that began in 2000, the split that followed Coventry, and the
+shutdown of 2020.</p>
+<p>Bounded by date rather than by year, because every one of those breaks falls
 mid-year.</p>
 <dl class="defs">
-<dt>1.0</dt><dd>The beginning through 2000-10-07.</dd>
+<dt>1.0</dt><dd>The beginning through 2000-10-07, the last show before the
+hiatus.</dd>
 <dt>2.0</dt><dd>2002-12-31 to 2004-08-15, ending at Coventry.</dd>
-<dt>3.0</dt><dd>2009-03-06 to 2020-02-23.</dd>
+<dt>3.0</dt><dd>2009-03-06, the Hampton reunion, to 2020-02-23.</dd>
 <dt>4.0</dt><dd>2021-07-28 onwards.</dd>
 </dl>
 <p>They are used here for grouping and for counting a show&rsquo;s place inside
 its own era &mdash; the <span class="num">312th</span> show of 3.0 &mdash;
 because there is no honest count of where a show sits overall.
 <a href="./method.html#which-show-this-was">The method page says why.</a></p>
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p>
 <h2 id="not-part-of-a-tour">Why do some shows say &ldquo;Not Part of a Tour&rdquo;?</h2>
 <p>Because phish.net does. It is where they file everything that was not a leg
 of a tour: the festivals, the television and radio sessions, the New Year&rsquo;s
@@ -658,6 +698,7 @@ which is deliberate. The names exist only inside freeform prose notes, spelled
 inconsistently and often not at all &mdash; pulling them out gives a handful of
 shows a label, some of them wrong, and leaves the rest blank. A blank is
 honest. A wrong festival name is not.</p>
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p>
 <h2 id="still-coming-in">Why does a show page say &ldquo;setlist still coming in&rdquo;?</h2>
 <p>Because the show is still being played. A report is published mid-show and
 fills in as phish.net records each song, so the figures on it are real but
@@ -667,7 +708,8 @@ of the night.</p>
 it: once the song count has stopped moving, the report stops calling itself
 provisional.
 <a href="./method.html#when-a-report-appears">The method page says how
-long.</a></p></div>
+long.</a></p>
+<p class="backtop"><a href="#questions">&uarr; All questions</a></p></div>
 <footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
