@@ -5352,6 +5352,61 @@ METHOD_CSS = INDEX_CSS + """
 .prose a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The contents block, shared by both prose pages. Generated from the same
+   list the sections are, so it cannot name one the page does not have or miss
+   one it does -- the FAQ has worked this way since it was built and the method
+   page does now too.
+
+   Stated here rather than on the FAQ's sheet because the FAQ's sheet is built
+   on this one: a rule put there would have been a rule the method page could
+   not have, which is the shape of every one-sheet-of-three bug in this file.
+
+   It used to be a bare caption over eight hairline-separated lines set in the
+   reading face, one size down from the h2 under it and in a softer ink -- so
+   the whole block read as continuous prose and, in Ian's words, "sort of looks
+   like the answer to the first question". Three things separate it now: it is
+   enclosed rather than merely ruled, the entries are numbered, and the numbers
+   are mono, which is this site's voice for a figure. A reader can tell an
+   index from an answer before reading a word of either. */
+.toc{max-width:66ch;margin:0 0 3rem;padding:1rem 1.2rem 1.1rem;
+   border:1px solid var(--rule);background:var(--rule-soft)}
+.toc .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .6rem}
+/* Counter rather than list-style:decimal, so the number is a column of its own
+   and an entry that wraps aligns under itself instead of under its number. */
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:q}
+.toc li{counter-increment:q;border-top:1px solid var(--rule-soft)}
+.toc li:first-child{border-top:0}
+.toc a{display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;
+   padding:.4rem 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
+   color:var(--ink-soft);text-decoration:none;border:0}
+.toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.75rem;font-weight:600;color:var(--dim)}
+.toc a:hover{color:var(--hot)}
+.toc a:hover::before{color:var(--hot)}
+/* The way back up. Every answer and every section gets one, because the point of an index is
+   being able to pick a second question after the first -- and without this the
+   only route was scrolling back yourself. Mono and small: it is a control, not
+   a sentence, and it must not read as another paragraph of the answer. */
+/* .prose .backtop as well as .backtop, and it is not belt and braces. Inside
+   the prose these are <p> elements, so `.prose p` -- one class and one type --
+   out-specifies a bare `.backtop`, and order cannot help because the two are
+   not equal. The result was that this rule had never once been drawn: every
+   "All questions" link on the FAQ has been set in Literata at the body size
+   since the page was built, which is exactly the paragraph it was written not
+   to look like. Verified against the published sheet, not just this one. */
+.backtop,.prose .backtop{margin:.8rem 0 0;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* 24x24, the same floor the nav links were held to, without moving the ink. */
+.backtop a{position:relative;display:inline-block}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
 """
 
 METHOD_SHELL = """<!DOCTYPE html>
@@ -5373,7 +5428,10 @@ METHOD_SHELL = """<!DOCTYPE html>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
 <div class="rule2"></div>
-<div class="prose" id="main" tabindex="-1">{body}</div>
+<div class="prose" id="main" tabindex="-1">
+<nav class="toc" id="sections" tabindex="-1" aria-label="Sections on this page"><span class="cap">Sections on this page</span>
+<ol>{toc}</ol></nav>
+{body}</div>
 <footer><span><a href="./index.html">All reports</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
@@ -5381,17 +5439,23 @@ METHOD_SHELL = """<!DOCTYPE html>
 """
 
 
-def render_method():
-    """The page the footers point at when a number wants explaining."""
-    body = """
-<h2 id="what-a-gap-is">What a gap is</h2>
+# (anchor, heading, body). One list, so the contents at the top of the page
+# and the sections under it are the same thing rendered twice -- the FAQ has
+# worked this way since it was built, and this page can no longer advertise a
+# section it does not have.
+#
+# Order is the reading order. It used to run gap -> median -> verdict ->
+# *segue notation* -> the bar, so the one paragraph that draws the verdict was
+# separated from the three that define it by a section about something else.
+# The bar now closes that argument and the notation follows it.
+METHOD = (
+    ('what-a-gap-is', 'What a gap is', """
 <p>The number beside a song is how many shows the band played between this
 performance and the one before it. A gap of <b class="num">0</b> means they
 played it again the very next night; <b class="num">485</b> means four hundred
 and eighty-five shows went by. The figure comes from Phish.net, which computes
-it; nothing here is counted a second time.</p>
-
-<h2 id="the-median-and-why-ten-years">The median, and why ten years</h2>
+it; nothing here is counted a second time.</p>"""),
+    ('the-median-and-why-ten-years', 'The median, and why ten years', """
 <p>Under each gap is that song's usual one &mdash; the median of its gaps over
 the <b>ten years</b> before the show, not over all of history. Forty years of a
 working band is several different bands. The 1990s dominate any all-time
@@ -5404,9 +5468,8 @@ last twenty reach back to 1995. Bounding by time instead means a song has to
 have been in rotation lately to be judged at all.</p>
 <p>The median rather than the average, because gap distributions are savagely
 right-skewed: a staple with a median of 6 carries a handful of 200s, and an
-average over that would call almost anything ordinary.</p>
-
-<h2 id="the-verdicts">The verdicts</h2>
+average over that would call almost anything ordinary.</p>"""),
+    ('the-verdicts', 'The verdicts', """
 <p>A gap outside the middle 70% of that ten-year window gets called. Below it,
 <span class="verdict premature">premature</span>; above it,
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
@@ -5415,27 +5478,8 @@ song's actual gaps, which is why they are not printed as numbers.</p>
 <p>The band is wide enough that a verdict stays worth reading: roughly
 <span class="num">13%</span> of performances come out premature,
 <span class="num">67%</span> expected and <span class="num">20%</span>
-overdue.</p>
-
-<h2 id="before-and-after">What came before and after</h2>
-<p>A song page shows what each performance sat between. A plain
-<span class="num">&#8592;</span> or <span class="num">&#8594;</span> means only
-that: the song before it, the song after it, played as separate songs with a
-stop between them.</p>
-<p>Where phish.net recorded that the band ran two songs together, its own mark
-appears in place of the arrow &mdash; <span class="num">&gt;</span> or
-<span class="num">&#8211;&gt;</span> &mdash; and it sits between the two songs
-it joins, the way it does in a written setlist. So an arrow is the absence of a
-segue rather than the presence of anything, which is worth saying because the
-two look equally deliberate on the page.</p>
-<p>The two marks are <em>not</em> the same claim.
-<span class="num">&#8211;&gt;</span> is a real segue, one song jamming without
-interruption into the next; <span class="num">&gt;</span> is everything else
-that runs together, and is also used by convention between songs that are
-simply always played as a set.
-<a href="./faq.html#segues">The difference, in phish.net's own words.</a></p>
-
-<h2 id="the-bar">The bar</h2>
+overdue.</p>"""),
+    ('the-bar', 'The bar', """
 <p>The bar is a <b>position, not a length</b>. Its shaded middle is the band
 above &mdash; where this song usually lands &mdash; the hairline through it is
 the median, and the mark is the performance being reported. Left of the shading
@@ -5451,9 +5495,25 @@ what the number cannot say is whether this was early or late
 <em>for this song</em>.</p>
 <p>A song with fewer than <b>eight</b> performances in the ten-year window has
 no band to be measured against, so its track is drawn empty rather than
-implying a comparison that was never made.</p>
-
-<h2 id="which-show-this-was">Which show this was</h2>
+implying a comparison that was never made.</p>"""),
+    ('before-and-after', 'What came before and after', """
+<p>A song page shows what each performance sat between. A plain
+<span class="num">&#8592;</span> or <span class="num">&#8594;</span> means only
+that: the song before it, the song after it, played as separate songs with a
+stop between them.</p>
+<p>Where phish.net recorded that the band ran two songs together, its own mark
+appears in place of the arrow &mdash; <span class="num">&gt;</span> or
+<span class="num">&#8211;&gt;</span> &mdash; and it sits between the two songs
+it joins, the way it does in a written setlist. So an arrow is the absence of a
+segue rather than the presence of anything, which is worth saying because the
+two look equally deliberate on the page.</p>
+<p>The two marks are <em>not</em> the same claim.
+<span class="num">&#8211;&gt;</span> is a real segue, one song jamming without
+interruption into the next; <span class="num">&gt;</span> is everything else
+that runs together, and is also used by convention between songs that are
+simply always played as a set.
+<a href="./faq.html#segues">The difference, in phish.net's own words.</a></p>"""),
+    ('which-show-this-was', 'Which show this was', """
 <p>A report says where the night sits inside its era &mdash; the
 <span class="num">312th</span> show of 3.0 &mdash; and never where it sits
 overall. There is no honest overall number to give. phish.net offers three
@@ -5474,16 +5534,14 @@ class="num">1,350</span> of <span class="num">1,361</span>. 2.0, 3.0 and 4.0
 run one show to a date throughout, so their ordinals are counted rather than
 estimated. <b>1.0 shows carry no ordinal</b>, which is a decision and not an
 oversight: the number could be produced, and it would be wrong by somewhere
-between one and eight with no way to tell which from the date alone.</p>
-
-<h2 id="songs-with-no-verdict">Songs with no verdict</h2>
+between one and eight with no way to tell which from the date alone.</p>"""),
+    ('songs-with-no-verdict', 'Songs with no verdict', """
 <p>A song needs <b>eight</b> performances inside that ten-year window before
 any of this is said about it. Below that there is no current norm to be early
 or late against, so it gets its numbers and no adjective. Roughly one song in
 eleven falls here, which is the honest answer for something the band has nearly
-stopped playing.</p>
-
-<h2 id="bustouts">Bustouts</h2>
+stopped playing.</p>"""),
+    ('bustouts', 'Bustouts', """
 <p>A <span class="verdict bust">bustout</span> is a song coming back that had
 no recent record to be judged against, after a gap of <b class="num">100</b> or
 more. A hundred sits where Phish.net's own setlist notes use the word.</p>
@@ -5500,9 +5558,8 @@ rotation.</p>
 <p>Within the bustout branch the gap alone decides it, with no test on how
 often the song was ever played: a gap counts shows, so a large one already
 proves the song has been in the catalogue a long while, and nothing newly
-written can reach the threshold.</p>
-
-<h2 id="ratings-and-jam-charts">Ratings and jam charts</h2>
+written can reach the threshold.</p>"""),
+    ('ratings-and-jam-charts', 'Ratings and jam charts', """
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
 programmatically. Scores are computed from a mix of community signal and audio
@@ -5510,9 +5567,8 @@ analysis, so a version has none until a recording of it circulates &mdash;
 days or weeks after the show, sometimes never. Jam chart entries are Phish.net's
 own, written months after the fact. Both are treated as optional everywhere
 they appear, which is why a report published the morning after a show carries
-neither.</p>
-
-<h2 id="when-a-report-appears">When a report appears</h2>
+neither.</p>"""),
+    ('when-a-report-appears', 'When a report appears', """
 <p>A report is published while the show is still being played. Songs appear on
 it as phish.net records them, the page says <b>setlist still coming in</b> with
 how much is there and when it last moved, and it reloads itself every couple of
@@ -5530,16 +5586,33 @@ songs is the median of those nine, not of the night, and the preview image
 shared from that page deliberately carries no figures at all &mdash; only the
 date, the venue, and that the setlist is still coming in &mdash; so a link
 shared mid-show does not freeze a half-finished number into somebody else's
-timeline.</p>
-"""
+timeline.</p>"""),
+)
+
+
+def render_method():
+    """The page the footers point at when a number wants explaining."""
+    # The heading goes inside a span of its own, for the reason render_faq
+    # records: .toc a is a two-column grid, and a grid container makes every
+    # child a grid item, so any inline markup inside a heading would take a
+    # cell of its own and break the entry across lines.
+    toc = "".join(
+        "<li><a href=\"#%s\"><span>%s</span></a></li>" % (anchor, head)
+        for anchor, head, _ in METHOD)
+    body = "\n".join(
+        "<h2 id=\"%s\">%s</h2>\n%s\n"
+        "<p class=\"backtop\"><a href=\"#sections\">&uarr; All sections</a></p>"
+        % (anchor, head, text.strip())
+        for anchor, head, text in METHOD)
     blurb = ("How the gaps, the medians and the verdicts on this site are "
              "worked out.")
     return METHOD_SHELL.format(
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=METHOD_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, theme_ui=THEME_UI,
-        body=body.strip(),
+        css=METHOD_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        theme_js=THEME_JS, theme_ui=THEME_UI,
+        toc=toc, body=body,
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
                          "method.html"))
 
@@ -5562,47 +5635,6 @@ FAQ_CSS = METHOD_CSS + """
    font-weight:500;font-variation-settings:'opsz' 16;margin:2.4rem 0 .6rem;
    color:var(--ink);scroll-margin-top:1rem}
 .prose h2:first-child{margin-top:0}
-/* The contents. Generated from the same list the entries are, so it cannot
-   name a question the page does not answer or miss one it does.
-
-   It used to be a bare caption over eight hairline-separated lines set in the
-   reading face, one size down from the h2 under it and in a softer ink -- so
-   the whole block read as continuous prose and, in Ian's words, "sort of looks
-   like the answer to the first question". Three things separate it now: it is
-   enclosed rather than merely ruled, the entries are numbered, and the numbers
-   are mono, which is this site's voice for a figure. A reader can tell an
-   index from an answer before reading a word of either. */
-.toc{max-width:66ch;margin:0 0 3rem;padding:1rem 1.2rem 1.1rem;
-   border:1px solid var(--rule);background:var(--rule-soft)}
-.toc .cap{display:block;font-size:.625rem;letter-spacing:.14em;
-   text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .6rem}
-/* Counter rather than list-style:decimal, so the number is a column of its own
-   and a question that wraps aligns under itself instead of under its number. */
-.toc ol{list-style:none;margin:0;padding:0;counter-reset:q}
-.toc li{counter-increment:q;border-top:1px solid var(--rule-soft)}
-.toc li:first-child{border-top:0}
-.toc a{display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;
-   padding:.4rem 0;font-family:'Literata',Georgia,serif;
-   font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
-   color:var(--ink-soft);text-decoration:none;border:0}
-.toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
-   font-size:.75rem;font-weight:600;color:var(--dim)}
-.toc a:hover{color:var(--hot)}
-.toc a:hover::before{color:var(--hot)}
-/* The way back up. Every answer gets one, because the point of an index is
-   being able to pick a second question after the first -- and without this the
-   only route was scrolling back yourself. Mono and small: it is a control, not
-   a sentence, and it must not read as another paragraph of the answer. */
-.backtop{margin:.8rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
-   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
-.backtop a{color:var(--dim);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* 24x24, the same floor the nav links were held to, without moving the ink. */
-.backtop a{position:relative;display:inline-block}
-.backtop a::before{content:"";position:absolute;left:50%;top:50%;
-   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
-@media print{.backtop{display:none}}
 /* A mark and what it means. The mark is mono because it is a mark -- the same
    glyph the setlists print -- and the gloss is prose. */
 .defs{margin:0 0 1rem}

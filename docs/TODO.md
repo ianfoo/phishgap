@@ -1303,8 +1303,39 @@ free anchors.
   and the median are announced alongside them instead of being replaced. The
   bar cell keeps the hover only — it holds nothing to announce and would have
   said the same sentence twice. `.sr` is a new utility; there was none.
-- Method page: ordering is scattered (the bar is discussed mid-gap-calculation)
-  and it needs a table of contents.
+- ~~Method page: ordering is scattered (the bar is discussed
+  mid-gap-calculation) and it needs a table of contents.~~ **DONE 2026-07-28.**
+  - **One list drives both**, the way `FAQ` does: `METHOD` is ten
+    `(anchor, heading, body)` tuples, and the contents block and the sections
+    are the same tuple rendered twice. The page cannot advertise a section it
+    does not have. The prose was carried across by parsing it out of the old
+    string rather than retyped.
+  - **The reorder was one swap.** It ran gap → median → verdict → *segue
+    notation* → the bar, so the paragraph that draws the verdict was separated
+    from the three that define it by a section about something else. The bar
+    closes that argument now and the notation follows it. Anchors are
+    unchanged, which matters: the FAQ deep-links `#which-show-this-was` and
+    `#when-a-report-appears`, and both still resolve.
+  - Every section ends with **↑ All sections**, and clicking one puts focus on
+    the index — checked by reading `document.activeElement`, which is
+    `sections.toc`.
+  - **The `.toc` and `.backtop` rules moved from `FAQ_CSS` into `METHOD_CSS`**,
+    which `FAQ_CSS` is built on, so both prose pages get them from one
+    statement rather than two. Asserted: `FAQ_CSS` comes out with exactly the
+    same set of rules it had, only in a different order.
+
+  **And it found a rule that had never once been drawn.** `.backtop` sets mono
+  at 10px, uppercase — "it is a control, not a sentence, and it must not read
+  as another paragraph of the answer", says the comment. Inside `.prose` these
+  are `<p>` elements, and `.prose p` is one class plus one type against a bare
+  `.backtop`'s one class, so it out-specifies it and **order cannot help**.
+  Every "All questions" link on the FAQ has been set in Literata at body size
+  since the page was built. Confirmed against the *published* sheet on
+  `origin/gh-pages`, not just the local one. The selector is
+  `.backtop,.prose .backtop` now, and all three pages measure mono 11.25px.
+  **[ruling]** this changes the look of a page Ian has already reviewed — but
+  it is the treatment that was written down and reasoned about, and it had
+  simply never applied.
 
 ## 7b. Keyboard navigation — DONE 2026-07-28 (Ian)
 
