@@ -14,7 +14,8 @@ so work could continue; he wants to review these, not be blocked by them.
 - The tool is `possumlogic.py`. Site publishes to <https://possumlogic.com>
   from `gh-pages`; `./publish.sh` publishes by hand, `.github/workflows/`
   has `possumlogic.yml` (thorough, ~hourly) and `watch.yml` (resident poller
-  during a show, 5-minute passes, restarted half-hourly).
+  during a show, 5-minute passes, restarted four times an hour at odd
+  minutes — see §8.4 for why not on the half hour).
 - Every run's output goes through `log()` and is timestamped. Config is read
   from `PL_*` env vars falling back to unprefixed names; `check_env()` warns
   about near-miss names.
@@ -61,17 +62,28 @@ shareable thing the site could publish.
 gone 250 shows is not *due* — nobody expects it. Only songs with a real
 percentile (>= 8 plays in the ten-year window) that are past it count as due.
 
-## 3. Index hero and a loud in-progress banner — PART DONE
+## 3. Index hero and a loud in-progress banner — DONE 2026-07-28
 
-- Hero cards: more, and make the dead ones links. `VENUES 153` advertises a
-  spine that does not exist; `LONGEST GAP` should link to the show holding it.
-  `SONG PERFORMANCES` is already a link and shows the `→` affordance — copy it.
+- ~~Hero cards~~ DONE: six of them, 3×2. `LONGEST GAP` links to the show
+  holding it (2026-07-22, Cold as Ice, 1,468 — checked against a scan of the
+  raw archive, not against the page that renders it). New `MOST SONGS` links
+  to the fullest night (45, 2011-07-02). `VENUES` links to the new venues
+  page; `SONGS DUE` links to `due.html`. Three of the six now carry the `→`.
+- The hero is a grid rather than a wrapping flex row. Six cards wrap, and a
+  wrapped flex row gave the first card of row two a left rule separating it
+  from the *page margin* and indenting its number out of line with the
+  wordmark. Row-starts are now a column position, so that artifact is
+  impossible rather than moved. Column count comes from the card count
+  (`hero_cols()`), so it cannot disagree with what is in the hero.
+- Watch for this: the narrow layout already had its own two-column rules. The
+  first attempt restated them at the wide breakpoint too and outranked them,
+  which left card 4 of six indented half a space out of line. Each width
+  states its own row-starts now and neither undoes the other.
 - A show in progress should be loud on the index, not just a `so far` tag.
 - ~~**Encore detection**~~ DONE: `ENCORE_QUIET` = 30 min once any set
   starting `e` has landed; 2 hours otherwise. Verified: 40 min with no encore
   stays live, 35 min after one settles.
 - ~~On-stage banner on the index~~ DONE: links straight through.
-- STILL TO DO: more hero cards, and make `VENUES` / `LONGEST GAP` links.
 - Original note on encore detection the "in progress" lie. Once a set marked
   `e` (or `e2`/`e3`) has landed *and* the count has been still ~30 min, stop
   claiming in progress and say "just ended". Set labels are in each song's
@@ -178,10 +190,31 @@ preference predates the review — his call, not the reviewer's.
 
 ## 4. Navigation
 
-- **URL state for search** (`?q=&era=&sort=`), pushState on input, read on
-  load. Highest-leverage item on the list: the index search already matches 81
-  MSG shows, 33 shows in 2015, 171 Tweezer shows — none of it linkable.
-- Venue and tour on a show page are plain text; make them searches.
+- ~~**URL state for search**~~ DONE 2026-07-28. `?q=&era=&sort=` on the index,
+  read on load and on `popstate`, written on every change. Verified in a
+  browser both ways: a pasted link restores all three, and back steps through
+  them. 82 MSG shows and 171 Tweezer shows are now addressable.
+  - **Typing replaces, it does not push.** One history entry per keystroke
+    would take eight back-presses to leave a search you typed once. The era
+    chips and the sort push, because each is one deliberate act. This is a
+    deliberate departure from "pushState on input" as written above.
+  - Unknown `era`/`sort` values are ignored rather than applied, so a
+    hand-edited URL cannot hide all 691 rows with no lit chip to click off.
+    The bare index keeps a bare URL.
+  - **Quoted phrases**: `"Key Arena"` matches the phrase, unquoted matches
+    loose ANDed words. This exists because the venue links needed it — see
+    below.
+- ~~**[ruling]** Build real venue pages only for per-venue statistics~~ DONE:
+  `venues.html`, one page, 153 venues ranked by nights with span and longest
+  gap. No page tree — each row links to `index.html?q="<venue>"`.
+  - The rows had to be **quoted phrases**. Unquoted, 6 of 153 venues returned
+    somebody else's shows: `Key Arena` matched 8 (any arena with a "key"
+    anywhere in its setlist), and `The Wharf Amphitheater` and `Amphitheater
+    at the Wharf` each answered for the other. Checked by replaying every
+    venue's own link against the built haystack: 153 of 153 now return exactly
+    their own shows. **Re-run that check if the matcher is ever touched.**
+- Venue and tour on a show page are plain text; make them searches. Now cheap:
+  link them to `index.html?q="<venue>"` the way `venues.html` does.
 - Bustout leaderboard (biggest gaps per performance, archive-wide).
 - On this day. Random show. `sitemap.xml`, `robots.txt`, a feed — all 404.
 - Song pages have no next/prev performance stepper; show pages do.
@@ -257,8 +290,46 @@ not work while looking like it did:
    hourly workflow, or a manual dispatch — started on a fresh runner with an
    empty cache.
 
-All three are fixed. The point is that three of them existed at once, each
-invisible from the logs, and tonight is unlikely to have found the last.
+4. **Its schedule had never once fired.** `watch.yml` went on main at 00:30
+   UTC with `cron: "*/30 22-23,0-9 * * *"`, which asks only for `:00` and
+   `:30` — the two most contended minutes on the platform and the two GitHub
+   is likeliest to drop. Six of those boundaries passed and every one was
+   skipped: the workflow had three runs in its life, all `workflow_dispatch`.
+   Meanwhile `possumlogic.yml`'s `*/5` got four `schedule` events in the same
+   repository over the same hours, so scheduling itself was working fine.
+   Fixed by asking for four odd minutes an hour (`3,18,33,48`) instead. The
+   header already knew the schedule was throttled; what it missed is that
+   *which* minutes you ask for decides whether you are throttled to less or
+   throttled to nothing.
+
+   This is why the site fell "several songs behind" during a show even after
+   bug 3 was fixed — with no watcher ever started, the only thing updating the
+   page was the ordinary hourly workflow, itself throttled to roughly one run
+   in forty minutes. The archive was never wrong, only slow. **Confirm a
+   `schedule` event actually appears in `gh run list --workflow=watch.yml`
+   before believing the watcher is live.**
+
+All four are fixed. The point is that they existed at once, each invisible
+from the logs, and tonight is unlikely to have found the last.
+
+### Two more, in the page rather than the job
+
+Both were single-line and both made a live feature render as if it had never
+been written:
+
+- **`AGO_JS` and `NEW_ROWS_JS` ship in `<head>`** and ran before the body they
+  query existed, so both returned immediately, every time. The "last checked"
+  stamp had therefore been showing its no-JavaScript fallback — a bare `03:41`
+  UTC clock reading — on every live page since it was written, which is what
+  Ian saw. Both are wrapped in a `readyState`/`DOMContentLoaded` guard now.
+  Verified in a browser: the stamp reads "just now" and reranks on its timer.
+- **`NEW_ROWS_JS` bakes the song count into its `localStorage` key.** The key
+  is derived from `document.title`, which begins `(16) 2026-07-27 …`, so
+  stripping non-digits yields `162026-07-27` → `pl-seen-162026-07-`. Every new
+  song mints a *new* key, `seen` reads 0, and "N new since you last looked"
+  can never fire — it also leaves a key per song count behind. **Not fixed
+  here**, because it is another session's in-flight feature: the key wants to
+  come from the show date alone, not from the title.
 
 **Write an end-to-end test before adding anything else to the watcher.** Drive
 `write_site` against a synthetic show whose setlist grows across passes, and
