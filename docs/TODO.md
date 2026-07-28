@@ -54,16 +54,55 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### The 2026-07-28 session, second sitting
+### The 2026-07-28 session, second sitting — everything here is pushed
 
-Two bugs Ian found on the live due page, both fixed and both written up in
-§2b: dormant songs were ranked as due because the ten-year window travelled
-with each song, and the list was sorted by a figure it never printed. The fix
-reached the song pages as well — 148 of 588 changed — because the same
-travelling window fed their statistics. He also asked for the `site/data`
-reorganisation now filed as §2c.
+Nothing is in flight. Working tree clean, `main` and `origin/gh-pages` agree,
+and every item below was verified against the *published* tree rather than the
+local build.
 
-### In flight when the earlier sitting ended
+Ian drove this sitting almost entirely from the live site, in rounds. **The
+pattern worth carrying forward: every time he said a figure looked wrong, it
+was wrong** — four times, four real bugs. Measure before defending anything he
+questions.
+
+| § | what | state |
+|---|---|---|
+| 2b | The ten-year window travelled with each song, so the dormancy filter could never fire | done — 148 of 588 song pages changed |
+| 2c | `site/data` reorganised; 711 reports under `data/shows/` | done, with a one-shot migration |
+| 2d | "Due" reworked twice: a bustout ceiling, then measured against the **median** rather than the 85th percentile, plus a cadence floor | done — due 9 / slipping 26 / shelf 5 / dormant 283 |
+| 2g | His due-page review: the "overdue" overload, the false bustout claim, `tabular-nums` missing from two sheets | done bar three items |
+| 3e | FAQ index, back-links, the eras arithmetic; song front matter decluttered | done |
+| 3f | Sticky column headers, and four list pages given headers at all | done |
+
+### The three biggest open things, in the order I would take them
+
+1. **§2g type size, site-wide.** Ian's words: "the prose text feels small even
+   by these standards… I think an accessibility review of the entire site is in
+   order soon." `.dek` is 13px, `body` 14px, labels 10px. One deliberate pass
+   with measurements, taking in the 10px labels at the same time. **This is his
+   ask, it is the largest open item, and it should not be quietly narrowed.**
+2. **§2f dormant needs a page.** Its hero cell on `due.html` states 283 and
+   links nowhere, which is the only dead card on the site.
+3. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
+   trajectory, §2e item 1). Both it and the catalogue-wide charts need the same
+   missing capability — evaluating the §2d classification **as of a past
+   date** — so build that first and the charts fall out of it.
+
+Then the older queue below: §3d hotkeys, §7 method contents, §6 card visuals,
+§5 benchmark, §3b.
+
+### Two habits this file has now paid for four times each
+
+- **A rule written into one stylesheet of three is invisible until something
+  leans on it.** Four instances now: the nav that could not wrap, the footer
+  link in browser blue, the sticky-header hide out-specified by a modifier
+  class, and `font-variant-numeric:tabular-nums` present only on show pages.
+  §8e's composition fix is the cure and is still not started.
+- **The site jumps a reader somewhere and maroons them.** Ian has asked for a
+  way back three times. `.backtop` is the house idiom; any new anchor target
+  ships with its way back.
+
+### In flight when the *first* sitting ended (historical)
 
 - **A watcher run is live**, dispatched on the fixed code (see §8.5). The
   previous run was cancelled because it was pinned to an old commit and
@@ -79,7 +118,7 @@ reorganisation now filed as §2c.
   cost real time tonight. Check `origin/gh-pages` with git, not the URL, when
   you want to know what was actually published.
 
-### Queue, in the order I would take it
+### The older queue, after the three above
 
 1. **§3d keyboard hotkeys** — the accessibility floor is done; this is the
    jumping layer. The `?` overlay it wants now has a natural companion in
@@ -92,6 +131,9 @@ reorganisation now filed as §2c.
 4. **§5 `content-visibility` benchmark** — method written down, needs doing
    properly rather than in one live page.
 5. **§3b** — the older agreed work, still none of it started.
+6. **§2h** — three small things Ian spotted: a stray `→` on the phone show
+   layout, the unlabelled gap column on phones, and the `LONGEST GAP` hero
+   that names a row it does not link to.
 
 §3c is done — see that section for what landed and §8b.8–11 for the calls
 made along the way.
@@ -105,12 +147,22 @@ than from markup — Literata measured by advance width, nav hit areas re-checke
 across every page type at 375px, pairing alignment across eight viewport
 widths, and every link and anchor resolved. Ian's mid-session queue is §8d.
 
-### Two things Ian has asked for that are not yet scheduled anywhere
+### Open questions waiting on Ian, none of them blocking
 
+- **§2d, The Howling.** He named it as due at 36 shows; it lands in *slipping*
+  at 5.1× a typical gap of 7. He hedged on it in the same breath. `DUE_MULTIPLE`
+  (3.5) is the one number that moves it — 5.5 would bring it in along with
+  Winterqueen, The Line and I Always Wanted It This Way.
+- **§2g, the name "Slipping".** Mine, not his. It exists because "overdue" was
+  already taken by the per-performance verdict; any word that is not "overdue"
+  will do.
+- **§2g, the masthead's three faces.** Ruled to keep Bagnard / mono caps /
+  Literata, with the reasoning written down. He asked for a call and may
+  disagree with it.
 - A **festival/event name** for the 35 shows phish.net files as "Not Part of a
   Tour" (§6). Needs a curated table; his call.
 - Whether the `MOST SONGS` fact wants a **"show length" or "highest rated"
-  view** beyond the sort options added tonight (§8b.7).
+  view** beyond the sort options (§8b.7).
 
 
 ## 1. ~~Song page enrichment — preceded by / followed by~~ DONE 2026-07-28
