@@ -922,6 +922,32 @@ THEME_CSS = """
 @media print{.theme{display:none}}
 """
 
+NEW_ROWS_JS = """<script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
+</script>"""
+
+
 AGO_JS = """<script>
 /* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
    reads like a server log, and the fact a reader wants is elapsed -- has this
@@ -1297,9 +1323,24 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the detail in the quiet one. */
 .live{margin:.7rem 0 0;display:flex;flex-wrap:wrap;align-items:baseline;
    gap:.2rem .6rem;font-size:.75rem}
-.live b{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--hot-text)}
-.live span{color:var(--dim)}
+/* A state, not a label. It used to be 10px tracked caps in the hot ink --
+   character for character the same specification as every field label, every
+   table head and every badge on the page -- so the one thing worth
+   interrupting for was delivered in the site's most generic voice. */
+.live{margin:.8rem 0 0;padding:.6rem 0 .6rem .9rem;
+   border-left:4px solid var(--hot);display:block;max-width:62ch}
+.live b{display:block;font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.25rem;line-height:1.2;letter-spacing:0;text-transform:none;
+   color:var(--ink)}
+.live span{display:block;margin-top:.15rem;font-size:.8125rem;color:var(--dim)}
+.live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;font-size:.9375rem;color:var(--ink)}
+/* Added since this reader last looked. */
+.since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
+   background:var(--hot);padding:.15rem .4rem}
+tr.fresh td{background:var(--hover)}
+tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
    the quiet one, set in the reading face because it is a sentence. */
 .aside-note{margin:.7rem 0 0;padding-left:.8rem;border-left:2px solid var(--rule);
@@ -1481,7 +1522,7 @@ SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <div class="rule2"></div>
 <header>{crumb}<h1>{date}<span class="dow">{dow}</span></h1>
 <p class="where">{venue}</p>
@@ -2038,14 +2079,16 @@ def render_html(report, bar_scale="linear", index_href=None,
         since = report.get("count_since") or ""
         checked = _utcnow().isoformat(timespec="seconds")
         n = len(report["songs"])
+        # One clock, and it is the one that says whether this page is still
+        # being fed. When the last song arrived is on the row it arrived in;
+        # repeating it up here as a second wall-clock time said nothing the
+        # reader wanted and read like a server log.
         live = ("<p class='live' role='status' aria-live='polite'>"
-                "<b>Setlist still coming in</b>"
-                "<span>%d song%s so far &middot; last one "
-                "<time class='ago' datetime='%s'>%s</time>"
-                " &middot; checked <time class='ago' datetime='%s'>%s</time>"
-                "</span></p>"
+                "<b>This show is being played right now</b>"
+                "<span><b class='n'>%d</b> song%s so far &middot; "
+                "last checked <time class='ago' datetime='%s'>%s</time>"
+                " &middot; this page refreshes itself</span></p>"
                 % (n, "" if n == 1 else "s",
-                   html.escape(since, quote=True), _clock(since),
                    html.escape(checked, quote=True), _clock(checked)))
         refresh = '\n<meta http-equiv="refresh" content="120">'
 
@@ -2056,6 +2099,7 @@ def render_html(report, bar_scale="linear", index_href=None,
 
     return SHELL.format(
         ago_js=AGO_JS,
+        new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=CSS, theme_js=THEME_JS, theme_ui=THEME_UI, fonts=WEB_FONTS,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
@@ -2455,7 +2499,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
@@ -2766,6 +2810,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
 
     return INDEX_SHELL.format(
         ago_js=AGO_JS,
+        new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
         fonts=WEB_FONTS, sheet="./fonts.css",
@@ -3364,7 +3409,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}{ago_js}</head><body id="top"><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
@@ -3755,6 +3800,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     return SONG_SHELL.format(
         ago_js=AGO_JS,
+        new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
         cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS,
@@ -3809,7 +3855,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./method.html">How this is worked out</a></nav>
 <div class="rule2"></div>
@@ -3889,7 +3935,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">Due</a>
@@ -4081,6 +4127,7 @@ def render_songs(docs, stamp=None, card=None):
              % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
         ago_js=AGO_JS,
+        new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS,
         theme_ui=THEME_UI, hero=hero, count=len(entries),
@@ -4127,7 +4174,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
-<style>{css}</style>{theme_js}{ago_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a class="here">How this is worked out</a></nav>
 <div class="rule2"></div>
@@ -4280,6 +4327,7 @@ timeline.</p>
              "worked out.")
     return METHOD_SHELL.format(
         ago_js=AGO_JS,
+        new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=METHOD_CSS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS, theme_ui=THEME_UI,
         body=body.strip(),
