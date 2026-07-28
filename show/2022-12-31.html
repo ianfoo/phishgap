@@ -309,9 +309,24 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the detail in the quiet one. */
 .live{margin:.7rem 0 0;display:flex;flex-wrap:wrap;align-items:baseline;
    gap:.2rem .6rem;font-size:.75rem}
-.live b{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--hot-text)}
-.live span{color:var(--dim)}
+/* A state, not a label. It used to be 10px tracked caps in the hot ink --
+   character for character the same specification as every field label, every
+   table head and every badge on the page -- so the one thing worth
+   interrupting for was delivered in the site's most generic voice. */
+.live{margin:.8rem 0 0;padding:.6rem 0 .6rem .9rem;
+   border-left:4px solid var(--hot);display:block;max-width:62ch}
+.live b{display:block;font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.25rem;line-height:1.2;letter-spacing:0;text-transform:none;
+   color:var(--ink)}
+.live span{display:block;margin-top:.15rem;font-size:.8125rem;color:var(--dim)}
+.live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;font-size:.9375rem;color:var(--ink)}
+/* Added since this reader last looked. */
+.since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
+   background:var(--hot);padding:.15rem .4rem}
+tr.fresh td{background:var(--hover)}
+tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
    the quiet one, set in the reading face because it is a sentence. */
 .aside-note{margin:.7rem 0 0;padding-left:.8rem;border-left:2px solid var(--rule);
@@ -544,6 +559,29 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   tick();
   setInterval(tick,20000);
 })();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
 <header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../due.html'>Due</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2022-12-30.html' aria-label='Previous show, 2022-12-30'>&larr; 2022-12-30</a><a class='next' rel='next' href='./2023-02-23.html' aria-label='Next show, 2023-02-23'>2023-02-23 &rarr;</a></nav><h1>2022-12-31<span class="dow">Saturday</span></h1>
@@ -597,7 +635,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 </tbody></table><div class='notes'><p>Page teased The Little Drummer Boy in the first Tweezer. Trey teased Super Bad in Weekapaug. The second setbreak music was comprised of songs referencing past Phish New Year&#39;s Eve gags. Before the third set began, a barbershop quartet appeared with a singing telegram for Phish. The telegram said that at the stroke of midnight it would be 40 years for Phish and to make a wish. Trey wished he had a time machine so they could do it all again. A cube descended from overhead and a time machine was revealed near Mike. The quartet activated the time machine and the cube played audio and video from past years of Phish. Dancers from various past new year&#39;s gags appeared on stage as well as a wombat (from October 31, 2013). The wombat broke the time machine and Ghost began with dancers and characters (like Father Time from December 31, 1999 and the Famous Mockingbird from December 31, 1992) continuing to appear from the band&#39;s past performances. Ghost featured Meatstick lyrics sung from the band as well as by dancers in different languages in a nod to December 31, 2010. The first Bohemian Rhapsody since December 31, 1996 (852 shows) featured the <em>Late Show</em> Gospel Choir singing on risers behind the band and Ghost quotes from Page and the choir with subsequent lyrics changed to reference Ghost. The first Jungle Boogie since December 31, 2003 (544 shows) featured the BD Entertainment Marching Band marching band along with the choir. The marching band and choir were also featured in Wilson where a platform above Trey that had appeared for the entire New Year&#39;s run descended and the clone that had been lying on the platform rose and was revealed to be a Tom Hanks actor from <em>Cast Away</em>. Inflated Wilson volleyballs were then tossed into the crowd. Only the final verse was sung in Wilson which contained Jungle Boogie quotes and was unfinished. During Auld Lang Syne, Phish briefly stopped playing and ate cake in front of the stage while the marching band and choir continued to perform. Carini featured several dancers in &quot;naked dude&quot; costumes emerging from a birthday cake in front of the stage and dancing and running around with security trying to catch them. The Theme from <em>New York, New York</em> was performed for the first time since December 31, 1997 (774 shows) and featured the naked dude dancers performing a kickline in front of the stage while adding vocals and Trey changing the lyrics to &quot;if I could be naked there.&quot; Page teased Tweezer in Caspian. Piper contained Crosseyed quotes. During Tweezer Reprise, the wombat ran and danced across the stage. The post show music was Goodbye Yellow Brick Road, which was a nod to Phish playing their 72nd show at Madison Square Garden, tying Elton John.</p></div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div><script>
 (function(){
   // On a phone the song title is a very small target for a link that is the

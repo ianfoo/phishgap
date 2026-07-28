@@ -6,7 +6,7 @@
   "state": "NY",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "<p>Trey played the mini drum kit during Timber (Jerry the Mule), Halley's Comet, and Prince Caspian. Ha Ha Ha was last played on <a href=\"https://phish.net/setlists/phish-august-27-2021-gorge-amphitheatre-george-wa-usa.html\">8/27/21 </a>(231 shows).</p>",
+  "notes": "<p>Trey played the mini drum kit during Timber (Jerry the Mule), Halley's Comet, Prince Caspian, Drowned, and It's Ice. Trey teased Tequila in Drowned. Trey teased Cissy Strut in Drowned. Ha Ha Ha was last played on <a href=\"https://phish.net/setlists/phish-august-27-2021-gorge-amphitheatre-george-wa-usa.html\">8/27/21 </a>(231 shows). Drowned was last played on <a href=\"https://phish.net/setlists/phish-october-15-2023-united-center-chicago-il-usa.html?highlight=178\">10/15/23</a> (113 shows).</p>",
   "permalink": "https://phish.net/setlists/phish-july-27-2026-madison-square-garden-new-york-ny-usa.html",
   "songs": [
     {
@@ -242,9 +242,63 @@
       "gap_low": 3.0,
       "gap_high": 12.25,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Drowned",
+      "slug": "drowned",
+      "gap": 119,
+      "jamchart": false,
+      "prev_date": "2023-10-15",
+      "prev_venue": "United Center",
+      "prev_place": "Chicago, IL",
+      "out": ">",
+      "plays": 49,
+      "recent_plays": 6,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": "bustout"
+    },
+    {
+      "set": "SET 2",
+      "song": "Billy Breathes",
+      "slug": "billy-breathes",
+      "gap": 18,
+      "jamchart": false,
+      "prev_date": "2026-04-24",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV",
+      "out": ">",
+      "plays": 68,
+      "recent_plays": 8,
+      "gap_median": 41.5,
+      "gap_mean": 46.5,
+      "gap_low": 13.100000000000001,
+      "gap_high": 56.95,
+      "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "It's Ice",
+      "slug": "its-ice",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-07-14",
+      "prev_venue": "Enmarket Arena",
+      "prev_place": "Savannah, GA",
+      "out": "",
+      "plays": 255,
+      "recent_plays": 21,
+      "gap_median": 13,
+      "gap_mean": 17.904761904761905,
+      "gap_low": 9.0,
+      "gap_high": 25.0,
+      "verdict": "premature"
     }
   ],
-  "count_since": "2026-07-28T02:14:32+00:00",
+  "count_since": "2026-07-28T03:04:55+00:00",
   "encored": false,
   "provisional": true
 }

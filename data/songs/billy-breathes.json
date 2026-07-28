@@ -96,6 +96,7 @@
   {"date": "2021-10-15", "venue": "Golden 1 Center", "city": "Sacramento", "state": "CA", "gap": 1, "set": "2", "out": ">"},
   {"date": "2024-08-04", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 129, "set": "2"},
   {"date": "2025-06-21", "venue": "SNHU Arena", "city": "Manchester", "state": "NH", "gap": 34, "set": "2"},
-  {"date": "2026-04-24", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 42, "set": "1"}
+  {"date": "2026-04-24", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 42, "set": "1"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 18, "set": "2", "out": ">"}
  ]
 }

@@ -510,6 +510,29 @@ footer a{color:var(--dim)}
   tick();
   setInterval(tick,20000);
 })();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
 </script></head><body id="top"><div class="wrap">
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
@@ -565,7 +588,7 @@ band ran them together rather than stopping between them.</p></header>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Current through 2023-10-08</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div><script>
 /* How long this song has been waiting, read from one small file rather than
    rendered into the page. It is the only figure here that moves when some

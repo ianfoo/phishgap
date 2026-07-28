@@ -309,9 +309,24 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the detail in the quiet one. */
 .live{margin:.7rem 0 0;display:flex;flex-wrap:wrap;align-items:baseline;
    gap:.2rem .6rem;font-size:.75rem}
-.live b{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--hot-text)}
-.live span{color:var(--dim)}
+/* A state, not a label. It used to be 10px tracked caps in the hot ink --
+   character for character the same specification as every field label, every
+   table head and every badge on the page -- so the one thing worth
+   interrupting for was delivered in the site's most generic voice. */
+.live{margin:.8rem 0 0;padding:.6rem 0 .6rem .9rem;
+   border-left:4px solid var(--hot);display:block;max-width:62ch}
+.live b{display:block;font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.25rem;line-height:1.2;letter-spacing:0;text-transform:none;
+   color:var(--ink)}
+.live span{display:block;margin-top:.15rem;font-size:.8125rem;color:var(--dim)}
+.live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;font-size:.9375rem;color:var(--ink)}
+/* Added since this reader last looked. */
+.since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
+   background:var(--hot);padding:.15rem .4rem}
+tr.fresh td{background:var(--hover)}
+tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
    the quiet one, set in the reading face because it is a sentence. */
 .aside-note{margin:.7rem 0 0;padding-left:.8rem;border-left:2px solid var(--rule);
@@ -544,6 +559,29 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   tick();
   setInterval(tick,20000);
 })();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
 <header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../due.html'>Due</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2024-04-18.html' aria-label='Previous show, 2024-04-18'>&larr; 2024-04-18</a><a class='next' rel='next' href='./2024-04-20.html' aria-label='Next show, 2024-04-20'>2024-04-20 &rarr;</a></nav><h1>2024-04-19<span class="dow">Friday</span></h1>
@@ -579,7 +617,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 </tbody></table><div class='notes'><p>The band took the stage while pre-show music similar to a Free jam played, which continued until they began the song and waterfalls of colored light suddenly cascaded from the top of the dome. During Moma, a moving, 360-degree live shot of the crowd and band was displayed, with psychedelic colors and effects. During Mercy, the dome displayed an overhead view of a sparkling ocean, with small birds in pastel colors flying over the water. During Gin, the entire dome became an overhead view of a large wave pool, filled with hundreds of people on food-shaped inflatables drifting and spinning. During the Gin jam, the images of the bathers became blurred and abstract, forming a neon kaleidoscope effect. During Theme, the entire dome became an underwater seascape, with kelp forest, fish, human swimmers, and light from the surface shining down from the top. Theme also contained a DEG tease from Trey. At the start of ASIHTOS, jellyfish puppets were raised on each side of the stage, while the dome remained dark. Once the jam began, the light on the dome came up to reveal another underwater seascape, whose plants and fish became luminous as the rest of the light dimmed again. During Caspian, this seascape changed to a view from within the columns and arches of a sunken monument. As YEM began, the entire dome became the view from inside of a car as it entered a &quot;Tunnel of Luv&quot; car wash, with the stage appearing to sit on top of the middle of the dashboard. The car progressed through the wash as YEM continued, with Trey&#39;s solo during the wax and wheel scrub, and the bass and drums as the car was dried and exited the wash. Suddenly the car view was gone, and it appeared that the dome was clear, with a puppy licking it from the outside, in slow-motion, for the duration of the vocal jam. During Velvet Sea, the dome appeared to be covered in flowing red velvet, with photographs of the band throughout the years appearing and disappearing among the fabric. By the end of the song, the entire dome was covered in photos. Trey teased The Secret of Life (The Dead Milkmen) in Hood. This show was connected to the other three with each night&#39;s setlist tied into a state of matter. This performance&#39;s matter type was liquid.</p></div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div><script>
 (function(){
   // On a phone the song title is a very small target for a link that is the

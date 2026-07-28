@@ -309,9 +309,24 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the detail in the quiet one. */
 .live{margin:.7rem 0 0;display:flex;flex-wrap:wrap;align-items:baseline;
    gap:.2rem .6rem;font-size:.75rem}
-.live b{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--hot-text)}
-.live span{color:var(--dim)}
+/* A state, not a label. It used to be 10px tracked caps in the hot ink --
+   character for character the same specification as every field label, every
+   table head and every badge on the page -- so the one thing worth
+   interrupting for was delivered in the site's most generic voice. */
+.live{margin:.8rem 0 0;padding:.6rem 0 .6rem .9rem;
+   border-left:4px solid var(--hot);display:block;max-width:62ch}
+.live b{display:block;font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.25rem;line-height:1.2;letter-spacing:0;text-transform:none;
+   color:var(--ink)}
+.live span{display:block;margin-top:.15rem;font-size:.8125rem;color:var(--dim)}
+.live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;font-size:.9375rem;color:var(--ink)}
+/* Added since this reader last looked. */
+.since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
+   background:var(--hot);padding:.15rem .4rem}
+tr.fresh td{background:var(--hover)}
+tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
    the quiet one, set in the reading face because it is a sentence. */
 .aside-note{margin:.7rem 0 0;padding-left:.8rem;border-left:2px solid var(--rule);
@@ -544,6 +559,29 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   tick();
   setInterval(tick,20000);
 })();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
 <header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../due.html'>Due</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2012-08-15.html' aria-label='Previous show, 2012-08-15'>&larr; 2012-08-15</a><a class='next' rel='next' href='./2012-08-18.html' aria-label='Next show, 2012-08-18'>2012-08-18 &rarr;</a></nav><h1>2012-08-17<span class="dow">Friday</span></h1>
@@ -584,7 +622,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 </tbody></table><div class='notes'>DWD was unfinished. Shine a Light contained a brief Wading in the Velvet Sea tease from Trey.</div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div><script>
 (function(){
   // On a phone the song title is a very small target for a link that is the

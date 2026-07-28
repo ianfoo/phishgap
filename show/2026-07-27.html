@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>(13) 2026-07-27 &mdash; Possum Logic</title>
+<title>(16) 2026-07-27 &mdash; Possum Logic</title>
 <meta http-equiv="refresh" content="120">
 <meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Madison Square Garden, New York, NY · being played now, setlist still coming in"><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Live: 2026-07-27 &mdash; Possum Logic"><meta property="og:description" content="Madison Square Garden, New York, NY · being played now, setlist still coming in"><meta property="og:url" content="https://possumlogic.com/show/2026-07-27.html"><meta property="og:image" content="https://possumlogic.com/card/2026-07-27.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Madison Square Garden, New York, NY · being played now, setlist still coming in"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -310,9 +310,24 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the detail in the quiet one. */
 .live{margin:.7rem 0 0;display:flex;flex-wrap:wrap;align-items:baseline;
    gap:.2rem .6rem;font-size:.75rem}
-.live b{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--hot-text)}
-.live span{color:var(--dim)}
+/* A state, not a label. It used to be 10px tracked caps in the hot ink --
+   character for character the same specification as every field label, every
+   table head and every badge on the page -- so the one thing worth
+   interrupting for was delivered in the site's most generic voice. */
+.live{margin:.8rem 0 0;padding:.6rem 0 .6rem .9rem;
+   border-left:4px solid var(--hot);display:block;max-width:62ch}
+.live b{display:block;font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.25rem;line-height:1.2;letter-spacing:0;text-transform:none;
+   color:var(--ink)}
+.live span{display:block;margin-top:.15rem;font-size:.8125rem;color:var(--dim)}
+.live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;font-size:.9375rem;color:var(--ink)}
+/* Added since this reader last looked. */
+.since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
+   background:var(--hot);padding:.15rem .4rem}
+tr.fresh td{background:var(--hover)}
+tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
    the quiet one, set in the reading face because it is a sentence. */
 .aside-note{margin:.7rem 0 0;padding-left:.8rem;border-left:2px solid var(--rule);
@@ -545,12 +560,35 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   tick();
   setInterval(tick,20000);
 })();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  var live=document.querySelector('.live');
+  if(!live||!window.localStorage) return;
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  if(!rows.length) return;
+  var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+  var seen=parseInt(localStorage.getItem(key)||'0',10);
+  if(seen>0&&rows.length>seen){
+    rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+    var n=rows.length-seen;
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=n+' new since you last looked';
+    live.appendChild(tag);
+  }
+  try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+})();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
 <header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../due.html'>Due</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2026-07-25.html' aria-label='Previous show, 2026-07-25'>&larr; 2026-07-25</a></nav><h1>2026-07-27<span class="dow">Monday</span></h1>
 <p class="where"><span class='v-name'>Madison Square Garden</span><span class='v-place'>New York, NY</span></p>
-<p class="show"><span class='tour'>2026 Summer Tour</span><span class='nth'>247th show of 4.0</span></p><p class='live' role='status' aria-live='polite'><b>Setlist still coming in</b><span>13 songs so far &middot; last one <time class='ago' datetime='2026-07-28T02:14:32+00:00'>02:14</time> &middot; checked <time class='ago' datetime='2026-07-28T03:24:34+00:00'>03:24</time></span></p></header>
-<section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>13</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>231</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>10</div></div><div class='card'><div class='lbl'>Bustouts</div><div class='num'>1</div></div></section>
+<p class="show"><span class='tour'>2026 Summer Tour</span><span class='nth'>247th show of 4.0</span></p><p class='live' role='status' aria-live='polite'><b>This show is being played right now</b><span><b class='n'>16</b> songs so far &middot; last checked <time class='ago' datetime='2026-07-28T03:27:01+00:00'>03:27</time> &middot; this page refreshes itself</span></p></header>
+<section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>16</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>231</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>10</div></div><div class='card'><div class='lbl'>Bustouts</div><div class='num'>2</div></div></section>
 <div class="rule2"></div>
 <p class="links"><a class='badge' href='https://phish.net/setlist/?d=2026-07-27' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,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' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://fouldomain.com/shows/2026-07-27' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR42u2Xz2tcVRTHP+e+Nz+a2MTa4Ewy0zSpq7ZiFwWhCEIRoxWULhztdBItRbKwW3fdduHfUBDFYIM/diq6cS2KoNAWwSyqTjLMpLVEW9PJzLv36yIabcvUZGZUhJztvfe8zz3nnvM9D7Zt27q0y6WD6dqLo/t79eO6Pbgrvv6qi6n0ChB3c+jq6ZGdfs3tBQ3+VHlgaLU10E7HraHc/HLjHwMQWKOcO+qJcoH4CwhDIN8meyyV1jWv1BHg3FYBbLMbGy+MHQ8Rz4I1cfKGG4TggYvIhkETmXT6tV1vfb/Stwg0KuOPBZIpF5Kvvdkxk9apxcAf6IYdwEkK0FxrTwHv9QXgyqmJrK21SxjDuMxuk0+tZ+LO1ChCLoIgRyj2rQqySfu5gHZuxZlwe+ozucG7IlkuHKmVi9ObArj2UrFQr4yedcGPb/U2QmlH/Iz+8rbqM7lJmZ1wCo83pguH7gmg2cOpJPEvI5sMcpNdFbbXU8snR6c2fPr4aUkxDieFE9VScUdHgKutH3dj0UO9NJYgLDj3qMA0eziFNPHnavRgKq0nOgIkSfp0X/p00D5KxezSzfpBYOSO1UMdAeIQdvRNLLJt5wjRXe/ElHQEaGfsvBS+6/Xbhi0w11hNx1EdY+224MC3HQEKb9aqKHwUgvmeFE66YaCRtxeXTNrojGb6OTL/2T3LcHS+ftlMK13dXCTAApH7ZCPkkRYAFGhK9lV+rvHr33dCs0+Rnse4CQxtnsBCfn7p9dty7t2HjjCcRO6D4juLi5sWo5WZvZPNVhhUlJxxFvsgP4AQWNNMGczZ72IEuAgFefi8cKH2Rl9a8f1zP1zJv1u95MwuAjhjtcPWWxJVgNh0ve9yrBJR1e3ZT5ZbUcvPOuw+M9pgERYyJt1wRtXLHs5fqL3S94HE3sdD9RLA8snCvBfTgo9BRw3yMvuyZXwD/pd/bRhdV7jxJ+uVsfONcvGR/2QqVomoUR47vv1/sG3/e/sNrEkrwQ1sbIcAAAAASUVORK5CYII=' alt='' width='13' height='13'><span>fouldomain</span></a></p>
 <h2><span class='tab'>SET 1</span></h2>
@@ -571,10 +609,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr><td class='song'><a href='../song/the-curtain-with.html#2026-07-27'>The Curtain With</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2026-07-14.html'>2026-07-14</a></span><span class='venue'>Enmarket Arena</span><span class='place'>Savannah, GA</span></td><td class='bar' data-tip='8 shows; usually 12 to 45' aria-label='8 shows; usually 12 to 45'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:20.69%'></span></span></td><td class='n' data-tip='8 shows; usually 12 to 45' aria-label='8 shows; usually 12 to 45'><span class='gap small'>8</span><span class='typ'>med 17</span><span class='verdict premature at-gap'>premature</span></td></tr>
 <tr><td class='song'><a href='../song/prince-caspian.html#2026-07-27'>Prince Caspian</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2026-07-21.html'>2026-07-21</a></span><span class='venue'>Empower Federal Credit Union Amphitheater at Lakeview</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='3 shows; usually 3 to 12' aria-label='3 shows; usually 3 to 12'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:30.00%'></span></span></td><td class='n' data-tip='3 shows; usually 3 to 12' aria-label='3 shows; usually 3 to 12'><span class='gap small'>3</span><span class='typ'>med 6</span></td></tr>
-</tbody></table><div class='notes'><p>Trey played the mini drum kit during Timber (Jerry the Mule), Halley's Comet, and Prince Caspian. Ha Ha Ha was last played on <a href="https://phish.net/setlists/phish-august-27-2021-gorge-amphitheatre-george-wa-usa.html">8/27/21 </a>(231 shows).</p></div>
+<tr><td class='song'><a href='../song/drowned.html#2026-07-27'>Drowned</a><span class='seg'>&gt;</span><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-10-15.html'>2023-10-15</a></span><span class='venue'>United Center</span><span class='place'>Chicago, IL</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>119</span><span class='typ'><span class='full'>6 in 10 yr</span><span class='abbr'>6/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/billy-breathes.html#2026-07-27'>Billy Breathes</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2026-04-24.html'>2026-04-24</a></span><span class='venue'>Sphere</span><span class='place'>Las Vegas, NV</span></td><td class='bar' data-tip='18 shows; usually 13 to 57' aria-label='18 shows; usually 13 to 57'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:34.47%'></span></span></td><td class='n' data-tip='18 shows; usually 13 to 57' aria-label='18 shows; usually 13 to 57'><span class='gap small'>18</span><span class='typ'>med 41.5</span></td></tr>
+<tr><td class='song'><a href='../song/its-ice.html#2026-07-27'>It’s Ice</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2026-07-14.html'>2026-07-14</a></span><span class='venue'>Enmarket Arena</span><span class='place'>Savannah, GA</span></td><td class='bar' data-tip='8 shows; usually 9 to 25' aria-label='8 shows; usually 9 to 25'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:26.67%'></span></span></td><td class='n' data-tip='8 shows; usually 9 to 25' aria-label='8 shows; usually 9 to 25'><span class='gap small'>8</span><span class='typ'>med 13</span><span class='verdict premature at-gap'>premature</span></td></tr>
+</tbody></table><div class='notes'><p>Trey played the mini drum kit during Timber (Jerry the Mule), Halley's Comet, Prince Caspian, and Drowned. Trey teased Tequila in Drowned. Trey teased Cissy Strut in Drowned. Ha Ha Ha was last played on <a href="https://phish.net/setlists/phish-august-27-2021-gorge-amphitheatre-george-wa-usa.html">8/27/21 </a>(231 shows). Drowned was last played on <a href="https://phish.net/setlists/phish-october-15-2023-united-center-chicago-il-usa.html?highlight=178">10/15/23</a> (113 shows).</p></div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-28</span></footer>
-<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </div><script>
 (function(){
   // On a phone the song title is a very small target for a link that is the
