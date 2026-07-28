@@ -6412,6 +6412,56 @@ def write_redirects(site_dir):
                          REDIRECT.format(date=date, site=SITE_URL))
 
 
+def write_sitemap(site_dir):
+    """Every page this site actually serves, listed once.
+
+    Walked off the built directory rather than assembled from what the build
+    thinks it wrote. Those are different claims, and the one worth publishing is
+    "here is what is there" -- a sitemap generated from intent is the same shape
+    as every other record in this file that outlived the work it recorded.
+
+    **No `<lastmod>`, deliberately.** The honest value is when the page's content
+    last changed, and nothing here knows that: CI checks the repository out
+    fresh, so every file's mtime is the build time, and stamping 1,300 pages
+    with "changed just now" on every run is worse than saying nothing -- it is
+    the kind of confidently wrong figure this archive exists not to publish. The
+    show date would be wrong for a different reason: a 2009 page changes
+    whenever the archive behind it does. `<changefreq>` and `<priority>` are
+    omitted for the simpler reason that Google has said for years it ignores
+    them.
+
+    The two forwarding pages left where old shared links used to point are
+    excluded: a redirect is not a page, and listing one asks a crawler to index
+    a document whose only content is a meta refresh.
+    """
+    moved = {"%s.html" % d for d in MOVED}
+    pages = []
+    for root, dirs, files in os.walk(site_dir):
+        dirs[:] = [d for d in dirs if d not in ("data", "card", "font")]
+        for name in files:
+            if not name.endswith(".html"):
+                continue
+            rel = os.path.relpath(os.path.join(root, name), site_dir)
+            if rel in moved:
+                continue
+            pages.append(rel.replace(os.sep, "/"))
+    # index.html serves the front page, and a crawler should be told about the
+    # directory rather than the file -- otherwise the same page is two URLs.
+    locs = sorted("%s/%s" % (SITE_URL, "" if p == "index.html" else p)
+                  for p in pages)
+    body = "".join("<url><loc>%s</loc></url>" % html.escape(u, quote=False)
+                   for u in locs)
+    write_if_changed(
+        os.path.join(site_dir, "sitemap.xml"),
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        + body + "</urlset>\n")
+    write_if_changed(
+        os.path.join(site_dir, "robots.txt"),
+        "User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % SITE_URL)
+    return len(locs)
+
+
 def archived_dates(site_dir):
     data_dir = show_data_dir(site_dir)
     if not os.path.isdir(data_dir):
@@ -7748,6 +7798,9 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         for name, markup in jobs[:made]:
             prints[name] = card_print(markup)
         save_card_prints(site_dir, prints)
+    # Last, so it lists the pages this run wrote rather than the ones the last
+    # run left behind.
+    log("sitemap: %d pages", write_sitemap(site_dir))
     # Serve the directory verbatim on GitHub Pages, Jekyll out of the way.
     open(os.path.join(site_dir, ".nojekyll"), "a").close()
     log("%s %s (%d report%s)",

@@ -1259,7 +1259,22 @@ rather than looking for a scrollbar.
     `--dim` would demote the venue — and take the hairline every other link on
     the site wears.
 - Bustout leaderboard (biggest gaps per performance, archive-wide).
-- On this day. Random show. `sitemap.xml`, `robots.txt`, a feed — all 404.
+- On this day. Random show. A feed — still 404.
+- ~~`sitemap.xml`, `robots.txt`~~ **DONE 2026-07-28.** 1,306 URLs, walked off
+  the *built directory* rather than assembled from what the build thinks it
+  wrote — those are different claims and only one of them is checkable.
+  Asserted: every URL resolves to a file that exists, no duplicates, and the
+  only built pages left out are the two forwarding stubs, which are not pages.
+  - **No `<lastmod>`, and that is the interesting decision.** The honest value
+    is when a page's content last changed, and nothing knows it: CI checks out
+    fresh, so every mtime is the build time, and stamping 1,306 pages "changed
+    just now" every run is exactly the confidently-wrong figure this archive
+    exists not to publish. The show's own date would be wrong differently — a
+    2009 page changes whenever the archive behind it does. `<changefreq>` and
+    `<priority>` are out because Google has said for years it ignores them.
+  - Both files are **gitignored**. Tracking output generated from the built
+    tree is how `cards.json` came to describe images it no longer matched
+    (§8g); these travel with the build or not at all.
 - Song pages have no next/prev performance stepper; show pages do.
 - **[ruling]** Do *not* build `/venue/` and `/year/` page trees. URL-addressable
   search gets the same result with no new build output and nothing to fall out

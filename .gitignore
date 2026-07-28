@@ -21,6 +21,11 @@ wheels/
 /site/.nojekyll
 # Generated beside the pages; the face itself in site/font/ is tracked.
 /site/fonts.css
+# Both are written from the built tree, so tracking them here would let the
+# copy in main disagree with the pages it describes -- the same shape as the
+# card index in docs/TODO.md 8g. They are published from the build.
+/site/sitemap.xml
+/site/robots.txt
 
 # One-off files for handing to someone directly
 /gaps-*.html
