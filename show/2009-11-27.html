@@ -63,15 +63,17 @@ header{padding-bottom:.9rem}
    inheriting the link underline that made it sit differently from its
    neighbours on the song pages. */
 .crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
-.crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
+/* Two cells, not three. The middle one held an "All reports" link that the
+   section row above already provides, and once that came out it was an empty
+   grid cell on every page in the archive. */
+.crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb .prev{grid-column:1;justify-self:start}
-.crumb .all{grid-column:2;justify-self:center}
-.crumb .next{grid-column:3;justify-self:end}
+.crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
    small beside a tour and an ordinal, so the one thing that identified the
@@ -213,7 +215,6 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    it is judged against already is. Narrow: beside the title, because the
    gap column there is 3.7rem and the word is wider than that. */
 .verdict.at-gap{display:block;margin:.1rem 0 0}
-.verdict.at-song{display:none}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
@@ -354,7 +355,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      min-width:auto and a long unbreakable run would widen it. Not the cause of
      anything observed -- the tracks measure 267 + 59 against a 338 row -- but
      the row has no business being able to grow. */
-  tr{display:grid;grid-template-columns:minmax(0,1fr) 3.7rem;column-gap:.7rem;
+  /* 4.6rem, not 3.7. The verdict lives in this cell at every width -- one
+     element rather than a visible copy and a hidden one, which is what let an
+     aria-hidden end up on the copy the phone actually shows. "premature" is
+     the widest word it can hold, 63px at this size, so the track is sized for
+     it: 73.6px. The song column gives up 0.9rem, which it can afford; the
+     alternative costs a screen reader the verdict entirely. */
+  tr{display:grid;grid-template-columns:minmax(0,1fr) 4.6rem;column-gap:.7rem;
      grid-template-areas:"song gap" "meta gap";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   /* And nothing inside may refuse to break, or the track has no smaller size
@@ -377,8 +384,6 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.75rem;margin-top:.2rem}
   .verdict{font-size:.625rem}
-  .verdict.at-gap{display:none}
-  .verdict.at-song{display:inline-block}
   .verdict.bustout{font-size:.625rem}
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
@@ -495,7 +500,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 })();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
-<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2009-11-25.html' aria-label='Previous show, 2009-11-25'>&larr; 2009-11-25</a><span class='all'></span><a class='next' rel='next' href='./2009-11-28.html' aria-label='Next show, 2009-11-28'>2009-11-28 &rarr;</a></nav><h1>2009-11-27<span class="dow">Friday</span></h1>
+<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2009-11-25.html' aria-label='Previous show, 2009-11-25'>&larr; 2009-11-25</a><a class='next' rel='next' href='./2009-11-28.html' aria-label='Next show, 2009-11-28'>2009-11-28 &rarr;</a></nav><h1>2009-11-27<span class="dow">Friday</span></h1>
 <p class="where">Times Union Center, Albany, NY</p>
 <p class="show"><span class='tour'>2009 Fall Tour</span><span class='nth'>40th show of 3.0</span></p><p class='rating'>Phish.net rating <b>3.65</b><span> via fouldomain</span></p></header>
 <section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>24</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>69</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>5</div></div><div class='card'><div class='lbl'>Bustouts</div><div class='num'>0</div></div></section>
@@ -504,7 +509,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <h2><span class='tab'>SET 1</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr><td class='song'><a href='../song/acdc-bag.html#2009-11-27'>AC/DC Bag</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-18.html'>2009-11-18</a></span><span class='venue'>Cobo Arena</span><span class='place'>Detroit, MI</span></td><td class='bar' data-tip='5 shows; usually 2 to 9' aria-label='5 shows; usually 2 to 9'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:46.90%'></span></span></td><td class='n' data-tip='5 shows; usually 2 to 9' aria-label='5 shows; usually 2 to 9'><span class='gap small'>5</span><span class='typ'>med 4</span></td></tr>
-<tr><td class='song'><a href='../song/maze.html#2009-11-27'>Maze</a><span class='verdict premature at-song' aria-hidden='true'>premature</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-22.html'>2009-11-22</a></span><span class='venue'>War Memorial at Oncenter</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='3 shows; usually 4 to 10' aria-label='3 shows; usually 4 to 10'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:20.93%'></span></span></td><td class='n' data-tip='3 shows; usually 4 to 10' aria-label='3 shows; usually 4 to 10'><span class='gap small'>3</span><span class='typ'>med 7</span><span class='verdict premature at-gap'>premature</span></td></tr>
+<tr><td class='song'><a href='../song/maze.html#2009-11-27'>Maze</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-22.html'>2009-11-22</a></span><span class='venue'>War Memorial at Oncenter</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='3 shows; usually 4 to 10' aria-label='3 shows; usually 4 to 10'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:20.93%'></span></span></td><td class='n' data-tip='3 shows; usually 4 to 10' aria-label='3 shows; usually 4 to 10'><span class='gap small'>3</span><span class='typ'>med 7</span><span class='verdict premature at-gap'>premature</span></td></tr>
 <tr><td class='song'><a href='../song/driver.html#2009-11-27'>Driver</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-01.html'>2009-11-01</a></span><span class='venue'>Empire Polo Club</span><span class='place'>Indio, CA</span></td><td class='bar' data-tip='7 shows; usually 4 to 24' aria-label='7 shows; usually 4 to 24'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:36.46%'></span></span></td><td class='n' data-tip='7 shows; usually 4 to 24' aria-label='7 shows; usually 4 to 24'><span class='gap small'>7</span><span class='typ'>med 8</span></td></tr>
 <tr><td class='song'><a href='../song/my-minds-got-a-mind-of-its-own.html#2009-11-27'>My Mind&#x27;s Got a Mind of its Own</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'>2004-06-24</span><span class='venue'>Verizon Wireless Music Center</span><span class='place'>Noblesville, IN</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap small'>48</span><span class='typ'><span class='full'>6 in 10 yr</span><span class='abbr'>6/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/gumbo.html#2009-11-27'>Gumbo</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-08-11.html'>2009-08-11</a></span><span class='venue'>Toyota Park</span><span class='place'>Bridgeview, IL</span></td><td class='bar' data-tip='14 shows; usually 8 to 18' aria-label='14 shows; usually 8 to 18'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:52.00%'></span></span></td><td class='n' data-tip='14 shows; usually 8 to 18' aria-label='14 shows; usually 8 to 18'><span class='gap small'>14</span><span class='typ'>med 14</span></td></tr>
@@ -524,7 +529,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <tr><td class='song'><a href='../song/fluffhead.html#2009-11-27'>Fluffhead</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-20.html'>2009-11-20</a></span><span class='venue'>U.S. Bank Arena</span><span class='place'>Cincinnati, OH</span></td><td class='bar' data-tip='5 shows; usually 4 to 23' aria-label='5 shows; usually 4 to 23'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:32.75%'></span></span></td><td class='n' data-tip='5 shows; usually 4 to 23' aria-label='5 shows; usually 4 to 23'><span class='gap small'>5</span><span class='typ'>med 7</span></td></tr>
 <tr><td class='song'><a href='../song/piper.html#2009-11-27'>Piper</a><span class='seg tight'>-&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-22.html'>2009-11-22</a></span><span class='venue'>War Memorial at Oncenter</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='3 shows; usually 2 to 5' aria-label='3 shows; usually 2 to 5'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:43.33%'></span></span></td><td class='n' data-tip='3 shows; usually 2 to 5' aria-label='3 shows; usually 2 to 5'><span class='gap small'>3</span><span class='typ'>med 3</span></td></tr>
 <tr><td class='song'><a href='../song/tomorrows-song.html#2009-11-27'>Tomorrow&#x27;s Song</a></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
-<tr><td class='song'><a href='../song/prince-caspian.html#2009-11-27'>Prince Caspian</a><span class='seg'>&gt;</span><span class='verdict premature at-song' aria-hidden='true'>premature</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-21.html'>2009-11-21</a></span><span class='venue'>U.S. Bank Arena</span><span class='place'>Cincinnati, OH</span></td><td class='bar' data-tip='3 shows; usually 3 to 8' aria-label='3 shows; usually 3 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:26.09%'></span></span></td><td class='n' data-tip='3 shows; usually 3 to 8' aria-label='3 shows; usually 3 to 8'><span class='gap small'>3</span><span class='typ'>med 5</span><span class='verdict premature at-gap'>premature</span></td></tr>
+<tr><td class='song'><a href='../song/prince-caspian.html#2009-11-27'>Prince Caspian</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-21.html'>2009-11-21</a></span><span class='venue'>U.S. Bank Arena</span><span class='place'>Cincinnati, OH</span></td><td class='bar' data-tip='3 shows; usually 3 to 8' aria-label='3 shows; usually 3 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:26.09%'></span></span></td><td class='n' data-tip='3 shows; usually 3 to 8' aria-label='3 shows; usually 3 to 8'><span class='gap small'>3</span><span class='typ'>med 5</span><span class='verdict premature at-gap'>premature</span></td></tr>
 <tr><td class='song'><a href='../song/harry-hood.html#2009-11-27'>Harry Hood</a><span class='seg'>&gt;</span><a class='jc-chip' href='../song/harry-hood.html#2009-11-27'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-24.html'>2009-11-24</a></span><span class='venue'>Wachovia Center</span><span class='place'>Philadelphia, PA</span></td><td class='bar' data-tip='1 show; usually 1 to 5' aria-label='1 show; usually 1 to 5'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:30.00%'></span></span></td><td class='n' data-tip='1 show; usually 1 to 5' aria-label='1 show; usually 1 to 5'><span class='gap small'>1</span><span class='typ'>med 3</span></td></tr>
 <tr><td class='song'><a href='../song/suzy-greenberg.html#2009-11-27'>Suzy Greenberg</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-21.html'>2009-11-21</a></span><span class='venue'>U.S. Bank Arena</span><span class='place'>Cincinnati, OH</span></td><td class='bar' data-tip='4 shows; usually 4 to 15' aria-label='4 shows; usually 4 to 15'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:30.00%'></span></span></td><td class='n' data-tip='4 shows; usually 4 to 15' aria-label='4 shows; usually 4 to 15'><span class='gap small'>4</span><span class='typ'>med 4.5</span></td></tr>
 <tr><td class='song'><a href='../song/the-squirming-coil.html#2009-11-27'>The Squirming Coil</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-11-21.html'>2009-11-21</a></span><span class='venue'>U.S. Bank Arena</span><span class='place'>Cincinnati, OH</span></td><td class='bar' data-tip='4 shows; usually 4 to 8' aria-label='4 shows; usually 4 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:30.00%'></span></span></td><td class='n' data-tip='4 shows; usually 4 to 8' aria-label='4 shows; usually 4 to 8'><span class='gap small'>4</span><span class='typ'>med 5</span></td></tr>
