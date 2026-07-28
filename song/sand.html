@@ -7,16 +7,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
 <link href="../fonts.css" rel="stylesheet">
-<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
 :root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 :root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
 }
 @media screen{
-:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
 :root[data-theme="dark"] .badge img.flip{filter:invert(1)}
 :root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
 }
@@ -37,18 +37,53 @@
 .theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 @media print{.theme{display:none}}
 
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
-.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .9rem;
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
    margin-bottom:1.1rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centred on the label, 24px tall and never
+   narrower than 24px. It sits inside the anchor, so it is the same target.
+   Row gaps below are widened to match: two rows 4.8px apart would have had
+   their 24px areas overlapping, which trades one failure for a worse one. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 /* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
@@ -306,9 +341,15 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-.bar .track.bare::before{opacity:.55}
+/* No band to draw, so no scale is drawn. A dash where the mark would have
+   been, at the same height as the track, says the measurement was never
+   possible -- the ghost scale that used to sit here read as a bar that had
+   failed to render, and it was the emptiest graphic on the most interesting
+   rows. `.bare` is gone with it. */
+.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
+   color:var(--dim);opacity:.65;font-size:.75rem}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
-   background:var(--band);opacity:.85;border-radius:1px}
+   background:var(--band);opacity:var(--band-opacity);border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
    background:var(--paper);opacity:.85}
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
@@ -532,7 +573,14 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -551,7 +599,8 @@ footer a{color:var(--dim)}
   else start();
 })();
 </script></head><body id="top"><div class="wrap">
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../method.html">How this is worked out</a></nav>
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">Sand</span>
 <span class="n"><b>166</b> shows &middot; median gap <b>4</b></span></div>
@@ -569,7 +618,7 @@ band ran them together rather than stopping between them.</p></header>
 <div class="rule2"></div>
 <p class='best'><span class='field'><span class='cap'>Best version</span><a class='when' href='#1999-12-31'>1999-12-31</a></span><span class='field'><span class='cap'>Venue</span><span class='where'>Big Cypress Seminole Indian Reservation, Big Cypress</span></span><span class='field'><span class='cap'>Score</span><span class='score'>94</span></span><span class='field'><span class='cap'>Hear it</span><span class='cap'><a class='ext i-pin' href='https://phish.in/1999-12-31' target='_blank' rel='noopener noreferrer'>Listen</a> &middot; <a class='ext i-foul' href='https://fouldomain.com/tracks/24077' target='_blank' rel='noopener noreferrer'>Details</a></span></span></p>
 <p class="links"><a class='badge' href='https://phish.net/song/sand' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,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' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://phish.in/songs/sand' target='_blank' rel='noopener noreferrer'><img class='flip' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.in</span></a></p>
-<div class="tools">
+<div class="tools" id="main" tabindex="-1">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
 <button id="clear" class="clear" type="button" hidden>Clear</button>
@@ -733,7 +782,7 @@ patiently winds down. &gt; &quot;Plasma.&quot;</span></summary></details></span>
 <li id='2009-12-30' data-date='2009-12-30' data-era='3.0' data-gap='40' data-score='' data-search="2009-12-30 12/30/2009 12/30/2009 12/30/09 12/30 12/30 12-30 december 30 2009 december 30 wednesday american airlines arena miami fl  "><div class='row'><span class='r-date'><a href='../show/2009-12-30.html'>2009-12-30</a><span class='dow'>Wed</span></span><span><span class='r-venue'>American Airlines Arena</span><span class='r-place'>Miami, FL</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out'>The Curtain With</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:100.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>40</span><span class='set'>SET 2</span></span></div></li>
 <li id='2009-06-07' data-date='2009-06-07' data-era='3.0' data-gap='28' data-score='86' data-search="2009-06-07 06/07/2009 6/7/2009 6/7/09 06/07 6/7 6-7 june 07 2009 june 7 sunday susquehanna bank center camden nj one of the first great jams of 3.0. this  version contains an old-school groove which goes &quot;type 2&quot; via a funk jam and an uplifting conclusion by way of a repetitive, descending riff from trey. "><div class='row'><span class='r-date'><a href='../show/2009-06-07.html'>2009-06-07</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Susquehanna Bank Center</span><span class='r-place'>Camden, NJ</span><span class='mark high'>Highly rated <b>86</b> &middot; <a class='ext i-pin' href='https://phish.in/2009-06-07' target='_blank' rel='noopener noreferrer'>Listen</a></span><p class='jam'><span class='tag'>Jam chart</span>One of the first great jams of 3.0. This  version contains an old-school groove which goes &quot;type 2&quot; via a funk jam and an uplifting conclusion by way of a repetitive, descending riff from Trey.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out'>Suzy Greenberg</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:100.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>28</span><span class='set'>SET 2</span></span></div></li>
 <li class='yr' id='era-2-0' data-era='2.0'><h2><span class='tab'>2.0</span><span>1 show</span><span>2003&ndash;2004</span></h2></li>
-<li id='2004-04-11' data-date='2004-04-11' data-era='2.0' data-gap='-1' data-score='' data-counted='0' data-search="2004-04-11 04/11/2004 4/11/2004 4/11/04 04/11 4/11 4-11 april 11 2004 april 11 sunday higher ground winooski vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2004-04-11' target='_blank' rel='noopener noreferrer'>2004-04-11</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Higher Ground</span><span class='r-place'>Winooski, VT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Chalk Dust Torture</span></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Not a show</span><span class='set'>SET 1</span></span></div></li>
+<li id='2004-04-11' data-date='2004-04-11' data-era='2.0' data-gap='-1' data-score='' data-counted='0' data-search="2004-04-11 04/11/2004 4/11/2004 4/11/04 04/11 4/11 4-11 april 11 2004 april 11 sunday higher ground winooski vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2004-04-11' target='_blank' rel='noopener noreferrer'>2004-04-11</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Higher Ground</span><span class='r-place'>Winooski, VT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Chalk Dust Torture</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Not a show</span><span class='set'>SET 1</span></span></div></li>
 <li id='2003-12-30' data-date='2003-12-30' data-era='2.0' data-gap='45' data-score='' data-search="2003-12-30 12/30/2003 12/30/2003 12/30/03 12/30 12/30 12-30 december 30 2003 december 30 tuesday american airlines arena miami fl  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2003-12-30' target='_blank' rel='noopener noreferrer'>2003-12-30</a><span class='dow'>Tue</span></span><span><span class='r-venue'>American Airlines Arena</span><span class='r-place'>Miami, FL</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Wilson <span class='mk'>&gt;</span></span><span class='nb-out seg'><span class='mk tight'>-&gt;</span> Shafty</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:100.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>45</span><span class='set'>SET 1</span></span></div></li>
 <li class='yr' id='era-1-0' data-era='1.0'><h2><span class='tab'>1.0</span><span>25 shows</span><span>1999&ndash;2000</span></h2></li>
 <li id='2000-10-06' data-date='2000-10-06' data-era='1.0' data-gap='4' data-score='' data-search="2000-10-06 10/06/2000 10/6/2000 10/6/00 10/06 10/6 10-6 october 06 2000 october 6 friday shoreline amphitheatre mountain view ca &gt; from &quot;cities.&quot; starts  with a mellow, airy loop and trey on the keyboard before he switches to guitar and gives the jam a boost with some great playing. "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2000-10-06' target='_blank' rel='noopener noreferrer'>2000-10-06</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Shoreline Amphitheatre</span><span class='r-place'>Mountain View, CA</span><p class='jam'><span class='tag'>Jam chart</span>&gt; from &quot;Cities.&quot; Starts  with a mellow, airy loop and Trey on the keyboard before he switches to guitar and gives the jam a boost with some great playing.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Cities <span class='mk'>&gt;</span></span><span class='nb-out seg'><span class='mk'>&gt;</span> Golgi Apparatus</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:46.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>4</span><span class='set'>SET 2</span></span></div></li>
@@ -760,7 +809,7 @@ patiently winds down. &gt; &quot;Plasma.&quot;</span></summary></details></span>
 <li id='1999-09-22' data-date='1999-09-22' data-era='1.0' data-gap='2' data-score='' data-search="1999-09-22 09/22/1999 9/22/1999 9/22/99 09/22 9/22 9-22 september 22 1999 september 22 wednesday pan american center las cruces nm  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-22' target='_blank' rel='noopener noreferrer'>1999-09-22</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Pan American Center</span><span class='r-place'>Las Cruces, NM</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Mozambique</span><span class='nb-out'>Waste</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:30.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>2</span><span class='set'>SET 1</span></span></div></li>
 <li id='1999-09-19' data-date='1999-09-19' data-era='1.0' data-gap='2' data-score='' data-search="1999-09-19 09/19/1999 9/19/1999 9/19/99 09/19 9/19 9-19 september 19 1999 september 19 sunday irvine meadows irvine ca  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-19' target='_blank' rel='noopener noreferrer'>1999-09-19</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Irvine Meadows</span><span class='r-place'>Irvine, CA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Twist <span class='mk'>&gt;</span></span><span class='nb-out'>Wading in the Velvet Sea</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:30.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>2</span><span class='set'>SET 2</span></span></div></li>
 <li id='1999-09-17' data-date='1999-09-17' data-era='1.0' data-gap='4' data-score='' data-search="1999-09-17 09/17/1999 9/17/1999 9/17/99 09/17 9/17 9-17 september 17 1999 september 17 friday shoreline amphitheatre mountain view ca  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-17' target='_blank' rel='noopener noreferrer'>1999-09-17</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Shoreline Amphitheatre</span><span class='r-place'>Mountain View, CA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Runaway Jim <span class='mk'>&gt;</span></span><span class='nb-out'>Piper</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:46.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>4</span><span class='set'>SET 2</span></span></div></li>
-<li id='1999-09-11' data-date='1999-09-11' data-era='1.0' data-gap='-1' data-score='83' data-search="1999-09-11 09/11/1999 9/11/1999 9/11/99 09/11 9/11 9-11 september 11 1999 september 11 saturday gorge amphitheatre george wa the great debut version begins with a -&gt; out of &quot;wolfman&#x27;s brother&quot;. the groove remains constant while trey solos extensively with gradually increasing intensity. phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-11' target='_blank' rel='noopener noreferrer'>1999-09-11</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Gorge Amphitheatre</span><span class='r-place'>George, WA</span><span class='mark high'>Highly rated <b>83</b> &middot; <a class='ext i-pin' href='https://phish.in/1999-09-11' target='_blank' rel='noopener noreferrer'>Listen</a></span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>The great debut version begins with a -&gt; out of &quot;Wolfman&#x27;s Brother&quot;. The groove remains constant while Trey solos extensively with gradually increasing intensity.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Wolfman&#x27;s Brother <span class='mk tight'>-&gt;</span></span><span class='nb-out'>Meatstick</span></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='1999-09-11' data-date='1999-09-11' data-era='1.0' data-gap='-1' data-score='83' data-search="1999-09-11 09/11/1999 9/11/1999 9/11/99 09/11 9/11 9-11 september 11 1999 september 11 saturday gorge amphitheatre george wa the great debut version begins with a -&gt; out of &quot;wolfman&#x27;s brother&quot;. the groove remains constant while trey solos extensively with gradually increasing intensity. phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-11' target='_blank' rel='noopener noreferrer'>1999-09-11</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Gorge Amphitheatre</span><span class='r-place'>George, WA</span><span class='mark high'>Highly rated <b>83</b> &middot; <a class='ext i-pin' href='https://phish.in/1999-09-11' target='_blank' rel='noopener noreferrer'>Listen</a></span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>The great debut version begins with a -&gt; out of &quot;Wolfman&#x27;s Brother&quot;. The groove remains constant while Trey solos extensively with gradually increasing intensity.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Wolfman&#x27;s Brother <span class='mk tight'>-&gt;</span></span><span class='nb-out'>Meatstick</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
