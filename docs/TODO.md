@@ -81,12 +81,6 @@ reorganisation now filed as §2c.
 
 ### Queue, in the order I would take it
 
-0. **§2c `site/data` layout** — Ian, 2026-07-28: the directory is cluttered,
-   and the 711 per-show JSON files should sit under `data/shows/` the way the
-   song histories already sit under `data/songs/`, rather than as siblings of
-   `calendar.json`, `current.json` and `cards.json`. Not started. **Read §2c
-   before starting it** — the migration has to move the published tree too,
-   and the workflows restore parts of it from `gh-pages`.
 1. **§3d keyboard hotkeys** — the accessibility floor is done; this is the
    jumping layer. The `?` overlay it wants now has a natural companion in
    `faq.html`.
@@ -194,7 +188,7 @@ there; only which one is set large has changed. Asserted on the built page:
 the printed figure descends monotonically for all 40 rows. The standfirst and
 the FAQ entry both say what the order is, which neither did before.
 
-## 2c. `site/data` layout — Ian, 2026-07-28. NOT STARTED
+## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 
 His words: the directory "is cluttered. shows should probably go under a
 `shows` directory to keep things organized. As it is they're siblings of
@@ -228,6 +222,30 @@ being load-bearing, though it is worth keeping.
   fetches `data/current.json` and `data/songs/<slug>.json` only, both of
   which stay put — so no redirects are needed. Verify that rather than
   believing it: `grep` the built HTML for `data/` before shipping.
+
+**What landed.** 711 files moved, git recorded all 711 as renames and zero as
+deletions, and a `--rebuild` afterwards changed **no page and no byte** — which
+is the invariant a pure move has to meet and the one worth asserting. The five
+index files stay flat in `data/`, beside `shows/` and `songs/`.
+
+- The four readers now go through `show_data_dir()`. `REPORT_NAME` is kept
+  even though nothing else lives in `shows/` to be confused with: it is what
+  the migration recognises a stray report by.
+- **`migrate_show_data()` moves any reports still lying flat**, once, on any
+  run with `--site`. Not a nicety: a checkout made before this commit, built
+  with code from after it, finds **zero** shows and publishes a complete site
+  with the entire archive missing — and this file records three separate
+  outages with exactly that shape, every one of them silent. Tested against a
+  copy of the real archive: 0 shows before, 711 after, idempotent on a second
+  pass, index files untouched.
+- Neither publisher needs anything: both replace the published tree wholesale,
+  so the old paths leave `gh-pages` on the first publish. CI restores only
+  `card/` from `gh-pages`, never `data/`. The workflow push triggers name only
+  `possumlogic.py` and the workflow file, so nothing there had to move.
+- Two stale references fixed in the same pass: `watch.yml`'s conflict-guard
+  comment, and README, which named `site/data/<date>.json` *and* still said
+  reports land in `site/<date>.html` — they have been under `show/` for a
+  while. That second one is the §3b lesson again: a doc nobody re-read.
 
 ## 3. Index hero and a loud in-progress banner — DONE 2026-07-28
 

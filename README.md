@@ -49,8 +49,8 @@ one API call per song, which is why it is opt-in.
 ./possumlogic.py 2026-07-22 2026-07-24 --previous --site site
 ```
 
-Each show lands in `site/<date>.html`, its data is archived in
-`site/data/<date>.json`, and `site/index.html` is regenerated from that archive
+Each show lands in `site/show/<date>.html`, its data is archived in
+`site/data/shows/<date>.json`, and `site/index.html` is regenerated from that archive
 with search, per-year filters, and sorting. Dates the site already has are
 skipped unless `--force`, so runs are additive.
 

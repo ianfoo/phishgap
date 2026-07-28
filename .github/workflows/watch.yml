@@ -124,7 +124,7 @@ jobs:
               git commit -q -m "Archive gap reports for new shows"
               # A rebase that conflicts must not be left half-applied. It used
               # to be `|| true`, which swallowed the failure and left conflict
-              # markers inside site/data/<date>.json -- and a report with
+              # markers inside site/data/shows/<date>.json -- and a report with
               # markers in it is unreadable JSON, so the show was dropped from
               # the archive and every following pass published a site without
               # the show it was watching. Abort, keep this pass's work, and

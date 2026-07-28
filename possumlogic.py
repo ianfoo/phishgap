@@ -700,7 +700,8 @@ def remeasure(site_dir, artist="Phish"):
     """
     changed = skipped = 0
     counting = set(load_calendar(site_dir))
-    for path in sorted(glob.glob(os.path.join(site_dir, "data", "[12]*.json"))):
+    for path in sorted(glob.glob(os.path.join(show_data_dir(site_dir),
+                                              "[12]*.json"))):
         with open(path, encoding="utf-8") as fh:
             report = json.load(fh)
         before = json.dumps(report, sort_keys=True)
@@ -5441,6 +5442,17 @@ def songs_card(docs):
 
 SHOW_DIR = "show"
 
+# The same move the pages made, made for the archive. 711 dated files lay flat
+# in data/ beside the five index files -- calendar, cards, current, phishin,
+# schedule -- and one directory that already did it properly, songs/. Which of
+# those is a report was a question about the shape of a filename rather than
+# about where the file lived, and REPORT_NAME below exists only because of it.
+SHOW_DATA_DIR = os.path.join("data", "shows")
+
+
+def show_data_dir(site_dir):
+    return os.path.join(site_dir, SHOW_DATA_DIR)
+
 
 def site_paths(site_dir, date):
     # Reports live in their own directory rather than the site root. At
@@ -5448,14 +5460,44 @@ def site_paths(site_dir, date):
     # and any future top-level page would have had to pick a name no show could
     # ever be called.
     return (os.path.join(site_dir, SHOW_DIR, "%s.html" % date),
-            os.path.join(site_dir, "data", "%s.json" % date))
+            os.path.join(show_data_dir(site_dir), "%s.json" % date))
 
 
 # A report is named for its date and nothing else is. data/ also holds indexes
 # now -- neighbours.json among them -- and globbing every .json in there read
 # one as a show whose date key was missing, which is a KeyError at build time
 # rather than anything as polite as a skip.
+#
+# Kept after the move to data/shows/, where nothing else lives and it therefore
+# guards nothing. It is what migrate_show_data() recognises a stray report by,
+# and a directory that holds one kind of file is worth asserting rather than
+# assuming.
 REPORT_NAME = re.compile(r"^\d{4}-\d{2}-\d{2}\.json$")
+
+
+def migrate_show_data(site_dir):
+    """Move any reports still lying flat in data/ into data/shows/.
+
+    One pass; after the first build there is nothing left for it to find. It
+    exists rather than a bare `git mv` because a checkout made before the move
+    would otherwise build a site with every show missing -- and this file has
+    published a site missing its shows three times already under other names,
+    every time cheerfully and without an error. Moves rather than copies, so
+    there is never a second copy of a report to disagree with the first.
+    """
+    flat = os.path.join(site_dir, "data")
+    if not os.path.isdir(flat):
+        return 0
+    names = sorted(n for n in os.listdir(flat) if REPORT_NAME.match(n))
+    if not names:
+        return 0
+    into = show_data_dir(site_dir)
+    os.makedirs(into, exist_ok=True)
+    for name in names:
+        os.replace(os.path.join(flat, name), os.path.join(into, name))
+    log("moved %d report%s from data/ into %s",
+        len(names), "" if len(names) == 1 else "s", SHOW_DATA_DIR)
+    return len(names)
 
 
 # The only two report URLs that were ever shared before reports moved into
@@ -5522,7 +5564,7 @@ def write_redirects(site_dir):
 
 
 def archived_dates(site_dir):
-    data_dir = os.path.join(site_dir, "data")
+    data_dir = show_data_dir(site_dir)
     if not os.path.isdir(data_dir):
         return set()
     return {n[:-5] for n in os.listdir(data_dir) if REPORT_NAME.match(n)}
@@ -5533,7 +5575,7 @@ _UNREADABLE = []
 
 def saved_reports(site_dir):
     """Every report JSON already in the site, oldest first."""
-    data_dir = os.path.join(site_dir, "data")
+    data_dir = show_data_dir(site_dir)
     out = []
     for name in sorted(os.listdir(data_dir) if os.path.isdir(data_dir) else []):
         if not REPORT_NAME.match(name):
@@ -6637,10 +6679,10 @@ def settle(report, prior, now):
 def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     """Add reports to the site and rebuild the index around them.
 
-    The JSON sidecar in data/ is the archive: it is what lets --rebuild
+    The JSON sidecar in data/shows/ is the archive: it is what lets --rebuild
     re-render every page after a template change without touching the API.
     """
-    os.makedirs(os.path.join(site_dir, "data"), exist_ok=True)
+    os.makedirs(show_data_dir(site_dir), exist_ok=True)
     # Archive everything first, provisional included, so the neighbour map that
     # the prev/next links need is built from the whole published site at once.
     for report in reports:
@@ -7244,6 +7286,9 @@ def main():
                  "--seed-scores, --seed-setlists, --sweep-ratings and "
                  "--calendar need --site DIR")
     if args.site:
+        # Before anything reads the archive, and before --watching, which
+        # takes its own early exit below.
+        migrate_show_data(args.site)
         jobs = [n for n, on in (
             ("catch-up %s days" % args.catch_up, args.catch_up),
             ("recheck", args.recheck), ("previous", args.previous),
