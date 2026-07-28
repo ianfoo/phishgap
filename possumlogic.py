@@ -934,7 +934,14 @@ NEW_ROWS_JS = """<script>
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -1296,7 +1303,13 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-.bar .track.bare::before{opacity:.55}
+/* No band to draw, so no scale is drawn. A dash where the mark would have
+   been, at the same height as the track, says the measurement was never
+   possible -- the ghost scale that used to sit here read as a bar that had
+   failed to render, and it was the emptiest graphic on the most interesting
+   rows. `.bare` is gone with it. */
+.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
+   color:var(--dim);opacity:.65;font-size:.75rem}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -1870,6 +1883,21 @@ def render_html(report, bar_scale="linear", index_href=None,
                    % (_stat(g), "" if g == 1 else "s",
                       _stat(round(s["gap_low"])), _stat(round(s["gap_high"]))))
             explain = " data-tip='%s' aria-label='%s'" % (tip, tip)
+        elif g is not None and s.get("recent_plays") is not None:
+            # No band, so no bar -- and an empty column is the most confusing
+            # thing on the row unless it says why it is empty. This is not a
+            # bustout condition, which is how it was first written down: it is
+            # any song with fewer than MIN_HISTORY plays inside the window.
+            # Strange Design has six and is not a bustout, and looked identical
+            # to Johnny B. Goode's nine hundred.
+            n = s["recent_plays"]
+            tip = ("%s in %d years, so there is no usual range to place this "
+                   "gap against"
+                   % ("not played" if not n
+                      else "played %d time%s" % (n, "" if n == 1 else "s"),
+                      RECENT_YEARS))
+            explain = " data-tip='%s' aria-label='%s'" % (
+                html.escape(tip, quote=True), html.escape(tip, quote=True))
 
         typical = ""
         if s.get("gap_median") is not None:
@@ -1925,9 +1953,14 @@ def render_html(report, bar_scale="linear", index_href=None,
             pos = _band_pos(g, s.get("gap_low"), s.get("gap_high"))
             if pos is None:
                 # Too little history to have a norm, so there is nothing to be
-                # early or late against and the bar says nothing rather than
-                # implying a comparison that was never made.
-                bar = "<td class='bar'%s><span class='track bare'></span></td>" % explain
+                # early or late against. The ghost track that used to sit here
+                # drew an empty scale at about 1.3:1 against the paper, which
+                # read as a bar that had failed to render rather than as a
+                # measurement that was never possible. A dash says the absence
+                # out loud, in the one place a reader is already looking for
+                # the mark, and the hover says why.
+                bar = ("<td class='bar'%s><span class='no-range'"
+                       " aria-hidden='true'>&mdash;</span></td>" % explain)
             else:
                 # The mark is coloured by where it landed, not by how large
                 # the number is. Those are different questions and they
@@ -2100,12 +2133,19 @@ def render_html(report, bar_scale="linear", index_href=None,
         # being fed. When the last song arrived is on the row it arrived in;
         # repeating it up here as a second wall-clock time said nothing the
         # reader wanted and read like a server log.
-        live = ("<p class='live' role='status' aria-live='polite'>"
+        # data-show, so the "new since you last looked" mark can key its note
+        # on the night rather than on the page title. The title begins with the
+        # song count -- "(20) 2026-07-27" -- so a key derived from it changed
+        # every time a song landed, which is precisely when the mark is meant
+        # to fire, and it never once did.
+        live = ("<p class='live' role='status' aria-live='polite'"
+                " data-show='%s'>"
                 "<b>This show is being played right now</b>"
                 "<span><b class='n'>%d</b> song%s so far &middot; "
                 "last checked <time class='ago' datetime='%s'>%s</time>"
                 " &middot; this page refreshes itself</span></p>"
-                % (n, "" if n == 1 else "s",
+                % (html.escape(report["date"], quote=True),
+                   n, "" if n == 1 else "s",
                    html.escape(checked, quote=True), _clock(checked)))
         refresh = '\n<meta http-equiv="refresh" content="120">'
 
@@ -3207,7 +3247,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-.bar .track.bare::before{opacity:.55}
+/* No band to draw, so no scale is drawn. A dash where the mark would have
+   been, at the same height as the track, says the measurement was never
+   possible -- the ghost scale that used to sit here read as a bar that had
+   failed to render, and it was the emptiest graphic on the most interesting
+   rows. `.bare` is gone with it. */
+.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
+   color:var(--dim);opacity:.65;font-size:.75rem}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -3742,7 +3788,12 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         # and its 23 at three percent of one. The band is the same for every
         # row here, since every row is this song, so the marks line up down the
         # page and the shape of them is the song's history.
-        bar = "<span class='bar'><span class='track bare'></span></span>"
+        # Same dash the report pages use, and for the same reason: a debut has
+        # no gap and a song under MIN_HISTORY has no band, and in both cases an
+        # empty scale reads as a bar that failed rather than one that was never
+        # possible.
+        bar = ("<span class='bar'><span class='no-range' aria-hidden='true'>"
+               "&mdash;</span></span>")
         pos = _band_pos(g, low, high) if (g is not None and not debut) else None
         if pos is not None:
             # Coloured by where it landed rather than by the size of the

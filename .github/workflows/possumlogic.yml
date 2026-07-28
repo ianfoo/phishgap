@@ -142,15 +142,47 @@ jobs:
       - name: Publish to gh-pages
         if: steps.archive.outputs.changed == 'true' || github.event_name != 'schedule'
         run: |
-          git fetch origin gh-pages
-          git worktree add ../pages gh-pages
-          find ../pages -mindepth 1 -maxdepth 1 -not -name .git -exec rm -rf {} +
-          cp -R site/. ../pages/
-          cd ../pages
-          git add -A
-          if git diff --cached --quiet; then
-            echo "site unchanged"
-          else
-            git commit -m "Publish $(date -u +%F)"
-            git push origin gh-pages
+          # Publish onto whatever is on the remote *now*, and replay if it
+          # moves under us. The watcher publishes every five minutes during a
+          # show, so this run and that one race for gh-pages routinely: this
+          # step failed twice tonight with "! [rejected] (fetch first)" and
+          # would have kept failing all night.
+          #
+          # Two things were wrong. `git worktree add ../pages gh-pages` names
+          # the *local* branch, and `git fetch origin gh-pages` does not move
+          # it -- the same stale-base bug publish.sh documents at length and
+          # that watch.yml already avoids by naming origin/gh-pages. And a
+          # rejected push was fatal rather than retried, though the tree is
+          # replaced wholesale here, so replaying costs nothing but a copy.
+          published=""
+          for attempt in 1 2 3; do
+            git fetch -q origin gh-pages
+            rm -rf ../pages
+            git worktree prune
+            git worktree add -q --detach ../pages origin/gh-pages
+            find ../pages -mindepth 1 -maxdepth 1 -not -name .git -exec rm -rf {} +
+            cp -R site/. ../pages/
+            # rc must be preset and the subshell guarded with `||`: this step
+            # runs under `bash -e`, so an unguarded subshell that returns
+            # non-zero kills the step before `rc` could be read.
+            rc=0
+            (
+              cd ../pages
+              git add -A
+              if git diff --cached --quiet; then
+                echo "site unchanged"
+                exit 3
+              fi
+              git commit -q -m "Publish $(date -u +%FT%TZ)"
+              # Detached HEAD, so name both ends.
+              git push -q origin HEAD:gh-pages
+            ) || rc=$?
+            git worktree remove --force ../pages 2>/dev/null || true
+            if [ "$rc" -eq 3 ]; then published="unchanged"; break; fi
+            if [ "$rc" -eq 0 ]; then published="yes"; break; fi
+            echo "push rejected (attempt $attempt); someone published first, replaying"
+          done
+          if [ -z "$published" ]; then
+            echo "could not publish after 3 attempts" >&2
+            exit 1
           fi

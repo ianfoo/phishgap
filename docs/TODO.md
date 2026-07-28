@@ -242,9 +242,15 @@ free anchors.
 
 - `col.c-bar` 16% → 22%, taking it from `c-last`. The bar is 80px wide with a
   32px band; rows the numbers separate clearly sit 2px apart in the bar.
-- Bustout rows draw a `track bare` ghost at ~1.3:1 contrast with no tooltip,
-  so the most interesting rows have the emptiest graphic and hovering explains
-  nothing. Draw nothing at all, and add a `data-tip` saying why.
+- ~~Bustout rows draw a `track bare` ghost~~ DONE 2026-07-28, and **the note
+  above had the cause wrong**. It is not a bustout condition. Any song with
+  fewer than `MIN_HISTORY` (8) plays inside the ten-year window has no
+  percentile band, so nothing can be drawn — Strange Design has six plays, is
+  not a bustout, and looked identical to Johnny B. Goode's 927. Ian spotted
+  this on the live page. The ghost is gone; the cell now carries a dim em-dash
+  where the mark would have been, and the whole statistics area carries a
+  `data-tip` saying which of the two reasons applies ("played 6 times in 10
+  years…" / "not played in 10 years…"). Six rows on tonight's page use it.
 - Dark-mode band is 5.29:1 against paper where light is 3.09:1 — same graphic,
   different weight per palette. Drop `.bar .band` opacity to ~.55 in dark.
 - **Do not remove the 2px paper halo on `.at`.** Marker-against-band is
@@ -336,6 +342,34 @@ been written:
 assert the *published* page changes — not that a function was called, not that
 markup contains a class. The bugs above all pass any test that stops short of
 reading the output.
+
+## 8b. Provisional decisions, for Ian's batched review
+
+Each of these was made without him so work could continue, and each is cheap
+to reverse — a label, a threshold or a few lines. None needs a decision to keep
+working; all of them are here so the batch can be reviewed in one sitting.
+
+1. **The empty bar draws an em-dash, not nothing.** §6 said "draw nothing at
+   all". Nothing is invisible, and invisible is what made the row confusing in
+   the first place. A dim `&mdash;` where the mark would have been states the
+   absence instead of merely having it. Revert = delete one CSS rule and one
+   span.
+2. **"Most Songs" is the label for the fullest-night hero card**, not "Longest
+   Show" — two cards reading "Longest …" side by side invited the number to be
+   read as a second gap figure.
+3. **The venue page is not in the hero's `→` vocabulary twice.** `VENUES` and
+   `SONGS DUE` both link out, giving three linked cards of six. If that reads
+   as too busy, the fix is to drop the arrow from one, not to unlink it.
+4. **Venue links are quoted phrases, not an exact-match filter.** A `?venue=`
+   parameter matched against a `data-venue` attribute would be exact by
+   construction; quoting is a smaller change that also gives the search box a
+   general capability. Measured exact for all 153 venues today, but it is
+   correct-in-practice rather than correct-by-construction, and a future venue
+   name that is a phrase-prefix of another would break it. The check to re-run
+   is in §4.
+5. **`possumlogic.yml` retries a rejected publish three times, then fails the
+   step.** Three is a guess; it only has to outlast the watcher's five-minute
+   cadence, and each attempt is a fetch plus a tree copy.
 
 ## 9. Known and deliberately not fixed
 
