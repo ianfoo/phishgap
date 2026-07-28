@@ -1541,8 +1541,25 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Named only where the column header is not doing it -- on a wide screen the
-   thead says "Last performed" and a second label would be saying it twice. */
-.last .cap{display:none}
+   thead says "Last performed" and a second label would be saying it twice. The
+   gap cell's own label works the same way and for the same reason. */
+.last .cap,td.n .cap{display:none}
+/* A hero card that is also a way down the page. The index sheet has these
+   rules for cards that lead to another page; this is the same affordance for a
+   card that leads to a row of this one, which is why the mark is a down arrow
+   rather than the index's right one. A right arrow inside a setlist is a claim
+   about the music -- see the note on td.last's label. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card .lbl::after{content:" \\2193";color:var(--dim);white-space:nowrap}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+/* Where you landed. A jump into the middle of a forty-row setlist puts the
+   reader somewhere with nothing to say they arrived, and the row they wanted
+   looks exactly like the thirty-nine around it. The way back from here is the
+   browser's, which a fragment navigation genuinely does restore -- unlike a
+   scroll, which is why the other jump targets on this site carry a link. */
+tbody tr:target td{background:var(--hover)}
+tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
 /* The date links when we hold that show. Underlined rather than coloured, so
    a column of them does not turn the right-hand side of the table orange. */
 .last .date a{color:inherit;text-decoration:none;
@@ -1619,11 +1636,19 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     td.last:has(a){padding-left:.55rem;border-left:2px solid var(--rule)}
     /* A 2px edge was the only thing saying this block goes somewhere else than
        the rest of the row -- tap the venue expecting the song page and you get
-       the previous show instead. The arrow is the mark the hero cards already
-       use for "this is a way in", put on the block's own label so it describes
-       the whole block rather than the date alone, which is the only part that
-       looked like a link. */
-    td.last:has(a) .cap::after{content:" \\2192";color:var(--dim)}
+       the previous show instead. So the label carries a mark saying the block
+       is a way in.
+
+       The mark is a north-east arrow, and the arrow it replaces is why this
+       comment is long. It was "\\2192", the same right arrow the hero cards use
+       for "this is a way in" -- which is fine on the index and wrong here,
+       because on a show page that glyph is already spoken for. A setlist uses
+       arrows to say the band ran two songs together, so a decorative one
+       sitting beside a date and a venue is not merely noise, it is a claim
+       about the music. Ian caught it. "\\2197" makes no such claim: it is not
+       setlist notation, and it says "leaves this row" rather than "runs into
+       the next one". */
+    td.last:has(a) .cap::after{content:" \\2197";color:var(--dim)}
   }
 }
 /* Narrow viewports: the four-column table becomes a list of stacked rows.
@@ -1675,7 +1700,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
   .last{font-size:.75rem;line-height:1.15rem}
-  .last .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+  .last .cap,td.n .cap{display:block;font-size:.625rem;letter-spacing:.14em;
      text-transform:uppercase;color:var(--dim);margin-bottom:.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
@@ -2099,19 +2124,38 @@ def render_html(report, bar_scale="linear", index_href=None,
     longest = _stat(biggest) if allg else "n/a"
     show_last = any(s["prev_date"] for s in report["songs"])
 
+    # An id per song row, so a row can be linked to at all. Nothing on a show
+    # page could be until now -- which is why the LONGEST GAP card named a
+    # figure sitting a few hundred pixels down its own page and offered no way
+    # to it. The slug alone is not enough to be unique: a song can turn up twice
+    # in a night (Mike's Song, or a reprise), and two elements with the same id
+    # is not a near-miss, it is a document where half the links go to the wrong
+    # place. Repeats are numbered.
+    row_ids, seen_slugs = [], {}
+    for s in report["songs"]:
+        n = seen_slugs[s["slug"]] = seen_slugs.get(s["slug"], 0) + 1
+        row_ids.append(s["slug"] if n == 1 else "%s-%d" % (s["slug"], n))
+    # Which row the longest gap is actually on. First one wins a tie, which is
+    # the one a reader scanning down the page reaches first.
+    longest_id = None
+    if allg:
+        longest_id = next(rid for rid, s in zip(row_ids, report["songs"])
+                          if s["gap"] == biggest)
+
     hero = "".join(
-        "<div class='card'><div class='lbl'>%s</div>"
-        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-        for val, lbl, cls in (
-            (len(report["songs"]), "Songs Played", ""),
-            (longest, "Longest Gap", " hot"),
-            (med, "Median Gap", ""),
+        ("<a class='card' href='#%s'>" % href if href else "<div class='card'>")
+        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
+        + ("</a>" if href else "</div>")
+        for val, lbl, cls, href in (
+            (len(report["songs"]), "Songs Played", "", None),
+            (longest, "Longest Gap", " hot", longest_id),
+            (med, "Median Gap", "", None),
             # Not the mean. A gap distribution with one 1,947 in it has a mean
             # that describes no song in the setlist -- across this archive it
             # runs to twice the median on 48% of shows and 253x on one of them.
             # The count of bustouts is the thing the mean was standing near.
             (sum(1 for s in report["songs"]
-                 if (s["gap"] or 0) >= BUSTOUT_GAP), "Bustouts", ""),
+                 if (s["gap"] or 0) >= BUSTOUT_GAP), "Bustouts", "", None),
         ) if counts or lbl != "Bustouts")
 
     sections, rows, current = [], [], None
@@ -2139,7 +2183,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                            "" if show_last else " class='no-last'",
                            cols, head, "\n".join(rows)))
 
-    for s in report["songs"]:
+    for s, row_id in zip(report["songs"], row_ids):
         if s["set"] != current:
             flush()
             current, rows = s["set"], []
@@ -2321,8 +2365,17 @@ def render_html(report, bar_scale="linear", index_href=None,
                 cells += "<td class='last'></td>"
         # The bar and the figure close the row, which is where the song page
         # puts them too.
-        cells += "%s<td class='n'%s>%s%s</td>" % (bar, tip_attr, gap_cell, sr)
-        rows.append("<tr>%s</tr>" % cells)
+        #
+        # The gap column names itself here, the way every other cell in the
+        # stacked row does. Its label comes from the <th> on a wide screen, and
+        # the <th> is hidden below 620px -- so on a phone the largest figure in
+        # the row was the only thing on it that never said what it was, and a
+        # reader had to infer it. Same mechanism as .last's own cap, hidden
+        # wherever the header is doing the naming.
+        cells += ("%s<td class='n'%s><span class='cap'>Gap</span>%s%s</td>"
+                  % (bar, tip_attr, gap_cell, sr))
+        rows.append("<tr id='%s'>%s</tr>"
+                    % (html.escape(row_id, quote=True), cells))
     flush()
 
     notes = ""

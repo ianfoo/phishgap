@@ -496,21 +496,41 @@ nothing tells you which until something moves.
   press showed it correctly — `--ink` on `--paper`, 163×43, with the hot ring.
   **Programmatic focus is not focus.**
 
-## 2h. Three things Ian noticed elsewhere, 2026-07-28. NOT STARTED
+## 2h. Three things Ian noticed elsewhere, 2026-07-28. DONE
 
-- **A stray `&rarr;` on the phone layout of a show page**, after the "Last
-  performed" label. The arrow means something specific in a setlist — songs
-  running together — so a decorative one next to data is actively misleading.
-  It is in the narrow-width `.last .cap` treatment.
-- **The gap column has no label on the phone layout.** Every other cell in
-  that stacked row names itself; the reader is left to infer that the large
-  number is the gap. Note the wide layout gets its label from `<th>`, which is
-  hidden below 620px — so this is the same gap the sticky-header work left.
-- **The `LONGEST GAP` hero on a show page should link to the row it is about.**
-  It names a figure that is sitting a few hundred pixels down the same page
-  and offers no way to it. The row already has an `id` — every song row on a
-  show page is `#<slug>`… **check that before building**; the anchor may need
-  adding.
+- ~~**A stray `&rarr;` on the phone layout of a show page**~~, after the "Last
+  performed" label. Ian: the arrow means something specific in a setlist —
+  songs running together — so a decorative one next to data is actively
+  misleading. He is right, and the mark was borrowed from the hero cards, where
+  it is fine because no hero card sits above a setlist.
+  - **[ruling] it is `&nearr;` (↗) now, not nothing.** The arrow was solving a
+    real problem — §7's "a tap in `td.last` goes to the previous show and a tap
+    elsewhere goes to the song page, with only a 2px border to say so" — so
+    deleting it would trade a misleading mark for no mark. A north-east arrow
+    is not setlist notation, and it says "leaves this row" rather than "runs
+    into the next one". One character if he wants it gone.
+- ~~**The gap column has no label on the phone layout.**~~ It carries a `Gap`
+  cap now, hidden above 620px exactly the way `.last`'s own cap is, because
+  above 620px the `<th>` does the naming. The largest figure in the row was the
+  only thing on it that never said what it was.
+- ~~**The `LONGEST GAP` hero should link to the row it is about.**~~ Done, and
+  **the note above was wrong to assume the anchor existed** — it says to check,
+  and checking was the whole job: song rows had no `id` at all, so nothing on a
+  show page could be linked to.
+  - Every song row carries one now. **The slug alone is not enough**: a song can
+    appear twice in a night, and two elements with one id is a document where
+    half the links go somewhere else. Repeats are numbered. Asserted across all
+    711 show pages: **0 with a duplicate row id, 0 hero links pointing at an id
+    that is not there.**
+  - The card is an `<a>` with a **down** arrow rather than the index's right
+    one, because it leads down this page rather than out to another — and
+    because a right arrow on a show page is the mark discussed above.
+  - **[ruling] the landing is marked rather than given a link back.** The row
+    you arrive at is tinted and carries a hot inset bar, so it is obvious you
+    got there. It does not get the `.backtop` treatment the FAQ answers have:
+    this is a fragment navigation, which the browser's back button genuinely
+    reverses, where a scroll is not. Verified by following the link: the row
+    lands at 46px with the sticky header's bottom at 34px, clear of it.
 
 ## 2e. Graphs — Ian, 2026-07-28. FILED, NOT STARTED
 
