@@ -63,17 +63,15 @@ header{padding-bottom:.9rem}
    inheriting the link underline that made it sit differently from its
    neighbours on the song pages. */
 .crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
-/* Two cells, not three. The middle one held an "All reports" link that the
-   section row above already provides, and once that came out it was an empty
-   grid cell on every page in the archive. */
-.crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
+.crumb.pager{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .crumb .prev{grid-column:1;justify-self:start}
-.crumb .next{grid-column:2;justify-self:end}
+.crumb .all{grid-column:2;justify-self:center}
+.crumb .next{grid-column:3;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
    small beside a tour and an ordinal, so the one thing that identified the
@@ -215,6 +213,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    it is judged against already is. Narrow: beside the title, because the
    gap column there is 3.7rem and the word is wider than that. */
 .verdict.at-gap{display:block;margin:.1rem 0 0}
+.verdict.at-song{display:none}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
    than merely coloured. print-color-adjust keeps the fill when a browser prints
@@ -355,13 +354,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      min-width:auto and a long unbreakable run would widen it. Not the cause of
      anything observed -- the tracks measure 267 + 59 against a 338 row -- but
      the row has no business being able to grow. */
-  /* 4.6rem, not 3.7. The verdict lives in this cell at every width -- one
-     element rather than a visible copy and a hidden one, which is what let an
-     aria-hidden end up on the copy the phone actually shows. "premature" is
-     the widest word it can hold, 63px at this size, so the track is sized for
-     it: 73.6px. The song column gives up 0.9rem, which it can afford; the
-     alternative costs a screen reader the verdict entirely. */
-  tr{display:grid;grid-template-columns:minmax(0,1fr) 4.6rem;column-gap:.7rem;
+  tr{display:grid;grid-template-columns:minmax(0,1fr) 3.7rem;column-gap:.7rem;
      grid-template-areas:"song gap" "meta gap";
      padding:.5rem 0;border-bottom:1px solid var(--rule-soft)}
   /* And nothing inside may refuse to break, or the track has no smaller size
@@ -384,6 +377,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   /* No bar here to carry the tick, so the words do all the work. */
   .typ{font-size:.75rem;margin-top:.2rem}
   .verdict{font-size:.625rem}
+  .verdict.at-gap{display:none}
+  .verdict.at-song{display:inline-block}
   .verdict.bustout{font-size:.625rem}
   .gap{font-size:1.25rem}
   .song{font-size:1rem;line-height:1.25rem}
@@ -500,7 +495,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 })();
 </script></head><body><div class="wrap">
 <div class="rule2"></div>
-<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2013-11-01.html' aria-label='Previous show, 2013-11-01'>&larr; 2013-11-01</a><a class='next' rel='next' href='./2013-12-28.html' aria-label='Next show, 2013-12-28'>2013-12-28 &rarr;</a></nav><h1>2013-11-02<span class="dow">Saturday</span></h1>
+<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../method.html'>How this is worked out</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2013-11-01.html' aria-label='Previous show, 2013-11-01'>&larr; 2013-11-01</a><span class='all'></span><a class='next' rel='next' href='./2013-12-28.html' aria-label='Next show, 2013-12-28'>2013-12-28 &rarr;</a></nav><h1>2013-11-02<span class="dow">Saturday</span></h1>
 <p class="where">Boardwalk Hall, Atlantic City, NJ</p>
 <p class="show"><span class='tour'>2013 Fall Tour</span><span class='nth'>211th show of 3.0</span></p><p class='rating'>Phish.net rating <b>4.29</b><span> via fouldomain</span></p></header>
 <section class="hero"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>23</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>31</div></div><div class='card'><div class='lbl'>Median Gap</div><div class='num'>6</div></div><div class='card'><div class='lbl'>Bustouts</div><div class='num'>0</div></div></section>
@@ -512,7 +507,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <tr><td class='song'><a href='../song/rift.html#2013-11-02'>Rift</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-25.html'>2013-10-25</a></span><span class='venue'>DCU Center</span><span class='place'>Worcester, MA</span></td><td class='bar' data-tip='6 shows; usually 3 to 12' aria-label='6 shows; usually 3 to 12'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:43.48%'></span></span></td><td class='n' data-tip='6 shows; usually 3 to 12' aria-label='6 shows; usually 3 to 12'><span class='gap small'>6</span><span class='typ'>med 5</span></td></tr>
 <tr><td class='song'><a href='../song/ocelot.html#2013-11-02'>Ocelot</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-27.html'>2013-10-27</a></span><span class='venue'>XL Center</span><span class='place'>Hartford, CT</span></td><td class='bar' data-tip='4 shows; usually 2 to 5' aria-label='4 shows; usually 2 to 5'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:56.67%'></span></span></td><td class='n' data-tip='4 shows; usually 2 to 5' aria-label='4 shows; usually 2 to 5'><span class='gap small'>4</span><span class='typ'>med 4</span></td></tr>
 <tr><td class='song'><a href='../song/water-in-the-sky.html#2013-11-02'>Water in the Sky</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-23.html'>2013-10-23</a></span><span class='venue'>Glens Falls Civic Center</span><span class='place'>Glens Falls, NY</span></td><td class='bar' data-tip='7 shows; usually 3 to 15' aria-label='7 shows; usually 3 to 15'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:42.57%'></span></span></td><td class='n' data-tip='7 shows; usually 3 to 15' aria-label='7 shows; usually 3 to 15'><span class='gap small'>7</span><span class='typ'>med 6.5</span></td></tr>
-<tr><td class='song'><a href='../song/sample-in-a-jar.html#2013-11-02'>Sample in a Jar</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-20.html'>2013-10-20</a></span><span class='venue'>Hampton Coliseum</span><span class='place'>Hampton, VA</span></td><td class='bar' data-tip='9 shows; usually 2 to 6' aria-label='9 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:77.50%'></span></span></td><td class='n' data-tip='9 shows; usually 2 to 6' aria-label='9 shows; usually 2 to 6'><span class='gap small'>9</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
+<tr><td class='song'><a href='../song/sample-in-a-jar.html#2013-11-02'>Sample in a Jar</a><span class='verdict overdue at-song' aria-hidden='true'>overdue</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-20.html'>2013-10-20</a></span><span class='venue'>Hampton Coliseum</span><span class='place'>Hampton, VA</span></td><td class='bar' data-tip='9 shows; usually 2 to 6' aria-label='9 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:77.50%'></span></span></td><td class='n' data-tip='9 shows; usually 2 to 6' aria-label='9 shows; usually 2 to 6'><span class='gap small'>9</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
 <tr><td class='song'><a href='../song/funky-bitch.html#2013-11-02'>Funky Bitch</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-25.html'>2013-10-25</a></span><span class='venue'>DCU Center</span><span class='place'>Worcester, MA</span></td><td class='bar' data-tip='6 shows; usually 2 to 8' aria-label='6 shows; usually 2 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:58.07%'></span></span></td><td class='n' data-tip='6 shows; usually 2 to 8' aria-label='6 shows; usually 2 to 8'><span class='gap small'>6</span><span class='typ'>med 4</span></td></tr>
 <tr><td class='song'><a href='../song/46-days.html#2013-11-02'>46 Days</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-25.html'>2013-10-25</a></span><span class='venue'>DCU Center</span><span class='place'>Worcester, MA</span></td><td class='bar' data-tip='6 shows; usually 3 to 7' aria-label='6 shows; usually 3 to 7'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:59.61%'></span></span></td><td class='n' data-tip='6 shows; usually 3 to 7' aria-label='6 shows; usually 3 to 7'><span class='gap small'>6</span><span class='typ'>med 5</span></td></tr>
 <tr><td class='song'><a href='../song/theme-from-the-bottom.html#2013-11-02'>Theme from the Bottom</a><a class='jc-chip' href='../song/theme-from-the-bottom.html#2013-11-02'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-26.html'>2013-10-26</a></span><span class='venue'>DCU Center</span><span class='place'>Worcester, MA</span></td><td class='bar' data-tip='4 shows; usually 3 to 12' aria-label='4 shows; usually 3 to 12'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:34.59%'></span></span></td><td class='n' data-tip='4 shows; usually 3 to 12' aria-label='4 shows; usually 3 to 12'><span class='gap small'>4</span><span class='typ'>med 4</span></td></tr>
@@ -535,7 +530,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 </tbody></table>
 <div class='perf'></div><h2><span class='tab'>ENCORE</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
-<tr><td class='song'><a href='../song/sleeping-monkey.html#2013-11-02'>Sleeping Monkey</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-07-12.html'>2013-07-12</a></span><span class='venue'>Nikon at Jones Beach Theater</span><span class='place'>Wantagh, NY</span></td><td class='bar' data-tip='31 shows; usually 9 to 19' aria-label='31 shows; usually 9 to 19'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:80.00%'></span></span></td><td class='n' data-tip='31 shows; usually 9 to 19' aria-label='31 shows; usually 9 to 19'><span class='gap small'>31</span><span class='typ'>med 12</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
+<tr><td class='song'><a href='../song/sleeping-monkey.html#2013-11-02'>Sleeping Monkey</a><span class='seg'>&gt;</span><span class='verdict overdue at-song' aria-hidden='true'>overdue</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-07-12.html'>2013-07-12</a></span><span class='venue'>Nikon at Jones Beach Theater</span><span class='place'>Wantagh, NY</span></td><td class='bar' data-tip='31 shows; usually 9 to 19' aria-label='31 shows; usually 9 to 19'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:80.00%'></span></span></td><td class='n' data-tip='31 shows; usually 9 to 19' aria-label='31 shows; usually 9 to 19'><span class='gap small'>31</span><span class='typ'>med 12</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
 <tr><td class='song'><a href='../song/tweezer-reprise.html#2013-11-02'>Tweezer Reprise</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2013-10-27.html'>2013-10-27</a></span><span class='venue'>XL Center</span><span class='place'>Hartford, CT</span></td><td class='bar' data-tip='3 shows; usually 1 to 4' aria-label='3 shows; usually 1 to 4'><span class='track'><span class='band'></span><span class='mid'></span><span class='at small' style='left:56.67%'></span></span></td><td class='n' data-tip='3 shows; usually 1 to 4' aria-label='3 shows; usually 1 to 4'><span class='gap small'>3</span><span class='typ'>med 3</span></td></tr>
 </tbody></table><div class='notes'>Prior to the start of the first set, Trey brought out a jack-o&#39;-lantern with the Wilson logo carved into it and set it down before beginning Wilson.&nbsp;Theme contained a funk jam with quotes of the Theme from <em>Shaft</em>&nbsp;(&quot;Who&#39;s the Chuck Norris-looking private dick who&#39;s a sex machine with all the chicks?&quot;), and banter about Fish&#39;s least favorite and second-least favorite presidents (&quot;Bush&quot;), and favorite beer (&quot;Busch&quot;). DWD contained teases of Tears of a Clown and Fuego by Mike, lyrics changed to &quot;swinging on my bush,&quot; and was unfinished. Trey teased the <em>Odd Couple Theme</em> in Tweezer&nbsp;and Page teased Rhapsody in Blue in Tweezer Reprise.</div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
