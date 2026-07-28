@@ -1229,8 +1229,35 @@ rather than looking for a scrollbar.
     at the Wharf` each answered for the other. Checked by replaying every
     venue's own link against the built haystack: 153 of 153 now return exactly
     their own shows. **Re-run that check if the matcher is ever touched.**
-- Venue and tour on a show page are plain text; make them searches. Now cheap:
-  link them to `index.html?q="<venue>"` the way `venues.html` does.
+- ~~Venue and tour on a show page are plain text; make them searches.~~ **DONE
+  2026-07-28.** Both link to `index.html?q="<name>"`, through one
+  `search_href()` so the quoting rule — which is the whole correctness of these
+  links — is stated once rather than in every caller.
+  - **Replayed rather than assumed**, the same check the venues page got:
+    every link every show page emits, run against the built index's own
+    haystack. **691 venue links and 669 tour links return exactly their own
+    shows, 0 do not.**
+  - **And the failure §8b.4 predicted has now actually happened.** That note
+    said quoted phrases are "correct-in-practice rather than
+    correct-by-construction, and a future venue name that is a phrase-prefix of
+    another would break it". It was not a venue: **`2011 NYE` is inside
+    `2010/2011 NYE Run`**, so its link returned nine shows for a four-show run.
+    One of sixty-two tours.
+    - Fixed by checking rather than trusting: `ambiguous_tours()` finds any
+      name that is a substring of another, and those stay plain text. The run
+      logs which names it dropped, so this cannot go quiet. Today that is
+      exactly one name and four shows.
+    - The correct-by-construction fix is still a `?tour=` parameter matched
+      against a `data-tour` attribute. It needs a visible affordance to explain
+      why the list is filtered — `?q=` explains itself by filling the search
+      box, and a filter with no control is a mystery — so it is his call, not
+      a cheap swap.
+  - **Both links came out in the browser's default blue on the first build**,
+    because `CSS` had no rule for a link in a masthead. Fifth instance tonight.
+    Caught by measuring the computed colour before shipping rather than by a
+    reader. They keep their own colour and weight — demoting the venue to
+    `--dim` would demote the venue — and take the hairline every other link on
+    the site wears.
 - Bustout leaderboard (biggest gaps per performance, archive-wide).
 - On this day. Random show. `sitemap.xml`, `robots.txt`, a feed — all 404.
 - Song pages have no next/prev performance stepper; show pages do.

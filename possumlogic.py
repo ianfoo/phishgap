@@ -1451,6 +1451,17 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    just a dot. The ordinal brings its own, which is the only join left. */
 .where{margin:0 0 .45rem;font-size:1.125rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink)}
+/* The venue and the tour are links now -- to the index filtered to that room
+   or that run -- and a masthead link is drawn differently from a link in
+   prose. It keeps its own colour and weight, because demoting it to --dim
+   would demote the venue in the masthead, and takes only the hairline every
+   other link on this site wears. Without this rule both came out in the
+   browser's default blue with a browser underline, which is the fifth time
+   that has happened here: a new link in a sheet with no rule for it. */
+.where .v-name a,.show .tour a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.where .v-name a:hover,.show .tour a:hover{color:var(--hot);
+   border-bottom-color:var(--hot)}
 /* Two elements, so there is no separator to strand. The locality steps back
    rather than being joined by punctuation that has nowhere safe to break. */
 .where .v-name{display:block}
@@ -2219,7 +2230,7 @@ def _ordinal(n):
 def render_html(report, bar_scale="linear", index_href=None,
                 prev_date=None, next_date=None, songs=(), card=None,
                 archived_show=(), sheet="../fonts.css", calendar=(),
-                on_phishin=None):
+                on_phishin=None, unlinkable_tours=()):
     # Whether this is a show at all. A soundcheck's songs are real and its
     # gaps are phish.net's, but nothing here feeds the rest of the site, and a
     # count of bustouts is a verdict wearing a number's clothes.
@@ -2561,7 +2572,20 @@ def render_html(report, bar_scale="linear", index_href=None,
         tour = "<span class='nth'>%s</span>" % nth if nth else ""
         if name:
             tour += ("<span class='sep'>&middot;</span>" if nth else "")
-            tour += "<span class='tour'>%s</span>" % name
+            # The tour is a search, not a label. Every show of it is one click
+            # away and the index already carries the tour name in each row's
+            # haystack, so this needs no page of its own and nothing that can
+            # fall out of step with the archive. Quoted, for the reason the
+            # venue links are: unquoted words match loosely and "2026 Summer
+            # Tour" would answer for any show with those words anywhere in it.
+            #
+            # Unless the name is inside another name, in which case even the
+            # quoted phrase is not exact and the tour stays plain text. See
+            # ambiguous_tours.
+            tour += ("<span class='tour'>%s</span>" % name
+                     if name in unlinkable_tours else
+                     "<span class='tour'><a href='%s'>%s</a></span>"
+                     % (search_href(name), name))
 
     # phish.net's own rating for the night, which their API does not expose --
     # fouldomain does, so it is theirs by way of someone else and says so.
@@ -3339,6 +3363,40 @@ def _clock(iso):
     return html.escape(iso[11:16]) if iso else ""
 
 
+def ambiguous_tours(reports):
+    """Tour names that are a substring of another tour name.
+
+    A tour link is a quoted phrase search, and a quoted phrase is exact only if
+    no other name contains it. Measured over the archive: **2011 NYE** is inside
+    **2010/2011 NYE Run**, so linking it returned nine shows for a four-show
+    run. One of sixty-two, and the only one -- but this is the failure §8b.4
+    predicted for the venue links and it has now actually happened, on tours
+    rather than on rooms.
+
+    So the name is checked rather than trusted. A tour that cannot be searched
+    for exactly is left as plain text, which is what it was yesterday: the site
+    would rather say nothing than send a reader somewhere with the wrong shows
+    in it.
+    """
+    names = {r.get("tour") or "" for r in reports}
+    names.discard("")
+    return {a for a in names if any(a != b and a in b for b in names)}
+
+
+def search_href(phrase, root="../"):
+    """The index, filtered to one exact phrase.
+
+    Quoted, always. Measured on the venues page when these links were first
+    built: unquoted, 6 of 153 venues returned somebody else's shows -- "Key
+    Arena" matched eight, being any arena with a "key" anywhere in its setlist,
+    and the two Wharf amphitheatres each answered for the other. The quoting is
+    the whole correctness of this link, so it lives in one function rather than
+    in every caller.
+    """
+    return "%sindex.html?q=%s" % (
+        root, urllib.parse.quote('"%s"' % phrase, safe=""))
+
+
 def _venue_lines(report):
     """The venue and its locality as two elements, with no comma between them.
 
@@ -3360,8 +3418,17 @@ def _venue_lines(report):
         # Reports saved before venue/city/state were stored separately.
         parts = [p.strip() for p in (report.get("venue") or "").split(",")]
         venue, place = (parts[0] if parts else ""), ", ".join(parts[1:])
-    return ("<span class='v-name'>%s</span><span class='v-place'>%s</span>"
-            % (html.escape(venue), html.escape(place)))
+    # The venue is a search too -- the same link venues.html gives it, so a
+    # reader who wants the other nights in this room does not have to go via a
+    # third page to ask. The locality is not linked: it is context for the
+    # venue rather than a thing to browse, and two links in a two-line block
+    # would make the block read as a list of destinations.
+    return ("<span class='v-name'><a href='%s'>%s</a></span>"
+            "<span class='v-place'>%s</span>"
+            % (search_href(venue, root="../"), html.escape(venue),
+               html.escape(place)) if venue else
+            "<span class='v-name'></span><span class='v-place'>%s</span>"
+            % html.escape(place))
 
 
 def _full_weekday(iso):
@@ -7549,6 +7616,9 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     live_now = [r["date"] for r in known if r.get("provisional")]
     if live_now:
         log("%d show(s) still coming in: %s", len(live_now), ", ".join(live_now))
+    no_tour_link = ambiguous_tours(known)
+    if no_tour_link:
+        log("tour names too alike to link: %s", ", ".join(sorted(no_tour_link)))
     for report in known:
         date = report["date"]
         if not (rebuild or date in stale):
@@ -7560,7 +7630,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates,
                 sheet="../fonts.css", calendar=calendar,
-                on_phishin=on_phishin)):
+                on_phishin=on_phishin, unlinkable_tours=no_tour_link)):
             if date in fresh:
                 log("wrote %s", page)
             else:
