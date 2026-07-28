@@ -1076,6 +1076,10 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    just a dot. The ordinal brings its own, which is the only join left. */
 .where{margin:0 0 .45rem;font-size:1.125rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink)}
+/* Two elements, so there is no separator to strand. The locality steps back
+   rather than being joined by punctuation that has nowhere safe to break. */
+.where .v-name{display:block}
+.where .v-place{display:block;font-size:.875rem;color:var(--ink-soft)}
 /* Below the stats rather than in the masthead: the header stays a tight block
    of identity, and the links get their own air on the first screen. */
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
@@ -1226,8 +1230,12 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
    transform:translateX(-50%);background:var(--ink);border-radius:1px;
    box-shadow:0 0 0 2px var(--paper)}
-.bar .at.big{background:var(--hot)}
-.bar .at.small{background:var(--cool)}
+.bar .at.late{background:var(--hot)}
+.bar .at.early{background:var(--cool)}
+/* Inside its own band is the ordinary case and gets no colour at all -- ink,
+   like the figures. Two thirds of rows land here, and colouring them would
+   spend the palette on "nothing to report". */
+.bar .at.usual{background:var(--ink)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
 .last .date{white-space:nowrap}
 /* Named only where the column header is not doing it -- on a wide screen the
@@ -1360,6 +1368,14 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      risk pushing the page sideways. */
   .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
   h1{margin-bottom:.45rem}
+  /* At this width the whole thing fits on one line, so it reads better joined
+     -- and a middot cannot be orphaned the way a comma was, because it only
+     exists when the two parts are already side by side. */
+  .where .v-name,.where .v-place{display:inline}
+  /* Margin rather than spaces inside content: a leading or trailing space in
+     a generated string collapses, which left "GARDEN ·NEW YORK". */
+  .where .v-place::before{content:"\\00B7";color:var(--dim);
+     margin:0 .45rem 0 .55rem}
   .show .date{font-size:1.25rem}
   .show .tour{font-size:.625rem;font-weight:400;letter-spacing:.14em}
   .show .tour::before{font-size:1rem;margin:0 .5rem}
@@ -1818,17 +1834,26 @@ def render_html(report, bar_scale="linear", index_href=None,
                 # implying a comparison that was never made.
                 bar = "<td class='bar'%s><span class='track bare'></span></td>" % explain
             else:
+                # The mark is coloured by where it landed, not by how large
+                # the number is. Those are different questions and they
+                # disagree: a gap of 10 against a median of 5 sits right of the
+                # band and is called overdue, but 10 is under the absolute
+                # threshold, so the mark was drawn cool while its position and
+                # the verdict beside it both said late. Position is what this
+                # graphic encodes, so position is what it may colour.
+                where = ("early" if pos < 30 else
+                         "late" if pos > 70 else "usual")
                 bar = ("<td class='bar'%s><span class='track'>"
                        "<span class='band'></span><span class='mid'></span>"
                        "<span class='at %s' style='left:%.2f%%'></span>"
-                       "</span></td>" % (explain, klass, pos))
+                       "</span></td>" % (explain, where, pos))
         # Both statistics cells carry the explanation, so the hover target is
         # the whole of them rather than a range bar that can be five pixels wide.
         # The title is the way in to the song's own history, but only once that
         # page exists: a report archived before song pages did has songs the
         # band has not played since, and those get a page when they next come
         # round rather than a link to nowhere now.
-        title = html.escape(s["song"])
+        title = html.escape(typographic(s["song"]))
         href = ""
         if s["slug"] in songs:
             # Anchored at this very performance, so the link answers "where
@@ -1978,7 +2003,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         date=html.escape(report["date"]), crumb=crumb, tour=tour,
         dow=_full_weekday(report["date"]),
         live=live, refresh=refresh, aside=aside,
-        venue=html.escape(report["venue"]), hero=hero, rating=rating,
+        venue=_venue_lines(report), hero=hero, rating=rating,
         links=_show_links(report["date"], on_phishin), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
         sheet=('<link href="%s" rel="stylesheet">' % sheet if sheet
@@ -2334,6 +2359,43 @@ def _date_aliases(iso):
         # saying. "sun" is a prefix of "sunday", so one spelling covers both.
         d.strftime("%A"),
     ))
+
+
+def typographic(text):
+    """A straight apostrophe becomes the right single quote.
+
+    The display face has 149 codepoints and U+0027 is not among them, while
+    U+2019 is -- so "Mike\u2019s Song" set in Bagnard drops the apostrophe or
+    falls back to another face mid-word, visibly, on 35 of 587 song titles.
+    U+2019 is the correct mark for an English apostrophe regardless of which
+    face is in use, so this is worth doing even if the face changes.
+    """
+    return (text or "").replace("'", "\u2019")
+
+
+def _venue_lines(report):
+    """The venue and its locality as two elements, with no comma between them.
+
+    One flat string could not be made to wrap well. The masthead puts the date
+    in an auto-sized grid column, so the venue's column is whatever is left --
+    258px at 1280 and 187px at 1000, never more however wide the window. Long
+    venues therefore always wrap, and the comma joining venue to city was
+    stranded at the end of a line every time: "MADISON SQUARE GARDEN," above
+    "NEW YORK, NY", and at 1000px a second orphan a line further up.
+
+    No CSS can detect a wrap, so the separator has to stop existing. The index
+    rows already solved this -- venue and place as two elements, no comma --
+    and this is that pattern. Wide: two lines, the locality quieter. Narrow:
+    one line joined by a middot, where the whole string fits anyway.
+    """
+    venue = report.get("venue_name") or ""
+    place = ", ".join(p for p in (report.get("city"), report.get("state")) if p)
+    if not venue:
+        # Reports saved before venue/city/state were stored separately.
+        parts = [p.strip() for p in (report.get("venue") or "").split(",")]
+        venue, place = (parts[0] if parts else ""), ", ".join(parts[1:])
+    return ("<span class='v-name'>%s</span><span class='v-place'>%s</span>"
+            % (html.escape(venue), html.escape(place)))
 
 
 def _full_weekday(iso):
@@ -2749,7 +2811,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
    transform:translateX(-50%);background:var(--ink);border-radius:1px;
    box-shadow:0 0 0 2px var(--paper)}
-.bar .at.big{background:var(--hot)}
+.bar .at.late{background:var(--hot)}
+.bar .at.early{background:var(--cool)}
+.bar .at.usual{background:var(--ink)}
 /* Only the rated versions carry these, which is 25 rows out of however many
    hundred -- and only they are known to have audio, since a version cannot be
    scored until a recording of it circulates. */
@@ -3277,10 +3341,13 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         bar = "<span class='bar'><span class='track bare'></span></span>"
         pos = _band_pos(g, low, high) if (g is not None and not debut) else None
         if pos is not None:
+            # Coloured by where it landed rather than by the size of the
+            # number, so it cannot disagree with its own position.
+            where = "early" if pos < 30 else "late" if pos > 70 else "usual"
             bar = ("<span class='bar'><span class='track'>"
                    "<span class='band'></span><span class='mid'></span>"
-                   "<span class='at%s' style='left:%.2f%%'></span>"
-                   "</span></span>" % (" big" if big else "", pos))
+                   "<span class='at %s' style='left:%.2f%%'></span>"
+                   "</span></span>" % (where, pos))
         mark = ""
         if date in rated:
             v = rated[date]
@@ -3422,9 +3489,10 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         analytics=ANALYTICS,
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
         cols=cols, caveat=caveat, theme_js=THEME_JS,
-        theme_ui=THEME_UI, song=html.escape(song), subtitle=subtitle,
+        theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(countable), eras=chips,
-        share=share_meta(html.escape(song), html.escape(blurb, quote=True),
+        share=share_meta(html.escape(typographic(song)),
+                         html.escape(blurb, quote=True),
                          "song/%s.html" % doc["slug"], card=card),
         stuckstat="<b>%d</b> shows &middot; median gap <b>%s</b>"
                   % (len(perfs), _stat(_median(gaps)) if gaps else "&mdash;"),
@@ -3852,7 +3920,16 @@ def save_card_prints(site_dir, prints):
 
 
 def card_print(markup):
-    return hashlib.sha256(markup.encode("utf-8")).hexdigest()[:16]
+    """What a card would look like, as a hash.
+
+    The stylesheet is part of it. It was not, on the reasoning that a page
+    carries a stylesheet and a card does not -- but CARD_CSS *is* the card's
+    stylesheet, so changing the display face would have redrawn none of the
+    711 cards and left every one of them set in the old type with no way to
+    notice. A card is markup plus the rules that draw it.
+    """
+    return hashlib.sha256(
+        (markup + CARD_CSS).encode("utf-8")).hexdigest()[:16]
 
 
 def chrome_exe():
@@ -4011,7 +4088,7 @@ def song_card(doc):
     best = (doc.get("best") or [None])[0]
     span = ("%s &ndash; %s" % (perfs[0]["date"][:4], perfs[-1]["date"][:4])
             if perfs else "")
-    title = html.escape(doc["song"])
+    title = html.escape(typographic(doc["song"]))
     return card_markup(
         "Every performance", title, span,
         (("%d" % len(perfs), "Times played", ""),
