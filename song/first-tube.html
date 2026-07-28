@@ -7,16 +7,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
 <link href="../fonts.css" rel="stylesheet">
-<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
 :root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 :root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
 }
 @media screen{
-:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
 :root[data-theme="dark"] .badge img.flip{filter:invert(1)}
 :root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
 }
@@ -43,23 +43,12 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
-.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .9rem;
    margin-bottom:1.1rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
-   Padding is the obvious fix and the wrong one here: the border-bottom *is*
-   the affordance, and padding-bottom would push that underline away from the
-   word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
-.crumb a{position:relative}
-.crumb a::before{content:"";position:absolute;left:50%;top:50%;
-   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 /* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
@@ -317,15 +306,9 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
-   background:var(--band);opacity:var(--band-opacity);border-radius:1px}
+   background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
    background:var(--paper);opacity:.85}
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
@@ -549,14 +532,7 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -757,7 +733,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='1999-09-16' data-date='1999-09-16' data-era='1.0' data-gap='1' data-score='' data-search="1999-09-16 09/16/1999 9/16/1999 9/16/99 09/16 9/16 9-16 september 16 1999 september 16 thursday shoreline amphitheatre mountain view ca  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-16' target='_blank' rel='noopener noreferrer'>1999-09-16</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Shoreline Amphitheatre</span><span class='r-place'>Mountain View, CA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Farmhouse</span><span class='nb-out'>Carini</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:12.24%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 1</span></span></div></li>
 <li id='1999-09-12' data-date='1999-09-12' data-era='1.0' data-gap='1' data-score='' data-search="1999-09-12 09/12/1999 9/12/1999 9/12/99 09/12 9/12 9-12 september 12 1999 september 12 sunday portland meadows portland or  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-12' target='_blank' rel='noopener noreferrer'>1999-09-12</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Portland Meadows</span><span class='r-place'>Portland, OR</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out'>Poor Heart</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:12.24%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 1</span></span></div></li>
 <li id='1999-09-10' data-date='1999-09-10' data-era='1.0' data-gap='0' data-score='' data-search="1999-09-10 09/10/1999 9/10/1999 9/10/99 09/10 9/10 9-10 september 10 1999 september 10 friday gorge amphitheatre george wa  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-10' target='_blank' rel='noopener noreferrer'>1999-09-10</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Gorge Amphitheatre</span><span class='r-place'>George, WA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Farmhouse</span><span class='nb-out'>Twist</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:0.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>0</span><span class='set'>SET 1</span></span></div></li>
-<li id='1999-09-09' data-date='1999-09-09' data-era='1.0' data-gap='-1' data-score='' data-search="1999-09-09 09/09/1999 9/9/1999 9/9/99 09/09 9/9 9-9 september 09 1999 september 9 thursday gm place vancouver british columbia  phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-09' target='_blank' rel='noopener noreferrer'>1999-09-09</a><span class='dow'>Thu</span></span><span><span class='r-venue'>GM Place</span><span class='r-place'>Vancouver, British Columbia</span><p class='note'><span class='tag'>Note</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>The Inlaw Josie Wales</span><span class='nb-out'>Tweezer</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='1999-09-09' data-date='1999-09-09' data-era='1.0' data-gap='-1' data-score='' data-search="1999-09-09 09/09/1999 9/9/1999 9/9/99 09/09 9/9 9-9 september 09 1999 september 9 thursday gm place vancouver british columbia  phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-09-09' target='_blank' rel='noopener noreferrer'>1999-09-09</a><span class='dow'>Thu</span></span><span><span class='r-venue'>GM Place</span><span class='r-place'>Vancouver, British Columbia</span><p class='note'><span class='tag'>Note</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>The Inlaw Josie Wales</span><span class='nb-out'>Tweezer</span></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
