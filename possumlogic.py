@@ -2407,6 +2407,13 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
 .reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
 a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
@@ -2632,14 +2639,25 @@ header{padding-bottom:.9rem}
    font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
    color:var(--dim);max-width:56ch}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
-/* The shelf, under the due list. Set as a section heading rather than as a
-   second masthead: it is the same kind of thing as the list above it, held
-   back for one reason, and a heading the size of the page title would say it
-   was a second subject. */
-.shelf-h{margin:2.6rem 0 .4rem;font-family:'Bagnard',Georgia,serif;
-   font-weight:400;font-size:1.5rem;line-height:1.2;
+/* A section heading, under the due list. At 1.5rem it was barely larger than
+   the 1rem song titles it headed, which made a new section read as another
+   row. 2.125rem sits clearly between the page title and the data. */
+.shelf-h{margin:3rem 0 .5rem;font-family:'Bagnard',Georgia,serif;
+   font-weight:400;font-size:2.125rem;line-height:1.15;
    scroll-margin-top:2.6rem}
 .shelf-h+.dek{margin-bottom:1.1rem}
+/* The way back up. This is the fourth place it has been wanted -- the FAQ's
+   answers, and now each section here -- so it is a house idiom rather than a
+   page's own trick: jumping somewhere should never maroon a reader there, and
+   these pages are long. Mono and small: a control, not a sentence. */
+.backtop{margin:1rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative;display:inline-block}
+.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
 /* The venue list borrows the due page's three-column shape because it answers
    the same shape of question: a name, a when, and one figure worth ranking by.
    Its own class names, though -- .d-* means "due", and a venue row sharing
@@ -3342,6 +3360,13 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
 .reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
 a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
@@ -4563,7 +4588,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
@@ -4582,9 +4607,14 @@ this song&rsquo;s usual gap, which is printed under it.</p>
 <p class="dek">Being late is not the same as being expected, and more late is
 not more expected. A song at six times its usual gap is not one anybody is
 waiting on &mdash; it is drifting out of rotation. So past {mult}&times; a song
-is <a href="#overdue">overdue</a> rather than due, past {cap} shows it is
+is <a href="#slipping">slipping</a> rather than due, past {cap} shows it is
 <a href="#shelf">on the shelf</a>, and with no recent habit at all it is
-dormant. All three are below.</p></header>
+dormant. All three are below.</p>
+<p class="dek">None of this knows what the band has planned. A themed night
+overrides every figure here &mdash; the 2021 Halloween runs built around
+numbers and animals, the elements nights of the first Sphere run, a run played
+entirely out of one decade &mdash; and the theme is usually not public before
+the show. On a night like that the list below is the wrong question.</p></header>
 <section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
 <div class="lhead due-h"><span>Song</span>
@@ -4725,8 +4755,13 @@ def _due_row(over, n, high, doc, last):
             # it broke -- "usually back" then a stranded "by 14.4". Each line
             # is now a whole statement: how long it has been, and what normal
             # is for this song.
-            "<span class='typ'><span>%s shows</span>"
-            "<span>usually every %s</span></span>"
+            # "usually every 5.5" beside "93 shows" was two numbers arguing in
+            # one row -- a song gone 93 shows is plainly not being played every
+            # 5.5. It is a noun now, not a claim about the present: this is the
+            # song's usual gap over the ten-year window, and the sections say
+            # so where the two figures are far apart.
+            "<span class='typ'><span>%s shows since</span>"
+            "<span>usual gap %s</span></span>"
             "</span></a></li>"
             % (html.escape(doc["slug"], quote=True),
                html.escape(typographic(doc["song"])),
@@ -4751,19 +4786,30 @@ def render_due(docs, counting, since, card=None):
                 "<div class='lhead due-h'><span>Song</span>"
                 "<span>Last played</span><span class='end'>How late</span></div>"
                 "<ol class='due'>%s</ol>"
+                "<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
                 % (anchor, title, blurb, "\n".join(_due_row(*r) for r in rows)))
 
     shelf = section(
-        "overdue", "Overdue",
+        "slipping", "Slipping",
         "Well past their usual gap rather than a little past it. These could "
         "turn up, and they could equally be on their way out of rotation "
-        "&mdash; either way they are not what anybody is expecting tonight.",
+        "&mdash; either way they are not what anybody is expecting tonight. "
+        "The usual gap beside each one is measured over the last ten years of "
+        "its performances, so for a song this far past it, read it as the "
+        "schedule the song <em>was</em> on. "
+        "Called slipping rather than overdue because a show page already uses "
+        "<em>overdue</em> for something narrower and different: one "
+        "performance that came back later than that song usually does. Every "
+        "song on this page, in both lists, would be stamped overdue if it "
+        "turned up tonight.",
         overdue)
     shelf += section(
         "shelf", "On the shelf",
-        "Past their usual gap as well, and gone more than %d shows &mdash; far "
-        "enough that hearing one would be a bustout rather than a song turning "
-        "up late." % BUSTOUT_GAP,
+        "Gone more than %d shows &mdash; long enough that the habit they are "
+        "being measured against has probably stopped being true. Note this is "
+        "not the same as saying their return would be a bustout: these songs "
+        "all still have a recent record, and this site reserves that word for "
+        "songs that do not." % BUSTOUT_GAP,
         shelved)
 
     # The same hero vocabulary the index uses, counting the four categories and
@@ -4771,7 +4817,7 @@ def render_due(docs, counting, since, card=None):
     # rows is a page of its own rather than a section (see TODO 2f) -- so its
     # card states the figure and does not offer a link it cannot honour.
     cards = [(len(due), "Due", " hot", "#main"),
-             (len(overdue), "Overdue", "", "#overdue"),
+             (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
              (dormant, "Dormant", "", "")]
     hero = "".join(
@@ -5166,12 +5212,23 @@ eleven falls here, which is the honest answer for something the band has nearly
 stopped playing.</p>
 
 <h2 id="bustouts">Bustouts</h2>
-<p>A gap of <b class="num">100</b> or more is a
-<span class="verdict bust">bustout</span> regardless of everything above. A
-hundred sits where Phish.net's own setlist notes use the word. The gap alone
-decides it: a gap counts shows, so a large one already proves the song has been
-in the catalogue a long while &mdash; nothing newly written can reach the
-threshold.</p>
+<p>A <span class="verdict bust">bustout</span> is a song coming back that had
+no recent record to be judged against, after a gap of <b class="num">100</b> or
+more. A hundred sits where Phish.net's own setlist notes use the word.</p>
+<p><b>It is not simply any gap over a hundred</b>, and this page said it was
+for a long time. Where a song <em>does</em> have a recent record &mdash; the
+eight-or-more performances the section above needs &mdash; that record decides
+the verdict, and a long gap is marked <span class="verdict">overdue</span>
+instead. Of the <b class="num">335</b> performances in this archive with a gap
+of a hundred or more, <b class="num">293</b> are bustouts and
+<b class="num">42</b> are not: Crowd Control came back after
+<b class="num">122</b> shows and Nellie Kane after <b class="num">146</b>, and
+both were overdue rather than bustouts, because both were still in the band's
+rotation.</p>
+<p>Within the bustout branch the gap alone decides it, with no test on how
+often the song was ever played: a gap counts shows, so a large one already
+proves the song has been in the catalogue a long while, and nothing newly
+written can reach the threshold.</p>
 
 <h2 id="ratings-and-jam-charts">Ratings and jam charts</h2>
 <p>Version scores and the Phish.net show rating both come by way of
@@ -5392,16 +5449,26 @@ more expected. A song at six times its usual gap is not one anybody is waiting
 on; it is drifting out of rotation. So the <a href="./due.html">due page</a>
 sorts songs into four:</p>
 <dl class="defs">
-<dt>Due</dt><dd>Past its usual gap, but less than twice past. A song you would
-not be surprised to hear tonight.</dd>
-<dt>Overdue</dt><dd>More than twice its usual gap and still inside a hundred
-shows. Could come back, could be on the way out.</dd>
-<dt>On the shelf</dt><dd>Gone more than a hundred shows &mdash; far enough that
-hearing it would be a bustout rather than a song turning up late.</dd>
-<dt>Dormant</dt><dd>No recent habit at all, and gone a bustout&rsquo;s worth.
+<dt>Due</dt><dd>The band plays it at least every twenty shows or so, and it is
+now past its usual gap but less than three and a half times past. A song you
+would not be surprised to hear tonight.</dd>
+<dt>Slipping</dt><dd>Well past its usual gap, or too rare to expect on any one
+night. Could come back, could be on the way out of rotation.</dd>
+<dt>On the shelf</dt><dd>Gone more than a hundred shows &mdash; long enough
+that the habit it is being measured against has probably stopped being
+true.</dd>
+<dt>Dormant</dt><dd>No recent record at all, and gone a hundred shows or more.
 Nobody is expecting it, and ranking these would bury the songs somebody might
 actually shout for tonight.</dd>
 </dl>
+<p><em>Slipping</em>, not <em>overdue</em>, because a show page already uses
+overdue for something narrower: a single performance that came back later than
+that song usually does. Every song on the due page would be stamped overdue if
+it turned up tonight, so the word cannot also name one of the lists.</p>
+<p>None of it knows what the band has planned. A themed night overrides every
+figure &mdash; the 2021 Halloween runs built around numbers and animals, the
+elements nights of the first Sphere run, a run played out of a single decade
+&mdash; and the theme is usually not public beforehand.</p>
 <p>The hundred-show line is where this site already draws a bustout. It is
 counted in shows rather than in months on purpose: a gap of thirty-six shows is
 thirty-six chances to hear it, whether the band took eight months over them or

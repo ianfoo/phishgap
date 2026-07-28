@@ -288,6 +288,90 @@ construction. The one place a rate assumption was baked in was a code comment
 converting the cap to years — it now names the measured range and the era it
 applies to instead of a single number stated as if timeless.
 
+## 2g. Ian's due-page review, 2026-07-28 — mostly DONE, three open
+
+Fixed in the same pass:
+
+- **"Overdue" was overloaded.** He caught it: show pages already stamp a
+  *performance* overdue when its gap passed the 85th percentile, and the due
+  page had taken the word for a *category*. They are not the same claim, and
+  every song on the due page — both lists — would be stamped overdue if it
+  turned up tonight, so the word cannot also name one of the lists. The
+  section is **Slipping** now. **[ruling] the name is mine and is cheap to
+  change**; what matters is that it is not "overdue".
+- **"usually every 5.5" beside "93 shows"** was two numbers arguing in one
+  row. Reads `usual gap 5.5` now — a noun, not a claim about the present —
+  and the Slipping section says outright that for a song this far past it,
+  that figure is the schedule it *was* on.
+- **The bustout claim was false and the method page stated it flatly.** "A gap
+  of 100 or more is a bustout regardless of everything above" — it is not.
+  Bustout is the `elif` branch in `_classify`: it fires only where a song has
+  *no* recent record. Measured: of **335** performances with a gap ≥ 100,
+  **293** are bustouts and **42** are not — Crowd Control came back after 122
+  shows and Nellie Kane after 146, both marked overdue, both still in
+  rotation. Method page, FAQ and the shelf blurb all corrected.
+- **Decimals overhanging the row edge on iPhone**, and the cause was not the
+  decimal. `white-space:nowrap` plus a 17-character caption in a 7rem column
+  overflowed; the shorter label fits. But the real find underneath:
+  **`font-variant-numeric:tabular-nums` was in `CSS` only**, so the index,
+  songs, due, venues and *every song page* had been setting their figures in
+  proportional digits. Fourth instance of the §8c one-sheet-of-three bug. All
+  40 rows now share a single right edge, measured.
+- **Back to top from every section.** He has asked for this three times now
+  (FAQ answers, and here), so it is a house idiom in `.backtop` rather than a
+  page's trick. **The general problem is worth stating: this site jumps a
+  reader somewhere and maroons them.** Any new anchor target should ship with
+  its way back.
+- **Section headings were barely larger than the rows they headed** (1.5rem
+  over 1rem). Now 2.125rem.
+- **A nod to themed nights.** His point: "MSG in 5" is playing nothing newer
+  than the 1990s, and the 2021 Halloween runs and the Sphere elements nights
+  did the same thing. The figures cannot know, and the page now says so.
+
+### Still open from that review
+
+- **Type size, site-wide.** Ian: the prose "is incredibly small… I feel this
+  way on iPhone and on desktop. This site is already full of small elements
+  and text (too small in many cases)… I think an accessibility review of the
+  entire site is in order soon." `.dek` is **.8125rem (13px)** and `body` is
+  .875rem (14px), against a 16px default. **Not done here** — it is a
+  site-wide typographic change and wants doing as one deliberate pass with
+  measurements, not by nudging one page. It should take in the 10px labels
+  (`.lbl`, `.crumb`, `.lhead`, `.typ`) at the same time. **This is the single
+  largest open item on the site and it is Ian's, not a reviewer's, so it
+  should not be quietly narrowed.**
+- **[ruling] The masthead's three faces stay as they are.** He asked for a
+  design call: `h1` in Bagnard, subtitle in large mono caps, prose in
+  Literata, and "a designer might have a fit". The call is to keep it, and the
+  reasoning is that the subtitle is **not prose** — it is a derived figure
+  ("9 songs you might reasonably expect tonight"), the same kind of thing as
+  the column headers and the hero labels, and mono caps is the voice this site
+  gives every one of those. Bagnard is deliberately confined to three slots
+  (the wordmark, a show's date, a song's name); a fourth dilutes the one face
+  that is the site's identity. Literata would put the subtitle in the same
+  voice as the paragraph directly beneath it, which is the one place it must
+  not be. **He is right about the cause, though** — the reason it feels
+  arbitrary is that mono is the *default* rather than a choice, which is
+  exactly §8d's open question. Settle that and this stops being a question.
+- **Dormant needs somewhere to go.** Its hero cell states 283 and links
+  nowhere. See §2f.
+
+## 2h. Three things Ian noticed elsewhere, 2026-07-28. NOT STARTED
+
+- **A stray `&rarr;` on the phone layout of a show page**, after the "Last
+  performed" label. The arrow means something specific in a setlist — songs
+  running together — so a decorative one next to data is actively misleading.
+  It is in the narrow-width `.last .cap` treatment.
+- **The gap column has no label on the phone layout.** Every other cell in
+  that stacked row names itself; the reader is left to infer that the large
+  number is the gap. Note the wide layout gets its label from `<th>`, which is
+  hidden below 620px — so this is the same gap the sticky-header work left.
+- **The `LONGEST GAP` hero on a show page should link to the row it is about.**
+  It names a figure that is sitting a few hundred pixels down the same page
+  and offers no way to it. The row already has an `id` — every song row on a
+  show page is `#<slug>`… **check that before building**; the anchor may need
+  adding.
+
 ## 2e. Graphs — Ian, 2026-07-28. FILED, NOT STARTED
 
 His words: "This site needs pretty graphs. Lots more graphs… Especially ones
@@ -311,11 +395,19 @@ anybody reaches for a charting library:
 
 **Ideas, ranked by what the archive can actually support today:**
 
-1. **A song's heartbeat.** One horizontal strip per song page, a tick per
-   performance across its whole life, era-banded behind. This is the chart the
-   site is already half-drawing in prose — McGrupp reading 101 / 1 / 13 / 9 by
-   era is a song nearly dying and coming back, and a strip shows it instantly.
-   Draws left to right on entry.
+1. **A song's trajectory — Ian's own idea, 2026-07-28**, and the best on this
+   list: "the song's trajectory over the years, in terms of play frequency.
+   You can see where a song slipped into being shelved and then into
+   dormancy." One chart per song page: plays per year, with the §2d bands
+   drawn behind it, so the moment a song stopped being in rotation is visible
+   rather than inferred. It is the picture of the classification this session
+   spent its time getting right, and it needs the same thing §2f needs — the
+   ability to evaluate that classification **as of a past date** — so build
+   that once and both this and the catalogue-wide charts fall out of it.
+   Related, simpler, and worth doing first as a warm-up: a **heartbeat strip**,
+   one tick per performance across the song's whole life, era-banded behind.
+   McGrupp reads 101 / 1 / 13 / 9 by era in prose today; a strip shows it
+   instantly.
 2. **Shows per year, 1983–2026.** The chart this very session had to compute by
    hand to answer a question. It belongs on the method or FAQ page, because it
    is the context that makes "gaps are counted in shows" make sense.
