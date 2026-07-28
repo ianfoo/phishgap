@@ -3765,12 +3765,24 @@ they appear, which is why a report published the morning after a show carries
 neither.</p>
 
 <h2 id="when-a-report-appears">When a report appears</h2>
-<p>Nothing in the data says whether a setlist is finished. There is no show
-time to reason from, and the format is not promised &mdash; a rained-out show
-can stop mid-second-set with no encore, so counting sets proves nothing.
-Stability stands in for completeness instead: once a song count has not moved
-for two hours it is taken for the whole show. Until then the report is held
-back, because a half-entered setlist would publish wrong totals.</p>
+<p>A report is published while the show is still being played. Songs appear on
+it as phish.net records them, the page says <b>setlist still coming in</b> with
+how much is there and when it last moved, and it reloads itself every couple of
+minutes. The index says <b>so far</b> next to the song count, because
+<span class="num">24</span> songs means something different tonight than it
+will tomorrow.</p>
+<p>Knowing when it is <em>finished</em> is the harder half, and nothing in the
+data says so. There is no show time to reason from, and the format is not
+promised &mdash; a rained-out show can stop mid-second-set with no encore, so
+counting sets proves nothing. Stability stands in for completeness instead:
+once a song count has not moved for <b>two hours</b>, the show is taken to be
+over and the report stops calling itself provisional.</p>
+<p>Until that happens the figures are real but partial. A median gap over nine
+songs is the median of those nine, not of the night, and the preview image
+shared from that page deliberately carries no figures at all &mdash; only the
+date, the venue, and that the setlist is still coming in &mdash; so a link
+shared mid-show does not freeze a half-finished number into somebody else's
+timeline.</p>
 """
     blurb = ("How the gaps, the medians and the verdicts on this site are "
              "worked out.")
@@ -4576,8 +4588,16 @@ def fetch_schedule(site_dir, apikey, artist="Phish", **kw):
         for row in get("shows/showyear/%d" % year, apikey, **fresh):
             if artist and row.get("artist_name") != artist:
                 continue
+            # Yesterday counts. A show is dated by its local evening, but its
+            # watch window runs past midnight UTC -- a Garden show on the 27th
+            # is watched until 06:30 UTC on the 28th. Dropping anything before
+            # today therefore deleted the show that was on stage at the moment
+            # UTC rolled over, which is the middle of every east-coast set, and
+            # the watcher then could not see a show it had been following. The
+            # window decides when to stop looking; this only decides what to
+            # remember.
             date = row.get("showdate") or ""
-            if date < today.isoformat():
+            if date < (today - datetime.timedelta(days=1)).isoformat():
                 continue
             out.append({"date": date,
                         "venue": row.get("venue") or "",
