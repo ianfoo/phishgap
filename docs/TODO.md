@@ -74,33 +74,68 @@ questions.
 | 3e | FAQ index, back-links, the eras arithmetic; song front matter decluttered | done |
 | 3f | Sticky column headers, and four list pages given headers at all | done |
 
+### The 2026-07-28 session, third sitting — everything here is pushed
+
+Run overnight while Ian slept, on his instruction to make provisional calls
+where they are cheap to walk back and to skip anything that genuinely needs
+him. **Working tree clean, eight commits on `main`, nothing in flight.**
+
+| § | what | state |
+|---|---|---|
+| 8e.1 | Six named blocks now hold every rule all three sheets carried three copies of | done — sheets byte-identical after |
+| 2i | The whole type scale a step up, from the root: body 14→15.75px, labels 10→11.25px, headings held | done — his largest open item |
+| 2h | The three show-page details he spotted | done — all three |
+| 2f | `dormant.html`, 284 songs by the year each was last heard | done — the last dead card on the site is a link |
+| 7 | Method page: contents block from one list, and the bar moved next to the verdict it draws | done |
+| 3d | The keyboard layer: `[`/`]`/`←`/`→`, a `?` overlay that reads its list off the page, a `Keys` button | done |
+| 4 | Venue and tour on a show page are searches; `sitemap.xml` and `robots.txt` exist | done |
+
+**The theme of the night: eight bugs, and six of them were already shipping.**
+Every one was invisible until something moved into it. Full detail in the
+sections, but the shape is worth carrying:
+
+| what | how long it had been wrong |
+|---|---|
+| Every show page scrolled sideways above 620px — a `visibility:hidden` tooltip still lays out | since the phone-only fix for the same bug |
+| That tooltip was 648px of unbreakable text, its end off the side of the page | since it was written |
+| `.dek a` styled in one sheet of three — the due page's two standfirst links in browser blue | since the due page shipped |
+| `.backtop` out-specified by `.prose p`, so every "All questions" link was set as prose | since the FAQ shipped |
+| `since` measured from a date no page displays — **Midnight Rider read 90 shows where the honest figure is 1,234** | since `write_current` was written |
+| `custom` is not a song: nine different pieces of music under one slug, every gap zero | since the archive had it |
+| The index scrolled sideways at 375px on one 45-character song title | it was six pixels away before tonight |
+| Venue and tour links came out in browser blue | caught before shipping, by measuring |
+
 ### The three biggest open things, in the order I would take them
 
-1. **§2g type size, site-wide.** Ian's words: "the prose text feels small even
-   by these standards… I think an accessibility review of the entire site is in
-   order soon." `.dek` is 13px, `body` 14px, labels 10px. One deliberate pass
-   with measurements, taking in the 10px labels at the same time. **This is his
-   ask, it is the largest open item, and it should not be quietly narrowed.**
-2. **§2f dormant needs a page.** Its hero cell on `due.html` states 283 and
-   links nowhere, which is the only dead card on the site.
-3. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
+1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
    trajectory, §2e item 1). Both it and the catalogue-wide charts need the same
    missing capability — evaluating the §2d classification **as of a past
-   date** — so build that first and the charts fall out of it.
+   date** — so build that first and the charts fall out of it. **This is now
+   the largest thing he has asked for that has not been started.**
+2. **§8e.2 — link one `site.css` instead of inlining a sheet into 1,307
+   pages.** Measured at 45.6 MB, 39% of all HTML on the site; a show page would
+   go 62 KB → ~29 KB. §8e.1 is done, nothing is in the way, and the note there
+   says so.
+3. **§3b, the older agreed work**, still none of it started — and note that the
+   rename of "reports" is in it. That one is **skipped rather than deferred**:
+   see the open questions below.
 
-Then the older queue below: §3d hotkeys, §7 method contents, §6 card visuals,
-§5 benchmark, §3b.
+Then: §6 card visuals, §5 benchmark, and §4's leaderboard / on-this-day /
+random show / feed.
 
-### Two habits this file has now paid for four times each
+### Two habits this file has now paid for many times
 
 - **A rule written into one stylesheet of three is invisible until something
-  leans on it.** Four instances now: the nav that could not wrap, the footer
-  link in browser blue, the sticky-header hide out-specified by a modifier
-  class, and `font-variant-numeric:tabular-nums` present only on show pages.
-  §8e's composition fix is the cure and is still not started.
-- **The site jumps a reader somewhere and maroons them.** Ian has asked for a
-  way back three times. `.backtop` is the house idiom; any new anchor target
-  ships with its way back.
+  leans on it.** §8e.1 has now named the rules all three shared, so that class
+  is closed for those — but **32–46 rules still repeat pairwise**, and tonight
+  added two more instances of the bug (`.dek a`, and the masthead links, the
+  second caught before shipping). Six now.
+- **A rule that is typed is not a rule that is drawn.** `.backtop` was in the
+  sheet, reasoned about in a comment, and had never once applied. Read the
+  computed style, not the stylesheet.
+- **Programmatic focus is not focus.** Reading a skip link's colour after
+  `element.focus()` reported browser blue on all eight page types tonight. A
+  real Tab press showed it was correct all along.
 
 ### In flight when the *first* sitting ended (historical)
 
@@ -120,23 +155,19 @@ Then the older queue below: §3d hotkeys, §7 method contents, §6 card visuals,
 
 ### The older queue, after the three above
 
-1. **§3d keyboard hotkeys** — the accessibility floor is done; this is the
-   jumping layer. The `?` overlay it wants now has a natural companion in
-   `faq.html`.
-2. **§7 method page** — table of contents and reordering. Untouched. The FAQ
-   page's contents block is a working pattern to copy: it is generated from
-   the same list as the entries, so it cannot name a section that is not there.
-3. **§6 remaining visual work** — cards have no grain and use a plain rule
+1. **§6 remaining visual work** — cards have no grain and use a plain rule
    where pages use `.rule2`; the card mark is invisible at thumbnail size.
-4. **§5 `content-visibility` benchmark** — method written down, needs doing
+   **Left alone deliberately tonight**: changing card markup means redrawing
+   588 PNGs, and §8g's trap is that drawing them locally writes "already drawn"
+   into a file that ships and CI then draws nothing. Do this where the drawing
+   can be checked.
+2. **§5 `content-visibility` benchmark** — method written down, needs doing
    properly rather than in one live page.
-5. **§3b** — the older agreed work, still none of it started.
-6. **§2h** — three small things Ian spotted: a stray `→` on the phone show
-   layout, the unlabelled gap column on phones, and the `LONGEST GAP` hero
-   that names a row it does not link to.
+3. **§3b** — the older agreed work. Still none of it started, and one item in
+   it is now explicitly **skipped for want of his input** (see below).
+4. **§4** — bustout leaderboard, on this day, random show, a feed.
 
-§3c is done — see that section for what landed and §8b.8–11 for the calls
-made along the way.
+§3c, §3d, §3e, §3f and §7 are done — see those sections.
 
 ### What the 2026-07-27 session added
 
@@ -146,6 +177,18 @@ segue hole on the method page. New page: `faq.html`, reached from a
 than from markup — Literata measured by advance width, nav hit areas re-checked
 across every page type at 375px, pairing alignment across eight viewport
 widths, and every link and anchor resolved. Ian's mid-session queue is §8d.
+
+### Skipped tonight because it genuinely needs him
+
+- **§3b, renaming "reports".** He raised it and it is not cosmetic to him, but
+  §3b's own instruction is "pick the replacement once and change it in one
+  pass — a half-renamed vocabulary is worse than the old one", and the word
+  reaches `SHOW_DIR`, `saved_reports()`, `REPORT_NAME`, `report_card()`,
+  `render_html`'s docstrings, the index hero label and subtitle, `--catch-up`'s
+  output, `publish.sh`'s tally and the pager's aria-labels. A rename across a
+  dozen identifiers and two shell scripts is **not cheap to walk back**, which
+  is the test he set for making a call without him. **The only thing missing is
+  the word.** Say it and the pass is an hour.
 
 ### Open questions waiting on Ian, none of them blocking
 
@@ -163,6 +206,24 @@ widths, and every link and anchor resolved. Ian's mid-session queue is §8d.
   Tour" (§6). Needs a curated table; his call.
 - Whether the `MOST SONGS` fact wants a **"show length" or "highest rated"
   view** beyond the sort options (§8b.7).
+
+### The calls made overnight on 2026-07-28, for the same batch
+
+Each is one line, one string or one threshold, and each is in its own section
+with the reasoning. Listed here so the batch is in one place.
+
+| call | where | to reverse |
+|---|---|---|
+| The type scale went **up one step from the root** (112.5%), and the `h1` clamps were pulled back so headings hold their size | §2i | one declaration; the clamps are exact reciprocals |
+| `.dek` got **its own step** on top of that, so a standfirst is larger than the body it introduces | §2i | one value in `DEK_CSS` |
+| The stray `→` on a show row is **`↗`**, not deleted — it was signalling something real | §2h | one character |
+| A show row's landing spot is **marked** rather than given a link back: a fragment jump is reversible by the browser, a scroll is not | §2h | delete two rules |
+| `dormant.html` is **not in the nav** — its doors are the due page and the FAQ | §2f | one nav item |
+| Dormant figures are set **in ink, not the accent** | §2f | one rule |
+| Dormant is ordered **by year last heard**, then by all-time plays | §2f | two lines in `render_dormant` |
+| `.backtop` now renders as the **mono control it was always written to be** — this changes the look of a page he has reviewed | §7 | revert one selector |
+| A tour whose name is inside another tour's name is **left unlinked** rather than linking to the wrong shows | §4 | delete `ambiguous_tours` |
+| The sitemap carries **no `<lastmod>`** | §4 | add one field |
 
 
 ## 1. ~~Song page enrichment — preceded by / followed by~~ DONE 2026-07-28
