@@ -1292,6 +1292,24 @@ table.no-last col.c-bar{width:44%}
 th{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);font-weight:500;text-align:left;padding:.45rem .6rem;
    border-bottom:1px solid var(--rule)}
+/* The column headers ride with their own set. Each table is its own containing
+   block, so a header can only stay stuck while its own set is on screen: set
+   1's is carried back off by the bottom edge of set 1's table just as set 2's
+   arrives, and set 1's header is never left standing over set 2's rows. The
+   hand-off is the containing block doing it, not script.
+
+   Stuck on the cells rather than on <thead>: under border-collapse:collapse a
+   border belongs to the table and not to the cell, so a stuck thead can leave
+   its rule behind on the way up. The inset shadow draws it either way, and the
+   border-bottom above still does the work when nothing is stuck. */
+thead th{position:sticky;top:0;z-index:3;background:var(--paper);
+   box-shadow:inset 0 -1px 0 var(--rule)}
+/* A sticky strip at the top of the viewport is what makes an anchor land
+   underneath one. Nothing on a show page is jumped to from inside it today
+   except #main, so this costs nothing now and is here so that the first
+   anchor somebody adds is not the one that discovers the problem. */
+[id]{scroll-margin-top:2.6rem}
+@media print{thead th{position:static;box-shadow:none}}
 th.n,td.n{text-align:right;padding-right:1.1rem;white-space:nowrap}
 .gap,.song,.last .date{line-height:1.35rem}
 td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
@@ -2499,10 +2517,39 @@ header{padding-bottom:.9rem}
        color:var(--dim);margin-left:auto}
 .count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
          font-size:1rem;color:var(--ink)}
-.reports{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
-.row{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;column-gap:1.1rem;
-     align-items:baseline;padding:.7rem .25rem;text-decoration:none;
+.reports{list-style:none;margin:0;padding:0}
+/* Geometry shared with the header below, chrome kept separate, so a column
+   that moves moves in both at once rather than in whichever one was edited. */
+.row,.lhead{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;
+     column-gap:1.1rem;align-items:baseline}
+.row{padding:.7rem .25rem;text-decoration:none;
      color:inherit;border-bottom:1px solid var(--rule-soft)}
+/* The column header these list pages never had, and it stays put.
+
+   A grid rather than a <table>, because every row on these pages is one link
+   and HTML does not let an <a> wrap a <tr>. Show pages get a real table for
+   the opposite reason: their rows carry two destinations -- the song, and the
+   night it was last played -- so the links live in cells and a <tr> is free.
+   The tabular *look* is the same either way; only the markup differs, and it
+   differs for a reason rather than by neglect.
+
+   Opaque, because rows scroll under it. box-shadow rather than border-bottom:
+   a border on a stuck element is drawn at its edge and can be clipped by the
+   row arriving beneath it, and this way the rule never thins. */
+.lhead{position:sticky;top:0;z-index:3;background:var(--paper);
+   padding:.45rem .25rem;font-size:.625rem;text-transform:uppercase;
+   letter-spacing:.14em;color:var(--dim);font-weight:500;
+   box-shadow:inset 0 -1px 0 var(--rule)}
+/* The figures column is its own sub-grid on the row, so the header's must be
+   the same one or the labels sit over the wrong numbers. Taking .r-stats
+   wholesale would bring its 12px reading size with it. */
+.lhead .r-stats{font-size:inherit;color:inherit;line-height:inherit}
+.lhead .end{text-align:right}
+@media print{.lhead{position:static}}
+/* A sticky strip at the top of the viewport is what puts an anchor target
+   underneath it. Stated once for every id on these pages rather than per
+   anchor, so a new one cannot be the thing that finds this out. */
+[id]{scroll-margin-top:2.6rem}
 .row:hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
@@ -2534,10 +2581,11 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
-.due{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.due{list-style:none;margin:0;padding:0}
 .due li{border-bottom:1px solid var(--rule-soft)}
-.due .row{display:grid;grid-template-columns:1fr 11rem 11rem;column-gap:1.1rem;
-   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
+   column-gap:1.1rem;align-items:baseline}
+.due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
 .due .row:hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
 .due .row:hover .d-song{color:var(--hot)}
@@ -2561,10 +2609,11 @@ header{padding-bottom:.9rem}
    the same shape of question: a name, a when, and one figure worth ranking by.
    Its own class names, though -- .d-* means "due", and a venue row sharing
    them would make either page impossible to restyle without the other. */
-.vn{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.vn{list-style:none;margin:0;padding:0}
 .vn li{border-bottom:1px solid var(--rule-soft)}
-.vn .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
-   align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
+.vn .row,.lhead.vn-h{display:grid;grid-template-columns:1fr 12rem 7rem;
+   column-gap:1.1rem;align-items:baseline}
+.vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
 .vn .row:hover{background:var(--hover)}
 .vn-venue{font-size:1rem;font-weight:500}
 .vn .row:hover .vn-venue{color:var(--hot)}
@@ -2650,6 +2699,19 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* Same lesson as the report tables: stack instead of squeezing columns, so
    the rules still run the full width and nothing has to be hidden. */
 @media screen and (max-width:620px){
+  /* Every list row stacks into one column here and the due and venue rows
+     take a two-column area layout, so there are no columns left for a column
+     header to label. It goes rather than pretending: a header standing over
+     stacked rows is a claim about an alignment that is not there. The song
+     pages already hide their .head below 820px for the same reason.
+
+     All three selectors named, not just `.lhead`. The due and venue headers
+     are matched by `.lhead.due-h` and `.lhead.vn-h`, two classes against one,
+     so a bare `.lhead{display:none}` loses on specificity and both pages kept
+     a three-column header over two-column rows. Measured, not assumed: the
+     rule was written, the media query was active at 440px, and the computed
+     display was still `grid`. */
+  .lhead,.lhead.due-h,.lhead.vn-h{display:none}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
   .r-stats{display:block;text-align:left;white-space:normal}
   .r-stats .st{display:inline;white-space:normal}
@@ -2884,6 +2946,8 @@ INDEX_SHELL = """<!DOCTYPE html>
 </div>
 <div class="chips">{years}</div>
 </div>
+<div class="lhead"><span>Date</span><span>Venue</span>
+<span class="r-stats"><span>Songs</span><span>Median</span><span>Longest</span></span></div>
 <ol class="reports" id="list">
 {rows}
 </ol>
@@ -4341,8 +4405,8 @@ SONGS_CSS = INDEX_CSS + """
    contents put "485 shows - median 2 - longest 31 - best 90" and "325 shows -
    median 3 - longest 202 - best 79" at different widths, and the last-played
    column shifted row to row down the page. */
-.row{grid-template-columns:1fr 8.5rem 23.5rem}
-.r-stats{grid-template-columns:5.4rem 6.4rem 7.4rem 4.3rem}
+.row,.lhead{grid-template-columns:1fr 8.5rem 23.5rem}
+.r-stats,.lhead .r-stats{grid-template-columns:5.4rem 6.4rem 7.4rem 4.3rem}
 .r-song{display:block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;line-height:1.3rem;color:inherit}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
@@ -4387,6 +4451,9 @@ SONGS_SHELL = """<!DOCTYPE html>
        placeholder="Search songs&hellip;" aria-label="Search songs">
 <span class="count"><b id="shown">{count}</b> of {count} songs</span>
 </div>
+<div class="lhead"><span>Song</span><span>Last played</span>
+<span class="r-stats"><span>Shows</span><span>Median</span><span>Longest</span>
+<span>Best</span></span></div>
 <ol class="reports" id="list">
 {rows}
 </ol>
@@ -4466,6 +4533,8 @@ at eighty. Ranked by how far past its own usual each one is, which is what the
 figure on the right says: 3&times; means gone three times the gap this song
 normally goes.</p></header>
 <div class="rule2"></div>
+<div class="lhead due-h"><span>Song</span>
+<span>Last played</span><span class="end">How late</span></div>
 <ol class="due" id="main" tabindex="-1">
 {rows}
 </ol>
@@ -4601,6 +4670,8 @@ search is already that page, and one that cannot fall out of step with the
 archive. What is here is what a search cannot tell you &mdash; how many nights,
 over what span, and the longest gap the room has heard.</p></header>
 <div class="rule2"></div>
+<div class="lhead vn-h"><span>Venue</span>
+<span>First to last</span><span class="end">Nights</span></div>
 <ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>

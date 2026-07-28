@@ -545,7 +545,7 @@ to itself — the reader has no way to know which line, and the number is the
 one the song becomes overdue at. It says **"due at 10"** now. Not something
 Ian asked for; one string, and reversible in one line.
 
-## 3f. Sticky column headers on the tabular pages — Ian, 2026-07-28. NOT STARTED
+## 3f. Sticky column headers on the tabular pages — Ian, 2026-07-28. DONE
 
 His words, after scrolling a setlist longer than the viewport: the column
 headings scroll off. The show page repeats them per section (set 1, set 2,
@@ -584,9 +584,61 @@ page a header, then make it sticky". That is a visible design change rather
 than a scrolling one, and on the due page it fixes something already noted
 here: the headline figure on each row carries no label at all.
 
-The song page is the odd one: `.stuck` already solves this by a different
-mechanism, and it should not grow a second one competing with it. Decide
-whether `.stuck` becomes the house pattern or the per-section sticky does.
+### Why the list pages are not tables — Ian asked, and there is a real reason
+
+"Why is the songs page not using a table? … If there's a good reason for this,
+explain it to me."
+
+There is, and it is one line of HTML law: **an `<a>` cannot wrap a `<tr>`.**
+Every row on the index, songs, due and venues pages is a *single link* — one
+`<a class="row">` around the whole row — so those rows cannot be `<tr>`s
+without either losing the whole-row target, faking it with a click handler
+(which breaks middle-click, open-in-new-tab and the status bar), or putting a
+separate link in every cell (which makes a screen reader announce four links
+per row). A show page is a real `<table>` for the opposite reason: its rows
+carry **two** destinations — the song, and the night it was last performed —
+so its links live in cells and a `<tr>` costs nothing. Verified against the
+built markup rather than recalled: one show row contains 2 anchors, one list
+row contains 1 wrapping everything.
+
+So the markup differs for a reason. **The missing headers were not a reason,
+they were an omission**, and Ian was right about that — all four list pages now
+have one, sharing each page's grid template through a paired selector
+(`.row,.lhead{…}`) rather than a second copy of the column widths.
+
+### What landed
+
+- **Show pages**: `thead th` is sticky. Each table is its own containing block,
+  so the hand-off Ian described comes free — proven by measurement, not by
+  eye: at one scroll position set 1's header is stuck at top 0 with its table
+  still on screen; 500px later set 1's header has been carried off (top −167,
+  its table's bottom −136) and set 2's is stuck at 0. Exactly one header is
+  ever stuck.
+- **Index, songs, due, venues**: a new `.lhead`. Asserted in the browser that
+  the header's computed `grid-template-columns` is byte-identical to its
+  rows', including the figures sub-grid — the labels cannot drift off their
+  columns. The due page gains something separate from stickiness: its headline
+  figure had no label at all, and now reads **How late**.
+- **Song pages left alone.** They already carry sticky column labels, in the
+  `.stuck` bar, which also carries the song name and its running totals. A
+  second mechanism would have competed with it for the same 30px of screen.
+- **`scroll-margin-top` on every `[id]`**, stated once per sheet rather than
+  per anchor. Tested the exact failure Ian named: activating the skip link on
+  the due page lands the list at 41px with the sticky header's bottom at 41px
+  and the first row not behind it.
+
+### Two bugs this turned up, both found by measuring rather than reading
+
+- **`.lhead.due-h` and `.lhead.vn-h` out-specify `.lhead`.** The narrow-width
+  rule hiding the header was written as `.lhead{display:none}` — one class
+  against two — so at 440px the media query was active, the rule was in the
+  sheet, and the computed display was still `grid`: a three-column header
+  standing over two-column stacked rows. All three selectors are named now.
+- **The skip link's target was briefly `display:none` on a phone.** `#main`
+  had been moved onto the header, which is hidden below 620px, so on the due
+  and venues pages the skip link would have landed nowhere at exactly the
+  width where skipping matters most. The id is back on the `<ol>`, which is
+  the content anyway.
 
 ## 3d. Keyboard: hotkeys, not just tab order — NOT STARTED
 
