@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -624,7 +611,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr><td class='song'><a href='../song/carini.html#2025-12-29'>Carini</a><span class='seg tight'>-&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-09-17.html'>2025-09-17</a></span><span class='venue'>Ameris Bank Amphitheatre</span><span class='place'>Alpharetta, GA</span></td><td class='bar' data-tip='4 shows; usually 2 to 6' aria-label='4 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:50.00%'></span></span></td><td class='n' data-tip='4 shows; usually 2 to 6' aria-label='4 shows; usually 2 to 6'><span class='gap small'>4</span><span class='typ'>med 4</span></td></tr>
 <tr><td class='song'><a href='../song/plasma.html#2025-12-29'>Plasma</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-07-12.html'>2025-07-12</a></span><span class='venue'>North Charleston Coliseum</span><span class='place'>North Charleston, SC</span></td><td class='bar' data-tip='20 shows; usually 4 to 18' aria-label='20 shows; usually 4 to 18'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:71.35%'></span></span></td><td class='n' data-tip='20 shows; usually 4 to 18' aria-label='20 shows; usually 4 to 18'><span class='gap small'>20</span><span class='typ'>med 7</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
-<tr><td class='song'><a href='../song/quadrophonic-toppling.html#2025-12-29'>Quadrophonic Toppling</a><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2022-05-27.html'>2022-05-27</a></span><span class='venue'>The Wharf Amphitheater</span><span class='place'>Orange Beach, AL</span></td><td class='bar' data-tip='played 1 time in 10 years, so there is no usual range to place this gap against' aria-label='played 1 time in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 1 time in 10 years, so there is no usual range to place this gap against' aria-label='played 1 time in 10 years, so there is no usual range to place this gap against'><span class='gap big'>172</span><span class='typ'><span class='full'>1 in 10 yr</span><span class='abbr'>1/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/quadrophonic-toppling.html#2025-12-29'>Quadrophonic Toppling</a><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2022-05-27.html'>2022-05-27</a></span><span class='venue'>The Wharf Amphitheater</span><span class='place'>Orange Beach, AL</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>172</span><span class='typ'><span class='full'>1 in 10 yr</span><span class='abbr'>1/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/the-curtain-with.html#2025-12-29'>The Curtain With</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-07-16.html'>2025-07-16</a></span><span class='venue'>TD Pavilion at the Mann</span><span class='place'>Philadelphia, PA</span></td><td class='bar' data-tip='18 shows; usually 14 to 50' aria-label='18 shows; usually 14 to 50'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:34.73%'></span></span></td><td class='n' data-tip='18 shows; usually 14 to 50' aria-label='18 shows; usually 14 to 50'><span class='gap small'>18</span><span class='typ'>med 21</span></td></tr>
 <tr><td class='song'><a href='../song/bathtub-gin.html#2025-12-29'>Bathtub Gin</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-09-13.html'>2025-09-13</a></span><span class='venue'>Coca-Cola Amphitheater</span><span class='place'>Birmingham, AL</span></td><td class='bar' data-tip='8 shows; usually 3 to 7' aria-label='8 shows; usually 3 to 7'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:72.14%'></span></span></td><td class='n' data-tip='8 shows; usually 3 to 7' aria-label='8 shows; usually 3 to 7'><span class='gap small'>8</span><span class='typ'>med 5</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
 <tr><td class='song'><a href='../song/nicu.html#2025-12-29'>NICU</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-07-12.html'>2025-07-12</a></span><span class='venue'>North Charleston Coliseum</span><span class='place'>North Charleston, SC</span></td><td class='bar' data-tip='21 shows; usually 7 to 19' aria-label='21 shows; usually 7 to 19'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:71.76%'></span></span></td><td class='n' data-tip='21 shows; usually 7 to 19' aria-label='21 shows; usually 7 to 19'><span class='gap small'>21</span><span class='typ'>med 10</span><span class='verdict overdue at-gap'>overdue</span></td></tr>

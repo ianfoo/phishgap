@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -644,7 +631,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 </tbody></table>
 <div class='perf'></div><h2><span class='tab'>ENCORE</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
-<tr><td class='song'><a href='../song/buffalo-bill.html#2025-07-05'>Buffalo Bill</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-10-10.html'>2023-10-10</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='played 6 times in 10 years, so there is no usual range to place this gap against' aria-label='played 6 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 6 times in 10 years, so there is no usual range to place this gap against' aria-label='played 6 times in 10 years, so there is no usual range to place this gap against'><span class='gap big'>69</span><span class='typ'><span class='full'>6 in 10 yr</span><span class='abbr'>6/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/buffalo-bill.html#2025-07-05'>Buffalo Bill</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-10-10.html'>2023-10-10</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>69</span><span class='typ'><span class='full'>6 in 10 yr</span><span class='abbr'>6/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/harry-hood.html#2025-07-05'>Harry Hood</a><a class='jc-chip' href='../song/harry-hood.html#2025-07-05'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-06-20.html'>2025-06-20</a></span><span class='venue'>SNHU Arena</span><span class='place'>Manchester, NH</span></td><td class='bar' data-tip='7 shows; usually 1 to 6' aria-label='7 shows; usually 1 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:72.50%'></span></span></td><td class='n' data-tip='7 shows; usually 1 to 6' aria-label='7 shows; usually 1 to 6'><span class='gap small'>7</span><span class='typ'>med 3</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
 </tbody></table><div class='notes'><p>My Friend, My Friend did not include the &quot;Myfe&quot; ending. Trey quoted My Friend, My Friend in the second Fuego. Fish wished RZA (who was in attendance) happy birthday in&nbsp;Crosseyed and Painless which subsequently contained Happy Birthday and Fuego teases from Trey and a Three Blind Mice quote from Fish. After Trey&#39;s Happy Birthday tease in Crosseyed, he said &quot;Wu-Tang Forever.&quot; Trey teased Norwegian Wood in Everything&#39;s Right. Harry Hood contained &quot;Buffalo Harry&quot; quotes.</p></div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>

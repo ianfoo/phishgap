@@ -306,13 +306,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -538,14 +532,7 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -898,7 +885,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='1985-09-27' data-date='1985-09-27' data-era='1.0' data-gap='3' data-score='' data-search="1985-09-27 09/27/1985 9/27/1985 9/27/85 09/27 9/27 9-27 september 27 1985 september 27 friday slade hall, university of vermont burlington vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1985-09-27' target='_blank' rel='noopener noreferrer'>1985-09-27</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Slade Hall, University of Vermont</span><span class='r-place'>Burlington, VT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Fire</span><span class='nb-out'>In the Midnight Hour</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:30.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>3</span><span class='set'>SET 1</span></span></div></li>
 <li id='1985-05-03' data-date='1985-05-03' data-era='1.0' data-gap='7' data-score='' data-search="1985-05-03 05/03/1985 5/3/1985 5/3/85 05/03 5/3 5-3 may 03 1985 may 3 friday university of vermont burlington vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1985-05-03' target='_blank' rel='noopener noreferrer'>1985-05-03</a><span class='dow'>Fri</span></span><span><span class='r-venue'>University of Vermont</span><span class='r-place'>Burlington, VT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out'>Mike&#x27;s Song</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:62.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>7</span><span class='set'>SET 1</span></span></div></li>
 <li id='1985-04-06' data-date='1985-04-06' data-era='1.0' data-gap='9' data-score='' data-search="1985-04-06 04/06/1985 4/6/1985 4/6/85 04/06 4/6 4-6 april 06 1985 april 6 saturday finbar&#x27;s burlington vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1985-04-06' target='_blank' rel='noopener noreferrer'>1985-04-06</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Finbar&#x27;s</span><span class='r-place'>Burlington, VT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Wild Child</span><span class='nb-out'>Jam</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:71.88%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>9</span><span class='set'>SET 1</span></span></div></li>
-<li id='1984-12-01' data-date='1984-12-01' data-era='1.0' data-gap='-1' data-score='' data-search="1984-12-01 12/01/1984 12/1/1984 12/1/84 12/01 12/1 12-1 december 01 1984 december 1 saturday nectar&#x27;s burlington vt first known performance. it&#x27;s all guitar in the jam section, as this was the pre-page era. first known performance."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1984-12-01' target='_blank' rel='noopener noreferrer'>1984-12-01</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Nectar&#x27;s</span><span class='r-place'>Burlington, VT</span><p class='note'><span class='tag'>Note</span>First known performance.</p><p class='jam'><span class='tag'>Jam chart</span>First known performance. It&#x27;s all guitar in the jam section, as this was the pre-Page era.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Makisupa Policeman</span><span class='nb-out'>Spanish Flea</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 1</span></span></div></li>
+<li id='1984-12-01' data-date='1984-12-01' data-era='1.0' data-gap='-1' data-score='' data-search="1984-12-01 12/01/1984 12/1/1984 12/1/84 12/01 12/1 12-1 december 01 1984 december 1 saturday nectar&#x27;s burlington vt first known performance. it&#x27;s all guitar in the jam section, as this was the pre-page era. first known performance."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1984-12-01' target='_blank' rel='noopener noreferrer'>1984-12-01</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Nectar&#x27;s</span><span class='r-place'>Burlington, VT</span><p class='note'><span class='tag'>Note</span>First known performance.</p><p class='jam'><span class='tag'>Jam chart</span>First known performance. It&#x27;s all guitar in the jam section, as this was the pre-Page era.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Makisupa Policeman</span><span class='nb-out'>Spanish Flea</span></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 1</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

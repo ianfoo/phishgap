@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -643,7 +630,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <div class='perf'></div><h2><span class='tab'>ENCORE</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr><td class='song'><a href='../song/divided-sky.html#2022-09-04'>Divided Sky</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2022-08-14.html'>2022-08-14</a></span><span class='venue'>Alpine Valley Music Theatre</span><span class='place'>East Troy, WI</span></td><td class='bar' data-tip='4 shows; usually 5 to 12' aria-label='4 shows; usually 5 to 12'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:24.00%'></span></span></td><td class='n' data-tip='4 shows; usually 5 to 12' aria-label='4 shows; usually 5 to 12'><span class='gap small'>4</span><span class='typ'>med 8</span><span class='verdict premature at-gap'>premature</span></td></tr>
-<tr><td class='song'><a href='../song/icculus.html#2022-09-04'>Icculus</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2019-07-14.html'>2019-07-14</a></span><span class='venue'>Alpine Valley Music Theatre</span><span class='place'>East Troy, WI</span></td><td class='bar' data-tip='played 3 times in 10 years, so there is no usual range to place this gap against' aria-label='played 3 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 3 times in 10 years, so there is no usual range to place this gap against' aria-label='played 3 times in 10 years, so there is no usual range to place this gap against'><span class='gap big'>97</span><span class='typ'><span class='full'>3 in 10 yr</span><span class='abbr'>3/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/icculus.html#2022-09-04'>Icculus</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2019-07-14.html'>2019-07-14</a></span><span class='venue'>Alpine Valley Music Theatre</span><span class='place'>East Troy, WI</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>97</span><span class='typ'><span class='full'>3 in 10 yr</span><span class='abbr'>3/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/character-zero.html#2022-09-04'>Character Zero</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2022-08-06.html'>2022-08-06</a></span><span class='venue'>Atlantic City Beach</span><span class='place'>Atlantic City, NJ</span></td><td class='bar' data-tip='9 shows; usually 3 to 6' aria-label='9 shows; usually 3 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:77.50%'></span></span></td><td class='n' data-tip='9 shows; usually 3 to 6' aria-label='9 shows; usually 3 to 6'><span class='gap small'>9</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
 </tbody></table><div class='notes'><p>Trey teased Mr. P.C. in David Bowie. Icculus was dedicated to PI (Phish&#39;s stage manager Paul Ingwersen who was retiring that night). PI was subsequently mentioned in Icculus. Trey referenced Icculus in Character Zero with &quot;read the book!&quot; quotes. The soundcheck&#39;s Jam was followed by In the Summertime and Right Place, Wrong Time quotes.</p></div>
 <footer><span><a href="../method.html">How this is worked out</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>

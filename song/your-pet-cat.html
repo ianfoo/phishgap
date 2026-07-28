@@ -306,13 +306,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -538,14 +532,7 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -617,7 +604,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='2016-01-02' data-date='2016-01-02' data-era='3.0' data-gap='4' data-score='' data-search="2016-01-02 01/02/2016 1/2/2016 1/2/16 01/02 1/2 1-2 january 02 2016 january 2 saturday madison square garden new york ny  "><div class='row'><span class='r-date'><a href='../show/2016-01-02.html'>2016-01-02</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:25.53%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>4</span><span class='set'>SET 1</span></span></div></li>
 <li id='2015-09-06' data-date='2015-09-06' data-era='3.0' data-gap='7' data-score='' data-search="2015-09-06 09/06/2015 9/6/2015 9/6/15 09/06 9/6 9-6 september 06 2015 september 6 sunday dick&#x27;s sporting goods park commerce city co  contained harpua narration from mike about eating poster nutbag."><div class='row'><span class='r-date'><a href='../show/2015-09-06.html'>2015-09-06</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Dick&#x27;s Sporting Goods Park</span><span class='r-place'>Commerce City, CO</span><p class='note'><span class='tag'>Note</span>Contained Harpua narration from Mike about eating Poster Nutbag.</p></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:33.83%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>7</span><span class='set'>ENCORE</span></span></div></li>
 <li id='2015-08-15' data-date='2015-08-15' data-era='3.0' data-gap='24' data-score='' data-search="2015-08-15 08/15/2015 8/15/2015 8/15/15 08/15 8/15 8-15 august 15 2015 august 15 saturday merriweather post pavilion columbia md  "><div class='row'><span class='r-date'><a href='../show/2015-08-15.html'>2015-08-15</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Merriweather Post Pavilion</span><span class='r-place'>Columbia, MD</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:62.17%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>24</span><span class='set'>SET 1</span></span></div></li>
-<li id='2014-10-31' data-date='2014-10-31' data-era='3.0' data-gap='-1' data-score='' data-search="2014-10-31 10/31/2014 10/31/2014 10/31/14 10/31 10/31 10-31 october 31 2014 october 31 friday mgm grand garden arena las vegas nv debut.  following laura olsher&#x27;s narration and &quot;screaming&quot; sound effects, a plucky trey leads the band into a jam that, prior to &quot;tube&#x27;s&quot; resurgence, would not have sounded out of place in a, well, &quot;tube&quot; jam. debut."><div class='row'><span class='r-date'><a href='../show/2014-10-31.html'>2014-10-31</a><span class='dow'>Fri</span></span><span><span class='r-venue'>MGM Grand Garden Arena</span><span class='r-place'>Las Vegas, NV</span><p class='note'><span class='tag'>Note</span>Debut.</p><details class='jam'><summary><span class='clip'><span class='tag'>Jam chart</span>Debut.  Following Laura Olsher&#x27;s narration and &quot;screaming&quot; sound effects, a plucky Trey leads the band into a jam that, prior to &quot;Tube&#x27;s&quot; resurgence, would not have sounded out of place in a, well, &quot;Tube&quot; jam.</span></summary></details></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='2014-10-31' data-date='2014-10-31' data-era='3.0' data-gap='-1' data-score='' data-search="2014-10-31 10/31/2014 10/31/2014 10/31/14 10/31 10/31 10-31 october 31 2014 october 31 friday mgm grand garden arena las vegas nv debut.  following laura olsher&#x27;s narration and &quot;screaming&quot; sound effects, a plucky trey leads the band into a jam that, prior to &quot;tube&#x27;s&quot; resurgence, would not have sounded out of place in a, well, &quot;tube&quot; jam. debut."><div class='row'><span class='r-date'><a href='../show/2014-10-31.html'>2014-10-31</a><span class='dow'>Fri</span></span><span><span class='r-venue'>MGM Grand Garden Arena</span><span class='r-place'>Las Vegas, NV</span><p class='note'><span class='tag'>Note</span>Debut.</p><details class='jam'><summary><span class='clip'><span class='tag'>Jam chart</span>Debut.  Following Laura Olsher&#x27;s narration and &quot;screaming&quot; sound effects, a plucky Trey leads the band into a jam that, prior to &quot;Tube&#x27;s&quot; resurgence, would not have sounded out of place in a, well, &quot;Tube&quot; jam.</span></summary></details></span><span class='nb'></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

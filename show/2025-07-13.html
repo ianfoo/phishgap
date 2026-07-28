@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -625,7 +612,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <tr><td class='song'><a href='../song/runaway-jim.html#2025-07-13'>Runaway Jim</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-06-22.html'>2025-06-22</a></span><span class='venue'>SNHU Arena</span><span class='place'>Manchester, NH</span></td><td class='bar' data-tip='10 shows; usually 5 to 17' aria-label='10 shows; usually 5 to 17'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:46.17%'></span></span></td><td class='n' data-tip='10 shows; usually 5 to 17' aria-label='10 shows; usually 5 to 17'><span class='gap small'>10</span><span class='typ'>med 9</span></td></tr>
 <tr><td class='song'><a href='../song/foam.html#2025-07-13'>Foam</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2024-07-27.html'>2024-07-27</a></span><span class='venue'>Alpine Valley Music Theatre</span><span class='place'>East Troy, WI</span></td><td class='bar' data-tip='51 shows; usually 16 to 43' aria-label='51 shows; usually 16 to 43'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:72.65%'></span></span></td><td class='n' data-tip='51 shows; usually 16 to 43' aria-label='51 shows; usually 16 to 43'><span class='gap big'>51</span><span class='typ'>med 17.5</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
 <tr><td class='song'><a href='../song/wolfmans-brother.html#2025-07-13'>Wolfman’s Brother</a><a class='jc-chip' href='../song/wolfmans-brother.html#2025-07-13'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-07-03.html'>2025-07-03</a></span><span class='venue'>Folsom Field</span><span class='place'>Boulder, CO</span></td><td class='bar' data-tip='5 shows; usually 2 to 6' aria-label='5 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:60.00%'></span></span></td><td class='n' data-tip='5 shows; usually 2 to 6' aria-label='5 shows; usually 2 to 6'><span class='gap small'>5</span><span class='typ'>med 4</span></td></tr>
-<tr><td class='song'><a href='../song/thread.html#2025-07-13'>Thread</a><a class='jc-chip' href='../song/thread.html#2025-07-13'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2024-07-21.html'>2024-07-21</a></span><span class='venue'>Xfinity Center</span><span class='place'>Mansfield, MA</span></td><td class='bar' data-tip='played 6 times in 10 years, so there is no usual range to place this gap against' aria-label='played 6 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 6 times in 10 years, so there is no usual range to place this gap against' aria-label='played 6 times in 10 years, so there is no usual range to place this gap against'><span class='gap big'>55</span><span class='typ'><span class='full'>6 in 10 yr</span><span class='abbr'>6/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/thread.html#2025-07-13'>Thread</a><a class='jc-chip' href='../song/thread.html#2025-07-13'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2024-07-21.html'>2024-07-21</a></span><span class='venue'>Xfinity Center</span><span class='place'>Mansfield, MA</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>55</span><span class='typ'><span class='full'>6 in 10 yr</span><span class='abbr'>6/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/stash.html#2025-07-13'>Stash</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-07-03.html'>2025-07-03</a></span><span class='venue'>Folsom Field</span><span class='place'>Boulder, CO</span></td><td class='bar' data-tip='6 shows; usually 3 to 10' aria-label='6 shows; usually 3 to 10'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:47.14%'></span></span></td><td class='n' data-tip='6 shows; usually 3 to 10' aria-label='6 shows; usually 3 to 10'><span class='gap small'>6</span><span class='typ'>med 5</span></td></tr>
 <tr><td class='song'><a href='../song/555.html#2025-07-13'>555</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-06-28.html'>2025-06-28</a></span><span class='venue'>Moody Center</span><span class='place'>Austin, TX</span></td><td class='bar' data-tip='6 shows; usually 2 to 12' aria-label='6 shows; usually 2 to 12'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:46.08%'></span></span></td><td class='n' data-tip='6 shows; usually 2 to 12' aria-label='6 shows; usually 2 to 12'><span class='gap small'>6</span><span class='typ'>med 5</span></td></tr>
 <tr><td class='song'><a href='../song/walk-away.html#2025-07-13'>Walk Away</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-23.html'>2023-07-23</a></span><span class='venue'>St. Joseph&#x27;s Health Amphitheater at Lakeview</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='93 shows; usually 14 to 47' aria-label='93 shows; usually 14 to 47'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:84.49%'></span></span></td><td class='n' data-tip='93 shows; usually 14 to 47' aria-label='93 shows; usually 14 to 47'><span class='gap big'>93</span><span class='typ'>med 26.5</span><span class='verdict overdue at-gap'>overdue</span></td></tr>

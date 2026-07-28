@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -629,7 +616,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <tr><td class='song'><a href='../song/mikes-song.html#2011-06-03'>Mike’s Song</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2011-05-29.html'>2011-05-29</a></span><span class='venue'>Bethel Woods Center for the Arts</span><span class='place'>Bethel, NY</span></td><td class='bar' data-tip='3 shows; usually 2 to 6' aria-label='3 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:40.00%'></span></span></td><td class='n' data-tip='3 shows; usually 2 to 6' aria-label='3 shows; usually 2 to 6'><span class='gap small'>3</span><span class='typ'>med 4</span></td></tr>
 <tr><td class='song'><a href='../song/i-am-hydrogen.html#2011-06-03'>I Am Hydrogen</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2010-08-10.html'>2010-08-10</a></span><span class='venue'>Telluride Town Park</span><span class='place'>Telluride, CO</span></td><td class='bar' data-tip='32 shows; usually 2 to 9' aria-label='32 shows; usually 2 to 9'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:100.00%'></span></span></td><td class='n' data-tip='32 shows; usually 2 to 9' aria-label='32 shows; usually 2 to 9'><span class='gap small'>32</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
 <tr><td class='song'><a href='../song/weekapaug-groove.html#2011-06-03'>Weekapaug Groove</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2011-05-29.html'>2011-05-29</a></span><span class='venue'>Bethel Woods Center for the Arts</span><span class='place'>Bethel, NY</span></td><td class='bar' data-tip='3 shows; usually 2 to 6' aria-label='3 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:40.00%'></span></span></td><td class='n' data-tip='3 shows; usually 2 to 6' aria-label='3 shows; usually 2 to 6'><span class='gap small'>3</span><span class='typ'>med 4</span></td></tr>
-<tr><td class='song'><a href='../song/tela.html#2011-06-03'>Tela</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2010-10-20.html'>2010-10-20</a></span><span class='venue'>Utica Memorial Auditorium</span><span class='place'>Utica, NY</span></td><td class='bar' data-tip='played 4 times in 10 years, so there is no usual range to place this gap against' aria-label='played 4 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 4 times in 10 years, so there is no usual range to place this gap against' aria-label='played 4 times in 10 years, so there is no usual range to place this gap against'><span class='gap small'>18</span><span class='typ'><span class='full'>4 in 10 yr</span><span class='abbr'>4/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/tela.html#2011-06-03'>Tela</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2010-10-20.html'>2010-10-20</a></span><span class='venue'>Utica Memorial Auditorium</span><span class='place'>Utica, NY</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap small'>18</span><span class='typ'><span class='full'>4 in 10 yr</span><span class='abbr'>4/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/chalk-dust-torture.html#2011-06-03'>Chalk Dust Torture</a><a class='jc-chip' href='../song/chalk-dust-torture.html#2011-06-03'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2011-05-31.html'>2011-05-31</a></span><span class='venue'>PNC Bank Arts Center</span><span class='place'>Holmdel, NJ</span></td><td class='bar' data-tip='2 shows; usually 3 to 5' aria-label='2 shows; usually 3 to 5'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:21.82%'></span></span></td><td class='n' data-tip='2 shows; usually 3 to 5' aria-label='2 shows; usually 3 to 5'><span class='gap small'>2</span><span class='typ'>med 4</span><span class='verdict premature at-gap'>premature</span></td></tr>
 <tr><td class='song'><a href='../song/the-wedge.html#2011-06-03'>The Wedge</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2010-12-28.html'>2010-12-28</a></span><span class='venue'>DCU Center</span><span class='place'>Worcester, MA</span></td><td class='bar' data-tip='9 shows; usually 5 to 19' aria-label='9 shows; usually 5 to 19'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:40.91%'></span></span></td><td class='n' data-tip='9 shows; usually 5 to 19' aria-label='9 shows; usually 5 to 19'><span class='gap small'>9</span><span class='typ'>med 8</span></td></tr>
 </tbody></table>

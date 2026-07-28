@@ -306,13 +306,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -538,14 +532,7 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -613,7 +600,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='2017-07-26' data-date='2017-07-26' data-era='3.0' data-gap='5' data-score='' data-search="2017-07-26 07/26/2017 7/26/2017 7/26/17 07/26 7/26 7-26 july 26 2017 july 26 wednesday madison square garden new york ny  "><div class='row'><span class='r-date'><a href='../show/2017-07-26.html'>2017-07-26</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:15.38%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>5</span><span class='set'>SET 2</span></span></div></li>
 <li id='2017-07-19' data-date='2017-07-19' data-era='3.0' data-gap='380' data-score='' data-search="2017-07-19 07/19/2017 7/19/2017 7/19/17 07/19 7/19 7-19 july 19 2017 july 19 wednesday petersen events center pittsburgh pa busted out after a 380 show absence, phish goes 2 for 2 on delivering the goods with this tab standby. the jam quickly goes &quot;type ii&quot; and features bliss jamming aplenty as well as some new synth sounds from page. "><div class='row'><span class='r-date'><a href='../show/2017-07-19.html'>2017-07-19</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Petersen Events Center</span><span class='r-place'>Pittsburgh, PA</span><details class='jam'><summary><span class='clip'><span class='tag'>Jam chart</span>Busted out after a 380 show absence, Phish goes 2 for 2 on delivering the goods with this TAB standby. The jam quickly goes &quot;Type II&quot; and features bliss jamming aplenty as well as some new synth sounds from Page.</span></summary></details></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:100.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>380</span><span class='set'>SET 2</span></span></div></li>
 <li class='yr' id='era-2-0' data-era='2.0'><h2><span class='tab'>2.0</span><span>1 show</span><span>2003&ndash;2003</span></h2></li>
-<li id='2003-07-15' data-date='2003-07-15' data-era='2.0' data-gap='-1' data-score='' data-search="2003-07-15 07/15/2003 7/15/2003 7/15/03 07/15 7/15 7-15 july 15 2003 july 15 tuesday usana amphitheatre west valley city ut phish debut opens set ii. this improvisational version begins with 12 minutes of varied &quot;type i&quot; jamming before breaking into several quality grooves, including upbeat swinging and near euphoria. after settling, the jam launches into a series of mini segues beginning with &quot;low rider.&quot; phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2003-07-15' target='_blank' rel='noopener noreferrer'>2003-07-15</a><span class='dow'>Tue</span></span><span><span class='r-venue'>USANA Amphitheatre</span><span class='r-place'>West Valley City, UT</span><p class='note'><span class='tag'>Note</span>Phish debut.</p><details class='jam'><summary><span class='clip'><span class='tag'>Jam chart</span>Phish debut opens Set II. This improvisational version begins with 12 minutes of varied &quot;Type I&quot; jamming before breaking into several quality grooves, including upbeat swinging and near euphoria. After settling, the jam launches into a series of mini segues beginning with &quot;Low Rider.&quot;</span></summary></details></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2 &middot; 2&times;</span></span></div></li>
+<li id='2003-07-15' data-date='2003-07-15' data-era='2.0' data-gap='-1' data-score='' data-search="2003-07-15 07/15/2003 7/15/2003 7/15/03 07/15 7/15 7-15 july 15 2003 july 15 tuesday usana amphitheatre west valley city ut phish debut opens set ii. this improvisational version begins with 12 minutes of varied &quot;type i&quot; jamming before breaking into several quality grooves, including upbeat swinging and near euphoria. after settling, the jam launches into a series of mini segues beginning with &quot;low rider.&quot; phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2003-07-15' target='_blank' rel='noopener noreferrer'>2003-07-15</a><span class='dow'>Tue</span></span><span><span class='r-venue'>USANA Amphitheatre</span><span class='r-place'>West Valley City, UT</span><p class='note'><span class='tag'>Note</span>Phish debut.</p><details class='jam'><summary><span class='clip'><span class='tag'>Jam chart</span>Phish debut opens Set II. This improvisational version begins with 12 minutes of varied &quot;Type I&quot; jamming before breaking into several quality grooves, including upbeat swinging and near euphoria. After settling, the jam launches into a series of mini segues beginning with &quot;Low Rider.&quot;</span></summary></details></span><span class='nb'></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2 &middot; 2&times;</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

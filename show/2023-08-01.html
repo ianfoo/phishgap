@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -628,7 +615,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <tr><td class='song'><a href='../song/timber-jerry-the-mule.html#2023-08-01'>Timber (Jerry the Mule)</a><a class='jc-chip' href='../song/timber-jerry-the-mule.html#2023-08-01'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-18.html'>2023-07-18</a></span><span class='venue'>Live Oak Bank Pavilion at Riverfront Park</span><span class='place'>Wilmington, NC</span></td><td class='bar' data-tip='9 shows; usually 6 to 27' aria-label='9 shows; usually 6 to 27'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:35.71%'></span></span></td><td class='n' data-tip='9 shows; usually 6 to 27' aria-label='9 shows; usually 6 to 27'><span class='gap small'>9</span><span class='typ'>med 11</span></td></tr>
 <tr><td class='song'><a href='../song/broken-into-pieces.html#2023-08-01'>Broken Into Pieces</a></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/wolfmans-brother.html#2023-08-01'>Wolfman’s Brother</a><a class='jc-chip' href='../song/wolfmans-brother.html#2023-08-01'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-23.html'>2023-07-23</a></span><span class='venue'>St. Joseph&#x27;s Health Amphitheater at Lakeview</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='5 shows; usually 1 to 6' aria-label='5 shows; usually 1 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:61.30%'></span></span></td><td class='n' data-tip='5 shows; usually 1 to 6' aria-label='5 shows; usually 1 to 6'><span class='gap small'>5</span><span class='typ'>med 3</span></td></tr>
-<tr><td class='song'><a href='../song/i-am-the-walrus.html#2023-08-01'>I Am the Walrus</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-30.html'>2021-10-30</a></span><span class='venue'>MGM Grand Garden Arena</span><span class='place'>Las Vegas, NV</span></td><td class='bar' data-tip='played 4 times in 10 years, so there is no usual range to place this gap against' aria-label='played 4 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 4 times in 10 years, so there is no usual range to place this gap against' aria-label='played 4 times in 10 years, so there is no usual range to place this gap against'><span class='gap big'>76</span><span class='typ'><span class='full'>4 in 10 yr</span><span class='abbr'>4/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/i-am-the-walrus.html#2023-08-01'>I Am the Walrus</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-30.html'>2021-10-30</a></span><span class='venue'>MGM Grand Garden Arena</span><span class='place'>Las Vegas, NV</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>76</span><span class='typ'><span class='full'>4 in 10 yr</span><span class='abbr'>4/10y</span></span></td></tr>
 </tbody></table>
 <div class='perf'></div><h2><span class='tab'>SET 2</span></h2>
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>

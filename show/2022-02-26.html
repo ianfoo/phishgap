@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -626,7 +613,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <tr><td class='song'><a href='../song/twist.html#2022-02-26'>Twist</a><span class='seg tight'>-&gt;</span><a class='jc-chip' href='../song/twist.html#2022-02-26'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-12-31.html'>2021-12-31</a></span><span class='venue'>Rock Lititz</span><span class='place'>Lititz, PA</span></td><td class='bar' data-tip='2 shows; usually 1 to 6' aria-label='2 shows; usually 1 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:38.00%'></span></span></td><td class='n' data-tip='2 shows; usually 1 to 6' aria-label='2 shows; usually 1 to 6'><span class='gap small'>2</span><span class='typ'>med 3</span></td></tr>
 <tr><td class='song'><a href='../song/your-pet-cat.html#2022-02-26'>Your Pet Cat</a><span class='seg'>&gt;</span><a class='jc-chip' href='../song/your-pet-cat.html#2022-02-26'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-30.html'>2021-10-30</a></span><span class='venue'>MGM Grand Garden Arena</span><span class='place'>Las Vegas, NV</span></td><td class='bar' data-tip='5 shows; usually 4 to 26' aria-label='5 shows; usually 4 to 26'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:30.95%'></span></span></td><td class='n' data-tip='5 shows; usually 4 to 26' aria-label='5 shows; usually 4 to 26'><span class='gap small'>5</span><span class='typ'>med 10.5</span></td></tr>
 <tr><td class='song'><a href='../song/divided-sky.html#2022-02-26'>Divided Sky</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-20.html'>2021-10-20</a></span><span class='venue'>Matthew Knight Arena</span><span class='place'>Eugene, OR</span></td><td class='bar' data-tip='12 shows; usually 6 to 11' aria-label='12 shows; usually 6 to 11'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:70.72%'></span></span></td><td class='n' data-tip='12 shows; usually 6 to 11' aria-label='12 shows; usually 6 to 11'><span class='gap small'>12</span><span class='typ'>med 8</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
-<tr><td class='song'><a href='../song/mull.html#2022-02-26'>Mull</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-26.html'>2021-10-26</a></span><span class='venue'>Santa Barbara Bowl</span><span class='place'>Santa Barbara, CA</span></td><td class='bar' data-tip='played 2 times in 10 years, so there is no usual range to place this gap against' aria-label='played 2 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 2 times in 10 years, so there is no usual range to place this gap against' aria-label='played 2 times in 10 years, so there is no usual range to place this gap against'><span class='gap small'>8</span><span class='typ'><span class='full'>2 in 10 yr</span><span class='abbr'>2/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/mull.html#2022-02-26'>Mull</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-26.html'>2021-10-26</a></span><span class='venue'>Santa Barbara Bowl</span><span class='place'>Santa Barbara, CA</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap small'>8</span><span class='typ'><span class='full'>2 in 10 yr</span><span class='abbr'>2/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/wolfmans-brother.html#2022-02-26'>Wolfman’s Brother</a><span class='seg'>&gt;</span><a class='jc-chip' href='../song/wolfmans-brother.html#2022-02-26'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-31.html'>2021-10-31</a></span><span class='venue'>MGM Grand Garden Arena</span><span class='place'>Las Vegas, NV</span></td><td class='bar' data-tip='3 shows; usually 2 to 5' aria-label='3 shows; usually 2 to 5'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:43.33%'></span></span></td><td class='n' data-tip='3 shows; usually 2 to 5' aria-label='3 shows; usually 2 to 5'><span class='gap small'>3</span><span class='typ'>med 3</span></td></tr>
 <tr><td class='song'><a href='../song/cavern.html#2022-02-26'>Cavern</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-12-31.html'>2021-12-31</a></span><span class='venue'>Rock Lititz</span><span class='place'>Lititz, PA</span></td><td class='bar' data-tip='2 shows; usually 2 to 8' aria-label='2 shows; usually 2 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:30.00%'></span></span></td><td class='n' data-tip='2 shows; usually 2 to 8' aria-label='2 shows; usually 2 to 8'><span class='gap small'>2</span><span class='typ'>med 4</span></td></tr>
 </tbody></table>

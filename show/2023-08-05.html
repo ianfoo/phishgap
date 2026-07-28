@@ -265,13 +265,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    the middle had nothing to be near. */
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 /* Where this song usually lands, as a block rather than a tint. The previous
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
@@ -587,14 +581,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -635,7 +622,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr><td class='song'><a href='../song/set-your-soul-free.html#2023-08-05'>Set Your Soul Free</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-26.html'>2023-07-26</a></span><span class='venue'>TD Pavilion at the Mann</span><span class='place'>Philadelphia, PA</span></td><td class='bar' data-tip='7 shows; usually 3 to 8' aria-label='7 shows; usually 3 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:62.00%'></span></span></td><td class='n' data-tip='7 shows; usually 3 to 8' aria-label='7 shows; usually 3 to 8'><span class='gap small'>7</span><span class='typ'>med 5</span></td></tr>
 <tr><td class='song'><a href='../song/tweezer.html#2023-08-05'>Tweezer</a><span class='seg tight'>-&gt;</span><a class='jc-chip' href='../song/tweezer.html#2023-08-05'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-23.html'>2023-07-23</a></span><span class='venue'>St. Joseph&#x27;s Health Amphitheater at Lakeview</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='8 shows; usually 2 to 6' aria-label='8 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:75.00%'></span></span></td><td class='n' data-tip='8 shows; usually 2 to 6' aria-label='8 shows; usually 2 to 6'><span class='gap small'>8</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>
-<tr><td class='song'><a href='../song/guy-forget.html#2023-08-05'>Guy Forget</a><span class='seg tight'>-&gt;</span><a class='jc-chip' href='../song/guy-forget.html#2023-08-05'>Jam chart</a><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2011-09-04.html'>2011-09-04</a></span><span class='venue'>Dick&#x27;s Sporting Goods Park</span><span class='place'>Commerce City, CO</span></td><td class='bar' data-tip='not played in 10 years, so there is no usual range to place this gap against' aria-label='not played in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='not played in 10 years, so there is no usual range to place this gap against' aria-label='not played in 10 years, so there is no usual range to place this gap against'><span class='gap big'>425</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
+<tr><td class='song'><a href='../song/guy-forget.html#2023-08-05'>Guy Forget</a><span class='seg tight'>-&gt;</span><a class='jc-chip' href='../song/guy-forget.html#2023-08-05'>Jam chart</a><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2011-09-04.html'>2011-09-04</a></span><span class='venue'>Dick&#x27;s Sporting Goods Park</span><span class='place'>Commerce City, CO</span></td><td class='bar'><span class='track bare'></span></td><td class='n'><span class='gap big'>425</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
 <tr><td class='song'><a href='../song/whats-the-use.html#2023-08-05'>What’s the Use?</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-23.html'>2023-07-23</a></span><span class='venue'>St. Joseph&#x27;s Health Amphitheater at Lakeview</span><span class='place'>Syracuse, NY</span></td><td class='bar' data-tip='9 shows; usually 4 to 12' aria-label='9 shows; usually 4 to 12'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:55.00%'></span></span></td><td class='n' data-tip='9 shows; usually 4 to 12' aria-label='9 shows; usually 4 to 12'><span class='gap small'>9</span><span class='typ'>med 6</span></td></tr>
 <tr><td class='song'><a href='../song/scents-and-subtle-sounds.html#2023-08-05'>Scents and Subtle Sounds</a><span class='seg tight'>-&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-21.html'>2023-07-21</a></span><span class='venue'>The Pavilion at Star Lake</span><span class='place'>Burgettstown, PA</span></td><td class='bar' data-tip='11 shows; usually 6 to 25' aria-label='11 shows; usually 6 to 25'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:40.75%'></span></span></td><td class='n' data-tip='11 shows; usually 6 to 25' aria-label='11 shows; usually 6 to 25'><span class='gap small'>11</span><span class='typ'>med 11</span></td></tr>
 <tr><td class='song'><a href='../song/everythings-right.html#2023-08-05'>Everything’s Right</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-07-22.html'>2023-07-22</a></span><span class='venue'>The Pavilion at Star Lake</span><span class='place'>Burgettstown, PA</span></td><td class='bar' data-tip='9 shows; usually 2 to 5' aria-label='9 shows; usually 2 to 5'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:82.00%'></span></span></td><td class='n' data-tip='9 shows; usually 2 to 5' aria-label='9 shows; usually 2 to 5'><span class='gap small'>9</span><span class='typ'>med 4</span><span class='verdict overdue at-gap'>overdue</span></td></tr>

@@ -306,13 +306,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -538,14 +532,7 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -667,7 +654,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='1995-10-03' data-date='1995-10-03' data-era='1.0' data-gap='3' data-score='' data-search="1995-10-03 10/03/1995 10/3/1995 10/3/95 10/03 10/3 10-3 october 03 1995 october 3 tuesday seattle center arena seattle wa  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1995-10-03' target='_blank' rel='noopener noreferrer'>1995-10-03</a><span class='dow'>Tue</span></span><span><span class='r-venue'>Seattle Center Arena</span><span class='r-place'>Seattle, WA</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:6.82%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>3</span><span class='set'>SET 2</span></span></div></li>
 <li id='1995-09-29' data-date='1995-09-29' data-era='1.0' data-gap='1' data-score='' data-search="1995-09-29 09/29/1995 9/29/1995 9/29/95 09/29 9/29 9-29 september 29 1995 september 29 friday greek theatre los angeles ca  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1995-09-29' target='_blank' rel='noopener noreferrer'>1995-09-29</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Greek Theatre</span><span class='r-place'>Los Angeles, CA</span></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:2.27%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 2</span></span></div></li>
 <li id='1995-09-28' data-date='1995-09-28' data-era='1.0' data-gap='1' data-score='63' data-search="1995-09-28 09/28/1995 9/28/1995 9/28/95 09/28 9/28 9-28 september 28 1995 september 28 thursday summer pops, embarcadero center san diego ca  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1995-09-28' target='_blank' rel='noopener noreferrer'>1995-09-28</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Summer Pops, Embarcadero Center</span><span class='r-place'>San Diego, CA</span><span class='mark'>Rated <b>63</b> &middot; <a class='ext i-pin' href='https://phish.in/1995-09-28' target='_blank' rel='noopener noreferrer'>Listen</a></span></span><span class='nb'></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:2.27%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 1</span></span></div></li>
-<li id='1995-09-27' data-date='1995-09-27' data-era='1.0' data-gap='-1' data-score='' data-search="1995-09-27 09/27/1995 9/27/1995 9/27/95 09/27 9/27 9-27 september 27 1995 september 27 wednesday cal expo amphitheater sacramento ca  debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1995-09-27' target='_blank' rel='noopener noreferrer'>1995-09-27</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Cal Expo Amphitheater</span><span class='r-place'>Sacramento, CA</span><p class='note'><span class='tag'>Note</span>Debut.</p></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='1995-09-27' data-date='1995-09-27' data-era='1.0' data-gap='-1' data-score='' data-search="1995-09-27 09/27/1995 9/27/1995 9/27/95 09/27 9/27 9-27 september 27 1995 september 27 wednesday cal expo amphitheater sacramento ca  debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1995-09-27' target='_blank' rel='noopener noreferrer'>1995-09-27</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Cal Expo Amphitheater</span><span class='r-place'>Sacramento, CA</span><p class='note'><span class='tag'>Note</span>Debut.</p></span><span class='nb'></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

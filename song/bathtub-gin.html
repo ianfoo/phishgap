@@ -306,13 +306,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-/* No band to draw, so no scale is drawn. A dash where the mark would have
-   been, at the same height as the track, says the measurement was never
-   possible -- the ghost scale that used to sit here read as a bar that had
-   failed to render, and it was the emptiest graphic on the most interesting
-   rows. `.bare` is gone with it. */
-.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
-   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .track.bare::before{opacity:.55}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -538,14 +532,7 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
-       derived from document.title -- but the title leads with the song count,
-       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
-       a *different* key every time a song landed. seen was therefore always 0,
-       the mark never fired once, and a key was left behind per song count. */
-    var show=live.getAttribute('data-show');
-    if(!show) return;
-    var key='pl-seen-'+show;
+    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -920,7 +907,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='1989-06-30' data-date='1989-06-30' data-era='1.0' data-gap='9' data-score='' data-search="1989-06-30 06/30/1989 6/30/1989 6/30/89 06/30 6/30 6-30 june 30 1989 june 30 friday pearl street ballroom northampton ma  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1989-06-30' target='_blank' rel='noopener noreferrer'>1989-06-30</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Pearl Street Ballroom</span><span class='r-place'>Northampton, MA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Slave to the Traffic Light</span><span class='nb-out seg'><span class='mk'>&gt;</span> Mike&#x27;s Song</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:71.88%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>9</span><span class='set'>SET 2</span></span></div></li>
 <li id='1989-05-28' data-date='1989-05-28' data-era='1.0' data-gap='1' data-score='' data-search="1989-05-28 05/28/1989 5/28/1989 5/28/89 05/28 5/28 5-28 may 28 1989 may 28 sunday ian mclean&#x27;s party, connie condon&#x27;s farm hebron ny  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1989-05-28' target='_blank' rel='noopener noreferrer'>1989-05-28</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Ian McLean&#x27;s Party, Connie Condon&#x27;s Farm</span><span class='r-place'>Hebron, NY</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Weekapaug Groove</span><span class='nb-out'>Sanity</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:10.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 2</span></span></div></li>
 <li id='1989-05-27' data-date='1989-05-27' data-era='1.0' data-gap='1' data-score='' data-search="1989-05-27 05/27/1989 5/27/1989 5/27/89 05/27 5/27 5-27 may 27 1989 may 27 saturday alpha delta phi fraternity, trinity college hartford ct  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1989-05-27' target='_blank' rel='noopener noreferrer'>1989-05-27</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Alpha Delta Phi Fraternity, Trinity College</span><span class='r-place'>Hartford, CT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Fluffhead</span><span class='nb-out'>Good Times Bad Times</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:10.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 1</span></span></div></li>
-<li id='1989-05-26' data-date='1989-05-26' data-era='1.0' data-gap='-1' data-score='' data-search="1989-05-26 05/26/1989 5/26/1989 5/26/89 05/26 5/26 5-26 may 26 1989 may 26 friday valley club cafe rutland vt debut. no real jam at all. instead, the &quot;bathtub gin&quot; vocal refrain is extended slightly, and then the song abruptly ends. first known version."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1989-05-26' target='_blank' rel='noopener noreferrer'>1989-05-26</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Valley Club Cafe</span><span class='r-place'>Rutland, VT</span><p class='note'><span class='tag'>Note</span>First known version.</p><p class='jam'><span class='tag'>Jam chart</span>Debut. No real jam at all. Instead, the &quot;Bathtub Gin&quot; vocal refrain is extended slightly, and then the song abruptly ends.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Split Open and Melt</span><span class='nb-out'>Run Like an Antelope</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='1989-05-26' data-date='1989-05-26' data-era='1.0' data-gap='-1' data-score='' data-search="1989-05-26 05/26/1989 5/26/1989 5/26/89 05/26 5/26 5-26 may 26 1989 may 26 friday valley club cafe rutland vt debut. no real jam at all. instead, the &quot;bathtub gin&quot; vocal refrain is extended slightly, and then the song abruptly ends. first known version."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1989-05-26' target='_blank' rel='noopener noreferrer'>1989-05-26</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Valley Club Cafe</span><span class='r-place'>Rutland, VT</span><p class='note'><span class='tag'>Note</span>First known version.</p><p class='jam'><span class='tag'>Jam chart</span>Debut. No real jam at all. Instead, the &quot;Bathtub Gin&quot; vocal refrain is extended slightly, and then the song abruptly ends.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Split Open and Melt</span><span class='nb-out'>Run Like an Antelope</span></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
