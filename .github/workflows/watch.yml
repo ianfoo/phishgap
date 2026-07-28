@@ -94,9 +94,26 @@ jobs:
             git add site/data
             if ! git diff --cached --quiet; then
               git commit -q -m "Archive gap reports for new shows"
-              # Another run may have pushed while this one was fetching.
-              git pull --rebase -q origin main || true
-              git push -q origin main || true
+              # A rebase that conflicts must not be left half-applied. It used
+              # to be `|| true`, which swallowed the failure and left conflict
+              # markers inside site/data/<date>.json -- and a report with
+              # markers in it is unreadable JSON, so the show was dropped from
+              # the archive and every following pass published a site without
+              # the show it was watching. Abort, keep this pass's work, and
+              # try again in five minutes; the archive is re-fetched each pass
+              # so nothing is lost by not pushing now.
+              if ! git pull --rebase -q origin main; then
+                echo "rebase conflicted; aborting and retrying next pass"
+                git rebase --abort || true
+              else
+                git push -q origin main || echo "push rejected; retrying next pass"
+              fi
+              # Whatever happened above, the tree must be clean before the
+              # site is built from it.
+              if ! git diff --quiet || ! git diff --cached --quiet; then
+                echo "tree dirty after rebase; resetting to HEAD"
+                git checkout -- . || true
+              fi
             fi
 
             # Publish onto whatever is on the remote right now, not onto

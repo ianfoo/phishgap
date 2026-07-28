@@ -4523,6 +4523,9 @@ def archived_dates(site_dir):
     return {n[:-5] for n in os.listdir(data_dir) if REPORT_NAME.match(n)}
 
 
+_UNREADABLE = []
+
+
 def saved_reports(site_dir):
     """Every report JSON already in the site, oldest first."""
     data_dir = os.path.join(site_dir, "data")
@@ -4534,7 +4537,11 @@ def saved_reports(site_dir):
             try:
                 out.append(json.load(fh))
             except ValueError:
-                log("warning: skipping unreadable %s", name)
+                # Loud, and counted by the caller: an unreadable report is a show
+            # missing from the site, and the site will otherwise publish
+            # cheerfully without it.
+            log("warning: skipping unreadable %s", name)
+            _UNREADABLE.append(name)
     return out
 
 
@@ -5757,6 +5764,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # Rewritten every run, but it is one small file and write_if_changed means
     # a run that moved nothing publishes nothing.
     write_current(site_dir)
+    if _UNREADABLE:
+        log("warning: %d archived report(s) could not be read and are missing "
+            "from this build: %s", len(_UNREADABLE),
+            ", ".join(sorted(set(_UNREADABLE))[:5]))
 
     # After write_current, because it reads what that just wrote.
     since = {}
