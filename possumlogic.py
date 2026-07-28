@@ -1170,12 +1170,16 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    and for anything phish.net does not count as a show. */
 .show .nth{font-size:.75rem;font-weight:400;letter-spacing:0;color:var(--dim);
    text-transform:none;white-space:nowrap}
-/* A dim middot, not a second hot bullet. The bullet separates the two things
-   that name the night -- its date and its tour -- and repeating it would make
-   this a third of equal rank. It is an aside about the night, so it attaches
-   with the quieter mark. Its own, because a show with no tour still needs
-   something between the date and this. */
-.show .nth::before{content:"\\00B7";color:var(--dim);margin:0 .45rem}
+/* A dim middot, not a second hot bullet: this is an aside about the night, and
+   a second hot bullet would give it the rank of the ones naming it.
+
+   It is an element rather than a ::before on the ordinal, and that is the
+   whole point. Attached to the ordinal it printed whenever the ordinal did --
+   including on the 35 shows phish.net files as "Not Part of a Tour", where
+   there is no tour for it to separate. Watkins Glen opened its masthead with
+   "· 119th show of 3.0": a separator joining one thing to nothing. Now it is
+   emitted only when there is something on each side of it. */
+.show .sep{color:var(--dim);margin:0 .45rem;font-size:.75rem}
 /* No leading bullet: the tour used to follow the date on this line and the
    bullet joined them. It leads now, and a separator with nothing before it is
    just a dot. The ordinal brings its own, which is the only join left. */
@@ -1523,7 +1527,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      margin:0 .45rem 0 .55rem}
   .show .date{font-size:1.25rem}
   .show .tour{font-size:.625rem;font-weight:400;letter-spacing:.14em}
-  .show .tour::before{font-size:1rem;margin:0 .5rem}
+  .show .sep{margin:0 .35rem}
   .where{margin-top:.2rem;font-size:.75rem;letter-spacing:0}
   /* The buttons stand twice as tall as a line of footer text, so sharing a row
      with it inflated that row and opened a gap between the two text lines.
@@ -1549,6 +1553,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    page box measures 538pt, which would fall the wrong side of this threshold
    by unit accident rather than by intent. */
 @media screen and (min-width:700px){
+  /* The areas name the same order the markup is in. They used to name the
+     opposite one -- the markup ran venue-then-context and this grid printed
+     context-then-venue -- so the page read one way to a screen reader and in
+     print, and the other way to everybody looking at it above 700px. The
+     markup moved rather than the grid, because context-above-venue is the
+     order that was on screen and the one that puts the venue nearest the
+     setlist it introduces. */
   header{display:grid;grid-template-columns:auto 1fr;column-gap:2.5rem;
          align-items:start;
          grid-template-areas:"sections sections" "pager pager"
@@ -1592,8 +1603,8 @@ SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <div class="rule2"></div>
 <header>{crumb}<h1>{date}<span class="dow">{dow}</span></h1>
-<p class="where">{venue}</p>
-<p class="show">{tour}</p>{rating}{aside}{live}</header>
+<p class="show">{tour}</p>
+<p class="where">{venue}</p>{rating}{aside}{live}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 <p class="links">{links}</p>
@@ -2136,17 +2147,32 @@ def render_html(report, bar_scale="linear", index_href=None,
 
     # phish.net files one-offs under "Not Part of a Tour", which is not worth
     # saying out loud.
-    tour = report.get("tour") or ""
-    tour = ("<span class='tour'>%s</span>" % html.escape(tour)
-            if tour and "not part of a tour" not in tour.lower() else "")
+    name = report.get("tour") or ""
+    name = (html.escape(name)
+            if name and "not part of a tour" not in name.lower() else "")
 
     # Era-scoped, because an absolute one cannot be said honestly -- see
     # era_ordinal. Silent for 1.0 and for anything not on the calendar, which
     # is where the soundchecks and sessions land.
     place = era_ordinal(calendar, report["date"])
-    if place:
-        tour += ("<span class='nth'>%s show of %s</span>"
-                 % (_ordinal(place[0]), place[1]))
+    nth = ("%s show of %s" % (_ordinal(place[0]), place[1])) if place else ""
+
+    # The ordinal leads and the tour closes, so the weight in this block builds
+    # towards the right edge the whole header is set against -- the two lines
+    # under it put their heaviest type hard right, and this line used to run
+    # the other way, opening on the boldest thing on it and trailing off into
+    # the lightest.
+    #
+    # The separator belongs to the pair, not to either half. It used to be a
+    # ::before on the ordinal, which meant a festival -- phish.net files those
+    # as "Not Part of a Tour", so `name` is empty -- opened the line with a
+    # dot attached to nothing. Watkins Glen read "· 119th show of 3.0".
+    tour = ""
+    if nth or name:
+        tour = "<span class='nth'>%s</span>" % nth if nth else ""
+        if name:
+            tour += ("<span class='sep'>&middot;</span>" if nth else "")
+            tour += "<span class='tour'>%s</span>" % name
 
     # phish.net's own rating for the night, which their API does not expose --
     # fouldomain does, so it is theirs by way of someone else and says so.

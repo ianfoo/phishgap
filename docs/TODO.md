@@ -280,8 +280,28 @@ free anchors.
 - Cards have no grain and use a plain rule where pages use `.rule2`. The card
   and the page it opens do not feel like the same object.
 - Card mark (the arc) at `opacity:.12` is invisible at thumbnail size.
-- Header DOM order is `h1 → .where → .show` but the grid flips `.show` above
-  `.where` at >= 700px, so reading order differs between narrow, wide and print.
+- ~~Header DOM order~~ DONE 2026-07-28. The markup moved rather than the
+  grid: it now runs `h1 → .show → .where`, which is what the wide layout
+  already showed and what puts the venue nearest the setlist it
+  introduces. Verified DOM order equals visual order at 375px and 1000px.
+- ~~Masthead weight ran the wrong way~~ DONE 2026-07-28 (Ian, live). The
+  first line opened on its boldest element and trailed into its lightest,
+  while the two lines under it set their heaviest type hard right. The
+  ordinal now leads and the tour closes, so weight builds towards the
+  right edge the whole block is set against.
+- ~~Orphaned separator on the masthead~~ DONE 2026-07-28 (Ian, live). The
+  middot was a `::before` on the ordinal, so it printed whenever the
+  ordinal did — including on the 35 shows phish.net files as "Not Part of
+  a Tour", where there is no tour to separate. Watkins Glen opened with
+  "· 119th show of 3.0". It is its own element now, emitted only with
+  something on each side.
+  - **Naming those shows properly is not doable from the data.** They are
+    festivals, TV sessions and the Mexico runs. The festival name is only
+    in the freeform `notes` prose, and a regex over it found 3 of 35 —
+    spelling them inconsistently ("SuperBall IX" vs "Super Ball IX") and
+    missing Festival 8 entirely. Three inconsistent labels is worse than
+    35 blanks. A short curated table (the festivals are a finite, famous
+    list) is the only reliable route — **Ian's call, deferred.**
 
 ## 7. Mobile and the method page
 
@@ -397,6 +417,15 @@ working; all of them are here so the batch can be reviewed in one sitting.
 5. **`possumlogic.yml` retries a rejected publish three times, then fails the
    step.** Three is a guess; it only has to outlast the watcher's five-minute
    cadence, and each attempt is a fetch plus a tree copy.
+6. **The header's reading order was unified on context-above-venue**, which
+   is what the wide layout already showed. The alternative was to flip the
+   wide layout to venue-first and leave the markup alone. Reverting is two
+   lines in `SHELL`.
+7. **`MOST SONGS` stays a hero card.** Ian notes it is effectively static —
+   once the backfill reaches 1999-12-31 it becomes Big Cypress permanently,
+   and that is a fact every Phish fan recognises rather than a stat that
+   goes stale. Open question only: whether the card should *name* the show
+   rather than making you click to find out.
 
 ## 9. Known and deliberately not fixed
 
