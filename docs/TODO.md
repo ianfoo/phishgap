@@ -48,6 +48,12 @@ so work could continue; he wants to review these, not be blocked by them.
 rebuilds clean (`./possumlogic.py --site site --rebuild`, ~2 s) and
 `python3 -m py_compile possumlogic.py` passes.
 
+**Ian's standing instruction, 2026-07-27:** verify, then commit and push —
+do not end a turn holding verified work, and do not stop with queue items open
+and nothing blocking. He does not want to babysit turns or re-point a fresh
+session at this file. He also wants every turn to end with a **table** of what
+was done, why, and what came of it.
+
 ### In flight when the session ended
 
 - **A watcher run is live**, dispatched on the fixed code (see §8.5). The
@@ -66,17 +72,29 @@ rebuilds clean (`./possumlogic.py --site site --rebuild`, ~2 s) and
 
 ### Queue, in the order I would take it
 
-1. **§3c song page front matter** — Ian's most recent review, four items, all
-   well specified. The `.dek` font fix is a one-liner; the FAQ page is the
-   biggest piece.
-2. **§3d keyboard hotkeys** — the accessibility floor is done; this is the
-   jumping layer.
-3. **§7 method page** — table of contents and reordering. Untouched.
-4. **§6 remaining visual work** — cards have no grain and use a plain rule
+1. **§3d keyboard hotkeys** — the accessibility floor is done; this is the
+   jumping layer. The `?` overlay it wants now has a natural companion in
+   `faq.html`.
+2. **§7 method page** — table of contents and reordering. Untouched. The FAQ
+   page's contents block is a working pattern to copy: it is generated from
+   the same list as the entries, so it cannot name a section that is not there.
+3. **§6 remaining visual work** — cards have no grain and use a plain rule
    where pages use `.rule2`; the card mark is invisible at thumbnail size.
-5. **§5 `content-visibility` benchmark** — method written down, needs doing
+4. **§5 `content-visibility` benchmark** — method written down, needs doing
    properly rather than in one live page.
-6. **§3b** — the older agreed work, still none of it started.
+5. **§3b** — the older agreed work, still none of it started.
+
+§3c is done — see that section for what landed and §8b.8–11 for the calls
+made along the way.
+
+### What the 2026-07-27 session added
+
+§3c, all four items, plus the nav regression it exposed (§8c) and the same
+segue hole on the method page. New page: `faq.html`, reached from a
+**Questions** nav item on all eight page types. Verified in a browser rather
+than from markup — Literata measured by advance width, nav hit areas re-checked
+across every page type at 375px, pairing alignment across eight viewport
+widths, and every link and anchor resolved. Ian's mid-session queue is §8d.
 
 ### Two things Ian has asked for that are not yet scheduled anywhere
 
@@ -232,56 +250,90 @@ preference predates the review — his call, not the reviewer's.
   the face, because that one is meant to survive being handed to somebody with
   nothing beside it. Do not "simplify" it into the shared sheet.
 
-## 3c. Song page front matter — Ian's live review, 2026-07-28. NOT STARTED
+## 3c. Song page front matter — Ian's live review, 2026-07-28. DONE
 
-Looking at Tweezer Reprise. The block above the statistics has accumulated
-four separate things and reads as clutter. Taken in order:
+All four items landed. The block above the statistics is now three things —
+subtitle, the pairings, and one line about the marks — where it was four, and
+the two that went are the two Ian named. Taken in order:
 
-### The prose is mono because nothing ever told it not to
+### ~~The prose is mono because nothing ever told it not to~~ DONE
 
 **Answered:** it is an artifact, not a decision. `body` sets
 `font-family:'IBM Plex Mono'` for the whole site, so everything inherits mono
 unless it opts out. Literata *is* loaded and *is* used deliberately for running
 prose — `.jam`, `.note`, `.aside-note`, and the method page's `.prose` — and
 the comment beside those rules says why ("Literata is drawn for reading").
-`.dek` simply never got the same treatment. Giving `.dek` Literata is a
-one-line change and is almost certainly right.
+`.dek` simply never got the same treatment.
 
-### "Usually out of" / "usually into" overstates its evidence
+- **It was two rules, not one, and the note above was wrong about why.**
+  `.dek` had a base rule in `SONG_CSS` only. `INDEX_CSS` carried `.dek.foot`
+  and nothing else, so the identical class on `due.html` and `venues.html` was
+  falling through to a bare `<p>` — 16px, mono, full measure — while a song
+  page set it at 12px and dim. One class, two appearances, by accident. Both
+  sheets state it now: Literata, .8125rem, `opsz` 12.
+- Verified by measuring the rendered advance against the same string forced to
+  each face, not by reading the CSS: `.dek` resolves to Literata on the song,
+  due, venues and FAQ pages, and `document.fonts.check` confirms it loaded.
+
+### ~~"Usually out of" / "usually into" overstates its evidence~~ DONE
 
 Tweezer Reprise has 331 performances; the three songs listed under "usually
 out of" sum to 58. Calling that *usually* is wrong — it is "most often", and
-even that wants a denominator. Two fixes needed:
+even that wants a denominator.
 
-- **Reword.** "Most often out of" / "most often into", or show the share.
-- **Separators.** `Sleeping Monkey 26  Harry Hood 18  Loving Cup 14` runs
-  together as one string of alternating words and numbers. It needs real
-  separation between pairs, and the count needs to read as a count.
+- **Reworded** to "Most often out of" / "Most often into".
+- **The count now terminates its own pairing**: `Sleeping Monkey 26×`, and the
+  gap between pairings went .7rem → 1.4rem. A middot *between* items was the
+  obvious separator and is the wrong one here — this block wraps at every
+  phone width, and a separator that lives between two items can land at the
+  head of a wrapped line. A terminator belonging to the item cannot. See §8b.9.
+- **The two rows are one grid now**, so both lists start at the same place.
+  As two independent flex rows they each began wherever their own caption
+  ended, and "out of" is longer than "into" — the lists sat 14.8px out of line.
+  The caption column is `max-content`, so neither row states a width and the
+  alignment holds at 320, 375, 414, 620, 760, 900, 1100 and 1400px, checked.
 
-### The gap explanation does not belong on every song page
+### ~~The gap explanation does not belong on every song page~~ DONE
 
 It is the first prose on the page, it explains the site's *old* headline
 statistic, and anybody exploring Phish statistics probably knows what a gap
 is. **Ian's proposal: a FAQ page**, with this as one entry.
 
-**Audit the site for the other entries while building it.** Candidates already
-visible from this session:
-- What a gap is, and that ours is "shows since" and deliberately not
-  phish.net's number (§9 has the reasoning).
-- What `>` and `->` mean, and **how they differ** — the current legend does
-  not say, which is the substantive complaint below.
-- Why a song shows no range bar (fewer than 8 plays in ten years — the tooltip
-  now says it per row, but the *rule* wants stating once).
-- What "due" means and why dormant songs are excluded.
-- What the eras (1.0–4.0) are.
+Built as `faq.html`, eight entries, every one from the audit list:
+
+- What a gap is — and that it is not a length of time.
+- Why a song page says "shows since" rather than a gap (§9's reasoning).
+- What `>` and `–>` mean and how they differ.
+- Why a row has no range bar.
+- What "due" means and why dormant songs are not on the list.
+- What the eras are.
 - Why some shows say "Not Part of a Tour".
+- Why a show page says "setlist still coming in".
 
-### The notation legend is heavy and also wrong
+Entries and the contents block at the top come from one list in the source, so
+the page cannot advertise a question it does not answer. Where the method page
+already holds the long reasoning the entry links to its anchor rather than
+restating it — both of those deep links were checked against the ids that page
+actually emits. Reached from a new **Questions** item in the nav on all eight
+page types.
 
-The arrow legend is wordy for something repeated on every song page, and it is
-**inadequate**: it explains that `>` and `->` both mean the band ran songs
-together, but not the difference between them. Either explain it properly
-(FAQ) or drop the legend to a link.
+### ~~The notation legend is heavy and also wrong~~ DONE
+
+The arrow legend was wordy for something repeated on every song page, and it
+was **inadequate**: it explained that `>` and `->` both mean the band ran songs
+together, but not the difference between them. It is one line now — the marks,
+four words each, and a link to `faq.html#segues`.
+
+**The method page had the same hole** and it has been fixed there too; §4 of
+that page said the same thing and stopped at the same place.
+
+The difference, from phish.net's own FAQ on segues (they block `WebFetch`;
+read in a browser): `->` is an actual segue, one song jamming fluidly and
+without interruption into the next. `>` is everything else that runs together —
+and is *also* a convention, used between songs always played as a set (Mike's
+> Hydrogen > Weekapaug, The Horse > Silent) and around lead-in and exit songs
+like HYHU, **even where there was an audible gap in the music**. That last part
+is the bit worth having: a `>` is not always a claim about sound.
 
 ## 3d. Keyboard: hotkeys, not just tab order — NOT STARTED
 
@@ -410,11 +462,18 @@ free anchors.
   something on each side.
   - **Naming those shows properly is not doable from the data.** They are
     festivals, TV sessions and the Mexico runs. The festival name is only
-    in the freeform `notes` prose, and a regex over it found 3 of 35 —
-    spelling them inconsistently ("SuperBall IX" vs "Super Ball IX") and
-    missing Festival 8 entirely. Three inconsistent labels is worse than
-    35 blanks. A short curated table (the festivals are a finite, famous
-    list) is the only reliable route — **Ian's call, deferred.**
+    in the freeform `notes` prose. A short curated table (the festivals are
+    a finite, famous list) is the only reliable route — **Ian's call,
+    deferred.**
+  - **The "3 of 35" figure this used to quote does not reproduce**, and it
+    also said Festival 8 was missed entirely, which is wrong — re-measured
+    2026-07-27, a name-hunting regex hits 10 of the 35 and *does* find
+    Festival 8. The conclusion is unchanged and the reasons are better: the
+    hits include ordinary prose ("it" matching IT), two spellings of Festival
+    8 and three of Super Ball IX ("SuperBall IX" / "Super Ball IX" /
+    "superballix"), and nothing at all for the Dick's runs, the Mexico runs,
+    the TV sessions, or Watkins Glen. Wrong and inconsistent labels on ten
+    shows is worse than 35 blanks. Do not re-quote the old number.
 
 ## 7. Mobile and the method page
 
@@ -602,6 +661,119 @@ working; all of them are here so the batch can be reviewed in one sitting.
    sort gained **Most songs** and **Highest rated**, the latter answering the
    same kind of question and not previously askable here at all. 707 of 711
    shows carry a rating; the four without sort last rather than as zero.
+8. ~~**The FAQ is called "Questions" in the nav**~~ — **reversed by Ian, same
+   night.** "FAQ is a well understood term on the internet. There's no good
+   reason to call it 'questions'." He is right; the argument for "Questions"
+   was internal consistency with a page-name family, against a word every
+   reader already knows. Nav, page heading, `<title>` and share title all say
+   **FAQ** now. The file was always `faq.html`.
+   - And the awkwardness I was trying to sit next to was real, but in the
+     other item: **"How this is worked out" is now just "Method"** in the nav
+     and in every footer. Ian: "really wordy and kind of awkward." The page
+     keeps the sentence as its own heading, where it reads as description
+     rather than as a target. **Open, his call:** he floated dropping it from
+     the nav entirely and making it a FAQ entry that redirects — but also
+     said it may deserve to stay first-class "because it explains things that
+     might not be 'frequently asked,' exactly." Left first-class.
+9. **A pairing's count terminates the pairing (`26×`) rather than a middot
+   separating pairings.** Reasoning in §3c. If the `×` reads as noise the
+   alternative is not a middot — it is stacking the count under its song.
+10. **The denominator for the pairings is left in the subtitle** ("331
+    performances"), not repeated per pairing as a share. Ian's note said the
+    count "wants a denominator"; printing `26 of 331` three times per side is
+    the clutter the whole item is about. One line above, once. If he wants
+    shares, `neighbours()` already returns the counts and the total is to hand.
+11. **The FAQ links to the method page rather than restating it.** Two entries
+    are two sentences and a link. The alternative — a self-contained FAQ — puts
+    the same reasoning in two files that will drift.
+
+## 8c. Found while building §3c — a nav that had never been pushed
+
+**Adding a sixth nav item made `due.html` scroll sideways on a phone**, and it
+is worth writing down because the cause was not the new item.
+
+`INDEX_CSS`'s `.crumb` had no `flex-wrap`, so the row could not break; at five
+sections each *label* wrapped inside itself and the row stayed within the
+viewport. At six it stopped fitting and the due page laid out 401px wide inside
+a 375px client — the whole page scrolling for one nav link. `SONG_CSS`'s
+`.crumb` has wrapped all along. The two sheets disagreed only because nothing
+had ever pushed the narrower one.
+
+Fixed by giving `INDEX_CSS` the song sheet's `flex-wrap:wrap` and `.55rem .9rem`
+gap, plus `white-space:nowrap` on the anchors so a row breaks *between* labels
+rather than inside them. Re-ran §7's check afterwards across all eight page
+types at 375px: every hit area still 24×24 or better, no two overlapping,
+nothing past the viewport edge, and no page scrolling sideways.
+
+### The footer link had been the browser's default blue on seven of eight
+
+Ian spotted this the same night: the footer link "appears semi-unstyled,
+appearing as blue text with an underline, like a default link in a browser
+would." Measured, it was worse than that — `footer a{color:var(--dim)}` existed
+in `SONG_CSS` **only**, so the footer link rendered in Chrome's default link
+colour on the index, songs, due, venues, method, FAQ and every show page. Song
+pages were the single exception. Long-standing; nothing in this session caused
+it.
+
+All three sheets now carry the rule, and it matches how links are drawn
+everywhere else on the site — `--dim`, no `text-decoration`, a `--rule`
+border-bottom, `--hot` on hover. Checked on all eight page types: no link
+anywhere in a footer still resolves to a default colour.
+
+**This is the argument for §3b's "strip INDEX_CSS out of METHOD_CSS".** Three
+sheets carrying near-identical rule text also carry near-identical rules that
+have silently diverged, and the divergence only shows up when something new
+leans on it. Two independent instances in one session — the nav that could not
+wrap, and a footer link styled in one sheet of three. **When touching anything
+that lives in more than one sheet, check all three and assert the match
+count**; CLAUDE.md says this and it is worth believing.
+
+## 8d. Ian's queue, sent 2026-07-27 during the §3c work — NOT STARTED
+
+Sent while the above was being built, with "do not allow it to interrupt".
+Recorded verbatim in substance; none of it is started.
+
+### Is `body` in Plex Mono the right default at all?
+
+Ian: "I am dubious about setting the body font to Plex Mono, because I keep
+finding spots where it is misapplied." His example is the **"Also on file"
+section on the shows page**, whose leading prose is mono. His question is
+whether mono should be the body default, or whether it should be applied to
+**data classes, or a data parent class that data elements inherit from**.
+
+**This is the general form of the bug §3c just fixed one instance of.** `.dek`
+was mono for no reason anybody chose, and so was `due.html`'s standfirst, and
+so is this. Every fix so far has been an opt-out bolted onto a default that is
+wrong for prose — the site now has `.jam`, `.note`, `.aside-note`, `.prose`,
+`.caveat` and `.dek` each independently saying "not mono, actually". Six
+opt-outs is the shape of an inverted default.
+
+Worth measuring before doing: count what is actually mono-by-decision (figures,
+dates, setlist marks, labels, counts) against what is mono-by-inheritance. If
+the first set is enumerable it wants a `.data`-style parent and a serif body,
+which inverts the default and removes the whole class of bug. **Ian asked a
+question here, not for the change** — bring him the measurement.
+
+### The "Also on file" section — three things
+
+The name itself is one of them: he wants **a better internal name** for this
+category ("also on file" is clumsy to refer to, even if the words are fine on
+the page). It is `split_archive()`'s second return value and covers soundchecks,
+studio and TV/radio sessions — the entries phish.net does not count.
+
+- **The heading is tiny.** Probably deliberate once; reads wrong to him now.
+- **It ignores the search filter.** The section shows in full even when the
+  show list is filtered. He half-defends this — it is a different category of
+  data — but it feels wrong: "perhaps only data that passes the filter should
+  appear", in either table. Note this interacts with §5's filter cost work and
+  with the URL-state work in §4.
+- **Its columns do not align.** Date, classification, details, flowing left to
+  right and *almost* lining up. Two causes, both worth stating because the fix
+  differs: the date is in a proportional face where the show table uses mono,
+  so digit widths move the classification; and the classification is plain
+  text of varying length ("session" against "soundcheck"), so the details
+  column starts wherever the word ended. A grid with a `max-content` column
+  fixes the second — the same fix §3c just used on the pairings block.
 
 ## 9. Known and deliberately not fixed
 

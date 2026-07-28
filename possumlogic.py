@@ -1454,6 +1454,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1634,7 +1637,7 @@ SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <p class="links">{links}</p>
 {sections}{notes}
-<footer><span><a href="../method.html">How this is worked out</a></span>{theme_ui}
+<footer><span><a href="../method.html">Method</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div>{row_js}</body></html>
@@ -2143,7 +2146,8 @@ def render_html(report, bar_scale="linear", index_href=None,
                  "<a href='../songs.html'>Songs</a>"
                  "<a href='../due.html'>Due</a>"
                  "<a href='../venues.html'>Venues</a>"
-                 "<a href='../method.html'>How this is worked out</a></nav>"
+                 "<a href='../faq.html'>FAQ</a>"
+                 "<a href='../method.html'>Method</a></nav>"
                  # No "All reports" in the middle: the row above already has
                  # Shows, pointing at the same page under the name the rest of
                  # the site uses for it. The pager is for the two neighbours.
@@ -2318,11 +2322,19 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* Which of the two lists you are looking at, and the way to the other one.
    Above the wordmark because that is where a reader looks for it, and because
    the footer link that used to be the only route was found by nobody. */
-.crumb{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem;
+/* Wrapping, with the same row gap the song pages use. This row did not wrap
+   before, and did not need to at five sections: each label simply broke inside
+   itself and the row stayed within the viewport. At six it stopped fitting and
+   the due page ran 401px wide inside a 375px phone -- the whole page scrolling
+   sideways for one nav item. Breaking between labels rather than inside them
+   is what the song pages have always done; the two sheets disagreed only
+   because nothing had ever pushed this one. */
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
+   margin-bottom:1.1rem;
    font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
-   border-bottom:1px solid var(--rule)}
+   white-space:nowrap;border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
@@ -2487,6 +2499,14 @@ header{padding-bottom:.9rem}
 .d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.5rem;line-height:1;color:var(--hot)}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+/* Same rule the song pages carry, and it has to be stated here too because
+   this sheet does not include theirs. It was missing entirely, so the due and
+   venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
+   while the identical class on a song page was 12px and dim. One class, two
+   appearances, by accident. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
+   color:var(--dim);max-width:56ch}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
 /* The venue list borrows the due page's three-column shape because it answers
    the same shape of question: a name, a when, and one figure worth ranking by.
@@ -2570,6 +2590,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
        font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);display:flex;justify-content:space-between;
        flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 @media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
@@ -2787,7 +2810,8 @@ INDEX_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./method.html">How this is worked out</a></nav>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">Method</a></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
@@ -2813,7 +2837,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
 {aside}
-<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<footer><span><a href="./method.html">Method</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -3347,14 +3371,23 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .i-pnet::after{background-image:url("data:image/png;base64,__PNET__")}
 .i-pin::after{background-image:url("data:image/png;base64,__PIN__")}
 .i-foul::after{background-image:url("data:image/png;base64,__FOUL__")}
-.dek{margin:.55rem 0 0;font-size:.75rem;line-height:1.5;color:var(--dim);
-   max-width:56ch}
+/* Literata, like every other run of prose on the site. This was mono for no
+   reason anybody chose: `body` sets Plex Mono site-wide, and .jam, .note and
+   the method page's .prose each opted out where reading matters. The dek never
+   did, so a standfirst sat in the figure face. A shade larger than the .75rem
+   it was set at, because the serif reads smaller at the same size. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
+   color:var(--dim);max-width:56ch}
 /* The notation legend. The arrows read as decoration unless something says
    they are load-bearing: an arrow means the songs merely followed one another,
    and phish.net's mark in its place means they did not stop. Worth one line,
    because the alternative is a reader inventing a meaning for it. */
 .dek.key .k{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    color:var(--ink-soft);padding:0 .1rem}
+.dek a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
@@ -3362,8 +3395,19 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    rather than a table: this is context for the list below, not a finding of
    its own, and it earns its place only because the answer is usually
    surprising -- Harry Hood comes out of Hold Your Head Up 31 times. */
-.pairs{margin:.7rem 0 0;display:flex;flex-wrap:wrap;gap:.15rem 2rem}
-.pair{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .7rem}
+/* One grid for both rows, so the two lists start at the same place. As two
+   independent flex rows they began wherever their own caption ended, and the
+   captions are not the same length -- "out of" against "into" put the two
+   lists 14.8px out of line at 760px. The caption column is max-content, so it
+   fits the longer of the two and neither row states a width of its own. */
+.pairs{margin:.7rem 0 0;display:grid;
+   grid-template-columns:max-content minmax(0,1fr);gap:.25rem 1rem}
+.pair{display:contents}
+.pair .cap{grid-column:1}
+/* 1.4rem between pairings rather than .7rem. At the old gap the row read as
+   one run of alternating words and numbers -- the space between a song and
+   its own count was very nearly the space between two songs. */
+.pair .ps{grid-column:2;display:flex;flex-wrap:wrap;gap:.15rem 1.4rem}
 .pair .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .pair .p{font-size:.8125rem;color:var(--ink-soft);white-space:nowrap}
@@ -3558,7 +3602,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-footer a{color:var(--dim)}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 @media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
@@ -3762,7 +3808,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../method.html">How this is worked out</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">Method</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -3770,12 +3816,11 @@ SONG_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
-<p class="dek">Gap &mdash; the number of shows the band played between one
-performance of this song and the one before it.</p>{pairs}
-<p class="dek key"><span class="k">&#8592;&#8201;&#8594;</span> the songs either
-side, played as separate songs. <span class="k">&gt;</span> and
-<span class="k">&#8211;&gt;</span> are phish.net&rsquo;s own marks, and mean the
-band ran them together rather than stopping between them.</p>{caveat}</header>
+{pairs}
+<p class="dek key">Marks between songs:
+<span class="k">&#8592;&#8201;&#8594;</span> separate,
+<span class="k">&gt;</span> and <span class="k">&#8211;&gt;</span> run together
+&mdash; <a href="../faq.html#segues">how they differ</a>.</p>{caveat}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 {best}
@@ -3798,7 +3843,7 @@ band ran them together rather than stopping between them.</p>{caveat}</header>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
-<footer><span><a href="../method.html">How this is worked out</a></span>{theme_ui}
+<footer><span><a href="../method.html">Method</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -4127,12 +4172,24 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         def _side(label, items):
             if not items:
                 return ""
-            return ("<div class='pair'><span class='cap'>%s</span>%s</div>"
+            # The count carries a times sign so that it reads as a count and so
+            # that each pairing ends in a glyph of its own. A middot between
+            # items would have done the separating, but this block wraps at
+            # every width the phone uses, and a separator that lives between
+            # two items can land at the head of a wrapped line. A terminator
+            # that belongs to the item cannot.
+            return ("<div class='pair'><span class='cap'>%s</span>"
+                    "<span class='ps'>%s</span></div>"
                     % (label, " ".join(
-                        "<span class='p'>%s<b>%d</b></span>"
+                        "<span class='p'>%s<b>%d&times;</b></span>"
                         % (html.escape(typographic(s)), n) for s, n in items)))
+        # "Usually" overstated it and was wrong: Tweezer Reprise's top three
+        # pairings sum to 58 of 331 performances. "Most often" is the claim the
+        # counting actually supports; the denominator is the performance total
+        # in the subtitle directly above.
         pairs = ("<div class='pairs'>%s%s</div>"
-                 % (_side("Usually out of", before), _side("Usually into", after)))
+                 % (_side("Most often out of", before),
+                    _side("Most often into", after)))
 
     caveat = NOT_A_SONG.get(doc.get("slug") or "")
     caveat = "<p class='caveat'>%s</p>" % html.escape(caveat) if caveat else ""
@@ -4216,7 +4273,8 @@ SONGS_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./method.html">How this is worked out</a></nav>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">Method</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
@@ -4236,7 +4294,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
-<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<footer><span><a href="./method.html">Method</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -4299,7 +4357,8 @@ DUE_SHELL = """<!DOCTYPE html>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">Due</a><a href="./venues.html">Venues</a>
-<a href="./method.html">How this is worked out</a></nav>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">Method</a></nav>
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
 <p class="show">{subtitle}</p>
@@ -4312,7 +4371,7 @@ at eighty.</p></header>
 {rows}
 </ol>
 <p class="dek foot">{dormant}</p>
-<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<footer><span><a href="./method.html">Method</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div></body></html>
@@ -4414,7 +4473,8 @@ VENUES_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a class="here">Venues</a>
-<a href="./method.html">How this is worked out</a></nav>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">Method</a></nav>
 <div class="rule2"></div>
 <header><h1>Venues</h1>
 <p class="show">{subtitle}</p>
@@ -4427,7 +4487,7 @@ over what span, and the longest gap the room has heard.</p></header>
 <ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>
-<footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
+<footer><span><a href="./method.html">Method</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div></body></html>
@@ -4623,6 +4683,12 @@ METHOD_CSS = INDEX_CSS + """
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
+/* Stated here rather than on the FAQ's sheet, because this page links out too
+   and had no rule for a link in running prose -- the first one added to it
+   would have come out in the browser's default blue. */
+.prose a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 """
 
 METHOD_SHELL = """<!DOCTYPE html>
@@ -4638,7 +4704,8 @@ METHOD_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a class="here">How this is worked out</a></nav>
+<a href="./faq.html">FAQ</a>
+<a class="here">Method</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -4698,6 +4765,12 @@ appears in place of the arrow &mdash; <span class="num">&gt;</span> or
 it joins, the way it does in a written setlist. So an arrow is the absence of a
 segue rather than the presence of anything, which is worth saying because the
 two look equally deliberate on the page.</p>
+<p>The two marks are <em>not</em> the same claim.
+<span class="num">&#8211;&gt;</span> is a real segue, one song jamming without
+interruption into the next; <span class="num">&gt;</span> is everything else
+that runs together, and is also used by convention between songs that are
+simply always played as a set.
+<a href="./faq.html#segues">The difference, in phish.net's own words.</a></p>
 
 <h2 id="the-bar">The bar</h2>
 <p>The bar is a <b>position, not a length</b>. Its shaded middle is the band
@@ -4795,6 +4868,211 @@ timeline.</p>
         body=body.strip(),
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
                          "method.html"))
+
+
+# -------------------------------------------------------------------- faq ---
+
+# Built on the method page's sheet rather than beside it, so the two prose
+# pages cannot drift and stripping INDEX_CSS out of METHOD_CSS later fixes both
+# at once.
+FAQ_CSS = METHOD_CSS + """
+/* Questions are questions, so they are set in the reading face rather than in
+   Bagnard like the method page's headings -- those are labels for sections,
+   these are sentences somebody would say out loud. */
+/* 500, not 600: Literata is requested across 400..500, so anything heavier
+   clamps to 500. Measured -- the same string sets to an identical 297.89px at
+   500, 600 and 700 -- so this is a declaration matching what is drawn rather
+   than a fix to something visible. `.prose b` asks for 700 and gets 500 the
+   same way, which is why bold prose on the method page is not faux-bolded. */
+.prose h2{font-family:'Literata',Georgia,serif;font-size:1.0625rem;
+   font-weight:500;font-variation-settings:'opsz' 16;margin:2.4rem 0 .6rem;
+   color:var(--ink);scroll-margin-top:1rem}
+.prose h2:first-child{margin-top:0}
+/* The contents. Generated from the same list the entries are, so it cannot
+   name a question the page does not answer or miss one it does. */
+.toc{max-width:66ch;margin:0 0 2.6rem}
+.toc .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);margin:0 0 .5rem}
+.toc ol{list-style:none;margin:0;padding:0;
+   border-top:1px solid var(--rule-soft)}
+.toc li{border-bottom:1px solid var(--rule-soft)}
+.toc a{display:block;padding:.42rem 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
+   color:var(--ink-soft);text-decoration:none;border:0}
+.toc a:hover{color:var(--hot)}
+/* A mark and what it means. The mark is mono because it is a mark -- the same
+   glyph the setlists print -- and the gloss is prose. */
+.defs{margin:0 0 1rem}
+.defs dt{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.9375rem;color:var(--ink);margin:.8rem 0 0}
+.defs dd{margin:.15rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:1rem;line-height:1.6;font-variation-settings:'opsz' 16;
+   color:var(--ink-soft)}
+.src{margin:.4rem 0 0;font-size:.75rem;font-variation-settings:'opsz' 12;
+   color:var(--dim)}
+"""
+
+FAQ_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAQ &mdash; Possum Logic</title>
+<meta property="og:type" content="article">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+<link href="{sheet}" rel="stylesheet">
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a class="here">FAQ</a>
+<a href="./method.html">Method</a></nav>
+<div class="rule2"></div>
+<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
+<p class="show">FAQ</p>
+<p class="dek">What the numbers on this site mean, and what they deliberately
+do not.</p></header>
+<div class="rule2"></div>
+<div class="prose" id="main" tabindex="-1">
+<nav class="toc" aria-label="Questions on this page"><span class="cap">On this page</span>
+<ol>{toc}</ol></nav>
+{body}</div>
+<footer><span><a href="./method.html">Method</a></span>{theme_ui}
+<span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+# (anchor, question, answer). One list, so the contents at the top of the page
+# and the entries under it are the same thing rendered twice.
+FAQ = (
+    ("what-is-a-gap", "What is a gap?", """
+<p>The number beside a song on a show page is how many shows the band played
+between that performance and the one before it. A gap of
+<b class="num">0</b> means they played it again the very next night;
+<b class="num">485</b> means four hundred and eighty-five shows went by. It is
+phish.net&rsquo;s own figure and nothing here recomputes it.</p>
+<p>A gap is not a length of time. A song with a gap of 30 in 1995 had been gone
+about five weeks; the same gap today is closer to a year.</p>"""),
+
+    ("shows-since", "Why does a song page say &ldquo;shows since&rdquo; rather"
+                    " than giving a current gap?", """
+<p>Because they are not the same number, and only one of them can be checked
+here. phish.net&rsquo;s gap is not reproducible from a show calendar &mdash;
+two songs spanning the same pair of shows can carry different gaps, so there is
+a per-song term in it that is not published. Printing a number that disagrees
+with theirs under their name would be worse than printing our own under
+ours.</p>
+<p>So the live figure counts shows the band has played since this song was last
+played, and calls it that. It is exact, because this site defines it.</p>"""),
+
+    ("segues", "What do <span class=\"num\">&gt;</span> and"
+               " <span class=\"num\">&#8211;&gt;</span> mean, and how do they"
+               " differ?", """
+<p>Both are phish.net&rsquo;s marks, both say the band did not stop between two
+songs, and they are not interchangeable. Their definitions:</p>
+<dl class="defs">
+<dt>&#8211;&gt;</dt><dd>An actual segue: one song jams fluidly and without
+interruption into another.</dd>
+<dt>&gt;</dt><dd>Everything else that runs together &mdash; one song stops and
+the next starts immediately with no jamming between them, or a member begins
+the next while the last is still ending.</dd>
+</dl>
+<p>The second one also carries a convention, which is the part worth knowing.
+phish.net uses <span class="num">&gt;</span> between songs that are simply
+always played together &mdash; Mike&rsquo;s Song, I Am Hydrogen and Weekapaug
+Groove; The Horse and Silent in the Morning &mdash; and around lead-in and exit
+songs such as Hold Your Head Up, <em>even where there was an audible gap in the
+music</em>. A <span class="num">&gt;</span> is not always a claim about
+sound.</p>
+<p>On this site a plain <span class="num">&#8592;</span> or
+<span class="num">&#8594;</span> means neither of those: the song before or
+after, played as its own song, with a stop between them. The arrow is the
+absence of a segue rather than the presence of anything.</p>
+<p class="src">Definitions are phish.net&rsquo;s, from
+<a href="https://phish.net/faq/segues" target="_blank"
+rel="noopener noreferrer">their FAQ on segues</a>.</p>"""),
+
+    ("no-bar", "Why does this row have no range bar?", """
+<p>A song needs <b>eight</b> performances inside the ten-year window before
+there is a usual range to draw. Below that there is no norm for a performance
+to be early or late against, so the cell carries a dim
+<span class="num">&mdash;</span> rather than an empty track implying a
+comparison that was never made.</p>
+<p>Two quite different songs land there: one played six times in ten years, and
+one not played in ten years at all. The statistics say which.</p>"""),
+
+    ("due", "What does &ldquo;due&rdquo; mean, and why is a song that has been"
+            " gone for years not on the list?", """
+<p>Due means past its own recent usual gap &mdash; measured against that
+song&rsquo;s habit, not against a single number for the whole catalogue. A
+staple is late at eight shows and a rarity is not late at eighty.</p>
+<p>A song with no recent habit that has been gone two hundred shows is
+therefore not <em>due</em>. Nobody is expecting it. Those are dormant, which is
+a different fact: they are counted at the foot of the
+<a href="./due.html">due page</a> and each song&rsquo;s own page says it, but
+ranking them would bury the songs somebody might actually shout for
+tonight.</p>"""),
+
+    ("eras", "What are 1.0, 2.0, 3.0 and 4.0?", """
+<p>The four stretches the band has played in, either side of its two long
+breaks. Bounded by date rather than by year, because the hiatuses fall
+mid-year.</p>
+<dl class="defs">
+<dt>1.0</dt><dd>The beginning through 2000-10-07.</dd>
+<dt>2.0</dt><dd>2002-12-31 to 2004-08-15, ending at Coventry.</dd>
+<dt>3.0</dt><dd>2009-03-06 to 2020-02-23.</dd>
+<dt>4.0</dt><dd>2021-07-28 onwards.</dd>
+</dl>
+<p>They are used here for grouping and for counting a show&rsquo;s place inside
+its own era &mdash; the <span class="num">312th</span> show of 3.0 &mdash;
+because there is no honest count of where a show sits overall.
+<a href="./method.html#which-show-this-was">The method page says why.</a></p>"""),
+
+    ("not-part-of-a-tour", "Why do some shows say &ldquo;Not Part of a"
+                          " Tour&rdquo;?", """
+<p>Because phish.net does. It is where they file everything that was not a leg
+of a tour: the festivals, the television and radio sessions, the New Year&rsquo;s
+runs held somewhere unusual, and the Mexico runs.</p>
+<p>Several of those have famous names, and this site does not print them,
+which is deliberate. The names exist only inside freeform prose notes, spelled
+inconsistently and often not at all &mdash; pulling them out gives a handful of
+shows a label, some of them wrong, and leaves the rest blank. A blank is
+honest. A wrong festival name is not.</p>"""),
+
+    ("still-coming-in", "Why does a show page say &ldquo;setlist still coming"
+                        " in&rdquo;?", """
+<p>Because the show is still being played. A report is published mid-show and
+fills in as phish.net records each song, so the figures on it are real but
+partial &mdash; a median gap over nine songs is the median of those nine, not
+of the night.</p>
+<p>Nothing in the data says when a show has ended, so stability stands in for
+it: once the song count has stopped moving, the report stops calling itself
+provisional.
+<a href="./method.html#when-a-report-appears">The method page says how
+long.</a></p>"""),
+)
+
+
+def render_faq():
+    """Short answers, deep-linkable, with the long reasoning left on method."""
+    toc = "".join(
+        "<li><a href=\"#%s\">%s</a></li>" % (anchor, question)
+        for anchor, question, _ in FAQ)
+    body = "\n".join(
+        "<h2 id=\"%s\">%s</h2>\n%s" % (anchor, question, answer.strip())
+        for anchor, question, answer in FAQ)
+    blurb = ("What the numbers on this site mean: gaps, segue marks, eras, "
+             "and what &ldquo;due&rdquo; counts as.")
+    return FAQ_SHELL.format(
+        ago_js=AGO_JS,
+        new_rows_js=NEW_ROWS_JS,
+        analytics=ANALYTICS,
+        css=FAQ_CSS, fonts=WEB_FONTS, sheet="./fonts.css",
+        theme_js=THEME_JS, theme_ui=THEME_UI,
+        toc=toc, body=body,
+        share=share_meta("FAQ", html.escape(blurb, quote=True),
+                         "faq.html"))
 
 
 # ------------------------------------------------------------------ cards ---
@@ -6395,6 +6673,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
         log("wrote %s", method)
+
+    faq = os.path.join(site_dir, "faq.html")
+    if write_if_changed(faq, render_faq()):
+        log("wrote %s", faq)
 
     index = os.path.join(site_dir, "index.html")
     # Nine of the archive's entries are soundchecks or TV and radio sessions,
