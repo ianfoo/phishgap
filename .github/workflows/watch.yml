@@ -17,10 +17,20 @@ name: watch a show
 on:
   workflow_dispatch:
   schedule:
-    # Every half hour across the window a show can be running. Only one of
-    # these has to actually fire for the night to be covered, because the run
-    # it starts stays up.
-    - cron: "*/30 22-23,0-9 * * *"
+    # Four tries an hour across the window a show can be running, at minutes
+    # nobody else asks for. Only one of these has to actually fire for the
+    # night to be covered, because the run it starts stays up.
+    #
+    # It used to be "*/30", which fires only at :00 and :30 -- the two most
+    # contended minutes on the whole platform, and the two GitHub is most
+    # likely to drop. It never fired once: in the three hours after this
+    # workflow landed, six of those boundaries passed and the scheduler
+    # skipped every one, while the ordinary workflow's "*/5" in this same
+    # repository got through four times. The header above already knew the
+    # schedule was throttled; what it missed is that *which minutes* you ask
+    # for decides whether you are throttled to nothing or merely to less.
+    # So: odd minutes, off the boundary, and more than one chance an hour.
+    - cron: "3,18,33,48 22-23,0-9 * * *"
 
 permissions:
   contents: write
