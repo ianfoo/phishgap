@@ -116,7 +116,21 @@ free anchors.
 - Method page: ordering is scattered (the bar is discussed mid-gap-calculation)
   and it needs a table of contents.
 
-## 8. Known and deliberately not fixed
+## 8. Watch for this — it bit once
+
+`watch.yml` committed the archive then ran `git pull --rebase || true`. A
+conflicting rebase was swallowed, leaving conflict markers inside
+`site/data/<date>.json`; that file is then unreadable JSON, the show drops out
+of the archive, and the watcher publishes a site *without the show it is
+watching* — every five minutes, over the top of correct publishes. Fixed: a
+conflict aborts and retries next pass, and the tree is checked clean before the
+site is built. `saved_reports()` also records unreadable files now and the
+build reports the count at the end, so this cannot be silent again.
+
+If the live site ever shows fewer reports than a local build, this is the first
+thing to check.
+
+## 9. Known and deliberately not fixed
 
 - GitHub Pages serves `cache-control: max-age=600` and cannot be configured,
   so the 2-minute meta refresh is served from cache four times in five. The
