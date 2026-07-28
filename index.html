@@ -104,14 +104,6 @@ header{padding-bottom:.9rem}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.chip:focus-visible,.sort:focus-visible{
   outline:2px solid var(--hot);outline-offset:1px}
-/* Shown only once there is something to clear. The song page has carried this
-   button for a while; the index only ever had the line of script that hides
-   it, which is why that line referred to an element that was never here. */
-.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
-   color:var(--dim);cursor:pointer}
-.clear:hover{color:var(--hot);border-color:var(--hot)}
-.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
       padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
@@ -329,14 +321,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">691 reports &middot; 2009-03-06 &rarr; 2026-07-27</p></header>
-<a class='onstage' href='./show/2026-07-27.html'><span class='k'>On stage now</span><span class='w'>Madison Square Garden<span class='p'>New York, NY</span></span><span class='n'><b>16</b> songs so far</span></a>
-<section class="hero"><div class='card'><div class='lbl'>Reports</div><div class='num'>691</div></div><a class='card' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></a><a class='card' href='./songs.html'><div class='lbl'>Song Performances</div><div class='num'>14,038</div></a><a class='card' href='./show/2011-07-02.html'><div class='lbl'>Most Songs</div><div class='num'>45</div></a><div class='card'><div class='lbl'>Venues</div><div class='num'>153</div></div></section>
+<a class='onstage' href='./show/2026-07-27.html'><span class='k'>On stage now</span><span class='w'>Madison Square Garden<span class='p'>New York, NY</span></span><span class='n'><b>13</b> songs so far</span></a>
+<section class="hero"><div class='card'><div class='lbl'>Reports</div><div class='num'>691</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></div><a class='card' href='./songs.html'><div class='lbl'>Song Performances</div><div class='num'>14,035</div></a><div class='card'><div class='lbl'>Venues</div><div class='num'>153</div></div></section>
 <div class="rule2"></div>
 <div class="tools">
 <div class="tools-main">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search date, venue, city, song, year&hellip;" aria-label="Search reports">
-<button id="clear" class="clear" type="button" hidden>Clear</button>
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="newest">Newest</option><option value="oldest">Oldest</option>
@@ -346,7 +337,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 <div class="chips"><button class='chip' type='button' disabled data-era='3.0'>3.0 <span class='chip-n'>444</span></button><button class='chip' type='button' disabled data-era='4.0'>4.0 <span class='chip-n'>247</span></button></div>
 </div>
 <ol class="reports" id="list">
-<li data-date='2026-07-27' data-year='2026' data-era='4.0' data-longest='231' data-search="2026-07-27 07/27/2026 7/27/2026 7/27/26 07/27 7/27 7-27 july 27 2026 july 27 monday madison square garden new york, ny 2026 summer tour wilson timber (jerry the mule) ha ha ha scent of a mule theme from the bottom halley&#x27;s comet the man who stepped into yesterday avenu malkenu nicu funky bitch taste the curtain with prince caspian drowned billy breathes it&#x27;s ice"><a class='row' href='./show/2026-07-27.html'><span class='r-date'>2026-07-27</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>16</b> songs <span class='live-tag'>so far</span></span><span class='st'>median <b>10</b></span><span class='st'>longest <b class='hot'>231</b></span><span class='r-top'>Ha Ha Ha</span></span></a></li>
+<li data-date='2026-07-27' data-year='2026' data-era='4.0' data-longest='231' data-search="2026-07-27 07/27/2026 7/27/2026 7/27/26 07/27 7/27 7-27 july 27 2026 july 27 monday madison square garden new york, ny 2026 summer tour wilson timber (jerry the mule) ha ha ha scent of a mule theme from the bottom halley&#x27;s comet the man who stepped into yesterday avenu malkenu nicu funky bitch taste the curtain with prince caspian"><a class='row' href='./show/2026-07-27.html'><span class='r-date'>2026-07-27</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>13</b> songs <span class='live-tag'>so far</span></span><span class='st'>median <b>10</b></span><span class='st'>longest <b class='hot'>231</b></span><span class='r-top'>Ha Ha Ha</span></span></a></li>
 <li data-date='2026-07-25' data-year='2026' data-era='4.0' data-longest='659' data-search="2026-07-25 07/25/2026 7/25/2026 7/25/26 07/25 7/25 7-25 july 25 2026 july 25 saturday madison square garden new york, ny 2026 summer tour back in the u.s.s.r. simple rift punch you in the eye wolfman&#x27;s brother highway to hell down with disease tweezer sample in a jar lifeboy julius catapult cavern the squirming coil purple rain tweezer reprise"><a class='row' href='./show/2026-07-25.html'><span class='r-date'>2026-07-25</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>16</b> songs</span><span class='st'>median <b>9.5</b></span><span class='st'>longest <b class='hot'>659</b></span><span class='r-top'>Highway to Hell</span></span></a></li>
 <li data-date='2026-07-24' data-year='2026' data-era='4.0' data-longest='1170' data-search="2026-07-24 07/24/2026 7/24/2026 7/24/26 07/24 7/24 7-24 july 24 2026 july 24 friday madison square garden new york, ny 2026 summer tour llama bathtub gin lengthwise maze gumbo daniel saw the stone weigh guelah papyrus divided sky tube big ball jam la grange also sprach zarathustra chalk dust torture sparks slave to the traffic light the wedge makisupa policeman kung suzy greenberg golgi apparatus good times bad times sweet adeline fluffhead"><a class='row' href='./show/2026-07-24.html'><span class='r-date'>2026-07-24</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>24</b> songs</span><span class='st'>median <b>11</b></span><span class='st'>longest <b class='hot'>1,170</b></span><span class='r-top'>Big Ball Jam</span></span></a></li>
 <li data-date='2026-07-22' data-year='2026' data-era='4.0' data-longest='1468' data-search="2026-07-22 07/22/2026 7/22/2026 7/22/26 07/22 7/22 7-22 july 22 2026 july 22 wednesday madison square garden new york, ny 2026 summer tour glide runaway jim foam axilla stash cold as ice love you hold your head up sparkle ac/dc bag reba possum david bowie the vibration of life mike&#x27;s song i am hydrogen weekapaug groove bouncing around the room my friend, my friend split open and melt the lizards harry hood the horse silent in the morning big black furry creature from mars run like an antelope"><a class='row' href='./show/2026-07-22.html'><span class='r-date'>2026-07-22</span><span class='r-where'><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span></span><span class='r-stats'><span class='st'><b>26</b> songs</span><span class='st'>median <b>10</b></span><span class='st'>longest <b class='hot'>1,468</b></span><span class='r-top'>Cold as Ice</span></span></a></li>
@@ -1050,15 +1041,8 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   var rows=Array.prototype.slice.call(list.children);
   var q=document.getElementById('q'), sort=document.getElementById('sort'),
       shown=document.getElementById('shown'), empty=document.getElementById('empty'),
-      clear=document.getElementById('clear'),
       chips=Array.prototype.slice.call(document.querySelectorAll('.chip')),
       era='';
-  // Only the eras and the sorts the page actually offers. A hand-typed
-  // ?era=90s matching no chip would otherwise hide every row at once, with
-  // nothing on screen saying why and no lit chip to click back off.
-  var eraOK={}, sortOK={};
-  chips.forEach(function(c){ eraOK[c.getAttribute('data-era')]=1; });
-  Array.prototype.forEach.call(sort.options, function(o){ sortOK[o.value]=1; });
   // A bare number means that number: searching 8 should find the 8th, not the
   // 18th. Anything else is a plain substring, which is what makes partial
   // venue and song typing work.
@@ -1080,94 +1064,31 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
     });
     shown.textContent=n;
     empty.hidden=n>0;
-    // The way out of a filter appears only once there is one to leave. This
-    // line referred to an undeclared `clear` for as long as it has existed --
-    // copied from the song page without the element or the declaration that
-    // make it work there. Every keystroke threw a ReferenceError; nothing
-    // showed because apply() had already done all its visible work by this
-    // point, and there was nothing after it to lose.
     if(clear) clear.hidden=!q.value;
   }
-  // The order the rows are actually in, so a page load in the order the server
-  // already rendered does not re-append all 691 of them to prove it.
-  var ordered='newest';
   function order(){
     var k=sort.value;
-    if(k===ordered) return;
     rows.slice().sort(function(a,b){
       if(k==='gap') return b.getAttribute('data-longest')-a.getAttribute('data-longest');
       var x=a.getAttribute('data-date'), y=b.getAttribute('data-date');
       return k==='oldest' ? x.localeCompare(y) : y.localeCompare(x);
     }).forEach(function(r){ list.appendChild(r); });
-    ordered=k;
   }
-
-  /* The search is how this archive is read, and none of it was addressable:
-     81 shows at MSG, 171 with a Tweezer, 33 in 2015 -- every one a state you
-     can reach and cannot send to anybody. q, era and sort now ride in the
-     query string.
-
-     Typing replaces rather than pushes. One history entry per character would
-     bury the back button -- eight presses to leave a search you typed once.
-     A chip and the sort are each a single deliberate act, so those push, and
-     back undoes them one at a time. */
-  var HIST=!!(window.history&&window.history.replaceState);
-  function write(push){
-    if(!HIST) return;
-    var p=[];
-    if(q.value) p.push('q='+encodeURIComponent(q.value));
-    if(era) p.push('era='+encodeURIComponent(era));
-    if(sort.value!=='newest') p.push('sort='+encodeURIComponent(sort.value));
-    // A bare path when nothing is filtered, so the front door keeps a clean
-    // URL rather than growing ?q=&era=&sort= just from being looked at.
-    var url=location.pathname+(p.length?'?'+p.join('&'):'')+location.hash;
-    try{ window.history[push?'pushState':'replaceState'](null,'',url); }
-    catch(e){}          // opaque origins (file://) refuse; the page still works
-  }
-  function read(){
-    var out={};
-    location.search.replace(/^\?/,'').split('&').forEach(function(kv){
-      if(!kv) return;
-      var i=kv.indexOf('='), k=i<0?kv:kv.slice(0,i), v=i<0?'':kv.slice(i+1);
-      try{ out[decodeURIComponent(k)]=decodeURIComponent(v.replace(/\+/g,' ')); }
-      catch(e){}        // a stray % is a bad query string, not a broken page
-    });
-    return out;
-  }
-  // The page follows the URL, rather than only ever writing to it -- which is
-  // what makes both a pasted link and the back button land in the same state.
-  function restore(){
-    var st=read();
-    q.value=st.q||'';
-    era=st.era&&eraOK[st.era]?st.era:'';
-    sort.value=st.sort&&sortOK[st.sort]?st.sort:'newest';
-    chips.forEach(function(c){
-      c.classList.toggle('on', c.getAttribute('data-era')===era);
-    });
-    order();
-    apply();
-  }
-
-  function setQuery(v){ q.value=v; apply(); write(false); }
-  q.addEventListener('input', function(){ apply(); write(false); });
-  sort.addEventListener('change', function(){ order(); write(true); });
+  q.addEventListener('input', apply);
+  sort.addEventListener('change', order);
   chips.forEach(function(c){
     c.addEventListener('click', function(){
       era = c.classList.contains('on') ? '' : c.getAttribute('data-era');
       chips.forEach(function(o){ o.classList.toggle('on', o.getAttribute('data-era')===era); });
       apply();
-      write(true);
     });
   });
-  if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
   document.addEventListener('keydown', function(e){
     if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
-    if(e.key==='Escape' && document.activeElement===q){ setQuery(''); q.blur(); }
+    if(e.key==='Escape' && document.activeElement===q){ q.value=''; apply(); q.blur(); }
   });
-  window.addEventListener('popstate', restore);
   q.disabled=false; sort.disabled=false;
   chips.forEach(function(c){ c.disabled=false; });
-  // Whatever the link asked for, before the first paint the reader sees.
-  restore();
+  apply();
 })();
 </script></body></html>
