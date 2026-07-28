@@ -184,7 +184,6 @@
   {"date": "2025-09-17", "venue": "Ameris Bank Amphitheatre", "city": "Alpharetta", "state": "GA", "gap": 10, "set": "1", "prev": "Wilson", "in": ">"},
   {"date": "2025-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "1", "prev": "Sigma Oasis", "in": ">", "next": "Sleep"},
   {"date": "2026-05-02", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 15, "set": "1", "prev": "Silent in the Morning", "next": "Julius"},
-  {"date": "2026-07-15", "venue": "Enmarket Arena", "city": "Savannah", "state": "GA", "gap": 6, "set": "1", "prev": "Vultures", "next": "The Wedge"},
-  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "1"}
+  {"date": "2026-07-15", "venue": "Enmarket Arena", "city": "Savannah", "state": "GA", "gap": 6, "set": "1", "prev": "Vultures", "next": "The Wedge"}
  ]
 }

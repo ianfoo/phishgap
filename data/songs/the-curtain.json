@@ -128,7 +128,6 @@
   {"date": "2012-08-28", "venue": "Chaifetz Arena, Saint Louis University", "city": "St. Louis", "state": "MO", "gap": 46, "set": "1", "out": ">"},
   {"date": "2019-12-08", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 270, "set": "1", "out": ">"},
   {"date": "2021-08-08", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 17, "set": "1", "out": ">"},
-  {"date": "2022-07-26", "venue": "Northwell Health at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 52, "set": "1", "out": ">"},
-  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 185, "set": "2"}
+  {"date": "2022-07-26", "venue": "Northwell Health at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 52, "set": "1", "out": ">"}
  ]
 }
