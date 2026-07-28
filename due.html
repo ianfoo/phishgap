@@ -86,6 +86,37 @@ html{font-size:112.5%}
    three (see docs/TODO.md 8c), and invisible until somebody asked why a
    column of numbers with decimals in it would not line up. */
 body{font-variant-numeric:tabular-nums}
+/* The keyboard overlay and the button that opens it. In the block every sheet
+   shares, because it is page furniture like the skip link above it and there
+   is no page it does not belong on -- and because stating it three times is
+   how four rules on this site came to disagree with themselves. */
+.keyhint{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
+   cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
+.keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+dialog.keys{border:1px solid var(--ink);background:var(--paper);
+   color:var(--ink);padding:1.2rem 1.4rem 1rem;max-width:24rem;width:calc(100% - 2rem)}
+dialog.keys::backdrop{background:rgba(0,0,0,.5)}
+dialog.keys .cap{margin:0 0 .8rem;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600}
+dialog.keys dl{margin:0;display:grid;grid-template-columns:max-content 1fr;
+   gap:.5rem .9rem}
+/* display:contents so the two cells of a row land in the outer grid's columns
+   -- otherwise every <div> is one grid item and the keys never form a column. */
+dialog.keys dl > div{display:contents}
+dialog.keys dt{margin:0}
+dialog.keys dd{margin:0;font-size:.75rem;color:var(--ink-soft)}
+dialog.keys .none{margin:.9rem 0 0;font-size:.75rem;color:var(--dim)}
+kbd{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6875rem;
+   line-height:1;padding:.25rem .4rem;border:1px solid var(--edge);
+   color:var(--ink);background:var(--hover);white-space:nowrap}
+dialog.keys form{margin:1rem 0 0;text-align:right}
+dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
+dialog.keys button:hover{color:var(--hot);border-color:var(--hot)}
+@media print{.keyhint,dialog.keys{display:none}}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
@@ -558,6 +589,67 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
       });
     });
     mark();
+  });
+})();
+</script><script>
+(function(){
+  function ready(fn){
+    if(document.readyState!=='loading') fn();
+    else document.addEventListener('DOMContentLoaded',fn);
+  }
+  ready(function(){
+    var search=document.querySelector('input.search');
+    var prev=document.querySelector('a[rel="prev"]');
+    var next=document.querySelector('a[rel="next"]');
+    var foot=document.querySelector('footer');
+    if(!foot) return;
+    // "Previous show, 2026-07-25" -> "Previous show". The pager already writes
+    // a label saying what it steps through, so the overlay does not have to
+    // guess whether this page is a list of shows or of anything else.
+    function what(a,fallback){
+      var s=(a&&a.getAttribute('aria-label'))||'';
+      s=s.split(',')[0].trim();
+      return s||fallback;
+    }
+    var rows=[];
+    if(search){
+      rows.push(['/','Jump to the search box']);
+      rows.push(['Esc','Clear the search']);
+    }
+    if(prev) rows.push(['[  \u2190', what(prev,'Previous')]);
+    if(next) rows.push([']  \u2192', what(next,'Next')]);
+    rows.push(['?','This list']);
+    var dlg=document.createElement('dialog');
+    dlg.className='keys';
+    dlg.setAttribute('aria-label','Keyboard shortcuts');
+    dlg.innerHTML='<p class="cap">Keyboard</p><dl>'
+      + rows.map(function(r){
+          return '<div><dt><kbd>'+r[0].split('  ').join('</kbd> <kbd>')
+                 +'</kbd></dt><dd>'+r[1]+'</dd></div>'; }).join('')
+      + '</dl>'
+      + (rows.length>1?'':'<p class="none">This page has nothing else to '
+         + 'step through. The show and song lists have more.</p>')
+      + '<form method="dialog"><button>Close</button></form>';
+    document.body.appendChild(dlg);
+    // A button as well as a key, because a shortcut nobody can find is a
+    // shortcut nobody has. It carries the key it stands for.
+    var hint=document.createElement('button');
+    hint.type='button';
+    hint.className='keyhint';
+    hint.setAttribute('aria-haspopup','dialog');
+    hint.innerHTML='Keys <kbd>?</kbd>';
+    hint.addEventListener('click',function(){ dlg.showModal(); });
+    foot.appendChild(hint);
+    document.addEventListener('keydown',function(e){
+      if(e.metaKey||e.ctrlKey||e.altKey||dlg.open) return;
+      var t=e.target;
+      // While typing, every one of these is a character somebody meant.
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'
+             ||t.tagName==='SELECT'||t.isContentEditable)) return;
+      if(e.key==='?'){ e.preventDefault(); dlg.showModal(); return; }
+      if(prev&&(e.key==='['||e.key==='ArrowLeft')){ e.preventDefault(); prev.click(); }
+      if(next&&(e.key===']'||e.key==='ArrowRight')){ e.preventDefault(); next.click(); }
+    });
   });
 })();
 </script><script>
