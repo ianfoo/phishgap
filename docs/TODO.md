@@ -675,6 +675,39 @@ working; all of them are here so the batch can be reviewed in one sitting.
      the nav entirely and making it a FAQ entry that redirects — but also
      said it may deserve to stay first-class "because it explains things that
      might not be 'frequently asked,' exactly." Left first-class.
+   - **"Method" then went too far the other way** — Ian: "definitely shorter,
+     but maybe also ambiguous." The label is **"How this works"**, his own
+     suggestion, in all 8 navs and all 7 footers. He noted it is not strictly
+     accurate — the page explains how the numbers are *worked out*, not how the
+     site works — and invited better. Alternatives that are shorter than the
+     original and more accurate than "Method", if he wants one:
+     **"How the numbers work"**, **"How this is counted"**, **"Where these
+     numbers come from"**. The page keeps its own fuller heading either way.
+
+## 8b bis. The song preview card printed no longest gap
+
+Ian spotted it on Johnny B. Goode: the card sat under the words LONGEST GAP
+showing an em-dash while the song page showed 927.
+
+The third stat on a song card is the best version's score where one exists and
+the longest gap where none does. The label already switched correctly; the
+**value was an em-dash in both branches**, so the longest-gap case had never
+once printed a figure — **340 of 588 songs**, every one of them a share image.
+
+Fixed, and fixed at the cause rather than at the symptom: `song_card` and
+`render_song` each did their own arithmetic over the performance list, so they
+could differ in more ways than this one. Both now call `countable_gaps(doc,
+counting)`, which applies the two exclusions once — the counting calendar, and
+the debut's own gap (Johnny B. Goode's debut carries **954**, which counts shows
+since the band's first show, not since a previous performance of this song; the
+real longest gap is 927). The card also counted *every* performance where the
+page counts only countable ones, which would have diverged on any song with a
+soundcheck row.
+
+Checked as an invariant rather than on the one song: all 588 cards regenerated
+and compared field by field against their own page. **0 disagree**; 197 now
+print a real longest gap; the remaining 143 are songs played once, where both
+say `n/a` (the card said `&mdash;` — it now uses the page's word).
 9. **A pairing's count terminates the pairing (`26×`) rather than a middot
    separating pairings.** Reasoning in §3c. If the `×` reads as noise the
    alternative is not a middot — it is stacking the count under its song.
@@ -727,6 +760,54 @@ leans on it. Two independent instances in one session — the nav that could not
 wrap, and a footer link styled in one sheet of three. **When touching anything
 that lives in more than one sheet, check all three and assert the match
 count**; CLAUDE.md says this and it is worth believing.
+
+## 8e. The three stylesheets — Ian's question, measured. NOT STARTED
+
+Ian, 2026-07-27: "why are there three stylesheets that contain duplicate
+definitions? … The fact that you need to call out the triplicate definitions in
+the CLAUDE.md file feels like a smell." He is right, and he offered to accept a
+build step producing a bespoke sheet per page. **Measured before answering:**
+
+| sheet | size | rules |
+|---|---|---|
+| `CSS` (show pages) | 34.3 KB | 135 |
+| `INDEX_CSS` | 22.3 KB | 130 |
+| `SONG_CSS` | 35.8 KB | 176 |
+| `SONGS_CSS`/`METHOD_CSS`/`FAQ_CSS` | 23.3/24.0/26.1 KB | extend `INDEX_CSS` |
+
+- **31 rules (4.0 KB) are byte-identical in all three.** Pairwise, 32–46.
+- **1,307 pages inline a sheet: 45.6 MB of CSS, 39% of all HTML on the site.**
+- A show page is **54% stylesheet** (33.5 KB of 62.2 KB); the FAQ is **65%**.
+  The index looks fine at 3% only because 691 rows dwarf everything.
+- **The union of every sheet is 43.9 KB / 380 rules** — barely more than
+  `SONG_CSS` alone.
+
+**These are two different problems and they want different fixes.**
+
+1. **Source duplication** — the actual smell, and the cause of both bugs in
+   §8c. Fix by composing sheets from named blocks (`BASE` + per-page blocks)
+   instead of copy-pasted rule text. No output change, no risk, and it is what
+   stops an edit landing in one sheet of three. **Do this first.**
+2. **Wire duplication** — 45.6 MB. Fix by linking one `site.css` instead of
+   inlining. The site already links `fonts.css`, and CLAUDE.md's
+   self-containment rule binds only the `--html` single-file output, which must
+   keep inlining. A show page would go 62 KB → ~29 KB, the FAQ 39 → ~14 KB,
+   and it is cached after the first page.
+3. **Per-page bespoke sheets — recommend against, and the measurement is why.**
+   The union of everything is 43.9 KB against `SONG_CSS`'s 35.8 KB, so the most
+   a perfect per-page split can save over one shared cached sheet is roughly
+   8 KB, on the first request only. Against that: rules are selected by classes
+   that JavaScript adds at runtime (`.onstage`, `.since`, `hidden`, the theme
+   toggle's states, `.era-chip` selection), so static usage analysis will drop
+   a rule that is needed and the failure is invisible until someone is looking
+   at a live show. Not worth it. If the shared sheet ever gets big enough to
+   matter, the honest lever is deleting the unused rules §3b already names in
+   `METHOD_CSS`, not generating 1,307 variants.
+
+**One caveat to state plainly:** inlining costs zero requests, so an external
+sheet adds a round trip before first paint on a cold visit. That is the whole
+argument for the status quo, and it is outweighed here — a reader of this site
+opens many pages, and every page after the first pays nothing.
 
 ## 8d. Ian's queue, sent 2026-07-27 during the §3c work — NOT STARTED
 

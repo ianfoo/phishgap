@@ -1637,7 +1637,7 @@ SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <p class="links">{links}</p>
 {sections}{notes}
-<footer><span><a href="../method.html">Method</a></span>{theme_ui}
+<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div>{row_js}</body></html>
@@ -2147,7 +2147,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                  "<a href='../due.html'>Due</a>"
                  "<a href='../venues.html'>Venues</a>"
                  "<a href='../faq.html'>FAQ</a>"
-                 "<a href='../method.html'>Method</a></nav>"
+                 "<a href='../method.html'>How this works</a></nav>"
                  # No "All reports" in the middle: the row above already has
                  # Shows, pointing at the same page under the name the rest of
                  # the site uses for it. The pager is for the two neighbours.
@@ -2811,7 +2811,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
 <a href="./faq.html">FAQ</a>
-<a href="./method.html">Method</a></nav>
+<a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
@@ -2837,7 +2837,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
 {aside}
-<footer><span><a href="./method.html">Method</a></span>{theme_ui}
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -3808,7 +3808,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">Method</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -3843,7 +3843,7 @@ SONG_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
-<footer><span><a href="../method.html">Method</a></span>{theme_ui}
+<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -3896,6 +3896,31 @@ def linkify(escaped):
     return URL_IN_PROSE.sub(wrap, escaped)
 
 
+def countable_gaps(doc, counting=None):
+    """The performances and gaps a song's own figures are computed from.
+
+    Two exclusions, and both matter. Anything the counting calendar does not
+    hold is not a performance the rest of the site would recognise. And the
+    debut's own gap is not a gap *between two performances of this song* -- it
+    counts shows since the band's first show, so Johnny B. Goode's debut
+    carries 954 where its real longest gap is 927.
+
+    Shared because the song page and its preview card each did this arithmetic
+    themselves and disagreed: the card had no longest-gap branch at all and
+    printed an em-dash on 340 of 588 songs, and it counted every performance
+    where the page counts only the countable ones. One reader, two numbers.
+
+    -> (countable newest-first, debut date, gaps worth measuring)
+    """
+    perfs = list(reversed(doc.get("performances") or []))
+    # Newest first, so the last countable row is the earliest one.
+    countable = [p for p in perfs if not counting or p["date"] in counting]
+    debut_date = countable[-1]["date"] if countable else None
+    gaps = [p["gap"] for p in countable
+            if p["gap"] is not None and p["date"] != debut_date]
+    return countable, debut_date, gaps
+
+
 def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     """One song's whole performance history, newest first.
 
@@ -3910,12 +3935,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     song = doc["song"]
     best = doc.get("best") or []
     rated = {v["date"]: v for v in best}
-    # Newest first, so the last countable row is the earliest one.
-    countable = [p for p in perfs
-                 if not counting or p["date"] in counting]
-    debut_date = countable[-1]["date"] if countable else None
-    gaps = [p["gap"] for p in countable
-            if p["gap"] is not None and p["date"] != debut_date]
+    countable, debut_date, gaps = countable_gaps(doc, counting)
     biggest = max(gaps) if gaps else 0
 
     # The all-time and recent medians sit side by side because they disagree so
@@ -4274,7 +4294,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
 <a href="./faq.html">FAQ</a>
-<a href="./method.html">Method</a></nav>
+<a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
@@ -4294,7 +4314,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
-<footer><span><a href="./method.html">Method</a></span>{theme_ui}
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -4358,7 +4378,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">Due</a><a href="./venues.html">Venues</a>
 <a href="./faq.html">FAQ</a>
-<a href="./method.html">Method</a></nav>
+<a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
 <p class="show">{subtitle}</p>
@@ -4371,7 +4391,7 @@ at eighty.</p></header>
 {rows}
 </ol>
 <p class="dek foot">{dormant}</p>
-<footer><span><a href="./method.html">Method</a></span>{theme_ui}
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div></body></html>
@@ -4474,7 +4494,7 @@ VENUES_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a class="here">Venues</a>
 <a href="./faq.html">FAQ</a>
-<a href="./method.html">Method</a></nav>
+<a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1>Venues</h1>
 <p class="show">{subtitle}</p>
@@ -4487,7 +4507,7 @@ over what span, and the longest gap the room has heard.</p></header>
 <ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>
-<footer><span><a href="./method.html">Method</a></span>{theme_ui}
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div></body></html>
@@ -4705,7 +4725,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
 <a href="./faq.html">FAQ</a>
-<a class="here">Method</a></nav>
+<a class="here">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -4926,7 +4946,7 @@ FAQ_SHELL = """<!DOCTYPE html>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
 <a class="here">FAQ</a>
-<a href="./method.html">Method</a></nav>
+<a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">FAQ</p>
@@ -4937,7 +4957,7 @@ do not.</p></header>
 <nav class="toc" aria-label="Questions on this page"><span class="cap">On this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
-<footer><span><a href="./method.html">Method</a></span>{theme_ui}
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
 </div></body></html>
@@ -5270,19 +5290,32 @@ def _card_size(title):
     return 104 if n <= 15 else 84 if n <= 26 else 68
 
 
-def song_card(doc):
-    """A song: how often, how long between, and its best version."""
-    perfs = doc["performances"]
-    gaps = [p["gap"] for p in perfs[1:] if p["gap"] is not None]
+def song_card(doc, counting=None):
+    """A song: how often, how long between, and its best version.
+
+    Every figure here comes from `countable_gaps`, the same call the song page
+    makes, because this card is the picture of that page and the two used to
+    be worked out separately -- see that function for what they disagreed on.
+    """
+    countable, _, gaps = countable_gaps(doc, counting)
     best = (doc.get("best") or [None])[0]
-    span = ("%s &ndash; %s" % (perfs[0]["date"][:4], perfs[-1]["date"][:4])
-            if perfs else "")
+    # Newest first, so the span runs from the last row to the first.
+    span = ("%s &ndash; %s" % (countable[-1]["date"][:4], countable[0]["date"][:4])
+            if countable else "")
     title = html.escape(typographic(doc["song"]))
     return card_markup(
         "Every performance", title, span,
-        (("%d" % len(perfs), "Times played", ""),
-         (_stat(_median(gaps)) if gaps else "&mdash;", "Median gap", ""),
-         (("%s" % best["score"]) if best else "&mdash;",
+        # "n/a" rather than an em-dash for an absent figure, because that is
+        # the word the hero on the song page uses and this is a picture of it.
+        # A song played once has no gap to any other performance of itself.
+        (("%d" % len(countable), "Times played", ""),
+         (_stat(_median(gaps)) if gaps else "n/a", "Median gap", ""),
+         # The third slot is the best version's score where there is one and
+         # the longest gap where there is not. The label already said so; the
+         # value was an em-dash either way, which is how a card could sit under
+         # the words LONGEST GAP for 340 songs and never print one.
+         (("%s" % best["score"]) if best else
+          (_stat(max(gaps)) if gaps else "n/a"),
           "Best version" if best else "Longest gap", "hot")),
         size=_card_size(doc["song"]), data=True)
 
@@ -6617,7 +6650,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         moved = write_if_changed(page, render_song(doc, archived=have,
                                                    card=name, counting=counting))
         wrote += 1 if moved else 0
-        want_card(name, song_card(doc))
+        want_card(name, song_card(doc, counting))
     if considered:
         log("song pages: %d rendered, %d changed",
             considered, wrote)
