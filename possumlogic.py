@@ -72,6 +72,10 @@ _last_fetch = [0.0]
 # songs being entered -- a 45-minute jam, or a setbreak, plus the lag of
 # whoever is typing. Call that 90 minutes and round up.
 QUIET_HOURS = 2
+# After an encore the band has said it is over, so the wait to call the
+# show finished drops from two hours to this. Long enough for a second
+# encore, which is the only thing that follows the first.
+ENCORE_QUIET = datetime.timedelta(minutes=30)
 
 # Backstop for when stability never settles, e.g. a setlist entered set by set
 # and then abandoned overnight. Doors are never later than about 20:30 local and
@@ -2189,6 +2193,20 @@ header{padding-bottom:.9rem}
    nothing cannot look as though it matched these. */
 /* The due list. Same row grammar as the show index -- identity, context,
    figure -- so the two pages read as the same object seen from two sides. */
+.onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
+   margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
+   border-left:4px solid var(--hot);background:var(--hover)}
+.onstage:hover{background:var(--hot);color:var(--paper)}
+.onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text);font-weight:600}
+.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
+.onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
+.onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
+   text-transform:none;letter-spacing:0}
+.onstage .n{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.125rem;letter-spacing:0;color:var(--ink)}
 .due{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .due li{border-bottom:1px solid var(--rule-soft)}
 .due .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
@@ -2365,6 +2383,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
+{onstage}
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 <div class="tools">
@@ -2627,6 +2646,22 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
             " &mdash; the figures on their pages describe the entry, not a"
             " show the band played.</p><ol>%s</ol></section>" % "".join(items))
 
+    # A show being played is the reason to be here tonight, and a "so far"
+    # tag on one row among 690 is not a way of saying so. The whole block is
+    # the link, because the front door failing to reach the live page is the
+    # failure this exists to fix.
+    onstage = ""
+    live_now = [e for e in entries if e.get("live")]
+    if live_now:
+        e = live_now[0]
+        onstage = ("<a class='onstage' href='%s'>"
+                   "<span class='k'>On stage now</span>"
+                   "<span class='w'>%s<span class='p'>%s</span></span>"
+                   "<span class='n'><b>%d</b> song%s so far</span></a>"
+                   % (html.escape(page_href % e["date"], quote=True),
+                      html.escape(e["venue"]), html.escape(e["place"]),
+                      e["songs"], "" if e["songs"] == 1 else "s"))
+
     plural = "" if len(entries) == 1 else "s"
     if entries:
         span = ("%s &rarr; %s" % (entries[-1]["date"], entries[0]["date"])
@@ -2644,7 +2679,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=()):
         fonts=WEB_FONTS, sheet="./fonts.css",
         hero=hero, years=chips,
         count=len(entries), rows="\n".join(rows) or "",
-        aside=aside_html, subtitle=subtitle,
+        aside=aside_html, subtitle=subtitle, onstage=onstage,
         share=share_meta("Possum Logic", html.escape(blurb, quote=True),
                          card=card),
         # The newest show it lists, for the same reason.
@@ -5561,13 +5596,26 @@ def settle(report, prior, now):
     since = since if since and since <= now else now
     report["count_since"] = since.isoformat(timespec="seconds")
     held = now - since
-    report["provisional"] = not (held >= datetime.timedelta(hours=QUIET_HOURS)
+    # An encore is the band saying the show is over, so the quiet period after
+    # one can be much shorter than the one after an ordinary song. Two hours is
+    # sized for the worst case -- a rained-out show that stops mid-second-set
+    # with no encore and no other signal that it has ended. Once an encore has
+    # been recorded, that worst case is not the case we are in, and holding the
+    # page at "still coming in" for another two hours is simply wrong for most
+    # of that time. Thirty minutes still covers a second encore, which is the
+    # only thing that realistically follows the first.
+    encored = any(str(s.get("set") or "").lower().startswith("e")
+                  for s in report["songs"])
+    wait = ENCORE_QUIET if encored else datetime.timedelta(hours=QUIET_HOURS)
+    report["encored"] = encored
+    report["provisional"] = not (held >= wait
                                 or _certainly_over(report["date"], now))
     if report["provisional"]:
         log("%s still coming in: %d song%s, unchanged for %d of the %d min "
-            "needed to call it finished",
+            "needed to call it finished%s",
             report["date"], count, "" if count == 1 else "s",
-            held.total_seconds() // 60, QUIET_HOURS * 60)
+            held.total_seconds() // 60, wait.total_seconds() // 60,
+            " (encore played)" if encored else "")
     elif prior is not None and (prior or {}).get("provisional"):
         log("%s settled: %d song%s, publishing as complete",
             report["date"], count, "" if count == 1 else "s")

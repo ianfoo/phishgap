@@ -19,7 +19,7 @@ so work could continue; he wants to review these, not be blocked by them.
 - Never claim something is done without rendering it. Counting elements in
   HTML proves markup exists, not that it is styled or visible.
 
-## 1. Song page enrichment — preceded by / followed by
+## 1. ~~Song page enrichment — preceded by / followed by~~ DONE 2026-07-28
 
 Every song page row already prints what the performance came out of and went
 into (`prev`/`next`/`in`/`out` in `site/data/songs/<slug>.json`). Nothing
@@ -28,7 +28,7 @@ aggregates it. Tweezer alone has 418 pairings.
 Add to the song page: the songs that most often precede and follow this one,
 with counts. Audience asks this constantly.
 
-## 2. "Due" page
+## 2. ~~"Due" page~~ DONE 2026-07-28 — `due.html`, 55 due, 274 dormant excluded
 
 `site/data/current.json` already ships `since` (shows since last played) for
 every song, and each song page carries `data-high` (85th percentile) and
@@ -39,13 +39,18 @@ shareable thing the site could publish.
 gone 250 shows is not *due* — nobody expects it. Only songs with a real
 percentile (>= 8 plays in the ten-year window) that are past it count as due.
 
-## 3. Index hero and a loud in-progress banner
+## 3. Index hero and a loud in-progress banner — PART DONE
 
 - Hero cards: more, and make the dead ones links. `VENUES 153` advertises a
   spine that does not exist; `LONGEST GAP` should link to the show holding it.
   `SONG PERFORMANCES` is already a link and shows the `→` affordance — copy it.
 - A show in progress should be loud on the index, not just a `so far` tag.
-- **Encore detection** to shorten the "in progress" lie. Once a set marked
+- ~~**Encore detection**~~ DONE: `ENCORE_QUIET` = 30 min once any set
+  starting `e` has landed; 2 hours otherwise. Verified: 40 min with no encore
+  stays live, 35 min after one settles.
+- ~~On-stage banner on the index~~ DONE: links straight through.
+- STILL TO DO: more hero cards, and make `VENUES` / `LONGEST GAP` links.
+- Original note on encore detection the "in progress" lie. Once a set marked
   `e` (or `e2`/`e3`) has landed *and* the count has been still ~30 min, stop
   claiming in progress and say "just ended". Set labels are in each song's
   `set` field. Ian accepts a ~30-minute lie window for now; tightening it
