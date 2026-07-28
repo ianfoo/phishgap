@@ -54,7 +54,16 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### In flight when the session ended
+### The 2026-07-28 session, second sitting
+
+Two bugs Ian found on the live due page, both fixed and both written up in
+§2b: dormant songs were ranked as due because the ten-year window travelled
+with each song, and the list was sorted by a figure it never printed. The fix
+reached the song pages as well — 148 of 588 changed — because the same
+travelling window fed their statistics. He also asked for the `site/data`
+reorganisation now filed as §2c.
+
+### In flight when the earlier sitting ended
 
 - **A watcher run is live**, dispatched on the fixed code (see §8.5). The
   previous run was cancelled because it was pinned to an old commit and
@@ -72,6 +81,12 @@ was done, why, and what came of it.
 
 ### Queue, in the order I would take it
 
+0. **§2c `site/data` layout** — Ian, 2026-07-28: the directory is cluttered,
+   and the 711 per-show JSON files should sit under `data/shows/` the way the
+   song histories already sit under `data/songs/`, rather than as siblings of
+   `calendar.json`, `current.json` and `cards.json`. Not started. **Read §2c
+   before starting it** — the migration has to move the published tree too,
+   and the workflows restore parts of it from `gh-pages`.
 1. **§3d keyboard hotkeys** — the accessibility floor is done; this is the
    jumping layer. The `?` overlay it wants now has a natural companion in
    `faq.html`.
@@ -113,7 +128,7 @@ aggregates it. Tweezer alone has 418 pairings.
 Add to the song page: the songs that most often precede and follow this one,
 with counts. Audience asks this constantly.
 
-## 2. ~~"Due" page~~ DONE 2026-07-28 — `due.html`, 55 due, 274 dormant excluded
+## 2. ~~"Due" page~~ DONE 2026-07-28 — `due.html`, 40 due, 283 dormant excluded
 
 `site/data/current.json` already ships `since` (shows since last played) for
 every song, and each song page carries `data-high` (85th percentile) and
@@ -123,6 +138,96 @@ shareable thing the site could publish.
 **Dormant songs must be excluded.** A song with no recent norm that has been
 gone 250 shows is not *due* — nobody expects it. Only songs with a real
 percentile (>= 8 plays in the ten-year window) that are past it count as due.
+
+**That exclusion did not work, for nine months.** See §2b.
+
+## 2b. The ten-year window travelled with the song — FIXED 2026-07-28 (Ian)
+
+Ian, on the live page: "The first entry is a song with a gap of over 500
+shows. This is not a song that is 'due.' That's clearly dormant."
+
+He was right, and the dormancy guard §2 describes was never able to fire.
+`due_rows` measured "the ten-year window" as the ten years before *the song's
+own last performance* — and a song's own last performance is always inside a
+window ending at its own last performance. So the filter asked "has this song
+had a habit lately?" and every song answered yes about whenever it was last
+around. **Anything But Me** was last played 2011-08-15, had 11 gaps in
+2001–2011 and a norm of 21.5, and so led the page at 564 shows and 26× late.
+It has **zero** gaps inside the real ten years.
+
+- Fixed by anchoring to the newest show the archive counts, in one named
+  helper (`recent_cutoff`), so every song is judged over the same ten years.
+- **15 songs left the list, 1 joined**: 55 → 40 due, 270 → 283 dormant. The
+  15 include Anything But Me (gone since 2011), Uncle Pen (2017), The
+  Star-Spangled Banner (2016) and Let Me Lie (2016). Three of the 15 are
+  honest borderlines rather than dormancy — Waste, Waiting All Night and
+  Sanity sit within a gap or two of the MIN_HISTORY line either way.
+- **The same window fed the song pages**, which is why the fix could not stop
+  at `due.html`: `render_song` computed its "Median Gap, Last 10 Years" card,
+  its `data-high`, and the percentile band behind every row from the same
+  travelling cutoff. Left alone, a song would have dropped off the due page
+  while its own page still called it due. **148 of 588 song pages** now give a
+  different figure and **51** read `n/a` where they used to print a median
+  drawn from a decade that ended years ago.
+- **`_classify` is deliberately not changed.** A verdict printed on a 2011
+  show has to be judged by the ten years before 2011, so that one anchors to
+  the show's own date and is correct as it stands.
+- **A knock-on the fix exposed**: with no band, no row draws a track at all —
+  every one is the no-range dash — yet the column header still read "mark at
+  median 8". Rare before, 51 pages after. The header is now emitted only where
+  there are bars for it to be a gridline on. Asserted across all 588 pages:
+  0 promise a mark they do not draw.
+
+### And the order was invisible
+
+Ian, same message: "There is no apparent order in the Due page. It's not by
+date, by gap, or by name. If there is a deterministic order, it's a mystery."
+
+It was ordered — by `n / high`, how many times past its own norm — and that
+figure appeared nowhere on the page. Worse, the number set large in the same
+column was the raw shows-since count, which ran 184, 131, 176, 90 down the
+page and denied on sight that the list was sorted at all.
+
+The ratio is the headline figure now and the raw count moved into the caption
+under it (`12.8×` over `184 shows, usually 14.3`). Both numbers are still
+there; only which one is set large has changed. Asserted on the built page:
+the printed figure descends monotonically for all 40 rows. The standfirst and
+the FAQ entry both say what the order is, which neither did before.
+
+## 2c. `site/data` layout — Ian, 2026-07-28. NOT STARTED
+
+His words: the directory "is cluttered. shows should probably go under a
+`shows` directory to keep things organized. As it is they're siblings of
+calendar, schedule, cards — and a songs subdirectory (which seems sensible)."
+
+Measured: `site/data/` holds **711 `<date>.json` show reports** flat, beside
+five index files (`calendar.json`, `cards.json`, `current.json`,
+`phishin.json`, `schedule.json`) and one directory that already does it right,
+`songs/` with 588 in it. He is describing an inconsistency the archive created
+itself — `songs/` was added later and nobody went back for the shows.
+
+The reads are contained, which is the good news. Everything that touches a
+show's JSON path goes through four places: `site_paths()`, `archived_dates()`,
+`saved_reports()` and the glob in `remeasure()`, plus one `makedirs`. The
+`REPORT_NAME` regex exists precisely because the flat directory made a show
+indistinguishable from an index file by name — under `shows/` that guard stops
+being load-bearing, though it is worth keeping.
+
+**What makes this bigger than a `git mv`:**
+
+- The 711 files are tracked in `main` *and* published to `gh-pages`. Moving
+  them locally without moving the published tree leaves the site serving the
+  old paths; moving both in one publish is the whole job.
+- `possumlogic.yml` restores parts of the site from `gh-pages` before
+  building. Check what it restores before assuming a rename propagates.
+- A reader with the old layout checked out must still build. Either read both
+  locations for one release, or migrate on first run and say so in the log.
+- `watch.yml`'s conflict guard names `site/data/<date>.json` in a comment;
+  the comment is documentation and should move with the files.
+- Nothing outside the repo links these paths — the site's own JavaScript
+  fetches `data/current.json` and `data/songs/<slug>.json` only, both of
+  which stay put — so no redirects are needed. Verify that rather than
+  believing it: `grep` the built HTML for `data/` before shipping.
 
 ## 3. Index hero and a loud in-progress banner — DONE 2026-07-28
 

@@ -1759,6 +1759,32 @@ def _years_before(iso, years):
         return d.replace(year=d.year - years, day=28).isoformat()
 
 
+def recent_cutoff(counting, fallback=None):
+    """Where the ten-year window starts for anything said about a song *now*.
+
+    Anchored to the newest show the archive counts, so every song is judged
+    over the same ten years. It used to be anchored to each song's own last
+    performance, and a window that travels with the song is a window that can
+    end long before today: Anything But Me was last played in 2011 and was
+    measured on 2001-2011, where it had eleven gaps and a tidy norm of 21.5.
+    So a song gone 564 shows read as a song running twenty-six times late, and
+    led a page whose subject is songs that are merely due. It has none at all
+    inside the real ten years, which is the honest answer and the one that
+    keeps it off that page.
+
+    `fallback` is used only when there is no calendar to anchor to -- a
+    render with `counting` unset, which is the single-report path rather than
+    the site build. Deliberately not a silent fallback to the old behaviour
+    for the ordinary case: that is the shape of bug this file keeps repeating.
+
+    Note this is *not* the anchor a show page wants. A verdict printed on a
+    2011 show has to be judged by the ten years before 2011, and `_classify`
+    takes that date for exactly that reason.
+    """
+    latest = max(counting) if counting else fallback
+    return _years_before(latest, RECENT_YEARS) if latest else ""
+
+
 def _classify(gap, prior, on_date, plays=None):
     """Where this gap sits against how the song has behaved lately.
 
@@ -2509,7 +2535,7 @@ header{padding-bottom:.9rem}
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
 .due{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .due li{border-bottom:1px solid var(--rule-soft)}
-.due .row{display:grid;grid-template-columns:1fr 12rem 7rem;column-gap:1.1rem;
+.due .row{display:grid;grid-template-columns:1fr 11rem 11rem;column-gap:1.1rem;
    align-items:baseline;padding:.6rem .25rem;color:inherit;text-decoration:none}
 .due .row:hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
@@ -2518,8 +2544,8 @@ header{padding-bottom:.9rem}
    font-size:.875rem;white-space:nowrap}
 .d-where{display:block;color:var(--dim);font-size:.75rem}
 .d-n{text-align:right}
-.d-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   font-size:1.5rem;line-height:1;color:var(--hot)}
+.d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
 /* Same rule the song pages carry, and it has to be stated here too because
    this sheet does not include theirs. It was missing entirely, so the due and
@@ -2560,12 +2586,15 @@ header{padding-bottom:.9rem}
   .vn-n b{font-size:1.25rem}
 }
 @media screen and (max-width:620px){
-  .due .row{grid-template-columns:1fr 5.5rem;grid-template-areas:"song n" "last n";
+  /* 5.5rem held one number. It now holds that number and the multiple the
+     list is ordered by, which wraps to two lines here rather than being
+     dropped -- the order is the point of the page at any width. */
+  .due .row{grid-template-columns:1fr 7rem;grid-template-areas:"song n" "last n";
      row-gap:.15rem}
   .d-song{grid-area:song}
   .d-last{grid-area:last}
   .d-n{grid-area:n}
-  .d-n b{font-size:1.25rem}
+  .d-n > b{font-size:1.25rem}
 }
 .aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
 .aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -3963,7 +3992,11 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # The all-time and recent medians sit side by side because they disagree so
     # often: You Enjoy Myself is 1 against 6, Llama 2 against 11. Showing only
     # the all-time figure would describe a band that stopped existing in 1999.
-    cutoff = _years_before(perfs[0]["date"], RECENT_YEARS) if perfs else ""
+    # The same ten years the due page measures over, and the same ten for
+    # every song -- see recent_cutoff. A window anchored to this song's own
+    # last performance let a page say "median gap, last 10 years: 8" about a
+    # song nobody has heard since 2011.
+    cutoff = recent_cutoff(counting, perfs[0]["date"] if perfs else None)
     recent = [p["gap"] for p in countable
               if p["gap"] is not None and p["date"] >= cutoff
               and p["date"] != debut_date]
@@ -4176,7 +4209,14 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # because there each row is a different song with a different norm.
     med = _median(gaps) if gaps else None
     medmark = ""
-    if med and biggest and _bar_pct(med, biggest) >= 2:
+    # Only where there are bars for it to be a gridline on. Without a band no
+    # row draws a track at all -- every one is the no-range dash -- so the
+    # header was promising "mark at median 8" over a column that had no marks
+    # in it. Rare while the ten-year window travelled with each song, because
+    # a song's own last performance always fell inside its own window; with
+    # the window anchored to the archive it is every song that has been away
+    # for the whole ten years, which is 51 of them.
+    if med and biggest and high is not None and _bar_pct(med, biggest) >= 2:
         medmark = ("<style>.perfs{--med:%.2f%%}</style>"
                    % _bar_pct(med, biggest))
 
@@ -4407,7 +4447,9 @@ DUE_SHELL = """<!DOCTYPE html>
 <p class="dek">Songs the band plays often enough to have a habit, which are now
 past it. Measured against each song&rsquo;s own recent gaps, not against a
 single number &mdash; a staple is late at eight shows and a rarity is not late
-at eighty.</p></header>
+at eighty. Ranked by how far past its own usual each one is, which is what the
+figure on the right says: 3&times; means gone three times the gap this song
+normally goes.</p></header>
 <div class="rule2"></div>
 <ol class="due" id="main" tabindex="-1">
 {rows}
@@ -4429,6 +4471,12 @@ def due_rows(docs, counting, since):
     might actually shout for tonight under three hundred that nobody would.
     Dormant is a different fact and the song's own page says it.
 
+    "Recent" is the same ten years for every song -- see recent_cutoff. Read
+    per-song it was no filter at all: a song's own last performance always sits
+    inside a window ending at its own last performance, so fifteen songs whose
+    habit had stopped years ago were being ranked against habits that had
+    stopped with them, and the most dormant song in the archive led the list.
+
     One selection, shared by the due page, its preview card and the index hero.
     It was written out twice before the hero wanted it, and a third copy is
     three chances for the number on the front page to disagree with the page
@@ -4447,7 +4495,7 @@ def due_rows(docs, counting, since):
         played = [p for p in perfs if not counting or p["date"] in counting]
         if not played:
             continue
-        cutoff = _years_before(played[-1]["date"], RECENT_YEARS)
+        cutoff = recent_cutoff(counting, played[-1]["date"])
         recent = [p["gap"] for p in played[1:]
                   if p.get("gap") is not None and p["date"] >= cutoff]
         if len(recent) < MIN_HISTORY:
@@ -4469,17 +4517,29 @@ def render_due(docs, counting, since, card=None):
     out = []
     for over, n, high, doc, last in rows:
         place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
+        # The list is ranked by how far past its own norm each song is, and it
+        # printed only the two numbers that ratio is made of -- so the order
+        # looked like no order: not by date, not by gap, not by name.
+        #
+        # The ratio is the headline figure rather than a caption under the raw
+        # count, because the loudest number in a column is the one a reader
+        # takes the order from. Ranked by the ratio and headlined by the count,
+        # the column read 184, 131, 176, 90 down the page and denied on sight
+        # that it was sorted at all. Both numbers are still here; only which
+        # one is set large has changed. One decimal, because the difference
+        # between 12.8 and 12.1 is the difference between two adjacent rows.
         out.append(
             "<li><a class='row' href='./song/%s.html'>"
             "<span class='d-song'>%s</span>"
             "<span class='d-last'><span class='d-date'>%s</span>"
             "<span class='d-where'>%s</span></span>"
-            "<span class='d-n'><b>%s</b><span class='typ'>usually by %s</span>"
+            "<span class='d-n'><b>%s&times;</b>"
+            "<span class='typ'>%s shows, usually %s</span>"
             "</span></a></li>"
             % (html.escape(doc["slug"], quote=True),
                html.escape(typographic(doc["song"])),
                last["date"], html.escape(place),
-               "{:,}".format(n), _stat(high)))
+               _stat(over), "{:,}".format(n), _stat(high)))
 
     n_due = len(rows)
     subtitle = ("%d song%s past %s own usual gap"
@@ -5049,12 +5109,22 @@ one not played in ten years at all. The statistics say which.</p>"""),
 <p>Due means past its own recent usual gap &mdash; measured against that
 song&rsquo;s habit, not against a single number for the whole catalogue. A
 staple is late at eight shows and a rarity is not late at eighty.</p>
-<p>A song with no recent habit that has been gone two hundred shows is
-therefore not <em>due</em>. Nobody is expecting it. Those are dormant, which is
-a different fact: they are counted at the foot of the
+<p><em>Recent</em> means the last ten years of shows, counted back from the
+newest show in the archive rather than from the song&rsquo;s own last night on
+stage. That distinction is the whole of the previous paragraph: measured from
+its own last performance, a song that stopped being played in 2011 still has a
+tidy ten-year habit ending in 2011, and would be ranked as running late against
+a band that has since played a thousand shows without it.</p>
+<p>So a song with no recent habit that has been gone two hundred shows is not
+<em>due</em>. Nobody is expecting it. Those are dormant, which is a different
+fact: they are counted at the foot of the
 <a href="./due.html">due page</a> and each song&rsquo;s own page says it, but
 ranking them would bury the songs somebody might actually shout for
-tonight.</p>"""),
+tonight.</p>
+<p>The list is ordered by how far past each song is as a multiple of its own
+usual gap, which is the figure on the right of every row &mdash; not by how
+many shows it has been gone, since a hundred shows is nothing for one song and
+a decade for another.</p>"""),
 
     ("eras", "What are 1.0, 2.0, 3.0 and 4.0?", """
 <p>The four stretches the band has played in, either side of its two long
