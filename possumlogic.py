@@ -857,6 +857,12 @@ LIGHT = {
     # brighter one; anything small takes the darker.
     "hot-text": "#a92e14",
     "track": "rgba(23,21,15,.085)", "band": "#7d7360",
+    # The band is the same graphic in both palettes and was the same opacity
+    # in both, which is not the same *weight*: measured against its own paper
+    # it read 3.09:1 here and 5.29:1 in the dark, so the dark bar shouted
+    # where the light one spoke. Solved for the match rather than guessed --
+    # .58 on the dark paper lands at 3.10:1.
+    "band-opacity": ".85",
     "hover": "rgba(200,55,27,.055)", "edge": "#8d8676",
     "grain-blend": "multiply", "grain-opacity": ".45",
 }
@@ -866,6 +872,7 @@ DARK = {
     "hot": "#ff6b45", "cool": "#93b184", "dim": "#9b9384",
     "hot-text": "#ff6b45",
     "track": "rgba(236,229,213,.1)", "band": "#a89c85",
+    "band-opacity": ".58",
     "hover": "rgba(255,107,69,.07)", "edge": "#6b5f4f",
     "grain-blend": "screen", "grain-opacity": ".2",
 }
@@ -1095,7 +1102,7 @@ header{padding-bottom:.9rem}
 .crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    margin:0 0 .5rem}
 .crumb.sections{display:flex;flex-wrap:wrap;align-items:baseline;
-   gap:.3rem .9rem}
+   gap:.55rem .9rem}
 /* The site's name, not a link. It used to go where "Shows" goes, so the strip
    offered the same destination twice under two labels. As a label it also stops
    inheriting the link underline that made it sit differently from its
@@ -1110,6 +1117,17 @@ header{padding-bottom:.9rem}
 .crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
          border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centred on the label, 24px tall and never
+   narrower than 24px. It sits inside the anchor, so it is the same target.
+   Row gaps below are widened to match: two rows 4.8px apart would have had
+   their 24px areas overlapping, which trades one failure for a worse one. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 .crumb .prev{grid-column:1;justify-self:start}
 .crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
@@ -1209,8 +1227,13 @@ table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* Song, then where it last turned up, then the bar and the figure. The row
    leads with what it is about; the gap is an attribute of it. */
 col.c-song{width:26%}
-col.c-last{width:38%}
-col.c-bar{width:16%}
+/* The bar takes six points off the "last performed" column. At 16% it was
+   about 80px carrying a 32px band, so two rows whose numbers separate clearly
+   put their marks two pixels apart -- a scale too short to resolve what it is
+   drawing. The date and place it comes from wrap on their own terms and lose
+   nothing by it. */
+col.c-last{width:32%}
+col.c-bar{width:22%}
 col.c-gap{width:20%}
 table.no-last col.c-song{width:36%}
 table.no-last col.c-bar{width:44%}
@@ -1293,6 +1316,13 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
      way. */
   td.bar[data-tip]::after{left:auto;right:1.2rem}
 }
+/* Visually hidden, still announced. Not display:none and not visibility:
+   hidden -- both remove it from the accessibility tree, which is the opposite
+   of the point. The 1px-clip form is the one that survives every screen
+   reader worth supporting. */
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+   overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;
+   border:0}
 .bar{padding-right:1.2rem}
 /* A position, not a length. The track is the whole range a gap can sit in for
    this song; the shaded middle is where it usually sits, the hairline is its
@@ -1314,7 +1344,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    version used --track, which is a 10% alpha meant for the inside of a
    progress bar, and against paper it was not there at all. */
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
-   background:var(--band);opacity:.85;border-radius:1px}
+   background:var(--band);opacity:var(--band-opacity);border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
    background:var(--paper);opacity:.85}
 /* Tonight. Full height and full-strength ink, with a paper halo so it reads
@@ -1877,12 +1907,11 @@ def render_html(report, bar_scale="linear", index_href=None,
         # whole job is answering "what is this?" -- by then the pointer has
         # moved on. aria-label carries the same words to a screen reader,
         # which title was doing incidentally.
-        explain = ""
+        tip = ""
         if s.get("gap_low") is not None and g is not None:
             tip = ("%s show%s; usually %s to %s"
                    % (_stat(g), "" if g == 1 else "s",
                       _stat(round(s["gap_low"])), _stat(round(s["gap_high"]))))
-            explain = " data-tip='%s' aria-label='%s'" % (tip, tip)
         elif g is not None and s.get("recent_plays") is not None:
             # No band, so no bar -- and an empty column is the most confusing
             # thing on the row unless it says why it is empty. This is not a
@@ -1896,8 +1925,16 @@ def render_html(report, bar_scale="linear", index_href=None,
                    % ("not played" if not n
                       else "played %d time%s" % (n, "" if n == 1 else "s"),
                       RECENT_YEARS))
-            explain = " data-tip='%s' aria-label='%s'" % (
-                html.escape(tip, quote=True), html.escape(tip, quote=True))
+        # data-tip draws the hover; the same words reach a screen reader as a
+        # visually-hidden span *inside* the gap cell rather than as an
+        # aria-label *on* it. An aria-label on an element replaces everything
+        # in it, so the cell announced "9 shows; usually 5 to 40" and the
+        # figure, the median and the verdict -- the three things the cell is
+        # for -- were never read out at all. The bar cell takes only the hover,
+        # because it holds nothing to announce and would otherwise say the
+        # sentence a second time.
+        tip_attr = " data-tip='%s'" % html.escape(tip, quote=True) if tip else ""
+        sr = "<span class='sr'>%s</span>" % html.escape(tip) if tip else ""
 
         typical = ""
         if s.get("gap_median") is not None:
@@ -1960,7 +1997,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                 # out loud, in the one place a reader is already looking for
                 # the mark, and the hover says why.
                 bar = ("<td class='bar'%s><span class='no-range'"
-                       " aria-hidden='true'>&mdash;</span></td>" % explain)
+                       " aria-hidden='true'>&mdash;</span></td>" % tip_attr)
             else:
                 # The mark is coloured by where it landed, not by how large
                 # the number is. Those are different questions and they
@@ -1974,7 +2011,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                 bar = ("<td class='bar'%s><span class='track'>"
                        "<span class='band'></span><span class='mid'></span>"
                        "<span class='at %s' style='left:%.2f%%'></span>"
-                       "</span></td>" % (explain, where, pos))
+                       "</span></td>" % (tip_attr, where, pos))
         # Both statistics cells carry the explanation, so the hover target is
         # the whole of them rather than a range bar that can be five pixels wide.
         # The title is the way in to the song's own history, but only once that
@@ -2038,7 +2075,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                 cells += "<td class='last'></td>"
         # The bar and the figure close the row, which is where the song page
         # puts them too.
-        cells += "%s<td class='n'%s>%s</td>" % (bar, explain, gap_cell)
+        cells += "%s<td class='n'%s>%s%s</td>" % (bar, tip_attr, gap_cell, sr)
         rows.append("<tr>%s</tr>" % cells)
     flush()
 
@@ -2204,6 +2241,17 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 .crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centred on the label, 24px tall and never
+   narrower than 24px. It sits inside the anchor, so it is the same target.
+   Row gaps below are widened to match: two rows 4.8px apart would have had
+   their 24px areas overlapping, which trades one failure for a worse one. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(2rem,7vw,4rem);line-height:1.06;margin:0 0 .7rem;
@@ -2594,8 +2642,28 @@ INDEX_JS = """
     apply();
   }
 
-  function setQuery(v){ q.value=v; apply(); write(false); }
-  q.addEventListener('input', function(){ apply(); write(false); });
+  /* Two timers, because the two jobs a keystroke starts want different delays.
+
+     The filter is a style and layout recalc over every row: 22 ms at 690
+     shows, and about 68 ms projected at the 2,100 the 1983 backfill would
+     bring. At 80 ms it still reads as instant and a fast typist gets one pass
+     per word rather than one per character.
+
+     The URL write is a history entry replacement, which browsers rate limit --
+     Safari allows roughly 100 in 30 seconds and throws once you pass it. It
+     waits longer because nobody copies a URL mid-word, and coalescing a whole
+     word into one entry keeps a long search well clear of the ceiling. */
+  var filterT=0, urlT=0;
+  function later(){
+    clearTimeout(filterT); clearTimeout(urlT);
+    filterT=setTimeout(apply, 80);
+    urlT=setTimeout(function(){ write(false); }, 400);
+  }
+  // Clearing and landing are single acts, not typing: they take effect at
+  // once, and cancel anything a half-typed word left pending.
+  function now(){ clearTimeout(filterT); clearTimeout(urlT); apply(); write(false); }
+  function setQuery(v){ q.value=v; now(); }
+  q.addEventListener('input', later);
   sort.addEventListener('change', function(){ order(); write(true); });
   chips.forEach(function(c){
     c.addEventListener('click', function(){
@@ -2984,12 +3052,23 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 .wrap{max-width:960px;margin:0 auto}
-.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .9rem;
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
    margin-bottom:1.1rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .crumb a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centred on the label, 24px tall and never
+   narrower than 24px. It sits inside the anchor, so it is the same target.
+   Row gaps below are widened to match: two rows 4.8px apart would have had
+   their 24px areas overlapping, which trades one failure for a worse one. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 /* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
@@ -3255,7 +3334,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
    color:var(--dim);opacity:.65;font-size:.75rem}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
-   background:var(--band);opacity:.85;border-radius:1px}
+   background:var(--band);opacity:var(--band-opacity);border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
    background:var(--paper);opacity:.85}
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;

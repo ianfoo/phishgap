@@ -234,14 +234,33 @@ rather than setting `hidden` on thousands of elements; only then consider
 windowing. **Do not reach for a virtual list first** — it costs the printable,
 Ctrl-F-able, no-JS-degradable property the list has now.
 
+- ~~**Debounce input**~~ DONE 2026-07-28, at 80 ms for the filter and 400 ms
+  for the URL write. Two timers, because they want different delays — and the
+  URL write needs one for a second reason: `history.replaceState` is rate
+  limited (Safari ~100 calls per 30 s) and the URL-state work added one per
+  keystroke. Keystroke dispatch now costs ~0.1 ms.
+- **The container-class idea is aimed at the wrong cost.** Measured at 691
+  rows: the number of `hidden` writes is 691 in *every* case, while the pass
+  costs 0.3 ms when no row changes visibility, ~10 ms when 607 rows hide, and
+  ~36 ms when a hidden set comes back. Cost tracks rows whose visibility
+  *changed*, not attribute writes, so moving the writes to one container class
+  saves nothing. **Do not do this item as written.**
+- **`content-visibility:auto` is the promising lever** — it skips layout for
+  offscreen rows while the DOM stays whole, which is exactly the printable,
+  Ctrl-F-able property this section is protecting. First attempt measured
+  *worse* (65 ms vs 10 ms), but that was the first pass after applying it, so
+  the browser was establishing intrinsic sizes for all 691 rows at once. Not a
+  fair number. **Deferred, and it needs a real benchmark**: separate page
+  loads per condition, N passes each, compare medians — not a before/after in
+  one live page like the one that produced that 65.
+
 Also: the index has no era or year headings, while song pages already group by
 era with counts and spans. Port that pattern; it gives scroll landmarks and
 free anchors.
 
 ## 6. Remaining visual work
 
-- `col.c-bar` 16% → 22%, taking it from `c-last`. The bar is 80px wide with a
-  32px band; rows the numbers separate clearly sit 2px apart in the bar.
+- ~~`col.c-bar` 16% → 22%~~ DONE 2026-07-28, taken from `c-last` (38% → 32%).
 - ~~Bustout rows draw a `track bare` ghost~~ DONE 2026-07-28, and **the note
   above had the cause wrong**. It is not a bustout condition. Any song with
   fewer than `MIN_HISTORY` (8) plays inside the ten-year window has no
@@ -251,8 +270,11 @@ free anchors.
   where the mark would have been, and the whole statistics area carries a
   `data-tip` saying which of the two reasons applies ("played 6 times in 10
   years…" / "not played in 10 years…"). Six rows on tonight's page use it.
-- Dark-mode band is 5.29:1 against paper where light is 3.09:1 — same graphic,
-  different weight per palette. Drop `.bar .band` opacity to ~.55 in dark.
+- ~~Dark-mode band weight~~ DONE 2026-07-28. Both figures confirmed exactly.
+  Opacity is a palette variable now (`--band-opacity`) rather than one shared
+  constant. Solved for the match instead of taking the ~.55 estimate: .58 on
+  the dark paper measures 3.10:1 against light's 3.09:1. (.55 would have been
+  2.92:1 — fine, but under rather than level.)
 - **Do not remove the 2px paper halo on `.at`.** Marker-against-band is
   1.25–1.87:1 in every combination; the halo is the only reason it reads.
 - Cards have no grain and use a plain rule where pages use `.rule2`. The card
@@ -263,15 +285,20 @@ free anchors.
 
 ## 7. Mobile and the method page
 
-- Nav targets measure 37×17 at 375px against a 24×24 minimum (WCAG 2.5.8), and
-  the two nav rows are 4.8px apart so the spacing exception does not apply.
-  Fix with padding, not a hamburger — the small-caps text row is the right
-  pattern for a reference archive with three destinations.
+- ~~Nav targets~~ DONE 2026-07-28. Re-measured first and they were worse than
+  recorded: 37×19, and "Due" only 22 wide. **Not fixed with padding** — the
+  `border-bottom` is the affordance, and padding-bottom pushes that underline
+  off the word it underlines. The hit area grows via a pseudo-element instead
+  (24px tall, min 24px wide, inside the anchor) so the ink does not move at
+  all. Row gap went .3rem → .55rem so two rows of enlarged areas cannot
+  overlap. Verified at 375px: all five pass, none overlap.
 - Below 620px a tap in `td.last` goes to the previous show and a tap elsewhere
   goes to the song page, with only a 2px border to say so. Signal it.
-- `td.n` carries an `aria-label` that *replaces* the cell contents for screen
-  readers, dropping the figure, the median and the verdict. Use a
-  visually-hidden span inside the cell instead.
+- ~~`td.n` aria-label~~ DONE 2026-07-28. `data-tip` still draws the hover; the
+  words reach a screen reader as a `.sr` span *inside* the cell, so the figure
+  and the median are announced alongside them instead of being replaced. The
+  bar cell keeps the hover only — it holds nothing to announce and would have
+  said the same sentence twice. `.sr` is a new utility; there was none.
 - Method page: ordering is scattered (the bar is discussed mid-gap-calculation)
   and it needs a table of contents.
 
