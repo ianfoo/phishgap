@@ -53,11 +53,12 @@ rebuilds clean (`./possumlogic.py --site site --rebuild`, ~2 s) and
 - **A watcher run is live**, dispatched on the fixed code (see §8.5). The
   previous run was cancelled because it was pinned to an old commit and
   republishing the whole site from it every five minutes.
-- **Unverified:** that the new watcher publishes *forward* rather than
-  reverting. The check was interrupted. To finish it:
+- **Verified once, not yet over a long run.** `origin/gh-pages` at 04:42 UTC
+  carries the skip link, the new sort options, five hero cards and the
+  no-range dashes, and the watcher has not put an older build back over them
+  since. Re-check the same way if anything looks reverted:
   `git fetch origin gh-pages && git show origin/gh-pages:index.html | grep -c 'class="skip"'`
-  — expect `1`. If it flips back to `0` after a watcher pass, the §8.5 fix did
-  not take and the frozen-checkout bug is still live.
+  — expect `1`. A `0` after a watcher pass means the §8.5 fix did not take.
 - **Remember the CDN.** GitHub Pages serves `max-age=600`, so `curl` of the
   live site can be ten minutes stale and *looks* like a failed publish. This
   cost real time tonight. Check `origin/gh-pages` with git, not the URL, when
