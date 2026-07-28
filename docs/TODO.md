@@ -42,6 +42,49 @@ so work could continue; he wants to review these, not be blocked by them.
   of the polling interval. It is a floor on how live the live show can be and
   is not a bug to chase.
 
+## 0. Where the 2026-07-28 session left off — read this first
+
+**Everything below marked DONE is committed and pushed to `main`.** The site
+rebuilds clean (`./possumlogic.py --site site --rebuild`, ~2 s) and
+`python3 -m py_compile possumlogic.py` passes.
+
+### In flight when the session ended
+
+- **A watcher run is live**, dispatched on the fixed code (see §8.5). The
+  previous run was cancelled because it was pinned to an old commit and
+  republishing the whole site from it every five minutes.
+- **Unverified:** that the new watcher publishes *forward* rather than
+  reverting. The check was interrupted. To finish it:
+  `git fetch origin gh-pages && git show origin/gh-pages:index.html | grep -c 'class="skip"'`
+  — expect `1`. If it flips back to `0` after a watcher pass, the §8.5 fix did
+  not take and the frozen-checkout bug is still live.
+- **Remember the CDN.** GitHub Pages serves `max-age=600`, so `curl` of the
+  live site can be ten minutes stale and *looks* like a failed publish. This
+  cost real time tonight. Check `origin/gh-pages` with git, not the URL, when
+  you want to know what was actually published.
+
+### Queue, in the order I would take it
+
+1. **§3c song page front matter** — Ian's most recent review, four items, all
+   well specified. The `.dek` font fix is a one-liner; the FAQ page is the
+   biggest piece.
+2. **§3d keyboard hotkeys** — the accessibility floor is done; this is the
+   jumping layer.
+3. **§7 method page** — table of contents and reordering. Untouched.
+4. **§6 remaining visual work** — cards have no grain and use a plain rule
+   where pages use `.rule2`; the card mark is invisible at thumbnail size.
+5. **§5 `content-visibility` benchmark** — method written down, needs doing
+   properly rather than in one live page.
+6. **§3b** — the older agreed work, still none of it started.
+
+### Two things Ian has asked for that are not yet scheduled anywhere
+
+- A **festival/event name** for the 35 shows phish.net files as "Not Part of a
+  Tour" (§6). Needs a curated table; his call.
+- Whether the `MOST SONGS` fact wants a **"show length" or "highest rated"
+  view** beyond the sort options added tonight (§8b.7).
+
+
 ## 1. ~~Song page enrichment — preceded by / followed by~~ DONE 2026-07-28
 
 Every song page row already prints what the performance came out of and went
@@ -187,6 +230,75 @@ preference predates the review — his call, not the reviewer's.
   dropped that requirement and uses `fonts.css`; the single file still inlines
   the face, because that one is meant to survive being handed to somebody with
   nothing beside it. Do not "simplify" it into the shared sheet.
+
+## 3c. Song page front matter — Ian's live review, 2026-07-28. NOT STARTED
+
+Looking at Tweezer Reprise. The block above the statistics has accumulated
+four separate things and reads as clutter. Taken in order:
+
+### The prose is mono because nothing ever told it not to
+
+**Answered:** it is an artifact, not a decision. `body` sets
+`font-family:'IBM Plex Mono'` for the whole site, so everything inherits mono
+unless it opts out. Literata *is* loaded and *is* used deliberately for running
+prose — `.jam`, `.note`, `.aside-note`, and the method page's `.prose` — and
+the comment beside those rules says why ("Literata is drawn for reading").
+`.dek` simply never got the same treatment. Giving `.dek` Literata is a
+one-line change and is almost certainly right.
+
+### "Usually out of" / "usually into" overstates its evidence
+
+Tweezer Reprise has 331 performances; the three songs listed under "usually
+out of" sum to 58. Calling that *usually* is wrong — it is "most often", and
+even that wants a denominator. Two fixes needed:
+
+- **Reword.** "Most often out of" / "most often into", or show the share.
+- **Separators.** `Sleeping Monkey 26  Harry Hood 18  Loving Cup 14` runs
+  together as one string of alternating words and numbers. It needs real
+  separation between pairs, and the count needs to read as a count.
+
+### The gap explanation does not belong on every song page
+
+It is the first prose on the page, it explains the site's *old* headline
+statistic, and anybody exploring Phish statistics probably knows what a gap
+is. **Ian's proposal: a FAQ page**, with this as one entry.
+
+**Audit the site for the other entries while building it.** Candidates already
+visible from this session:
+- What a gap is, and that ours is "shows since" and deliberately not
+  phish.net's number (§9 has the reasoning).
+- What `>` and `->` mean, and **how they differ** — the current legend does
+  not say, which is the substantive complaint below.
+- Why a song shows no range bar (fewer than 8 plays in ten years — the tooltip
+  now says it per row, but the *rule* wants stating once).
+- What "due" means and why dormant songs are excluded.
+- What the eras (1.0–4.0) are.
+- Why some shows say "Not Part of a Tour".
+
+### The notation legend is heavy and also wrong
+
+The arrow legend is wordy for something repeated on every song page, and it is
+**inadequate**: it explains that `>` and `->` both mean the band ran songs
+together, but not the difference between them. Either explain it properly
+(FAQ) or drop the legend to a link.
+
+## 3d. Keyboard: hotkeys, not just tab order — NOT STARTED
+
+§7b did the accessibility floor (focus ring, skip link, everything reachable).
+Ian wants the next layer: **jumping**, not advancing.
+
+- `/` to focus the search box. **Already exists** on the index, songs and song
+  pages — but not on `due`, `venues` or `method`, and it is undocumented.
+- `[` and `]`, or `←` and `→`, to step through the current collection —
+  previous/next show on a show page, previous/next song on a song page. Show
+  pages already have a prev/next pager in the markup; song pages have none
+  (§4 notes that gap).
+- Whatever is added needs to be discoverable — a `?` overlay listing the keys
+  is the usual answer, and would pair with the FAQ page above.
+- Do not let keyboard control define the site: Ian was explicit that this is
+  about not being *forced* to reach for a pointer, not about building a modal
+  keyboard interface.
+
 
 ## 4. Navigation
 
@@ -428,6 +540,27 @@ been written:
 assert the *published* page changes — not that a function was called, not that
 markup contains a class. The bugs above all pass any test that stops short of
 reading the output.
+
+### The index "live now" banner outliving the show — most likely already fixed
+
+Ian saw the index still showing the on-stage banner while the show page it
+linked to no longer claimed to be live. **The current build does not do this.**
+Checked directly: `site/data/2026-07-27.json` has `provisional: false`, the
+show page contains no "being played right now", and the built index contains
+no `<a class='onstage'>` at all — the only "onstage" hits in it are CSS rules.
+
+The most likely explanation is bug 5 above, not a settlement bug. The stale
+watcher was republishing the **03:55 build over the top of every newer one**,
+and at 03:55 the show *was* still provisional — so the live site kept getting
+a banner-carrying index back every five minutes while the freshly-built show
+page it linked to came from a later publish. Two publishers, two vintages, one
+site.
+
+**Not proven, and worth one check when the next show runs**: if the banner and
+the show page ever disagree again *after* the watcher fix, then there is a
+real settlement bug and the two are computed from different states —
+`summarize()` reads `provisional` for the index, `render_html` reads it for
+the page, so they should never disagree within one build.
 
 ## 8b. Provisional decisions, for Ian's batched review
 
