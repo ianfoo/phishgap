@@ -245,10 +245,25 @@ preference predates the review — his call, not the reviewer's.
   standing exception — night 1 late, middle nights early, last night earliest —
   and the watch window is currently widened to cover all of them rather than
   encoding which night is which. Revisit only if the window proves too wide.
-- **The `--html` single-file output must stay self-contained.** The hosted site
-  dropped that requirement and uses `fonts.css`; the single file still inlines
-  the face, because that one is meant to survive being handed to somebody with
-  nothing beside it. Do not "simplify" it into the shared sheet.
+- ~~**The `--html` single-file output must stay self-contained.**~~ **This is
+  not true and has not been for a long time.** Ian, 2026-07-27: the
+  self-contained page mattered when he was shipping one styled HTML file over a
+  messaging service, and stopped mattering the moment this became a site.
+  Measured rather than taken on his word — a real `--html` file carries **three
+  references to Google's font hosts** and links
+  `fonts.googleapis.com/css2?family=IBM+Plex+Mono…&family=Literata…`. It
+  inlines exactly one face, Bagnard, as a 13 KB `data:font/otf`. Since `body`
+  is Plex Mono site-wide, essentially every word in that "self-contained" file
+  depends on a network fetch; only the wordmark survives offline. It also gets
+  no paper grain, because the grain lives in `fonts.css` and this path emits
+  the inline face instead of the sheet.
+
+  So there is no self-containment left to protect, and no reason for it to be
+  an exception in §8e's stylesheet plan. Keep the single-file mode — it is
+  still a convenient way to hand someone one page — but stop treating it as a
+  constraint on how the hosted site loads CSS. **The general lesson Ian drew is
+  the more useful one: periodically re-check the assumptions written down here.
+  This one shaped a design decision hours after it had stopped being true.**
 
 ## 3c. Song page front matter — Ian's live review, 2026-07-28. DONE
 
@@ -761,6 +776,62 @@ wrap, and a footer link styled in one sheet of three. **When touching anything
 that lives in more than one sheet, check all three and assert the match
 count**; CLAUDE.md says this and it is worth believing.
 
+## 8f. The wordmark flicker — Ian, 2026-07-27. FIXED, and it was not the font
+
+His guess was the inlined Bagnard. It was not: **no hosted page inlines a
+face** — `data:font/otf` appears zero times in the published `index.html`. The
+inline path exists only for `--html`.
+
+It was a serial fetch. `fonts.css` holds `src:url('./font/Bagnard.otf')`, so
+the face could not begin loading until that stylesheet had arrived *and been
+parsed*. Measured on localhost, where there is no latency to blame:
+
+| | `fonts.css` starts | `Bagnard.otf` starts | initiated by |
+|---|---|---|---|
+| before | 9.3 ms | 24.1 ms | the stylesheet |
+| after | 10.4 ms | 10.3 ms | the document |
+
+On the live site that 14.8 ms is a whole round trip, and `font-display:swap`
+spends it painting Georgia and then swapping — which is the flicker.
+
+Fixed with `<link rel="preload" as="font" crossorigin>` in every shell, at the
+right relative depth (`./font/` for root pages, `../font/` for `show/` and
+`song/`). `crossorigin` is not optional: fonts are fetched in CORS mode and a
+preload without it is discarded and refetched. Verified the face still renders
+(advance-width against Georgia, not by reading CSS) and that no page logs a
+"preloaded but not used" warning — every page type does use Bagnard, though on
+a show page it is not the `h1`, which is the date and deliberately mono.
+
+**Still on the table if it ever flickers again**, in order of value: convert
+the 12.9 KB `.otf` to `.woff2` (typically 40–60% smaller); or inline the face
+into `fonts.css` as a data URI, which collapses to a single request since that
+sheet is already fetched and cached. `font-display:optional` would kill the
+swap outright but a first-time visitor might never see the wordmark in Bagnard,
+which is too high a price for the one thing that is the site's identity.
+
+## 8g. The card index outlives the cards it describes — GUARD IT
+
+Cost real time tonight and is now a CLAUDE.md gotcha. `site/data/cards.json`
+records what each preview card was drawn from and **is tracked in `main`**;
+`site/card/*.png` is **gitignored**. So a local `--rebuild` draws the images
+here, writes "already drawn" into a file that ships, and CI then restores the
+*published* PNGs, reads an index claiming everything is current, and draws
+nothing. The longest-gap fix reached the markup and the images kept the
+em-dash — spotted only because the published PNG was opened and looked at.
+
+Recovered by deleting the 588 song records and dispatching a run. Note the
+second trap on the way out: that commit touched only `site/data/`, which is
+**not** one of `possumlogic.yml`'s push trigger paths, so it did not start a
+run at all and sat on `main` doing nothing until dispatched by hand.
+
+**Recommended fix: move the index to where the images are.** Write it to
+`site/card/cards.json` so it publishes to `gh-pages` alongside the PNGs it
+describes, and stop tracking it in `main`. The workflow already restores
+`card/` from `gh-pages`, so it would restore the index in the same step, and
+the record could no longer disagree with the artifacts because they would
+travel together. Until that lands: **after any local rebuild that draws cards,
+do not commit `site/data/cards.json`** — take the version CI produced.
+
 ## 8e. The three stylesheets — Ian's question, measured. NOT STARTED
 
 Ian, 2026-07-27: "why are there three stylesheets that contain duplicate
@@ -789,10 +860,12 @@ build step producing a bespoke sheet per page. **Measured before answering:**
    instead of copy-pasted rule text. No output change, no risk, and it is what
    stops an edit landing in one sheet of three. **Do this first.**
 2. **Wire duplication** — 45.6 MB. Fix by linking one `site.css` instead of
-   inlining. The site already links `fonts.css`, and CLAUDE.md's
-   self-containment rule binds only the `--html` single-file output, which must
-   keep inlining. A show page would go 62 KB → ~29 KB, the FAQ 39 → ~14 KB,
-   and it is cached after the first page.
+   inlining. The site already links `fonts.css`. A show page would go 62 KB →
+   ~29 KB, the FAQ 39 → ~14 KB, and it is cached after the first page.
+   **Nothing is in the way of this.** An earlier draft of this section carved
+   out an exception for the `--html` single-file output on self-containment
+   grounds; that requirement is dead and the file was never self-contained
+   anyway — see §3b, corrected.
 3. **Per-page bespoke sheets — recommend against, and the measurement is why.**
    The union of everything is 43.9 KB against `SONG_CSS`'s 35.8 KB, so the most
    a perfect per-page split can save over one shared cached sheet is roughly

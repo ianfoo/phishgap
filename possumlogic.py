@@ -439,6 +439,29 @@ FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                          "site", FONT_DIR, "Bagnard.otf")
 
 
+def sheet_links(sheet):
+    """The stylesheet link, and a head start on the face it is going to ask for.
+
+    Without the preload the face cannot begin loading until fonts.css has been
+    fetched *and parsed*, because that is where its url() lives. Measured on
+    localhost, where there is no latency to hide behind: fonts.css starts at
+    9.3ms and Bagnard.otf at 24.1ms, initiated by the stylesheet rather than by
+    the document. On the live site that gap is a whole round trip, and
+    `font-display:swap` spends it painting Georgia and then swapping -- which
+    is the wordmark flicker, and it is not the inlined face, which no hosted
+    page carries.
+
+    `crossorigin` is required even though the font is same-origin: fonts are
+    fetched in CORS mode, and a preload without it is discarded and refetched,
+    which is slower than not preloading at all.
+    """
+    base = sheet.rsplit("/", 1)[0] if "/" in sheet else "."
+    return ('<link rel="preload" href="%s/%s/%s.otf" as="font" '
+            'type="font/otf" crossorigin>\n'
+            '<link href="%s" rel="stylesheet">'
+            % (base, FONT_DIR, DISPLAY_FACE, sheet))
+
+
 def inline_font_css():
     """The face as a data URI, for output that has no stylesheet beside it.
 
@@ -2269,8 +2292,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         venue=_venue_lines(report), hero=hero, rating=rating,
         links=_show_links(report["date"], on_phishin), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
-        sheet=('<link href="%s" rel="stylesheet">' % sheet if sheet
-               else inline_font_css()),
+        sheet=(sheet_links(sheet) if sheet else inline_font_css()),
         row_js=ROW_JS,
         share=share_meta("%s%s &mdash; Possum Logic"
                          % ("Live: " if report.get("provisional") else "",
@@ -2805,7 +2827,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
@@ -3147,7 +3169,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, theme_ui=THEME_UI,
-        fonts=WEB_FONTS, sheet="./fonts.css",
+        fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         hero=hero, hero_cls=hero_cols(len(cards)), years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         aside=aside_html, subtitle=subtitle, onstage=onstage,
@@ -3805,7 +3827,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
@@ -4236,7 +4258,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet="../fonts.css",
+        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../fonts.css"),
         cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS,
         theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
         hero=hero, best=top, links=links, count=len(countable), eras=chips,
@@ -4288,7 +4310,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
@@ -4371,7 +4393,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
@@ -4469,7 +4491,7 @@ def render_due(docs, counting, since, card=None):
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, fonts=WEB_FONTS, sheet="./fonts.css",
+        css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(out), dormant=tail,
         share=share_meta("What's due &mdash; Possum Logic",
@@ -4488,7 +4510,7 @@ VENUES_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
@@ -4569,7 +4591,7 @@ def render_venues(reports, card=None):
              % (n, "{:,}".format(total)))
     return VENUES_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, fonts=WEB_FONTS, sheet="./fonts.css",
+        css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(rows),
         share=share_meta("Venues &mdash; Possum Logic",
@@ -4668,7 +4690,7 @@ def render_songs(docs, stamp=None, card=None):
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS,
+        css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS,
         theme_ui=THEME_UI, hero=hero, hero_cls=hero_cols(len(cards)),
         count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
@@ -4719,7 +4741,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
@@ -4884,7 +4906,7 @@ timeline.</p>
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=METHOD_CSS, fonts=WEB_FONTS, sheet="./fonts.css", theme_js=THEME_JS, theme_ui=THEME_UI,
+        css=METHOD_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, theme_ui=THEME_UI,
         body=body.strip(),
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
                          "method.html"))
@@ -4940,7 +4962,7 @@ FAQ_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
@@ -5088,7 +5110,7 @@ def render_faq():
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=FAQ_CSS, fonts=WEB_FONTS, sheet="./fonts.css",
+        css=FAQ_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
@@ -5179,7 +5201,7 @@ h1 em{font-style:normal;color:#c8371b}
 
 CARDS_SHELL = """<!DOCTYPE html><html><head><meta charset="utf-8">
 <link href="{fonts}" rel="stylesheet">
-<link href="{sheet}" rel="stylesheet">
+{sheet}
 <style>%s</style></head><body>__CARDS__</body></html>""" % CARD_CSS
 
 
