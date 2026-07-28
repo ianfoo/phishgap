@@ -309,8 +309,10 @@ average over that would call almost anything ordinary.</p>
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
 most songs. The band's ends are interpolated values that appear nowhere in the
 song's actual gaps, which is why they are not printed as numbers.</p>
-<p>Quartiles were tried first and called 37% of songs overdue. The middle 70%
-yields roughly 13% premature, 67% expected and 20% overdue.</p>
+<p>The band is wide enough that a verdict stays worth reading: roughly
+<span class="num">13%</span> of performances come out premature,
+<span class="num">67%</span> expected and <span class="num">20%</span>
+overdue.</p>
 
 <h2 id="before-and-after">What came before and after</h2>
 <p>A song page shows what each performance sat between. A plain
@@ -331,15 +333,13 @@ the median, and the mark is the performance being reported. Left of the shading
 is sooner than usual for that song, right of it is later. Past three times the
 upper edge the mark stops at the end and stays there, because beyond a point
 &ldquo;very late&rdquo; is the whole of the message.</p>
-<p>Every row is drawn against its own song, which is the reason it works.
-Earlier the bar was a fraction of the longest gap in the show, and one bustout
-would take the scale with it: on <span class="num">168</span> of
-<span class="num">690</span> shows the longest gap is at least twenty times the
-median, so about <span class="num">95%</span> of that night's bars collapsed
-into an identical stub two pixels long. A scale a single row can destroy for
-every other row is not a scale. Magnitude was also the one thing that did not
-need drawing, since the number is printed beside it &mdash; what the number
-cannot say is whether it was early or late <em>for this song</em>.</p>
+<p>Every row is drawn against its own song rather than against the night, so
+one bustout cannot flatten the rest of the bill &mdash; on
+<span class="num">168</span> of <span class="num">690</span> shows the longest
+gap is at least twenty times the median. It shows position rather than
+magnitude because the number beside it already gives the magnitude exactly;
+what the number cannot say is whether this was early or late
+<em>for this song</em>.</p>
 <p>A song with fewer than <b>eight</b> performances in the ten-year window has
 no band to be measured against, so its track is drawn empty rather than
 implying a comparison that was never made.</p>
