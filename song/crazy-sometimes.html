@@ -63,6 +63,22 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
 .reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
 a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
+/* The whole scale, pitched one step up from where it started.
+   Ian: "the prose text feels small even by these standards... I feel this way
+   on iPhone and on desktop." He was right, and the figures said so: body was
+   .875rem against a 16px default, so running text set at 14px and the labels
+   -- the size used more than any other on the site, 101 declarations of it --
+   set at 10px.
+   It is stated once, here, rather than as 300 edited declarations. Everything
+   on this site is already sized in rem, so lifting the root lifts all of it in
+   proportion and no two sizes can change their relationship to each other. It
+   is also relative rather than absolute: a reader who has set their browser to
+   20px gets 22.5, not 18.
+   The top of the scale is held rather than lifted -- see the h1 clamps, whose
+   rem endpoints are pulled back by exactly this factor. A wordmark at 64px was
+   never the complaint; a scale should compress at the display end and open up
+   at the reading end, and this one now does both. */
+html{font-size:112.5%}
 /* Every figure on this site sits in a column beside another figure. Tabular
    numerals are what makes that work. This lived in the show-page sheet only,
    so the index, songs, due, venues and every song page were setting their
@@ -74,7 +90,31 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
-.wrap{max-width:960px;margin:0 auto}
+/* The measure in rem rather than px, so it travels with the type. Stated as
+   960px it would have held still while the scale went up a step, which quietly
+   shortens every line and tightens every column -- the same page with less room
+   in it. 60rem is the 960px this has always been, at the root above. */
+.wrap{max-width:60rem;margin:0 auto}
+/* clip, not hidden, and the difference is the whole reason this is safe:
+   overflow:hidden would make the body a scroll container and break every
+   position:sticky header on the site, where clip does not.
+
+   It is here because a hidden thing was still taking up room. The show pages'
+   hover tooltip is position:absolute and white-space:nowrap, and it is hidden
+   with visibility:hidden -- which still lays out. That was found once and fixed
+   only for phones, by dropping the tooltip below 620px; above 620px every show
+   page has been scrollable sideways ever since. Measured on the live build at
+   1280px: 1,627px of scroll width, so the page slid 347px into nothing.
+   The general shape is what earns a rule rather than a patch -- an off-screen
+   or invisible decoration extends the scrollable area exactly as a visible one
+   does, and the page it does it to looks completely normal.
+
+   On html as well as body, and that is not belt and braces. An overflow set on
+   body alone is *propagated* to the viewport, and body is then treated as
+   visible -- so `body{overflow-x:clip}` by itself clips nothing, which is
+   exactly what the first attempt at this measured: the rule shipped, the page
+   still scrolled 347px. */
+html,body{overflow-x:clip}
 .crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
    margin-bottom:1.1rem;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
@@ -95,7 +135,7 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
 /* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
-   font-size:clamp(2rem,6.5vw,3.4rem);line-height:1.14;margin:0 0 .5rem;
+   font-size:clamp(1.7778rem,6.5vw,3.0222rem);line-height:1.14;margin:0 0 .5rem;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
@@ -268,8 +308,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    did, so a standfirst sat in the figure face. A shade larger than the .75rem
    it was set at, because the serif reads smaller at the same size. */
 .dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
-   font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 16;
    color:var(--dim);max-width:56ch}
+/* And its links, which is the fifth time a rule has been found living in one
+   sheet of three. This one was in SONG_CSS alone, so the two links in the due
+   page's standfirst -- "slipping" and "on the shelf", both pointing at sections
+   of the page they introduce -- rendered in the browser's default link blue
+   with a browser underline, on the one page on the site that has them. */
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -499,6 +544,14 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    for the Arts" came out over four lines. */
 @media screen and (max-width:820px){
   .head{display:none}
+  /* The caption goes above its list rather than beside it, so the pairings get
+     the whole measure. A pairing must not break -- the count belongs to the
+     song it terminates, which is the point of setting it that way at all -- so
+     "Bouncing Around the Room 24x" is one unbreakable 240px run, and beside a
+     caption there was not 240px to give it at 375px. */
+  .pairs{grid-template-columns:minmax(0,1fr)}
+  .pair .cap,.pair .ps{grid-column:1}
+  .pair .cap{margin-top:.35rem}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.35rem}
   .nb>span{white-space:normal;overflow:visible}
