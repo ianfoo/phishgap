@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dormant &mdash; Possum Logic</title>
+<meta property="og:type" content="website"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every Phish song that has dropped out of rotation, by the year it was last played."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Dormant &mdash; Possum Logic"><meta property="og:description" content="Every Phish song that has dropped out of rotation, by the year it was last played."><meta property="og:url" content="https://possumlogic.com/dormant.html"><meta property="og:image" content="https://possumlogic.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every Phish song that has dropped out of rotation, by the year it was last played."><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
+<link rel="preload" href="./font/Bagnard.otf" as="font" type="font/otf" crossorigin>
+<link href="./fonts.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
+@media screen and (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
+}
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+:root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled):not(.on){color:var(--ink);
+   border-color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+/* The selected one is already ink-on-paper reversed, so hovering it must not
+   set the text to the colour it is sitting on. It brightens its edge instead. */
+.theme button.on:hover:not(:disabled){color:var(--paper);
+   box-shadow:0 0 0 2px var(--hot)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
+
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
+*{box-sizing:border-box}
+/* The whole scale, pitched one step up from where it started.
+   Ian: "the prose text feels small even by these standards... I feel this way
+   on iPhone and on desktop." He was right, and the figures said so: body was
+   .875rem against a 16px default, so running text set at 14px and the labels
+   -- the size used more than any other on the site, 101 declarations of it --
+   set at 10px.
+   It is stated once, here, rather than as 300 edited declarations. Everything
+   on this site is already sized in rem, so lifting the root lifts all of it in
+   proportion and no two sizes can change their relationship to each other. It
+   is also relative rather than absolute: a reader who has set their browser to
+   20px gets 22.5, not 18.
+   The top of the scale is held rather than lifted -- see the h1 clamps, whose
+   rem endpoints are pulled back by exactly this factor. A wordmark at 64px was
+   never the complaint; a scale should compress at the display end and open up
+   at the reading end, and this one now does both. */
+html{font-size:112.5%}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:.875rem;line-height:1.55}
+/* The measure in rem rather than px, so it travels with the type. Stated as
+   960px it would have held still while the scale went up a step, which quietly
+   shortens every line and tightens every column -- the same page with less room
+   in it. 60rem is the 960px this has always been, at the root above. */
+.wrap{max-width:60rem;margin:0 auto}
+/* clip, not hidden, and the difference is the whole reason this is safe:
+   overflow:hidden would make the body a scroll container and break every
+   position:sticky header on the site, where clip does not.
+
+   It is here because a hidden thing was still taking up room. The show pages'
+   hover tooltip is position:absolute and white-space:nowrap, and it is hidden
+   with visibility:hidden -- which still lays out. That was found once and fixed
+   only for phones, by dropping the tooltip below 620px; above 620px every show
+   page has been scrollable sideways ever since. Measured on the live build at
+   1280px: 1,627px of scroll width, so the page slid 347px into nothing.
+   The general shape is what earns a rule rather than a patch -- an off-screen
+   or invisible decoration extends the scrollable area exactly as a visible one
+   does, and the page it does it to looks completely normal.
+
+   On html as well as body, and that is not belt and braces. An overflow set on
+   body alone is *propagated* to the viewport, and body is then treated as
+   visible -- so `body{overflow-x:clip}` by itself clips nothing, which is
+   exactly what the first attempt at this measured: the rule shipped, the page
+   still scrolled 347px. */
+html,body{overflow-x:clip}
+/* Which of the two lists you are looking at, and the way to the other one.
+   Above the wordmark because that is where a reader looks for it, and because
+   the footer link that used to be the only route was found by nobody. */
+/* Wrapping, with the same row gap the song pages use. This row did not wrap
+   before, and did not need to at five sections: each label simply broke inside
+   itself and the row stayed within the viewport. At six it stopped fitting and
+   the due page ran 401px wide inside a 375px phone -- the whole page scrolling
+   sideways for one nav item. Breaking between labels rather than inside them
+   is what the song pages have always done; the two sheets disagreed only
+   because nothing had ever pushed this one. */
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
+   margin-bottom:1.1rem;
+   font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
+   white-space:nowrap;border-bottom:1px solid var(--rule)}
+.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centred on the label, 24px tall and never
+   narrower than 24px. It sits inside the anchor, so it is the same target.
+   Row gaps below are widened to match: two rows 4.8px apart would have had
+   their 24px areas overlapping, which trades one failure for a worse one. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:clamp(1.7778rem,7vw,3.5556rem);line-height:1.06;margin:0 0 .7rem;
+   letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home, as a wordmark does, without looking like a link. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
+/* A hero card that is also a way in. Only some of them are. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+/* Some of the cards are links and some are not, so the ones that are need to
+   say so -- but a rule under a letterspaced label reads as a stray underline
+   rather than an affordance, and it was the one line in the hero not doing
+   structural work. An arrow after the label carries the same message and
+   disappears into the type. */
+a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+header{padding-bottom:.9rem}
+.show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
+      text-transform:uppercase;color:var(--ink-soft)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+/* Six cards do not fit on one line, and a wrapping flex row gives the first
+   card of the second line a left rule -- which then separates it from the page
+   margin rather than from another card, and leaves its number indented out of
+   line with the wordmark and every row below it. A grid ties both the rule and
+   the flush left edge to a *column position* rather than to wherever the cards
+   happen to wrap, so the stranded rule is impossible instead of relocated. The
+   column count is written by whoever builds the hero, so it cannot disagree
+   with the number of cards actually in it. */
+/* The class names the column count rather than the card count, so a hero that
+   gains or loses a card only has to say how many columns it now wants, and
+   four cards on the song index and six here share one set of rules. The
+   fallback is the four-across the hero had before any of this. */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);margin:.7rem 0 .3rem;
+      border-bottom:1px solid var(--ink)}
+.hero-c3{grid-template-columns:repeat(3,1fr)}
+.hero-c4{grid-template-columns:repeat(4,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
+/* Only above the breakpoint. The narrow layout has always been two columns and
+   already says which cards start a row down there; stating it twice meant the
+   wide rule outranked the narrow one and left card 4 of a six indented half a
+   space out of line with the cards above and below it. Each width states its
+   own row-starts and neither has to undo the other. */
+@media screen and (min-width:621px){
+  .hero-c3>.card:nth-child(3n+1),
+  .hero-c4>.card:nth-child(4n+1){border-left:0;padding-left:0}
+  /* A second row of cards needs a rule over it, or the two rows read as one
+     block with the numbers of the first sitting on the labels of the next. */
+  .hero-c3>.card:nth-child(n+4),
+  .hero-c4>.card:nth-child(n+5){border-top:1px solid var(--rule)}
+}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+     letter-spacing:0;margin-top:auto}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
+   color:var(--dim);margin-bottom:.35rem}
+.tools{margin:1.9rem 0 .9rem}
+/* Two rows rather than one wrapping run. The things you operate -- the search
+   box and the sort -- sit together on the first; the filter chips are a
+   different kind of control and get their own line instead of pushing sort to
+   wherever the chips happen to stop. */
+.tools-main{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem}
+.tools .chips{margin-top:.6rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
+        padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
+        background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.chip:focus-visible,.sort:focus-visible{
+  outline:2px solid var(--hot);outline-offset:1px}
+/* Shown only once there is something to clear. The song page has carried this
+   button for a while; the index only ever had the line of script that hides
+   it, which is why that line referred to an element that was never here. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+      padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
+      color:var(--dim);cursor:pointer}
+.chip:hover{color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* How many shows the era holds, so four chips carry the information the
+   forty years did without the forty buttons. */
+.chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   letter-spacing:0;color:var(--dim);margin-left:.3rem}
+.chip.on .chip-n{color:var(--paper)}
+.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
+      color:var(--ink);border:1px solid var(--edge);border-radius:0}
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);margin-left:auto}
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+         font-size:1rem;color:var(--ink)}
+.reports{list-style:none;margin:0;padding:0}
+/* Geometry shared with the header below, chrome kept separate, so a column
+   that moves moves in both at once rather than in whichever one was edited. */
+.row,.lhead{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;
+     column-gap:1.1rem;align-items:baseline}
+.row{padding:.7rem .25rem;text-decoration:none;
+     color:inherit;border-bottom:1px solid var(--rule-soft)}
+/* The column header these list pages never had, and it stays put.
+
+   A grid rather than a <table>, because every row on these pages is one link
+   and HTML does not let an <a> wrap a <tr>. Show pages get a real table for
+   the opposite reason: their rows carry two destinations -- the song, and the
+   night it was last played -- so the links live in cells and a <tr> is free.
+   The tabular *look* is the same either way; only the markup differs, and it
+   differs for a reason rather than by neglect.
+
+   Opaque, because rows scroll under it. box-shadow rather than border-bottom:
+   a border on a stuck element is drawn at its edge and can be clipped by the
+   row arriving beneath it, and this way the rule never thins. */
+.lhead{position:sticky;top:0;z-index:3;background:var(--paper);
+   padding:.45rem .25rem;font-size:.625rem;text-transform:uppercase;
+   letter-spacing:.14em;color:var(--dim);font-weight:500;
+   box-shadow:inset 0 -1px 0 var(--rule)}
+/* The figures column is its own sub-grid on the row, so the header's must be
+   the same one or the labels sit over the wrong numbers. Taking .r-stats
+   wholesale would bring its 12px reading size with it. */
+.lhead .r-stats{font-size:inherit;color:inherit;line-height:inherit}
+.lhead .end{text-align:right}
+@media print{.lhead{position:static}}
+/* A sticky strip at the top of the viewport is what puts an anchor target
+   underneath it. Stated once for every id on these pages rather than per
+   anchor, so a new one cannot be the thing that finds this out. */
+[id]{scroll-margin-top:2.6rem}
+.row:hover{background:var(--hover)}
+/* Same rule, same reason: this is the one place the site still spoke two
+   languages, since the song pages had already moved. */
+/* Data in a column, so the mono: tabular by construction, which is what makes
+   710 dates present one edge to the venue beside them rather than a soft
+   ragged one. The display face keeps the mastheads, where a date is the name
+   of the page rather than a value in a list. */
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+        font-size:1rem;line-height:1.3rem;white-space:nowrap}
+.r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
+         line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+/* Deliberately not a report row. These are on file, not on the bill: smaller,
+   dimmer, no figures, and below the empty-search message so a search matching
+   nothing cannot look as though it matched these. */
+/* The due list. Same row grammar as the show index -- identity, context,
+   figure -- so the two pages read as the same object seen from two sides. */
+.onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
+   margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
+   border-left:4px solid var(--hot);background:var(--hover)}
+.onstage:hover{background:var(--hot);color:var(--paper)}
+.onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text);font-weight:600}
+.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
+.onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
+.onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
+   text-transform:none;letter-spacing:0}
+.onstage .n{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+.due{list-style:none;margin:0;padding:0}
+.due li{border-bottom:1px solid var(--rule-soft)}
+.due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
+   column-gap:1.1rem;align-items:baseline}
+.due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
+.due .row:hover{background:var(--hover)}
+.d-song{font-size:1rem;font-weight:500}
+.due .row:hover .d-song{color:var(--hot)}
+.d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;white-space:nowrap}
+.d-where{display:block;color:var(--dim);font-size:.75rem}
+.d-n{text-align:right}
+.d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
+.d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.d-n .typ span{display:block;white-space:nowrap}
+/* Same rule the song pages carry, and it has to be stated here too because
+   this sheet does not include theirs. It was missing entirely, so the due and
+   venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
+   while the identical class on a song page was 12px and dim. One class, two
+   appearances, by accident. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 16;
+   color:var(--dim);max-width:56ch}
+/* And its links, which is the fifth time a rule has been found living in one
+   sheet of three. This one was in SONG_CSS alone, so the two links in the due
+   page's standfirst -- "slipping" and "on the shelf", both pointing at sections
+   of the page they introduce -- rendered in the browser's default link blue
+   with a browser underline, on the one page on the site that has them. */
+.dek a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.dek.foot{margin-top:1.4rem;max-width:64ch}
+/* A section heading, under the due list. At 1.5rem it was barely larger than
+   the 1rem song titles it headed, which made a new section read as another
+   row. 2.125rem sits clearly between the page title and the data. */
+.shelf-h{margin:3rem 0 .5rem;font-family:'Bagnard',Georgia,serif;
+   font-weight:400;font-size:2.125rem;line-height:1.15;
+   scroll-margin-top:2.6rem}
+.shelf-h+.dek{margin-bottom:1.1rem}
+/* The way back up. This is the fourth place it has been wanted -- the FAQ's
+   answers, and now each section here -- so it is a house idiom rather than a
+   page's own trick: jumping somewhere should never maroon a reader there, and
+   these pages are long. Mono and small: a control, not a sentence. */
+.backtop{margin:1rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative;display:inline-block}
+.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
+/* The venue list borrows the due page's three-column shape because it answers
+   the same shape of question: a name, a when, and one figure worth ranking by.
+   Its own class names, though -- .d-* means "due", and a venue row sharing
+   them would make either page impossible to restyle without the other. */
+.vn{list-style:none;margin:0;padding:0}
+.vn li{border-bottom:1px solid var(--rule-soft)}
+.vn .row,.lhead.vn-h{display:grid;grid-template-columns:1fr 12rem 7rem;
+   column-gap:1.1rem;align-items:baseline}
+.vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
+.vn .row:hover{background:var(--hover)}
+.vn-venue{font-size:1rem;font-weight:500}
+.vn .row:hover .vn-venue{color:var(--hot)}
+.vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
+.vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
+   color:var(--dim);white-space:nowrap}
+.vn-n{text-align:right}
+.vn-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--ink)}
+.vn-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem;
+   white-space:nowrap}
+@media screen and (max-width:620px){
+  /* "dates", not "span": grid-area:span would be parsed as the span keyword
+     and drop the whole declaration. */
+  /* max-content rather than 5.5rem, and it was the fixed figure that made this
+     worth measuring. 5.5rem was cut to fit "longest 1,468" at the old scale and
+     did not fit it at the new one -- 99px of column for 106px of label -- so
+     the figures column was quietly overflowing its own track. A column asked to
+     be exactly as wide as its content cannot be cut to fit anything. */
+  .vn .row{grid-template-columns:1fr max-content;
+     grid-template-areas:"venue n" "dates n";row-gap:.15rem}
+  .vn-venue{grid-area:venue}
+  .vn-span{grid-area:dates}
+  .vn-n{grid-area:n}
+  .vn-n b{font-size:1.25rem}
+}
+/* Below this the two columns cannot both be honest. The dates are a span --
+   "2009-12-02 -> 2026-07-27", 23 characters of mono that must not break, since
+   a date split across a line is unreadable and the arrow between them would be
+   stranded -- so the left column has a hard floor of about 217px, and the
+   figure wants another 106 beside it. At 320px there are 288 to share. The
+   answer is the one this site already gives everywhere else: stack, and let the
+   rules run the full width, rather than squeeze columns until something is
+   clipped or pushed off the screen. */
+@media screen and (max-width:400px){
+  .vn .row{grid-template-columns:1fr;
+     grid-template-areas:"venue" "dates" "n";row-gap:.2rem}
+  .vn-n{text-align:left}
+  .vn-n .typ{display:inline;margin-left:.5rem}
+}
+@media screen and (max-width:620px){
+  /* 5.5rem held one number. It now holds that number and the multiple the
+     list is ordered by, which wraps to two lines here rather than being
+     dropped -- the order is the point of the page at any width. */
+  .due .row{grid-template-columns:1fr 7rem;grid-template-areas:"song n" "last n";
+     row-gap:.15rem}
+  .d-song{grid-area:song}
+  .d-last{grid-area:last}
+  .d-n{grid-area:n}
+  .d-n > b{font-size:1.25rem}
+}
+.aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
+.aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin:0 0 .3rem;font-weight:400}
+.aside>p{margin:0 0 .7rem;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside ol{list-style:none;margin:0;padding:0}
+.aside li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+   padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
+.ax-row{display:contents;color:inherit;text-decoration:none}
+.ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
+   border-bottom:1px solid var(--rule)}
+a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
+.ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+.ax-venue{color:var(--dim)}
+.aside .for{color:var(--dim)}
+.aside .for a{color:inherit}
+/* A grid, not a right-aligned sentence. Right-alignment pins only the right
+   edge; every figure to the left of it still moved row to row with the width
+   of the numbers beside it. */
+.r-stats{font-size:.75rem;color:var(--dim);line-height:1.3rem;
+         display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
+         justify-items:end;column-gap:.6rem}
+.r-stats .st{white-space:nowrap}
+/* Tabular numerals do the aligning; the widths these used to be given by hand
+   were a workaround for not having asked the face for them. */
+.r-stats .st b{display:inline-block;text-align:right}
+.r-stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+           font-size:1rem;color:var(--ink)}
+.r-stats b.hot{color:var(--hot-text)}
+/* A show still being played, said in the one place on the row where the
+   number it qualifies already is: 24 songs means something different
+   tonight than it will tomorrow. */
+.live-tag{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+/* The song that held the longest gap, under the figures it belongs to. Named
+   for what it is: ".r-song" also means "the song this row is about" on the
+   song index, which inherits this stylesheet, and one grid-column rule meant
+   for this was enough to wreck that. */
+.r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
+   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);display:flex;justify-content:space-between;
+       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+@media screen{
+}
+/* Same lesson as the report tables: stack instead of squeezing columns, so
+   the rules still run the full width and nothing has to be hidden. */
+@media screen and (max-width:620px){
+  /* Every list row stacks into one column here and the due and venue rows
+     take a two-column area layout, so there are no columns left for a column
+     header to label. It goes rather than pretending: a header standing over
+     stacked rows is a claim about an alignment that is not there. The song
+     pages already hide their .head below 820px for the same reason.
+
+     All three selectors named, not just `.lhead`. The due and venue headers
+     are matched by `.lhead.due-h` and `.lhead.vn-h`, two classes against one,
+     so a bare `.lhead{display:none}` loses on specificity and both pages kept
+     a three-column header over two-column rows. Measured, not assumed: the
+     rule was written, the media query was active at 440px, and the computed
+     display was still `grid`. */
+  .lhead,.lhead.due-h,.lhead.vn-h{display:none}
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
+  .r-stats{display:block;text-align:left;white-space:normal}
+  .r-stats .st{display:inline;white-space:normal}
+  /* Before each but the first, never after: the last .st is not the last
+     child -- the song name follows it -- so a trailing separator was left
+     stranded at the end of the line with the name wrapped beneath it. */
+  .r-stats .st:empty{display:none}
+  /* --dim, not --rule: rule is a hairline colour and a glyph drawn in it is
+     invisible on the dark paper, the way the separators were. */
+  .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\00b7";
+    color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
+  .r-stats .st b{min-width:0!important;text-align:left}
+  /* white-space, and it is the reason this rule is three declarations rather
+     than two. The wide layout gives .r-top a column of its own and clips the
+     overflow with an ellipsis, so nowrap is right up there. Down here it is an
+     inline run inside a paragraph, and nowrap made one row as wide as its
+     longest song title: "She Caught the Katy and Left Me a Mule to Ride" is 45
+     characters, which is 344px of mono at the old size and 389px at the new
+     one. The index was six pixels from scrolling sideways at 375px before the
+     scale went up a step, and 33 past it afterwards -- so the type change did
+     not cause this, it collected on it. */
+  .r-top{text-align:left;display:inline;white-space:normal}
+  .r-top::before{content:" ("}
+  .r-top::after{content:")"}
+  /* Two across, whatever the wide layout asked for. The flex basis that used
+     to be here stopped meaning anything when the hero became a grid. */
+  .hero-c3,.hero-c4{grid-template-columns:repeat(2,1fr)}
+  .card{padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  .show{font-size:.75rem;letter-spacing:0}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+
+/* One list with the years marked inside it, rather than eighteen lists. A
+   heading that is a row of the same ordered list keeps one column header, one
+   set of grid tracks, and one thing for a reader to scroll. */
+.yr{display:flex;align-items:baseline;gap:.7rem;
+   margin:1.8rem 0 .2rem;padding:0 .25rem .35rem;
+   border-bottom:1px solid var(--ink)}
+.yr:first-child{margin-top:.4rem}
+.yr h2{margin:0;font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.75rem;line-height:1;letter-spacing:-.01em;color:var(--ink)}
+.yr .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+/* Pushed to the right so the count and the way back sit at the two ends of the
+   rule, and the year has the left edge to itself. */
+.yr .up{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative}
+.yr .up::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+.yr .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The years, as a strip. Generated from the same grouping as the headings
+   below, so it cannot offer a year the page does not hold. */
+.years{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+.years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
+   line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
+   color:var(--ink-soft);text-decoration:none;white-space:nowrap}
+.years a:hover{color:var(--hot);border-color:var(--hot)}
+.years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
+/* The span of a song's life, which is the one figure a dormant song has that a
+   due song does not need: it was around from here to here, and then it was not. */
+.d-n .span{font-variant-numeric:tabular-nums}
+/* In ink, not in the accent. The due page sets its figure hot because it is
+   the thing the page is sounding an alarm about and the order the list is in.
+   Here the figure is neither: the list is ordered by year, and a play count is
+   a description rather than a warning. A page of 284 rows all shouting in the
+   accent colour spends it on everything and therefore on nothing. */
+.due.dormant .d-n > b{color:var(--ink)}
+</style><script>
+(function(){
+  // Deliberately not renamed: this is a private key in a reader's own
+  // browser, and changing it would silently reset the light/dark choice
+  // of everyone who has ever set one, to rename a string nobody sees.
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script><script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function start(){
+    var els=[].slice.call(document.querySelectorAll('time.ago'));
+    if(!els.length) return;
+    function tick(){
+      var now=Date.now();
+      els.forEach(function(e){
+        var t=Date.parse(e.getAttribute('datetime'));
+        if(!isNaN(t)) e.textContent=say((now-t)/1000);
+      });
+    }
+    tick();
+    setInterval(tick,20000);
+  }
+  /* This ships in the head, so on a first load it runs before the body it is
+     looking for exists: querySelectorAll found nothing, the function returned,
+     and every reader saw the bare 03:41 UTC fallback the markup carries for
+     readers with no JavaScript at all. The stamp has been a clock reading on
+     every live page since it was written. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script><script>
+/* Which rows are new since this reader last looked. A reload of a growing
+   setlist otherwise gives a longer table and no clue what changed, so finding
+   the new part means re-reading the whole thing -- which is why the tab gets
+   closed. The count last seen is kept in this browser only; nothing is sent
+   anywhere and nothing is stored server-side. */
+(function(){
+  function start(){
+    var live=document.querySelector('.live');
+    if(!live||!window.localStorage) return;
+    var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+    if(!rows.length) return;
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
+    var seen=parseInt(localStorage.getItem(key)||'0',10);
+    if(seen>0&&rows.length>seen){
+      rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
+      var n=rows.length-seen;
+      var tag=document.createElement('span');
+      tag.className='since-you';
+      tag.textContent=n+' new since you last looked';
+      live.appendChild(tag);
+    }
+    try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+  }
+  /* Same trap as the relative stamp beside it: this ships in the head, so it
+     ran before .live or a single row existed and returned every time. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script></head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb sections"><span class="mark">Possum Logic</span>
+<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></nav>
+<div class="rule2"></div>
+<header><h1>Dormant</h1>
+<p class="show">284 songs the band has stopped playing</p>
+<p class="dek">The fourth list on <a href="./due.html">what&rsquo;s due</a>, and
+the longest by some way. A song is dormant here when it has been gone
+100 shows or more <em>and</em> has fewer than 8 performances inside the
+last 10 years &mdash; so there is no habit left to be late against, and
+nothing to rank it by. That is the whole reason it needs a page rather than a
+place in a list: every other song on this site is ordered by how far past its
+own norm it is, and these have no norm.</p>
+<p class="dek">So they are ordered by when you last heard one, newest first,
+and within a year by how often the band played it. A song near the top of a
+year was a staple that stopped; a song near the bottom was played once. Both
+are here, because the difference between them is exactly what is interesting.</p>
+<p class="dek">None of this is a prediction. A dormant song coming back is a
+bustout, and the archive is full of them &mdash; that is what makes this list
+worth reading rather than a graveyard.</p>
+<nav class="years" aria-label="Years on this page"><a href='#y2024' aria-label='2024, 3 songs'>2024<b>3</b></a><a href='#y2023' aria-label='2023, 25 songs'>2023<b>25</b></a><a href='#y2022' aria-label='2022, 18 songs'>2022<b>18</b></a><a href='#y2021' aria-label='2021, 24 songs'>2021<b>24</b></a><a href='#y2020' aria-label='2020, 7 songs'>2020<b>7</b></a><a href='#y2019' aria-label='2019, 24 songs'>2019<b>24</b></a><a href='#y2018' aria-label='2018, 11 songs'>2018<b>11</b></a><a href='#y2017' aria-label='2017, 24 songs'>2017<b>24</b></a><a href='#y2016' aria-label='2016, 29 songs'>2016<b>29</b></a><a href='#y2015' aria-label='2015, 7 songs'>2015<b>7</b></a><a href='#y2014' aria-label='2014, 9 songs'>2014<b>9</b></a><a href='#y2013' aria-label='2013, 12 songs'>2013<b>12</b></a><a href='#y2012' aria-label='2012, 13 songs'>2012<b>13</b></a><a href='#y2011' aria-label='2011, 14 songs'>2011<b>14</b></a><a href='#y2010' aria-label='2010, 34 songs'>2010<b>34</b></a><a href='#y2009' aria-label='2009, 28 songs'>2009<b>28</b></a><a href='#y2000' aria-label='2000, 1 song'>2000<b>1</b></a><a href='#y1994' aria-label='1994, 1 song'>1994<b>1</b></a></nav></header>
+<section class="hero hero-c4"><div class='card'><div class='lbl'>Songs</div><div class='num'>284</div></div><a class='card' href='#uncle-pen'><div class='lbl'>Most played</div><div class='num'>212</div></a><a class='card' href='#midnight-rider'><div class='lbl'>Longest gone</div><div class='num hot'>1,234</div></a><div class='card'><div class='lbl'>Played once</div><div class='num'>126</div></div></section>
+<div class="rule2"></div>
+<div class="lhead due-h"><span>Song</span>
+<span>Last played</span><span class="end">Times played</span></div>
+<ol class="due dormant" id="main" tabindex="-1">
+<li class='yr' id='y2024'><h2>2024</h2><span class='n'>3 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='sanity' href='./song/sanity.html'><span class='d-song'>Sanity</span><span class='d-last'><span class='d-date'>2024-02-24</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>45&times;</b><span class='typ'><span>112 shows since</span><span class='span'>1986&ndash;2024</span></span></span></a></li>
+<li><a class='row' id='the-connection' href='./song/the-connection.html'><span class='d-song'>The Connection</span><span class='d-last'><span class='d-date'>2024-07-21</span><span class='d-where'>Mansfield, MA</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>105 shows since</span><span class='span'>2009&ndash;2024</span></span></span></a></li>
+<li><a class='row' id='chalk-dust-torture-reprise' href='./song/chalk-dust-torture-reprise.html'><span class='d-song'>Chalk Dust Torture Reprise</span><span class='d-last'><span class='d-date'>2024-02-24</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>112 shows since</span><span class='span'>1994&ndash;2024</span></span></span></a></li>
+<li class='yr' id='y2023'><h2>2023</h2><span class='n'>25 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='alumni-blues' href='./song/alumni-blues.html'><span class='d-song'>Alumni Blues</span><span class='d-last'><span class='d-date'>2023-07-12</span><span class='d-where'>Huntsville, AL</span></span><span class='d-n'><b>112&times;</b><span class='typ'><span>151 shows since</span><span class='span'>1985&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='letter-to-jimmy-page' href='./song/letter-to-jimmy-page.html'><span class='d-song'>Letter to Jimmy Page</span><span class='d-last'><span class='d-date'>2023-07-12</span><span class='d-where'>Huntsville, AL</span></span><span class='d-n'><b>97&times;</b><span class='typ'><span>151 shows since</span><span class='span'>1985&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='harpua' href='./song/harpua.html'><span class='d-song'>Harpua</span><span class='d-last'><span class='d-date'>2023-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>66&times;</b><span class='typ'><span>116 shows since</span><span class='span'>1987&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='cracklin-rosie' href='./song/cracklin-rosie.html'><span class='d-song'>Cracklin’ Rosie</span><span class='d-last'><span class='d-date'>2023-07-29</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>51&times;</b><span class='typ'><span>139 shows since</span><span class='span'>1992&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='corinna' href='./song/corinna.html'><span class='d-song'>Corinna</span><span class='d-last'><span class='d-date'>2023-10-14</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>31&times;</b><span class='typ'><span>121 shows since</span><span class='span'>1987&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='happy-birthday-to-you' href='./song/happy-birthday-to-you.html'><span class='d-song'>Happy Birthday to You</span><span class='d-last'><span class='d-date'>2023-07-23</span><span class='d-where'>Syracuse, NY</span></span><span class='d-n'><b>22&times;</b><span class='typ'><span>143 shows since</span><span class='span'>1983&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='albuquerque' href='./song/albuquerque.html'><span class='d-song'>Albuquerque</span><span class='d-last'><span class='d-date'>2023-10-13</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>17&times;</b><span class='typ'><span>122 shows since</span><span class='span'>1998&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='talk' href='./song/talk.html'><span class='d-song'>Talk</span><span class='d-last'><span class='d-date'>2023-10-13</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>16&times;</b><span class='typ'><span>122 shows since</span><span class='span'>1996&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='all-of-these-dreams' href='./song/all-of-these-dreams.html'><span class='d-song'>All of These Dreams</span><span class='d-last'><span class='d-date'>2023-04-17</span><span class='d-where'>Berkeley, CA</span></span><span class='d-n'><b>15&times;</b><span class='typ'><span>158 shows since</span><span class='span'>2003&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='beauty-of-a-broken-heart' href='./song/beauty-of-a-broken-heart.html'><span class='d-song'>Beauty of a Broken Heart</span><span class='d-last'><span class='d-date'>2023-10-08</span><span class='d-where'>Nashville, TN</span></span><span class='d-n'><b>15&times;</b><span class='typ'><span>125 shows since</span><span class='span'>2009&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='cool-it-down' href='./song/cool-it-down.html'><span class='d-song'>Cool It Down</span><span class='d-last'><span class='d-date'>2023-04-19</span><span class='d-where'>Berkeley, CA</span></span><span class='d-n'><b>12&times;</b><span class='typ'><span>156 shows since</span><span class='span'>1998&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='olivias-pool' href='./song/olivias-pool.html'><span class='d-song'>Olivia’s Pool</span><span class='d-last'><span class='d-date'>2023-04-18</span><span class='d-where'>Berkeley, CA</span></span><span class='d-n'><b>10&times;</b><span class='typ'><span>157 shows since</span><span class='span'>1997&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='torn-and-frayed' href='./song/torn-and-frayed.html'><span class='d-song'>Torn and Frayed</span><span class='d-last'><span class='d-date'>2023-10-06</span><span class='d-where'>Nashville, TN</span></span><span class='d-n'><b>10&times;</b><span class='typ'><span>127 shows since</span><span class='span'>2009&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='cool-amber-and-mercury' href='./song/cool-amber-and-mercury.html'><span class='d-song'>Cool Amber and Mercury</span><span class='d-last'><span class='d-date'>2023-10-10</span><span class='d-where'>Dayton, OH</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>124 shows since</span><span class='span'>2018&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='cinnamon-girl' href='./song/cinnamon-girl.html'><span class='d-song'>Cinnamon Girl</span><span class='d-last'><span class='d-date'>2023-10-08</span><span class='d-where'>Nashville, TN</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>125 shows since</span><span class='span'>1989&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='dont-doubt-me' href='./song/dont-doubt-me.html'><span class='d-song'>Don’t Doubt Me</span><span class='d-last'><span class='d-date'>2023-09-02</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>129 shows since</span><span class='span'>2021&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='evening-song' href='./song/evening-song.html'><span class='d-song'>Evening Song</span><span class='d-last'><span class='d-date'>2023-07-28</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>140 shows since</span><span class='span'>2019&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='clear-your-mind' href='./song/clear-your-mind.html'><span class='d-song'>Clear Your Mind</span><span class='d-last'><span class='d-date'>2023-07-22</span><span class='d-where'>Burgettstown, PA</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>144 shows since</span><span class='span'>2021&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='everything-is-hollow' href='./song/everything-is-hollow.html'><span class='d-song'>Everything is Hollow</span><span class='d-last'><span class='d-date'>2023-10-15</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>120 shows since</span><span class='span'>2018&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='casual-enlightenment' href='./song/casual-enlightenment.html'><span class='d-song'>Casual Enlightenment</span><span class='d-last'><span class='d-date'>2023-07-18</span><span class='d-where'>Wilmington, NC</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>147 shows since</span><span class='span'>2021&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='broken-into-pieces' href='./song/broken-into-pieces.html'><span class='d-song'>Broken Into Pieces</span><span class='d-last'><span class='d-date'>2023-10-10</span><span class='d-where'>Dayton, OH</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>124 shows since</span><span class='span'>2023</span></span></span></a></li>
+<li><a class='row' id='the-9th-cube' href='./song/the-9th-cube.html'><span class='d-song'>The 9th Cube</span><span class='d-last'><span class='d-date'>2023-10-10</span><span class='d-where'>Dayton, OH</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>124 shows since</span><span class='span'>2021&ndash;2023</span></span></span></a></li>
+<li><a class='row' id='and-flew-away' href='./song/and-flew-away.html'><span class='d-song'>...And Flew Away</span><span class='d-last'><span class='d-date'>2023-07-14</span><span class='d-where'>Alpharetta, GA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>150 shows since</span><span class='span'>2023</span></span></span></a></li>
+<li><a class='row' id='back-in-the-bubble' href='./song/back-in-the-bubble.html'><span class='d-song'>Back in the Bubble</span><span class='d-last'><span class='d-date'>2023-08-04</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>135 shows since</span><span class='span'>2023</span></span></span></a></li>
+<li><a class='row' id='the-night-the-lights-went-out-in-georgia' href='./song/the-night-the-lights-went-out-in-georgia.html'><span class='d-song'>The Night the Lights Went Out in Georgia</span><span class='d-last'><span class='d-date'>2023-07-16</span><span class='d-where'>Alpharetta, GA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>148 shows since</span><span class='span'>2023</span></span></span></a></li>
+<li class='yr' id='y2022'><h2>2022</h2><span class='n'>18 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='yarmouth-road' href='./song/yarmouth-road.html'><span class='d-song'>Yarmouth Road</span><span class='d-last'><span class='d-date'>2022-07-24</span><span class='d-where'>Hartford, CT</span></span><span class='d-n'><b>32&times;</b><span class='typ'><span>187 shows since</span><span class='span'>2013&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='i-been-around' href='./song/i-been-around.html'><span class='d-song'>I Been Around</span><span class='d-last'><span class='d-date'>2022-07-14</span><span class='d-where'>Mansfield, MA</span></span><span class='d-n'><b>9&times;</b><span class='typ'><span>194 shows since</span><span class='span'>2009&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='shafty' href='./song/shafty.html'><span class='d-song'>Shafty</span><span class='d-last'><span class='d-date'>2022-07-30</span><span class='d-where'>Columbia, MD</span></span><span class='d-n'><b>7&times;</b><span class='typ'><span>183 shows since</span><span class='span'>1998&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='thunderhead' href='./song/thunderhead.html'><span class='d-song'>Thunderhead</span><span class='d-last'><span class='d-date'>2022-09-03</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>7&times;</b><span class='typ'><span>170 shows since</span><span class='span'>2003&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='passing-through' href='./song/passing-through.html'><span class='d-song'>Passing Through</span><span class='d-last'><span class='d-date'>2022-07-19</span><span class='d-where'>Philadelphia, PA</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>191 shows since</span><span class='span'>2018&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='1999' href='./song/1999.html'><span class='d-song'>1999</span><span class='d-last'><span class='d-date'>2022-08-13</span><span class='d-where'>East Troy, WI</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>174 shows since</span><span class='span'>1998&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='fat-man-in-the-bathtub' href='./song/fat-man-in-the-bathtub.html'><span class='d-song'>Fat Man in the Bathtub</span><span class='d-last'><span class='d-date'>2022-02-27</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>207 shows since</span><span class='span'>2010&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='heavy-rotation' href='./song/heavy-rotation.html'><span class='d-song'>Heavy Rotation</span><span class='d-last'><span class='d-date'>2022-09-03</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>170 shows since</span><span class='span'>2015&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='bohemian-rhapsody' href='./song/bohemian-rhapsody.html'><span class='d-song'>Bohemian Rhapsody</span><span class='d-last'><span class='d-date'>2022-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>165 shows since</span><span class='span'>1996&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='i-am-in-miami' href='./song/i-am-in-miami.html'><span class='d-song'>I Am in Miami</span><span class='d-last'><span class='d-date'>2022-05-28</span><span class='d-where'>Orange Beach, AL</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>201 shows since</span><span class='span'>2021&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='jungle-boogie' href='./song/jungle-boogie.html'><span class='d-song'>Jungle Boogie</span><span class='d-last'><span class='d-date'>2022-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>165 shows since</span><span class='span'>2003&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='something-living-here' href='./song/something-living-here.html'><span class='d-song'>Something Living Here</span><span class='d-last'><span class='d-date'>2022-07-27</span><span class='d-where'>Wantagh, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>185 shows since</span><span class='span'>2021&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='strawberry-fields-forever' href='./song/strawberry-fields-forever.html'><span class='d-song'>Strawberry Fields Forever</span><span class='d-last'><span class='d-date'>2022-08-02</span><span class='d-where'>Cuyahoga Falls, OH</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>181 shows since</span><span class='span'>2017&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='the-maker' href='./song/the-maker.html'><span class='d-song'>The Maker</span><span class='d-last'><span class='d-date'>2022-02-24</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>210 shows since</span><span class='span'>1994&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='theme-from-emnew-york-new-yorkem' href='./song/theme-from-emnew-york-new-yorkem.html'><span class='d-song'>Theme from New York, New York</span><span class='d-last'><span class='d-date'>2022-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>165 shows since</span><span class='span'>1997&ndash;2022</span></span></span></a></li>
+<li><a class='row' id='i-cant-get-no-satisfaction' href='./song/i-cant-get-no-satisfaction.html'><span class='d-song'>(I Can’t Get No) Satisfaction</span><span class='d-last'><span class='d-date'>2022-02-25</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>209 shows since</span><span class='span'>2022</span></span></span></a></li>
+<li><a class='row' id='broken-heart-attack' href='./song/broken-heart-attack.html'><span class='d-song'>Broken Heart Attack</span><span class='d-last'><span class='d-date'>2022-08-14</span><span class='d-where'>East Troy, WI</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>173 shows since</span><span class='span'>2022</span></span></span></a></li>
+<li><a class='row' id='so-damn-lucky' href='./song/so-damn-lucky.html'><span class='d-song'>So Damn Lucky</span><span class='d-last'><span class='d-date'>2022-02-24</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>210 shows since</span><span class='span'>2022</span></span></span></a></li>
+<li class='yr' id='y2021'><h2>2021</h2><span class='n'>24 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='brother' href='./song/brother.html'><span class='d-song'>Brother</span><span class='d-last'><span class='d-date'>2021-10-15</span><span class='d-where'>Sacramento, CA</span></span><span class='d-n'><b>60&times;</b><span class='typ'><span>224 shows since</span><span class='span'>1991&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='steep' href='./song/steep.html'><span class='d-song'>Steep</span><span class='d-last'><span class='d-date'>2021-08-28</span><span class='d-where'>George, WA</span></span><span class='d-n'><b>33&times;</b><span class='typ'><span>231 shows since</span><span class='span'>1996&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='swept-away' href='./song/swept-away.html'><span class='d-song'>Swept Away</span><span class='d-last'><span class='d-date'>2021-08-28</span><span class='d-where'>George, WA</span></span><span class='d-n'><b>33&times;</b><span class='typ'><span>231 shows since</span><span class='span'>1996&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='bittersweet-motel' href='./song/bittersweet-motel.html'><span class='d-song'>Bittersweet Motel</span><span class='d-last'><span class='d-date'>2021-08-28</span><span class='d-where'>George, WA</span></span><span class='d-n'><b>19&times;</b><span class='typ'><span>231 shows since</span><span class='span'>1998&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='time-turns-elastic' href='./song/time-turns-elastic.html'><span class='d-song'>Time Turns Elastic</span><span class='d-last'><span class='d-date'>2021-12-31</span><span class='d-where'>Lititz, PA</span></span><span class='d-n'><b>18&times;</b><span class='typ'><span>211 shows since</span><span class='span'>2009&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='shaggy-dog' href='./song/shaggy-dog.html'><span class='d-song'>Shaggy Dog</span><span class='d-last'><span class='d-date'>2021-10-30</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>17&times;</b><span class='typ'><span>213 shows since</span><span class='span'>1986&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='how-many-people-are-you' href='./song/how-many-people-are-you.html'><span class='d-song'>How Many People Are You</span><span class='d-last'><span class='d-date'>2021-08-29</span><span class='d-where'>George, WA</span></span><span class='d-n'><b>10&times;</b><span class='typ'><span>230 shows since</span><span class='span'>2015&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='no2' href='./song/no2.html'><span class='d-song'>NO2</span><span class='d-last'><span class='d-date'>2021-10-28</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>9&times;</b><span class='typ'><span>215 shows since</span><span class='span'>1994&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='two-versions-of-me' href='./song/two-versions-of-me.html'><span class='d-song'>Two Versions of Me</span><span class='d-last'><span class='d-date'>2021-10-28</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>215 shows since</span><span class='span'>2003&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='bye-bye-foot' href='./song/bye-bye-foot.html'><span class='d-song'>Bye Bye Foot</span><span class='d-last'><span class='d-date'>2021-10-23</span><span class='d-where'>Chula Vista, CA</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>218 shows since</span><span class='span'>1997&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='you-sexy-thing' href='./song/you-sexy-thing.html'><span class='d-song'>You Sexy Thing</span><span class='d-last'><span class='d-date'>2021-08-11</span><span class='d-where'>Hershey, PA</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>236 shows since</span><span class='span'>2017&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='baby-lemonade' href='./song/baby-lemonade.html'><span class='d-song'>Baby Lemonade</span><span class='d-last'><span class='d-date'>2021-12-31</span><span class='d-where'>Lititz, PA</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>211 shows since</span><span class='span'>1992&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='bliss' href='./song/bliss.html'><span class='d-song'>Bliss</span><span class='d-last'><span class='d-date'>2021-09-05</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>225 shows since</span><span class='span'>2018&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='end-of-session' href='./song/end-of-session.html'><span class='d-song'>End of Session</span><span class='d-last'><span class='d-date'>2021-10-20</span><span class='d-where'>Eugene, OR</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>220 shows since</span><span class='span'>2017&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='five-years' href='./song/five-years.html'><span class='d-song'>Five Years</span><span class='d-last'><span class='d-date'>2021-10-28</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>215 shows since</span><span class='span'>2016&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='la-woman' href='./song/la-woman.html'><span class='d-song'>L.A. Woman</span><span class='d-last'><span class='d-date'>2021-10-24</span><span class='d-where'>Inglewood, CA</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>217 shows since</span><span class='span'>2003&ndash;2021</span></span></span></a></li>
+<li><a class='row' id='and-so-to-bed' href='./song/and-so-to-bed.html'><span class='d-song'>And So To Bed</span><span class='d-last'><span class='d-date'>2021-10-15</span><span class='d-where'>Sacramento, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>224 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li><a class='row' id='get-more-down' href='./song/get-more-down.html'><span class='d-song'>Get More Down</span><span class='d-last'><span class='d-date'>2021-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>212 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li><a class='row' id='i-never-left-home' href='./song/i-never-left-home.html'><span class='d-song'>I Never Left Home</span><span class='d-last'><span class='d-date'>2021-10-19</span><span class='d-where'>Eugene, OR</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>221 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li><a class='row' id='if-6-was-9' href='./song/if-6-was-9.html'><span class='d-song'>If 6 Was 9</span><span class='d-last'><span class='d-date'>2021-10-28</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>215 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li><a class='row' id='thanksgiving' href='./song/thanksgiving.html'><span class='d-song'>Thanksgiving</span><span class='d-last'><span class='d-date'>2021-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>212 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li><a class='row' id='the-inner-reaches-of-outer' href='./song/the-inner-reaches-of-outer.html'><span class='d-song'>The Inner Reaches of Outer</span><span class='d-last'><span class='d-date'>2021-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>212 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li><a class='row' id='the-silver-light' href='./song/the-silver-light.html'><span class='d-song'>The Silver Light</span><span class='d-last'><span class='d-date'>2021-10-26</span><span class='d-where'>Santa Barbara, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>216 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li><a class='row' id='the-unwinding' href='./song/the-unwinding.html'><span class='d-song'>The Unwinding</span><span class='d-last'><span class='d-date'>2021-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>212 shows since</span><span class='span'>2021</span></span></span></a></li>
+<li class='yr' id='y2020'><h2>2020</h2><span class='n'>7 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='manteca' href='./song/manteca.html'><span class='d-song'>Manteca</span><span class='d-last'><span class='d-date'>2020-02-22</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>15&times;</b><span class='typ'><span>248 shows since</span><span class='span'>1990&ndash;2020</span></span></span></a></li>
+<li><a class='row' id='sweet-jane' href='./song/sweet-jane.html'><span class='d-song'>Sweet Jane</span><span class='d-last'><span class='d-date'>2020-02-22</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>248 shows since</span><span class='span'>1998&ndash;2020</span></span></span></a></li>
+<li><a class='row' id='sea-and-sand' href='./song/sea-and-sand.html'><span class='d-song'>Sea and Sand</span><span class='d-last'><span class='d-date'>2020-02-21</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>249 shows since</span><span class='span'>1995&ndash;2020</span></span></span></a></li>
+<li><a class='row' id='shake-your-coconuts' href='./song/shake-your-coconuts.html'><span class='d-song'>Shake Your Coconuts</span><span class='d-last'><span class='d-date'>2020-02-20</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>250 shows since</span><span class='span'>2017&ndash;2020</span></span></span></a></li>
+<li><a class='row' id='shipwreck' href='./song/shipwreck.html'><span class='d-song'>Shipwreck</span><span class='d-last'><span class='d-date'>2020-02-20</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>250 shows since</span><span class='span'>2014&ndash;2020</span></span></span></a></li>
+<li><a class='row' id='victim' href='./song/victim.html'><span class='d-song'>Victim</span><span class='d-last'><span class='d-date'>2020-02-20</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>250 shows since</span><span class='span'>2019&ndash;2020</span></span></span></a></li>
+<li><a class='row' id='willin' href='./song/willin.html'><span class='d-song'>Willin’</span><span class='d-last'><span class='d-date'>2020-02-22</span><span class='d-where'>Cancun, Quintana Roo</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>248 shows since</span><span class='span'>2010&ndash;2020</span></span></span></a></li>
+<li class='yr' id='y2019'><h2>2019</h2><span class='n'>24 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='terrapin' href='./song/terrapin.html'><span class='d-song'>Terrapin</span><span class='d-last'><span class='d-date'>2019-12-04</span><span class='d-where'>Pittsburgh, PA</span></span><span class='d-n'><b>66&times;</b><span class='typ'><span>258 shows since</span><span class='span'>1987&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='hello-my-baby' href='./song/hello-my-baby.html'><span class='d-song'>Hello My Baby</span><span class='d-last'><span class='d-date'>2019-12-03</span><span class='d-where'>Philadelphia, PA</span></span><span class='d-n'><b>57&times;</b><span class='typ'><span>259 shows since</span><span class='span'>1995&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='the-ballad-of-curtis-loew' href='./song/the-ballad-of-curtis-loew.html'><span class='d-song'>The Ballad of Curtis Loew</span><span class='d-last'><span class='d-date'>2019-12-30</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>47&times;</b><span class='typ'><span>252 shows since</span><span class='span'>1987&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='quinn-the-eskimo-the-mighty-quinn' href='./song/quinn-the-eskimo-the-mighty-quinn.html'><span class='d-song'>Quinn the Eskimo (The Mighty Quinn)</span><span class='d-last'><span class='d-date'>2019-06-28</span><span class='d-where'>Camden, NJ</span></span><span class='d-n'><b>38&times;</b><span class='typ'><span>277 shows since</span><span class='span'>1985&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='mexican-cousin' href='./song/mexican-cousin.html'><span class='d-song'>Mexican Cousin</span><span class='d-last'><span class='d-date'>2019-07-06</span><span class='d-where'>Boston, MA</span></span><span class='d-n'><b>15&times;</b><span class='typ'><span>271 shows since</span><span class='span'>2003&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='things-people-do' href='./song/things-people-do.html'><span class='d-song'>Things People Do</span><span class='d-last'><span class='d-date'>2019-07-09</span><span class='d-where'>Uncasville, CT</span></span><span class='d-n'><b>9&times;</b><span class='typ'><span>270 shows since</span><span class='span'>2016&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='after-midnight' href='./song/after-midnight.html'><span class='d-song'>After Midnight</span><span class='d-last'><span class='d-date'>2019-12-08</span><span class='d-where'>North Charleston, SC</span></span><span class='d-n'><b>7&times;</b><span class='typ'><span>255 shows since</span><span class='span'>1999&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='home' href='./song/home.html'><span class='d-song'>Home</span><span class='d-last'><span class='d-date'>2019-07-02</span><span class='d-where'>Saratoga Springs, NY</span></span><span class='d-n'><b>7&times;</b><span class='typ'><span>274 shows since</span><span class='span'>2016&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='emotional-rescue' href='./song/emotional-rescue.html'><span class='d-song'>Emotional Rescue</span><span class='d-last'><span class='d-date'>2019-02-22</span><span class='d-where'>Riviera Maya, Quintana Roo</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>290 shows since</span><span class='span'>1997&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='frost' href='./song/frost.html'><span class='d-song'>Frost</span><span class='d-last'><span class='d-date'>2019-12-08</span><span class='d-where'>North Charleston, SC</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>255 shows since</span><span class='span'>2013&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='stray-dog' href='./song/stray-dog.html'><span class='d-song'>Stray Dog</span><span class='d-last'><span class='d-date'>2019-09-01</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>263 shows since</span><span class='span'>2018&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='play-by-play' href='./song/play-by-play.html'><span class='d-song'>Play by Play</span><span class='d-last'><span class='d-date'>2019-06-25</span><span class='d-where'>Bangor, ME</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>279 shows since</span><span class='span'>2018&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='cant-always-listen' href='./song/cant-always-listen.html'><span class='d-song'>Can’t Always Listen</span><span class='d-last'><span class='d-date'>2019-08-30</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>265 shows since</span><span class='span'>2015&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='who-loves-the-sun' href='./song/who-loves-the-sun.html'><span class='d-song'>Who Loves the Sun?</span><span class='d-last'><span class='d-date'>2019-02-21</span><span class='d-where'>Riviera Maya, Quintana Roo</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>291 shows since</span><span class='span'>1998&ndash;2019</span></span></span></a></li>
+<li><a class='row' id='20-20-vision' href='./song/20-20-vision.html'><span class='d-song'>20-20 Vision</span><span class='d-last'><span class='d-date'>2019-12-28</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>254 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='cathys-clown' href='./song/cathys-clown.html'><span class='d-song'>Cathy’s Clown</span><span class='d-last'><span class='d-date'>2019-07-02</span><span class='d-where'>Saratoga Springs, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>274 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='friend' href='./song/friend.html'><span class='d-song'>Friend</span><span class='d-last'><span class='d-date'>2019-06-22</span><span class='d-where'>Columbia, MD</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>281 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='ghosts-of-the-forest' href='./song/ghosts-of-the-forest.html'><span class='d-song'>Ghosts of the Forest</span><span class='d-last'><span class='d-date'>2019-12-04</span><span class='d-where'>Pittsburgh, PA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>258 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='gloria-branigan' href='./song/gloria-branigan.html'><span class='d-song'>Gloria</span><span class='d-last'><span class='d-date'>2019-06-12</span><span class='d-where'>St. Louis, MO</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>287 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='halfway-home' href='./song/halfway-home.html'><span class='d-song'>Halfway Home</span><span class='d-last'><span class='d-date'>2019-06-23</span><span class='d-where'>Columbia, MD</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>280 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='maybe' href='./song/maybe.html'><span class='d-song'>Maybe</span><span class='d-last'><span class='d-date'>2019-11-29</span><span class='d-where'>Providence, RI</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>262 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='rescue-squad' href='./song/rescue-squad.html'><span class='d-song'>Rescue Squad</span><span class='d-last'><span class='d-date'>2019-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>251 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='send-in-the-clowns' href='./song/send-in-the-clowns.html'><span class='d-song'>Send in the Clowns</span><span class='d-last'><span class='d-date'>2019-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>251 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li><a class='row' id='wider' href='./song/wider.html'><span class='d-song'>Wider</span><span class='d-last'><span class='d-date'>2019-07-09</span><span class='d-where'>Uncasville, CT</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>270 shows since</span><span class='span'>2019</span></span></span></a></li>
+<li class='yr' id='y2018'><h2>2018</h2><span class='n'>11 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='bike' href='./song/bike.html'><span class='d-song'>Bike</span><span class='d-last'><span class='d-date'>2018-11-02</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>42&times;</b><span class='typ'><span>297 shows since</span><span class='span'>1987&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='skin-it-back' href='./song/skin-it-back.html'><span class='d-song'>Skin It Back</span><span class='d-last'><span class='d-date'>2018-10-21</span><span class='d-where'>Hampton, VA</span></span><span class='d-n'><b>14&times;</b><span class='typ'><span>305 shows since</span><span class='span'>1986&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='mellow-mood' href='./song/mellow-mood.html'><span class='d-song'>Mellow Mood</span><span class='d-last'><span class='d-date'>2018-09-02</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>10&times;</b><span class='typ'><span>310 shows since</span><span class='span'>2000&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='waking-up-dead' href='./song/waking-up-dead.html'><span class='d-song'>Waking Up Dead</span><span class='d-last'><span class='d-date'>2018-07-25</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>324 shows since</span><span class='span'>2016&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='tide-turns' href='./song/tide-turns.html'><span class='d-song'>Tide Turns</span><span class='d-last'><span class='d-date'>2018-07-28</span><span class='d-where'>Inglewood, CA</span></span><span class='d-n'><b>7&times;</b><span class='typ'><span>322 shows since</span><span class='span'>2016&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='pigtail' href='./song/pigtail.html'><span class='d-song'>Pigtail</span><span class='d-last'><span class='d-date'>2018-07-24</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>325 shows since</span><span class='span'>2010&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='the-birds' href='./song/the-birds.html'><span class='d-song'>The Birds</span><span class='d-last'><span class='d-date'>2018-07-22</span><span class='d-where'>George, WA</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>326 shows since</span><span class='span'>2014&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='mock-song' href='./song/mock-song.html'><span class='d-song'>Mock Song</span><span class='d-last'><span class='d-date'>2018-10-19</span><span class='d-where'>Hampton, VA</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>307 shows since</span><span class='span'>2003&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='glide-ii' href='./song/glide-ii.html'><span class='d-song'>Glide II</span><span class='d-last'><span class='d-date'>2018-12-30</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>293 shows since</span><span class='span'>1995&ndash;2018</span></span></span></a></li>
+<li><a class='row' id='infinite' href='./song/infinite.html'><span class='d-song'>Infinite</span><span class='d-last'><span class='d-date'>2018-08-07</span><span class='d-where'>Camden, NJ</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>317 shows since</span><span class='span'>2018</span></span></span></a></li>
+<li><a class='row' id='keeping-it-real' href='./song/keeping-it-real.html'><span class='d-song'>Keeping It Real</span><span class='d-last'><span class='d-date'>2018-09-02</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>310 shows since</span><span class='span'>2018</span></span></span></a></li>
+<li class='yr' id='y2017'><h2>2017</h2><span class='n'>24 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='uncle-pen' href='./song/uncle-pen.html'><span class='d-song'>Uncle Pen</span><span class='d-last'><span class='d-date'>2017-08-05</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>212&times;</b><span class='typ'><span>339 shows since</span><span class='span'>1990&ndash;2017</span></span></span></a></li>
+<li><a class='row' id='the-very-long-fuse' href='./song/the-very-long-fuse.html'><span class='d-song'>The Very Long Fuse</span><span class='d-last'><span class='d-date'>2017-07-26</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>346 shows since</span><span class='span'>2014&ndash;2017</span></span></span></a></li>
+<li><a class='row' id='dem-bones' href='./song/dem-bones.html'><span class='d-song'>Dem Bones</span><span class='d-last'><span class='d-date'>2017-08-04</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>340 shows since</span><span class='span'>2014&ndash;2017</span></span></span></a></li>
+<li><a class='row' id='in-the-good-old-summer-time' href='./song/in-the-good-old-summer-time.html'><span class='d-song'>In The Good Old Summer Time</span><span class='d-last'><span class='d-date'>2017-07-30</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>343 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='on-the-road-again' href='./song/on-the-road-again.html'><span class='d-song'>On the Road Again</span><span class='d-last'><span class='d-date'>2017-08-06</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>338 shows since</span><span class='span'>2013&ndash;2017</span></span></span></a></li>
+<li><a class='row' id='rock-n-roll-suicide' href='./song/rock-n-roll-suicide.html'><span class='d-song'>Rock ’n’ Roll Suicide</span><span class='d-last'><span class='d-date'>2017-08-01</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>342 shows since</span><span class='span'>2016&ndash;2017</span></span></span></a></li>
+<li><a class='row' id='starman' href='./song/starman.html'><span class='d-song'>Starman</span><span class='d-last'><span class='d-date'>2017-08-06</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>338 shows since</span><span class='span'>2016&ndash;2017</span></span></span></a></li>
+<li><a class='row' id='tuesday' href='./song/tuesday.html'><span class='d-song'>Tuesday</span><span class='d-last'><span class='d-date'>2017-07-25</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>347 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='chocolate-rain' href='./song/chocolate-rain.html'><span class='d-song'>Chocolate Rain</span><span class='d-last'><span class='d-date'>2017-07-28</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>345 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='coconut' href='./song/coconut.html'><span class='d-song'>Coconut</span><span class='d-last'><span class='d-date'>2017-07-21</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>350 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='corona' href='./song/corona.html'><span class='d-song'>Corona</span><span class='d-last'><span class='d-date'>2017-07-15</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>354 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='everything-in-its-right-place' href='./song/everything-in-its-right-place.html'><span class='d-song'>Everything In Its Right Place</span><span class='d-last'><span class='d-date'>2017-08-04</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>340 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='love-is-what-we-are' href='./song/love-is-what-we-are.html'><span class='d-song'>Love Is What We Are</span><span class='d-last'><span class='d-date'>2017-07-14</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>355 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='maple-leaf-rag' href='./song/maple-leaf-rag.html'><span class='d-song'>Maple Leaf Rag</span><span class='d-last'><span class='d-date'>2017-08-01</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>342 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='marissa' href='./song/marissa.html'><span class='d-song'>Marissa</span><span class='d-last'><span class='d-date'>2017-07-19</span><span class='d-where'>Pittsburgh, PA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>351 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='o-canada' href='./song/o-canada.html'><span class='d-song'>O Canada</span><span class='d-last'><span class='d-date'>2017-08-01</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>342 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='o-holy-night' href='./song/o-holy-night.html'><span class='d-song'>O Holy Night</span><span class='d-last'><span class='d-date'>2017-08-02</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>341 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='powderfinger' href='./song/powderfinger.html'><span class='d-song'>Powderfinger</span><span class='d-last'><span class='d-date'>2017-07-26</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>346 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='see-that-my-grave-is-kept-clean' href='./song/see-that-my-grave-is-kept-clean.html'><span class='d-song'>See That My Grave Is Kept Clean</span><span class='d-last'><span class='d-date'>2017-08-04</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>340 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='sunday-morning-velvet' href='./song/sunday-morning-velvet.html'><span class='d-song'>Sunday Morning</span><span class='d-last'><span class='d-date'>2017-07-23</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>348 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='sunshine-of-your-feeling' href='./song/sunshine-of-your-feeling.html'><span class='d-song'>Sunshine of Your Feeling</span><span class='d-last'><span class='d-date'>2017-08-05</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>339 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='the-wind-cries-mary' href='./song/the-wind-cries-mary.html'><span class='d-song'>The Wind Cries Mary</span><span class='d-last'><span class='d-date'>2017-07-30</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>343 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='way-down-in-the-hole' href='./song/way-down-in-the-hole.html'><span class='d-song'>Way Down in the Hole</span><span class='d-last'><span class='d-date'>2017-08-02</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>341 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li><a class='row' id='white-winter-hymnal' href='./song/white-winter-hymnal.html'><span class='d-song'>White Winter Hymnal</span><span class='d-last'><span class='d-date'>2017-07-26</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>346 shows since</span><span class='span'>2017</span></span></span></a></li>
+<li class='yr' id='y2016'><h2>2016</h2><span class='n'>29 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='the-star-spangled-banner' href='./song/the-star-spangled-banner.html'><span class='d-song'>The Star-Spangled Banner</span><span class='d-last'><span class='d-date'>2016-12-28</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>21&times;</b><span class='typ'><span>362 shows since</span><span class='span'>1996&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='demand' href='./song/demand.html'><span class='d-song'>Demand</span><span class='d-last'><span class='d-date'>2016-07-20</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>16&times;</b><span class='typ'><span>383 shows since</span><span class='span'>1994&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='friday' href='./song/friday.html'><span class='d-song'>Friday</span><span class='d-last'><span class='d-date'>2016-10-25</span><span class='d-where'>Grand Prairie, TX</span></span><span class='d-n'><b>13&times;</b><span class='typ'><span>367 shows since</span><span class='span'>2003&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='let-me-lie' href='./song/let-me-lie.html'><span class='d-song'>Let Me Lie</span><span class='d-last'><span class='d-date'>2016-10-15</span><span class='d-where'>North Charleston, SC</span></span><span class='d-n'><b>10&times;</b><span class='typ'><span>374 shows since</span><span class='span'>2009&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='secret-smile' href='./song/secret-smile.html'><span class='d-song'>Secret Smile</span><span class='d-last'><span class='d-date'>2016-12-29</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>9&times;</b><span class='typ'><span>361 shows since</span><span class='span'>2003&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='crimes-of-the-mind' href='./song/crimes-of-the-mind.html'><span class='d-song'>Crimes of the Mind</span><span class='d-last'><span class='d-date'>2016-10-28</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>366 shows since</span><span class='span'>1991&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='lonesome-cowboy-bill' href='./song/lonesome-cowboy-bill.html'><span class='d-song'>Lonesome Cowboy Bill</span><span class='d-last'><span class='d-date'>2016-12-28</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>362 shows since</span><span class='span'>1995&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='mind-left-body-jam' href='./song/mind-left-body-jam.html'><span class='d-song'>Mind Left Body Jam</span><span class='d-last'><span class='d-date'>2016-06-28</span><span class='d-where'>Philadelphia, PA</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>396 shows since</span><span class='span'>1992&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='sing-monica' href='./song/sing-monica.html'><span class='d-song'>Sing Monica</span><span class='d-last'><span class='d-date'>2016-07-20</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>383 shows since</span><span class='span'>2013&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='sleep-again' href='./song/sleep-again.html'><span class='d-song'>Sleep Again</span><span class='d-last'><span class='d-date'>2016-07-16</span><span class='d-where'>George, WA</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>386 shows since</span><span class='span'>2009&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='cry-baby-cry' href='./song/cry-baby-cry.html'><span class='d-song'>Cry Baby Cry</span><span class='d-last'><span class='d-date'>2016-07-20</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>383 shows since</span><span class='span'>1994&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='dear-prudence' href='./song/dear-prudence.html'><span class='d-song'>Dear Prudence</span><span class='d-last'><span class='d-date'>2016-06-29</span><span class='d-where'>Philadelphia, PA</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>395 shows since</span><span class='span'>1994&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='dont-bogart-that-joint' href='./song/dont-bogart-that-joint.html'><span class='d-song'>Don’t Bogart That Joint</span><span class='d-last'><span class='d-date'>2016-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>359 shows since</span><span class='span'>2010&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='friends' href='./song/friends.html'><span class='d-song'>Friends</span><span class='d-last'><span class='d-date'>2016-07-10</span><span class='d-where'>Syracuse, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>388 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='i-found-a-reason' href='./song/i-found-a-reason.html'><span class='d-song'>I Found a Reason</span><span class='d-last'><span class='d-date'>2016-06-22</span><span class='d-where'>St. Paul, MN</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>400 shows since</span><span class='span'>1998&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='lets-go' href='./song/lets-go.html'><span class='d-song'>Let’s Go</span><span class='d-last'><span class='d-date'>2016-10-21</span><span class='d-where'>Alpharetta, GA</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>370 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='running-out-of-time' href='./song/running-out-of-time.html'><span class='d-song'>Running Out of Time</span><span class='d-last'><span class='d-date'>2016-10-24</span><span class='d-where'>Grand Prairie, TX</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>368 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='timber-haunted' href='./song/timber-haunted.html'><span class='d-song'>Timber</span><span class='d-last'><span class='d-date'>2016-07-10</span><span class='d-where'>Syracuse, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>388 shows since</span><span class='span'>2014&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='west-la-fadeaway' href='./song/west-la-fadeaway.html'><span class='d-song'>West L.A. Fadeaway</span><span class='d-last'><span class='d-date'>2016-10-18</span><span class='d-where'>Nashville, TN</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>372 shows since</span><span class='span'>2000&ndash;2016</span></span></span></a></li>
+<li><a class='row' id='hang-on-to-yours' href='./song/hang-on-to-yours.html'><span class='d-song'>Hang On to Yourself</span><span class='d-last'><span class='d-date'>2016-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>363 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='it-aint-easy' href='./song/it-aint-easy.html'><span class='d-song'>It Ain’t Easy</span><span class='d-last'><span class='d-date'>2016-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>363 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='lady-stardust' href='./song/lady-stardust.html'><span class='d-song'>Lady Stardust</span><span class='d-last'><span class='d-date'>2016-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>363 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='playing-in-the-band' href='./song/playing-in-the-band.html'><span class='d-song'>Playing in the Band</span><span class='d-last'><span class='d-date'>2016-10-18</span><span class='d-where'>Nashville, TN</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>372 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='samson-and-delilah' href='./song/samson-and-delilah.html'><span class='d-song'>Samson and Delilah</span><span class='d-last'><span class='d-date'>2016-10-18</span><span class='d-where'>Nashville, TN</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>372 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='soul-love' href='./song/soul-love.html'><span class='d-song'>Soul Love</span><span class='d-last'><span class='d-date'>2016-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>363 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='star' href='./song/star.html'><span class='d-song'>Star</span><span class='d-last'><span class='d-date'>2016-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>363 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='suffragette-city' href='./song/suffragette-city.html'><span class='d-song'>Suffragette City</span><span class='d-last'><span class='d-date'>2016-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>363 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='the-ocean' href='./song/the-ocean.html'><span class='d-song'>The Ocean</span><span class='d-last'><span class='d-date'>2016-01-17</span><span class='d-where'>Riviera Maya, Quintana Roo</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>401 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li><a class='row' id='ziggy-stardust' href='./song/ziggy-stardust.html'><span class='d-song'>Ziggy Stardust</span><span class='d-last'><span class='d-date'>2016-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>363 shows since</span><span class='span'>2016</span></span></span></a></li>
+<li class='yr' id='y2015'><h2>2015</h2><span class='n'>7 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='keyboard-army' href='./song/keyboard-army.html'><span class='d-song'>Keyboard Army</span><span class='d-last'><span class='d-date'>2015-09-06</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>14&times;</b><span class='typ'><span>408 shows since</span><span class='span'>1995&ndash;2015</span></span></span></a></li>
+<li><a class='row' id='the-birdwatcher' href='./song/the-birdwatcher.html'><span class='d-song'>The Birdwatcher</span><span class='d-last'><span class='d-date'>2015-09-06</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>408 shows since</span><span class='span'>2010&ndash;2015</span></span></span></a></li>
+<li><a class='row' id='once-in-a-lifetime' href='./song/once-in-a-lifetime.html'><span class='d-song'>Once in a Lifetime</span><span class='d-last'><span class='d-date'>2015-09-06</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>408 shows since</span><span class='span'>1996&ndash;2015</span></span></span></a></li>
+<li><a class='row' id='scabbard' href='./song/scabbard.html'><span class='d-song'>Scabbard</span><span class='d-last'><span class='d-date'>2015-08-22</span><span class='d-where'>Watkins Glen, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>412 shows since</span><span class='span'>2015</span></span></span></a></li>
+<li><a class='row' id='drive-in-jam' href='./song/drive-in-jam.html'><span class='d-song'>Drive-In Jam</span><span class='d-last'><span class='d-date'>2015-08-22</span><span class='d-where'>Watkins Glen, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>412 shows since</span><span class='span'>2015</span></span></span></a></li>
+<li><a class='row' id='the-last-step' href='./song/the-last-step.html'><span class='d-song'>The Last Step</span><span class='d-last'><span class='d-date'>2015-08-05</span><span class='d-where'>Kansas City, MO</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>422 shows since</span><span class='span'>2015</span></span></span></a></li>
+<li><a class='row' id='united-we-stand' href='./song/united-we-stand.html'><span class='d-song'>United We Stand</span><span class='d-last'><span class='d-date'>2015-09-06</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>408 shows since</span><span class='span'>2015</span></span></span></a></li>
+<li class='yr' id='y2014'><h2>2014</h2><span class='n'>9 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='walfredo' href='./song/walfredo.html'><span class='d-song'>Walfredo</span><span class='d-last'><span class='d-date'>2014-10-27</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>442 shows since</span><span class='span'>1997&ndash;2014</span></span></span></a></li>
+<li><a class='row' id='jennifer-dances' href='./song/jennifer-dances.html'><span class='d-song'>Jennifer Dances</span><span class='d-last'><span class='d-date'>2014-07-27</span><span class='d-where'>Columbia, MD</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>457 shows since</span><span class='span'>1999&ndash;2014</span></span></span></a></li>
+<li><a class='row' id='intro-chilling-thrilling' href='./song/intro-chilling-thrilling.html'><span class='d-song'>Intro</span><span class='d-last'><span class='d-date'>2014-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>439 shows since</span><span class='span'>2014</span></span></span></a></li>
+<li><a class='row' id='is-this-what-you-wanted' href='./song/is-this-what-you-wanted.html'><span class='d-song'>Is This What You Wanted</span><span class='d-last'><span class='d-date'>2014-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>439 shows since</span><span class='span'>2014</span></span></span></a></li>
+<li><a class='row' id='take-me-out-to-the-ballgame' href='./song/take-me-out-to-the-ballgame.html'><span class='d-song'>Take Me Out to the Ballgame</span><span class='d-last'><span class='d-date'>2014-10-27</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>442 shows since</span><span class='span'>2014</span></span></span></a></li>
+<li><a class='row' id='the-chinese-water-torture' href='./song/the-chinese-water-torture.html'><span class='d-song'>The Chinese Water Torture</span><span class='d-last'><span class='d-date'>2014-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>439 shows since</span><span class='span'>2014</span></span></span></a></li>
+<li><a class='row' id='the-haunted-house' href='./song/the-haunted-house.html'><span class='d-song'>The Haunted House</span><span class='d-last'><span class='d-date'>2014-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>439 shows since</span><span class='span'>2014</span></span></span></a></li>
+<li><a class='row' id='the-unsafe-bridge' href='./song/the-unsafe-bridge.html'><span class='d-song'>The Unsafe Bridge</span><span class='d-last'><span class='d-date'>2014-10-31</span><span class='d-where'>Las Vegas, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>439 shows since</span><span class='span'>2014</span></span></span></a></li>
+<li><a class='row' id='we-are-the-champions' href='./song/we-are-the-champions.html'><span class='d-song'>We Are the Champions</span><span class='d-last'><span class='d-date'>2014-10-29</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>440 shows since</span><span class='span'>2014</span></span></span></a></li>
+<li class='yr' id='y2013'><h2>2013</h2><span class='n'>12 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='ride-captain-ride' href='./song/ride-captain-ride.html'><span class='d-song'>Ride Captain Ride</span><span class='d-last'><span class='d-date'>2013-10-26</span><span class='d-where'>Worcester, MA</span></span><span class='d-n'><b>17&times;</b><span class='typ'><span>485 shows since</span><span class='span'>1987&ndash;2013</span></span></span></a></li>
+<li><a class='row' id='oh-sweet-nuthin' href='./song/oh-sweet-nuthin.html'><span class='d-song'>Oh! Sweet Nuthin’</span><span class='d-last'><span class='d-date'>2013-08-30</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>494 shows since</span><span class='span'>1998&ndash;2013</span></span></span></a></li>
+<li><a class='row' id='architect' href='./song/architect.html'><span class='d-song'>Architect</span><span class='d-last'><span class='d-date'>2013-07-31</span><span class='d-where'>Stateline, NV</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>499 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li><a class='row' id='babylon-baby' href='./song/babylon-baby.html'><span class='d-song'>Babylon Baby</span><span class='d-last'><span class='d-date'>2013-08-02</span><span class='d-where'>San Francisco, CA</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>498 shows since</span><span class='span'>2011&ndash;2013</span></span></span></a></li>
+<li><a class='row' id='heartbreaker' href='./song/heartbreaker.html'><span class='d-song'>Heartbreaker</span><span class='d-last'><span class='d-date'>2013-07-16</span><span class='d-where'>Alpharetta, GA</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>508 shows since</span><span class='span'>2010&ndash;2013</span></span></span></a></li>
+<li><a class='row' id='say-something' href='./song/say-something.html'><span class='d-song'>Say Something</span><span class='d-last'><span class='d-date'>2013-08-30</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>494 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li><a class='row' id='amidst-the-peals-of-laughter' href='./song/amidst-the-peals-of-laughter.html'><span class='d-song'>Amidst the Peals of Laughter</span><span class='d-last'><span class='d-date'>2013-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>482 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li><a class='row' id='easy-to-slip' href='./song/easy-to-slip.html'><span class='d-song'>Easy To Slip</span><span class='d-last'><span class='d-date'>2013-08-30</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>494 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li><a class='row' id='legalize-it' href='./song/legalize-it.html'><span class='d-song'>Legalize It</span><span class='d-last'><span class='d-date'>2013-09-01</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>492 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li><a class='row' id='snow' href='./song/snow.html'><span class='d-song'>Snow</span><span class='d-last'><span class='d-date'>2013-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>482 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li><a class='row' id='takin-care-of-business' href='./song/takin-care-of-business.html'><span class='d-song'>Takin’ Care of Business</span><span class='d-last'><span class='d-date'>2013-10-20</span><span class='d-where'>Hampton, VA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>489 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li><a class='row' id='you-never-know' href='./song/you-never-know.html'><span class='d-song'>You Never Know</span><span class='d-last'><span class='d-date'>2013-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>482 shows since</span><span class='span'>2013</span></span></span></a></li>
+<li class='yr' id='y2012'><h2>2012</h2><span class='n'>13 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='life-on-mars' href='./song/life-on-mars.html'><span class='d-song'>Life on Mars?</span><span class='d-last'><span class='d-date'>2012-06-29</span><span class='d-where'>Noblesville, IN</span></span><span class='d-n'><b>23&times;</b><span class='typ'><span>541 shows since</span><span class='span'>1995&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='light-up-or-leave-me-alone' href='./song/light-up-or-leave-me-alone.html'><span class='d-song'>Light Up Or Leave Me Alone</span><span class='d-last'><span class='d-date'>2012-07-06</span><span class='d-where'>Saratoga Springs, NY</span></span><span class='d-n'><b>19&times;</b><span class='typ'><span>536 shows since</span><span class='span'>1986&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='sweet-virginia' href='./song/sweet-virginia.html'><span class='d-song'>Sweet Virginia</span><span class='d-last'><span class='d-date'>2012-06-24</span><span class='d-where'>Cuyahoga Falls, OH</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>543 shows since</span><span class='span'>1999&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='psycho-killer' href='./song/psycho-killer.html'><span class='d-song'>Psycho Killer</span><span class='d-last'><span class='d-date'>2012-07-06</span><span class='d-where'>Saratoga Springs, NY</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>536 shows since</span><span class='span'>1993&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='blister-in-the-sun' href='./song/blister-in-the-sun.html'><span class='d-song'>Blister in the Sun</span><span class='d-last'><span class='d-date'>2012-07-07</span><span class='d-where'>Saratoga Springs, NY</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>535 shows since</span><span class='span'>1997&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='let-it-loose' href='./song/let-it-loose.html'><span class='d-song'>Let It Loose</span><span class='d-last'><span class='d-date'>2012-06-30</span><span class='d-where'>East Troy, WI</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>540 shows since</span><span class='span'>2009&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='susskind-hotel' href='./song/susskind-hotel.html'><span class='d-song'>Susskind Hotel</span><span class='d-last'><span class='d-date'>2012-07-04</span><span class='d-where'>Wantagh, NY</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>537 shows since</span><span class='span'>2011&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='happiness-is-a-warm-gun' href='./song/happiness-is-a-warm-gun.html'><span class='d-song'>Happiness Is a Warm Gun</span><span class='d-last'><span class='d-date'>2012-07-03</span><span class='d-where'>Wantagh, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>538 shows since</span><span class='span'>1994&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='head-held-high' href='./song/head-held-high.html'><span class='d-song'>Head Held High</span><span class='d-last'><span class='d-date'>2012-07-04</span><span class='d-where'>Wantagh, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>537 shows since</span><span class='span'>1998&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='iron-man' href='./song/iron-man.html'><span class='d-song'>Iron Man</span><span class='d-last'><span class='d-date'>2012-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>517 shows since</span><span class='span'>2003&ndash;2012</span></span></span></a></li>
+<li><a class='row' id='fly-like-an-eagle' href='./song/fly-like-an-eagle.html'><span class='d-song'>Fly Like an Eagle</span><span class='d-last'><span class='d-date'>2012-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>517 shows since</span><span class='span'>2012</span></span></span></a></li>
+<li><a class='row' id='garden-party' href='./song/garden-party.html'><span class='d-song'>Garden Party</span><span class='d-last'><span class='d-date'>2012-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>517 shows since</span><span class='span'>2012</span></span></span></a></li>
+<li><a class='row' id='the-gambler' href='./song/the-gambler.html'><span class='d-song'>The Gambler</span><span class='d-last'><span class='d-date'>2012-06-10</span><span class='d-where'>Manchester, TN</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>551 shows since</span><span class='span'>2012</span></span></span></a></li>
+<li class='yr' id='y2011'><h2>2011</h2><span class='n'>14 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='anything-but-me' href='./song/anything-but-me.html'><span class='d-song'>Anything But Me</span><span class='d-last'><span class='d-date'>2011-08-15</span><span class='d-where'>Chicago, IL</span></span><span class='d-n'><b>12&times;</b><span class='typ'><span>564 shows since</span><span class='span'>2003&ndash;2011</span></span></span></a></li>
+<li><a class='row' id='time-loves-a-hero' href='./song/time-loves-a-hero.html'><span class='d-song'>Time Loves a Hero</span><span class='d-last'><span class='d-date'>2011-07-03</span><span class='d-where'>Watkins Glen, NY</span></span><span class='d-n'><b>8&times;</b><span class='typ'><span>571 shows since</span><span class='span'>1988&ndash;2011</span></span></span></a></li>
+<li><a class='row' id='been-caught-stealing' href='./song/been-caught-stealing.html'><span class='d-song'>Been Caught Stealing</span><span class='d-last'><span class='d-date'>2011-06-18</span><span class='d-where'>Raleigh, NC</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>575 shows since</span><span class='span'>1998&ndash;2011</span></span></span></a></li>
+<li><a class='row' id='instant-karma' href='./song/instant-karma.html'><span class='d-song'>Instant Karma!</span><span class='d-last'><span class='d-date'>2011-08-10</span><span class='d-where'>Stateline, NV</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>566 shows since</span><span class='span'>2010&ndash;2011</span></span></span></a></li>
+<li><a class='row' id='come-together' href='./song/come-together.html'><span class='d-song'>Come Together</span><span class='d-last'><span class='d-date'>2011-09-04</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>559 shows since</span><span class='span'>1995&ndash;2011</span></span></span></a></li>
+<li><a class='row' id='rocket-in-my-pocket' href='./song/rocket-in-my-pocket.html'><span class='d-song'>Rocket in My Pocket</span><span class='d-last'><span class='d-date'>2011-06-04</span><span class='d-where'>Cuyahoga Falls, OH</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>585 shows since</span><span class='span'>2010&ndash;2011</span></span></span></a></li>
+<li><a class='row' id='50-ways-to-leave-your-lover' href='./song/50-ways-to-leave-your-lover.html'><span class='d-song'>50 Ways to Leave Your Lover</span><span class='d-last'><span class='d-date'>2011-08-08</span><span class='d-where'>Hollywood, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>568 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li><a class='row' id='big-balls' href='./song/big-balls.html'><span class='d-song'>Big Balls</span><span class='d-last'><span class='d-date'>2011-07-03</span><span class='d-where'>Watkins Glen, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>571 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li><a class='row' id='monkey-man' href='./song/monkey-man.html'><span class='d-song'>Monkey Man</span><span class='d-last'><span class='d-date'>2011-07-02</span><span class='d-where'>Watkins Glen, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>572 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li><a class='row' id='rhymes' href='./song/rhymes.html'><span class='d-song'>Rhymes</span><span class='d-last'><span class='d-date'>2011-06-07</span><span class='d-where'>Mansfield, MA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>583 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li><a class='row' id='rocket-man' href='./song/rocket-man.html'><span class='d-song'>Rocket Man</span><span class='d-last'><span class='d-date'>2011-08-09</span><span class='d-where'>Stateline, NV</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>567 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li><a class='row' id='storage-jam' href='./song/storage-jam.html'><span class='d-song'>Storage Jam</span><span class='d-last'><span class='d-date'>2011-07-02</span><span class='d-where'>Watkins Glen, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>572 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li><a class='row' id='the-way-it-goes' href='./song/the-way-it-goes.html'><span class='d-song'>The Way It Goes</span><span class='d-last'><span class='d-date'>2011-09-04</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>559 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li><a class='row' id='thunder-road' href='./song/thunder-road.html'><span class='d-song'>Thunder Road</span><span class='d-last'><span class='d-date'>2011-06-19</span><span class='d-where'>Portsmouth, VA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>574 shows since</span><span class='span'>2011</span></span></span></a></li>
+<li class='yr' id='y2010'><h2>2010</h2><span class='n'>34 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='bill-bailey-wont-you-please-come-home' href='./song/bill-bailey-wont-you-please-come-home.html'><span class='d-song'>Bill Bailey, Won’t You Please Come Home?</span><span class='d-last'><span class='d-date'>2010-10-15</span><span class='d-where'>North Charleston, SC</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>607 shows since</span><span class='span'>1993&ndash;2010</span></span></span></a></li>
+<li><a class='row' id='she-caught-the-katy-and-left-me-a-mule-to-ride' href='./song/she-caught-the-katy-and-left-me-a-mule-to-ride.html'><span class='d-song'>She Caught the Katy and Left Me a Mule to Ride</span><span class='d-last'><span class='d-date'>2010-12-28</span><span class='d-where'>Worcester, MA</span></span><span class='d-n'><b>6&times;</b><span class='typ'><span>595 shows since</span><span class='span'>1986&ndash;2010</span></span></span></a></li>
+<li><a class='row' id='whole-lotta-love' href='./song/whole-lotta-love.html'><span class='d-song'>Whole Lotta Love</span><span class='d-last'><span class='d-date'>2010-10-30</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>598 shows since</span><span class='span'>1990&ndash;2010</span></span></span></a></li>
+<li><a class='row' id='summer-of-89' href='./song/summer-of-89.html'><span class='d-song'>Summer of ’89</span><span class='d-last'><span class='d-date'>2010-10-12</span><span class='d-where'>Broomfield, CO</span></span><span class='d-n'><b>4&times;</b><span class='typ'><span>608 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='my-problem-right-there' href='./song/my-problem-right-there.html'><span class='d-song'>My Problem Right There</span><span class='d-last'><span class='d-date'>2010-10-22</span><span class='d-where'>Providence, RI</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>603 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='ramble-on' href='./song/ramble-on.html'><span class='d-song'>Ramble On</span><span class='d-last'><span class='d-date'>2010-10-30</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>598 shows since</span><span class='span'>1998&ndash;2010</span></span></span></a></li>
+<li><a class='row' id='spooky' href='./song/spooky.html'><span class='d-song'>Spooky</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>3&times;</b><span class='typ'><span>597 shows since</span><span class='span'>1993&ndash;2010</span></span></span></a></li>
+<li><a class='row' id='gone' href='./song/gone.html'><span class='d-song'>Gone</span><span class='d-last'><span class='d-date'>2010-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>593 shows since</span><span class='span'>2009&ndash;2010</span></span></span></a></li>
+<li><a class='row' id='what-things-seem' href='./song/what-things-seem.html'><span class='d-song'>What Things Seem</span><span class='d-last'><span class='d-date'>2010-12-27</span><span class='d-where'>Worcester, MA</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>596 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='a-apolitical-blues' href='./song/a-apolitical-blues.html'><span class='d-song'>A Apolitical Blues</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='all-that-you-dream' href='./song/all-that-you-dream.html'><span class='d-song'>All That You Dream</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='billie-jean' href='./song/billie-jean.html'><span class='d-song'>Billie Jean</span><span class='d-last'><span class='d-date'>2010-06-25</span><span class='d-where'>Camden, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>630 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='burn-that-bridge' href='./song/burn-that-bridge.html'><span class='d-song'>Burn That Bridge</span><span class='d-last'><span class='d-date'>2010-12-31</span><span class='d-where'>New York, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>593 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='cold-water' href='./song/cold-water.html'><span class='d-song'>Cold Water</span><span class='d-last'><span class='d-date'>2010-06-15</span><span class='d-where'>Portsmouth, VA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>637 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='day-or-night' href='./song/day-or-night.html'><span class='d-song'>Day or Night</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='dixie-chicken' href='./song/dixie-chicken.html'><span class='d-song'>Dixie Chicken</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='dr-gabel' href='./song/dr-gabel.html'><span class='d-song'>Dr. Gabel</span><span class='d-last'><span class='d-date'>2010-06-22</span><span class='d-where'>Mansfield, MA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>632 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='feats-dont-fail-me-now' href='./song/feats-dont-fail-me-now.html'><span class='d-song'>Feats Don’t Fail Me Now</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='free-man-in-paris' href='./song/free-man-in-paris.html'><span class='d-song'>Free Man in Paris</span><span class='d-last'><span class='d-date'>2010-06-25</span><span class='d-where'>Camden, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>630 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='idea' href='./song/idea.html'><span class='d-song'>Idea</span><span class='d-last'><span class='d-date'>2010-06-15</span><span class='d-where'>Portsmouth, VA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>637 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='in-the-aeroplane-over-the-sea' href='./song/in-the-aeroplane-over-the-sea.html'><span class='d-song'>In the Aeroplane Over the Sea</span><span class='d-last'><span class='d-date'>2010-06-26</span><span class='d-where'>Columbia, MD</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>629 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='jumpin-jack-flash' href='./song/jumpin-jack-flash.html'><span class='d-song'>Jumpin’ Jack Flash</span><span class='d-last'><span class='d-date'>2010-06-27</span><span class='d-where'>Columbia, MD</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>628 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='killing-in-the-name' href='./song/killing-in-the-name.html'><span class='d-song'>Killing in the Name</span><span class='d-last'><span class='d-date'>2010-07-04</span><span class='d-where'>Alpharetta, GA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>623 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='lit-o-bit' href='./song/lit-o-bit.html'><span class='d-song'>Lit O Bit</span><span class='d-last'><span class='d-date'>2010-06-22</span><span class='d-where'>Mansfield, MA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>632 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='look-out-cleveland' href='./song/look-out-cleveland.html'><span class='d-song'>Look Out Cleveland</span><span class='d-last'><span class='d-date'>2010-06-12</span><span class='d-where'>Cuyahoga Falls, OH</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>639 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='mercenary-territory' href='./song/mercenary-territory.html'><span class='d-song'>Mercenary Territory</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='night-nurse' href='./song/night-nurse.html'><span class='d-song'>Night Nurse</span><span class='d-last'><span class='d-date'>2010-10-26</span><span class='d-where'>Manchester, NH</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>600 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='oh-atlanta' href='./song/oh-atlanta.html'><span class='d-song'>Oh Atlanta</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='old-folks-boogie' href='./song/old-folks-boogie.html'><span class='d-song'>Old Folks Boogie</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='sailin-shoes' href='./song/sailin-shoes.html'><span class='d-song'>Sailin’ Shoes</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='stairway-to-heaven' href='./song/stairway-to-heaven.html'><span class='d-song'>Stairway to Heaven</span><span class='d-last'><span class='d-date'>2010-10-30</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>598 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='thank-you' href='./song/thank-you.html'><span class='d-song'>Thank You</span><span class='d-last'><span class='d-date'>2010-10-30</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>598 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='the-rover' href='./song/the-rover.html'><span class='d-song'>The Rover</span><span class='d-last'><span class='d-date'>2010-06-24</span><span class='d-where'>Camden, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>631 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li><a class='row' id='tripe-face-boogie' href='./song/tripe-face-boogie.html'><span class='d-song'>Tripe Face Boogie</span><span class='d-last'><span class='d-date'>2010-10-31</span><span class='d-where'>Atlantic City, NJ</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>597 shows since</span><span class='span'>2010</span></span></span></a></li>
+<li class='yr' id='y2009'><h2>2009</h2><span class='n'>28 songs</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='free-bird' href='./song/free-bird.html'><span class='d-song'>Free Bird</span><span class='d-last'><span class='d-date'>2009-11-29</span><span class='d-where'>Portland, ME</span></span><span class='d-n'><b>28&times;</b><span class='typ'><span>649 shows since</span><span class='span'>1987&ndash;2009</span></span></span></a></li>
+<li><a class='row' id='drums' href='./song/drums.html'><span class='d-song'>Drums</span><span class='d-last'><span class='d-date'>2009-08-02</span><span class='d-where'>Morrison, CO</span></span><span class='d-n'><b>11&times;</b><span class='typ'><span>669 shows since</span><span class='span'>1984&ndash;2009</span></span></span></a></li>
+<li><a class='row' id='mustang-sally' href='./song/mustang-sally.html'><span class='d-song'>Mustang Sally</span><span class='d-last'><span class='d-date'>2009-06-14</span><span class='d-where'>Manchester, TN</span></span><span class='d-n'><b>9&times;</b><span class='typ'><span>678 shows since</span><span class='span'>1986&ndash;2009</span></span></span></a></li>
+<li><a class='row' id='how-high-the-moon' href='./song/how-high-the-moon.html'><span class='d-song'>How High the Moon</span><span class='d-last'><span class='d-date'>2009-08-13</span><span class='d-where'>Darien Center, NY</span></span><span class='d-n'><b>5&times;</b><span class='typ'><span>664 shows since</span><span class='span'>1990&ndash;2009</span></span></span></a></li>
+<li><a class='row' id='middle-of-the-road' href='./song/middle-of-the-road.html'><span class='d-song'>Middle of the Road</span><span class='d-last'><span class='d-date'>2009-08-14</span><span class='d-where'>Hartford, CT</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>663 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='all-down-the-line' href='./song/all-down-the-line.html'><span class='d-song'>All Down the Line</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='blue-moon' href='./song/blue-moon.html'><span class='d-song'>Blue Moon</span><span class='d-last'><span class='d-date'>2009-12-31</span><span class='d-where'>Miami, FL</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>641 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='bobby-jean' href='./song/bobby-jean.html'><span class='d-song'>Bobby Jean</span><span class='d-last'><span class='d-date'>2009-06-14</span><span class='d-where'>Manchester, TN</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>678 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='casino-boogie' href='./song/casino-boogie.html'><span class='d-song'>Casino Boogie</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='dixie-cannonball' href='./song/dixie-cannonball.html'><span class='d-song'>Dixie Cannonball</span><span class='d-last'><span class='d-date'>2009-12-30</span><span class='d-where'>Miami, FL</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>642 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='glory-days' href='./song/glory-days.html'><span class='d-song'>Glory Days</span><span class='d-last'><span class='d-date'>2009-06-14</span><span class='d-where'>Manchester, TN</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>678 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='happy' href='./song/happy.html'><span class='d-song'>Happy</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='i-just-want-to-see-his-face' href='./song/i-just-want-to-see-his-face.html'><span class='d-song'>I Just Want To See His Face</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='i-kissed-a-girl' href='./song/i-kissed-a-girl.html'><span class='d-song'>I Kissed a Girl</span><span class='d-last'><span class='d-date'>2009-08-16</span><span class='d-where'>Saratoga Springs, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>661 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='invisible-2' href='./song/invisible-2.html'><span class='d-song'>Invisible</span><span class='d-last'><span class='d-date'>2009-11-01</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>658 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='rip-this-joint' href='./song/rip-this-joint.html'><span class='d-song'>Rip This Joint</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='rocks-off' href='./song/rocks-off.html'><span class='d-song'>Rocks Off</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='shake-your-hips' href='./song/shake-your-hips.html'><span class='d-song'>Shake Your Hips</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='she-thinks-i-still-care' href='./song/she-thinks-i-still-care.html'><span class='d-song'>She Thinks I Still Care</span><span class='d-last'><span class='d-date'>2009-03-08</span><span class='d-where'>Hampton, VA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>688 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='soul-survivor' href='./song/soul-survivor.html'><span class='d-song'>Soul Survivor</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='stop-breaking-down' href='./song/stop-breaking-down.html'><span class='d-song'>Stop Breaking Down</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='sweet-black-angel' href='./song/sweet-black-angel.html'><span class='d-song'>Sweet Black Angel</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='tomorrows-song' href='./song/tomorrows-song.html'><span class='d-song'>Tomorrow’s Song</span><span class='d-last'><span class='d-date'>2009-11-27</span><span class='d-where'>Albany, NY</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>651 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='tumbling-dice' href='./song/tumbling-dice.html'><span class='d-song'>Tumbling Dice</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='turd-on-the-run' href='./song/turd-on-the-run.html'><span class='d-song'>Turd on the Run</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='ventilator-blues' href='./song/ventilator-blues.html'><span class='d-song'>Ventilator Blues</span><span class='d-last'><span class='d-date'>2009-10-31</span><span class='d-where'>Indio, CA</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>659 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='when-the-cactus-is-in-bloom' href='./song/when-the-cactus-is-in-bloom.html'><span class='d-song'>When the Cactus is in Bloom</span><span class='d-last'><span class='d-date'>2009-06-09</span><span class='d-where'>Asheville, NC</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>681 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li><a class='row' id='windy-city' href='./song/windy-city.html'><span class='d-song'>Windy City</span><span class='d-last'><span class='d-date'>2009-08-11</span><span class='d-where'>Bridgeview, IL</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>665 shows since</span><span class='span'>2009</span></span></span></a></li>
+<li class='yr' id='y2000'><h2>2000</h2><span class='n'>1 song</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='windora-bug' href='./song/windora-bug.html'><span class='d-song'>Windora Bug</span><span class='d-last'><span class='d-date'>2000-09-15</span><span class='d-where'>Hershey, PA</span></span><span class='d-n'><b>2&times;</b><span class='typ'><span>769 shows since</span><span class='span'>2000</span></span></span></a></li>
+<li class='yr' id='y1994'><h2>1994</h2><span class='n'>1 song</span><a class='up' href='#top'>&uarr; Top</a></li>
+<li><a class='row' id='midnight-rider' href='./song/midnight-rider.html'><span class='d-song'>Midnight Rider</span><span class='d-last'><span class='d-date'>1994-06-22</span><span class='d-where'>Columbus, OH</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>1,234 shows since</span><span class='span'>1994</span></span></span></a></li>
+</ol>
+<footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<span>Updated 2026-07-28</span></footer>
+<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</div></body></html>
