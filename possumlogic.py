@@ -3390,6 +3390,18 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
 .head .nhead{color:var(--dim)}
+/* The marks set in the face the setlists print them in, so the label is a
+   specimen of the thing it explains. Underlined like every other link here.
+
+   Its own line, not the tail of the label's: this column is narrow enough that
+   inline it wrapped anyway, and a wrap that was going to happen is better
+   declared than discovered. `width:max-content` keeps the underline on the two
+   marks rather than running the width of the column. */
+.head .marks{display:block;width:max-content;margin-top:.15rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;
+   letter-spacing:0;text-transform:none;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);white-space:nowrap}
+.head .marks:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .head .ghead{grid-column:4/-1;text-align:right}
 /* Every row is its own grid, so an `auto` last column sizes to its own content
    and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
@@ -3431,12 +3443,6 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
    font-size:.8125rem;line-height:1.5;font-variation-settings:'opsz' 12;
    color:var(--dim);max-width:56ch}
-/* The notation legend. The arrows read as decoration unless something says
-   they are load-bearing: an arrow means the songs merely followed one another,
-   and phish.net's mark in its place means they did not stop. Worth one line,
-   because the alternative is a reader inventing a meaning for it. */
-.dek.key .k{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   color:var(--ink-soft);padding:0 .1rem}
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -3724,7 +3730,10 @@ SONG_JS = """
         v=box.querySelector('.v');
     if(high>0){
       if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
-      else if(v){ v.textContent='line '+Math.round(high); v.className='v quiet'; }
+      // "line 10" was the site talking to itself: the reader has no way to
+      // know which line, and the number is the one this song becomes overdue
+      // at. Say that.
+      else if(v){ v.textContent='due at '+Math.round(high); v.className='v quiet'; }
     }else if(n>=bust){
       box.classList.add('dormant');
       if(v){ v.textContent='dormant'; v.className='v dim'; }
@@ -3868,11 +3877,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
-{pairs}
-<p class="dek key">Marks between songs:
-<span class="k">&#8592;&#8201;&#8594;</span> separate,
-<span class="k">&gt;</span> and <span class="k">&#8211;&gt;</span> run together
-&mdash; <a href="../faq.html#segues">how they differ</a>.</p>{caveat}</header>
+{pairs}{caveat}</header>
 <section class="hero">{hero}</section>
 <div class="rule2"></div>
 {best}
@@ -4236,8 +4241,17 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     # The labels alone, so the sticky bar can carry a second copy without
     # dragging the median's <style> block into a div with it.
+    #
+    # The marks link lives here rather than in the front matter, where it was
+    # four lines of prose above the statistics on all 588 pages -- explaining
+    # a notation to everybody in order to reach the few who wondered, and
+    # wrapping awkwardly while it did. It sits in the header of the column the
+    # marks are actually in, wearing the two marks as its label, so a reader
+    # who wonders what `>` means is looking straight at the answer's door.
     cols = ("<div class='row head'><span>Date</span><span>Venue</span>"
-            "<span class='nhead'>Before / after</span>"
+            "<span class='nhead'>Before / after "
+            "<a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a>"
+            "</span>"
             "<span class='ghead'>Gap%s</span></div>"
             % (" &middot; mark at median %s" % _stat(med) if medmark else ""))
     head = medmark + cols
@@ -4992,17 +5006,46 @@ FAQ_CSS = METHOD_CSS + """
    color:var(--ink);scroll-margin-top:1rem}
 .prose h2:first-child{margin-top:0}
 /* The contents. Generated from the same list the entries are, so it cannot
-   name a question the page does not answer or miss one it does. */
-.toc{max-width:66ch;margin:0 0 2.6rem}
+   name a question the page does not answer or miss one it does.
+
+   It used to be a bare caption over eight hairline-separated lines set in the
+   reading face, one size down from the h2 under it and in a softer ink -- so
+   the whole block read as continuous prose and, in Ian's words, "sort of looks
+   like the answer to the first question". Three things separate it now: it is
+   enclosed rather than merely ruled, the entries are numbered, and the numbers
+   are mono, which is this site's voice for a figure. A reader can tell an
+   index from an answer before reading a word of either. */
+.toc{max-width:66ch;margin:0 0 3rem;padding:1rem 1.2rem 1.1rem;
+   border:1px solid var(--rule);background:var(--rule-soft)}
 .toc .cap{display:block;font-size:.625rem;letter-spacing:.14em;
-   text-transform:uppercase;color:var(--dim);margin:0 0 .5rem}
-.toc ol{list-style:none;margin:0;padding:0;
-   border-top:1px solid var(--rule-soft)}
-.toc li{border-bottom:1px solid var(--rule-soft)}
-.toc a{display:block;padding:.42rem 0;font-family:'Literata',Georgia,serif;
+   text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .6rem}
+/* Counter rather than list-style:decimal, so the number is a column of its own
+   and a question that wraps aligns under itself instead of under its number. */
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:q}
+.toc li{counter-increment:q;border-top:1px solid var(--rule-soft)}
+.toc li:first-child{border-top:0}
+.toc a{display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;
+   padding:.4rem 0;font-family:'Literata',Georgia,serif;
    font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
    color:var(--ink-soft);text-decoration:none;border:0}
+.toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.75rem;font-weight:600;color:var(--dim)}
 .toc a:hover{color:var(--hot)}
+.toc a:hover::before{color:var(--hot)}
+/* The way back up. Every answer gets one, because the point of an index is
+   being able to pick a second question after the first -- and without this the
+   only route was scrolling back yourself. Mono and small: it is a control, not
+   a sentence, and it must not read as another paragraph of the answer. */
+.backtop{margin:.8rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* 24x24, the same floor the nav links were held to, without moving the ink. */
+.backtop a{position:relative;display:inline-block}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
 /* A mark and what it means. The mark is mono because it is a mark -- the same
    glyph the setlists print -- and the gloss is prose. */
 .defs{margin:0 0 1rem}
@@ -5037,7 +5080,7 @@ FAQ_SHELL = """<!DOCTYPE html>
 do not.</p></header>
 <div class="rule2"></div>
 <div class="prose" id="main" tabindex="-1">
-<nav class="toc" aria-label="Questions on this page"><span class="cap">On this page</span>
+<nav class="toc" id="questions" tabindex="-1" aria-label="Questions on this page"><span class="cap">Questions on this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
@@ -5127,14 +5170,19 @@ usual gap, which is the figure on the right of every row &mdash; not by how
 many shows it has been gone, since a hundred shows is nothing for one song and
 a decade for another.</p>"""),
 
-    ("eras", "What are 1.0, 2.0, 3.0 and 4.0?", """
-<p>The four stretches the band has played in, either side of its two long
-breaks. Bounded by date rather than by year, because the hiatuses fall
+    ("eras", "What are the eras &mdash; 1.0, 2.0, 3.0 and 4.0?", """
+<p><em>Era</em> is the word this site uses for them, and the one on the chips
+that group a song&rsquo;s performances and filter the show list. There are four
+of them, and they are separated by the <em>three</em> long breaks between them:
+the hiatus that began in 2000, the split that followed Coventry, and the
+shutdown of 2020.</p>
+<p>Bounded by date rather than by year, because every one of those breaks falls
 mid-year.</p>
 <dl class="defs">
-<dt>1.0</dt><dd>The beginning through 2000-10-07.</dd>
+<dt>1.0</dt><dd>The beginning through 2000-10-07, the last show before the
+hiatus.</dd>
 <dt>2.0</dt><dd>2002-12-31 to 2004-08-15, ending at Coventry.</dd>
-<dt>3.0</dt><dd>2009-03-06 to 2020-02-23.</dd>
+<dt>3.0</dt><dd>2009-03-06, the Hampton reunion, to 2020-02-23.</dd>
 <dt>4.0</dt><dd>2021-07-28 onwards.</dd>
 </dl>
 <p>They are used here for grouping and for counting a show&rsquo;s place inside
@@ -5169,11 +5217,22 @@ long.</a></p>"""),
 
 def render_faq():
     """Short answers, deep-linkable, with the long reasoning left on method."""
+    # The question goes inside a span of its own. The anchor is a two-column
+    # grid -- number, question -- and a grid container makes *every* child a
+    # grid item, so the <span class="num"> marks inside the segues question
+    # were each taking a cell and that entry rendered as three broken lines.
+    # One element for the whole question, whatever markup is inside it.
     toc = "".join(
-        "<li><a href=\"#%s\">%s</a></li>" % (anchor, question)
+        "<li><a href=\"#%s\"><span>%s</span></a></li>" % (anchor, question)
         for anchor, question, _ in FAQ)
+    # Every answer ends with the way back to the index. `tabindex="-1"` on the
+    # target means keyboard focus actually lands there rather than staying
+    # where it was, so the next Tab is the first question and not whatever
+    # followed the link.
     body = "\n".join(
-        "<h2 id=\"%s\">%s</h2>\n%s" % (anchor, question, answer.strip())
+        "<h2 id=\"%s\">%s</h2>\n%s\n"
+        "<p class=\"backtop\"><a href=\"#questions\">&uarr; All questions</a></p>"
+        % (anchor, question, answer.strip())
         for anchor, question, answer in FAQ)
     blurb = ("What the numbers on this site mean: gaps, segue marks, eras, "
              "and what &ldquo;due&rdquo; counts as.")

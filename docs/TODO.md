@@ -473,6 +473,121 @@ and is *also* a convention, used between songs always played as a set (Mike's
 like HYHU, **even where there was an audible gap in the music**. That last part
 is the bit worth having: a `>` is not always a claim about sound.
 
+## 3e. FAQ and song front matter — Ian's second live review, 2026-07-28. DONE
+
+### The contents block read as the first answer
+
+His words: "The list of questions in the FAQ should stand out a little more.
+The way it's rendered, it sort of looks like the answer to the first question."
+
+Measured, and he was describing something real: the entries were Literata at
+.9375rem in `--ink-soft`, and the `h2` immediately under them was Literata at
+1.0625rem in `--ink`. One size and one shade apart, same face, both over
+hairline rules — so nothing said "index" rather than "prose". Three things
+separate it now: the block is enclosed rather than merely ruled, the entries
+are numbered, and the numbers are mono, which is this site's voice for a
+figure. A reader can tell an index from an answer before reading either.
+
+- **`display:grid` on the anchor broke the segues entry** and this is worth
+  writing down: the number is a `::before` counter in its own column, and a
+  grid container makes *every* child a grid item — so the two
+  `<span class="num">` marks inside "What do `>` and `–>` mean?" each took a
+  cell and that entry rendered as three broken lines. The question is wrapped
+  in one span now, whatever markup is inside it. Caught by looking at the
+  page; nothing about the markup or the CSS says this on inspection.
+
+### Every answer now has a way back
+
+"I don't want to jump to a question and then have to scroll back to the top of
+the page myself to look at another one." Each answer ends with **↑ All
+questions**. The target carries `tabindex="-1"`, so focus actually lands on
+the index and a keyboard reader's next Tab is the first question — verified
+by clicking it and reading `document.activeElement`, not by reading the CSS.
+
+### The eras answer had its arithmetic wrong
+
+"It describes the *four* stretches the band has played in as 'either side of
+its two long breaks.' The math doesn't add up." It does not: four eras are
+separated by **three** breaks — the 2000 hiatus, the split after Coventry, and
+the 2020 shutdown. The answer said two.
+
+He also asked whether "era" is the site's word, since the answer never used
+it. It is — the chips on the song pages and the index filter both say Eras,
+and `era()` is what computes them. The entry now leads with the term, and the
+heading names it too, so the contents list reads "What are the eras" rather
+than only "What are 1.0, 2.0, 3.0 and 4.0?". 3.0's boundary is identified as
+the Hampton reunion, checked against the archive rather than from memory.
+
+### The notation legend came off the song pages
+
+"I'm wondering whether we really need to call this out on every song page at
+all… if a user is wondering, maybe they should just investigate the FAQ page,
+where we have conveniently answered this question." Agreed and removed — it
+was four lines of prose above the statistics on all 588 pages, explaining a
+notation to everybody in order to reach the few who wondered, and wrapping
+awkwardly while it did.
+
+The pointer moved rather than vanishing: the **Before / after** column header
+now carries `> and –>` as a link to `faq.html#segues`, wearing the two marks
+as its own label, so a reader who wonders what `>` means is looking straight
+at the answer's door. **One gap to know about**: `.head` is hidden below
+820px, so on a phone that pointer is not there and the reader has the nav's
+FAQ link like every other page. Given the item was to *reduce* what every page
+carries, that is the right side to err on, but it is a deliberate call rather
+than an oversight.
+
+Front matter is now three things: the title, the subtitle, and the pairings.
+
+### One provisional decision made in passing
+
+**The song page's Current Gap card said "line 10".** That is the site talking
+to itself — the reader has no way to know which line, and the number is the
+one the song becomes overdue at. It says **"due at 10"** now. Not something
+Ian asked for; one string, and reversible in one line.
+
+## 3f. Sticky column headers on the tabular pages — Ian, 2026-07-28. NOT STARTED
+
+His words, after scrolling a setlist longer than the viewport: the column
+headings scroll off. The show page repeats them per section (set 1, set 2,
+encore) so it is not as bad as it could be, but he wants consistency across
+the site — "which implies the other tabular shells as well".
+
+What he is describing is exactly what `position:sticky` does natively when the
+header lives inside each section rather than above all of them: the header of
+the section being scrolled into view **takes over** from the one above it, and
+**peels off** again on the way back up, with no JavaScript and no measurement.
+Each set's header sticks only while its own set is on screen.
+
+**The thing to get right is the one he named.** A sticky header covers the top
+of the viewport, so anchor targets land underneath it — the song page has had
+this problem more than once. Every jump target on an affected page needs
+`scroll-margin-top` at least the height of the sticky strip, and that height
+has to come from one place both the CSS and the offset read, not from two
+numbers that agree today. The song page's `.stuck` bar is the existing
+precedent and is worth reading before starting.
+
+Ian's clarification, same session: "I want sticky headers on all the tabular
+shell pages. That currently includes venues and due now, as well. I think
+that's it."
+
+**Measured before starting, and it changes the shape of the job.** Only two
+page types have column headers at all:
+
+| page | header today |
+|---|---|
+| show | `<thead>` per set section — 3 on a two-set-plus-encore night |
+| song | one `.row head` div, plus the existing `.stuck` bar |
+| index, songs, due, venues | **none** |
+
+So on four of the six this is not "make the header sticky", it is "give the
+page a header, then make it sticky". That is a visible design change rather
+than a scrolling one, and on the due page it fixes something already noted
+here: the headline figure on each row carries no label at all.
+
+The song page is the odd one: `.stuck` already solves this by a different
+mechanism, and it should not grow a second one competing with it. Decide
+whether `.stuck` becomes the house pattern or the per-section sticky does.
+
 ## 3d. Keyboard: hotkeys, not just tab order — NOT STARTED
 
 §7b did the accessibility floor (focus ring, skip link, everything reachable).
