@@ -306,7 +306,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-.bar .track.bare::before{opacity:.55}
+/* No band to draw, so no scale is drawn. A dash where the mark would have
+   been, at the same height as the track, says the measurement was never
+   possible -- the ghost scale that used to sit here read as a bar that had
+   failed to render, and it was the emptiest graphic on the most interesting
+   rows. `.bare` is gone with it. */
+.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
+   color:var(--dim);opacity:.65;font-size:.75rem}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -532,7 +538,14 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -584,9 +597,9 @@ band ran them together rather than stopping between them.</p></header>
 <style>.perfs{--med:100.00%}</style><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after</span><span class='ghead'>Gap &middot; mark at median 492</span></div>
 <ol class="perfs" id="list">
 <li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>1 show</span><span>2021&ndash;2021</span></h2></li>
-<li id='2021-10-24' data-date='2021-10-24' data-era='4.0' data-gap='492' data-score='' data-search="2021-10-24 10/24/2021 10/24/2021 10/24/21 10/24 10/24 10-24 october 24 2021 october 24 sunday the forum inglewood ca lyrics begin -&gt; from &quot;tweezer&quot; and the performance initially retains some of that jam&#x27;s character with the song proper more fully emerging later. after a &quot;tweezer&quot; tease, the jamming opens up again and ultimately segues to -&gt; &quot;s.a.n.t.o.s.&quot;. "><div class='row'><span class='r-date'><a href='../show/2021-10-24.html'>2021-10-24</a><span class='dow'>Sun</span></span><span><span class='r-venue'>The Forum</span><span class='r-place'>Inglewood, CA</span><details class='jam'><summary><span class='clip'><span class='tag'>Jam chart</span>Lyrics begin -&gt; from &quot;Tweezer&quot; and the performance initially retains some of that jam&#x27;s character with the song proper more fully emerging later. After a &quot;Tweezer&quot; tease, the jamming opens up again and ultimately segues to -&gt; &quot;S.A.N.T.O.S.&quot;.</span></summary></details></span><span class='nb'></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>492</span><span class='set'>SET 2</span></span></div></li>
+<li id='2021-10-24' data-date='2021-10-24' data-era='4.0' data-gap='492' data-score='' data-search="2021-10-24 10/24/2021 10/24/2021 10/24/21 10/24 10/24 10-24 october 24 2021 october 24 sunday the forum inglewood ca lyrics begin -&gt; from &quot;tweezer&quot; and the performance initially retains some of that jam&#x27;s character with the song proper more fully emerging later. after a &quot;tweezer&quot; tease, the jamming opens up again and ultimately segues to -&gt; &quot;s.a.n.t.o.s.&quot;. "><div class='row'><span class='r-date'><a href='../show/2021-10-24.html'>2021-10-24</a><span class='dow'>Sun</span></span><span><span class='r-venue'>The Forum</span><span class='r-place'>Inglewood, CA</span><details class='jam'><summary><span class='clip'><span class='tag'>Jam chart</span>Lyrics begin -&gt; from &quot;Tweezer&quot; and the performance initially retains some of that jam&#x27;s character with the song proper more fully emerging later. After a &quot;Tweezer&quot; tease, the jamming opens up again and ultimately segues to -&gt; &quot;S.A.N.T.O.S.&quot;.</span></summary></details></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>492</span><span class='set'>SET 2</span></span></div></li>
 <li class='yr' id='era-2-0' data-era='2.0'><h2><span class='tab'>2.0</span><span>1 show</span><span>2003&ndash;2003</span></h2></li>
-<li id='2003-12-30' data-date='2003-12-30' data-era='2.0' data-gap='-1' data-score='' data-search="2003-12-30 12/30/2003 12/30/2003 12/30/03 12/30 12/30 12-30 december 30 2003 december 30 tuesday american airlines arena miami fl -&amp;gt; in from &amp;quot;tube.&amp;quot; debut of this doors&#x27; classic and part of a thematic sequence. &amp;gt; to &amp;quot;boaf.&amp;quot; phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2003-12-30' target='_blank' rel='noopener noreferrer'>2003-12-30</a><span class='dow'>Tue</span></span><span><span class='r-venue'>American Airlines Arena</span><span class='r-place'>Miami, FL</span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>-&gt; in from &quot;Tube.&quot; Debut of this Doors&#x27; classic and part of a thematic sequence. &gt; to &quot;BOAF.&quot;</p></span><span class='nb'></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2 &middot; 2&times;</span></span></div></li>
+<li id='2003-12-30' data-date='2003-12-30' data-era='2.0' data-gap='-1' data-score='' data-search="2003-12-30 12/30/2003 12/30/2003 12/30/03 12/30 12/30 12-30 december 30 2003 december 30 tuesday american airlines arena miami fl -&amp;gt; in from &amp;quot;tube.&amp;quot; debut of this doors&#x27; classic and part of a thematic sequence. &amp;gt; to &amp;quot;boaf.&amp;quot; phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=2003-12-30' target='_blank' rel='noopener noreferrer'>2003-12-30</a><span class='dow'>Tue</span></span><span><span class='r-venue'>American Airlines Arena</span><span class='r-place'>Miami, FL</span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>-&gt; in from &quot;Tube.&quot; Debut of this Doors&#x27; classic and part of a thematic sequence. &gt; to &quot;BOAF.&quot;</p></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2 &middot; 2&times;</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

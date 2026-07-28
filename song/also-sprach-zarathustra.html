@@ -306,7 +306,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-.bar .track.bare::before{opacity:.55}
+/* No band to draw, so no scale is drawn. A dash where the mark would have
+   been, at the same height as the track, says the measurement was never
+   possible -- the ghost scale that used to sit here read as a bar that had
+   failed to render, and it was the emptiest graphic on the most interesting
+   rows. `.bare` is gone with it. */
+.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
+   color:var(--dim);opacity:.65;font-size:.75rem}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -532,7 +538,14 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -865,7 +878,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='1993-07-21' data-date='1993-07-21' data-era='1.0' data-gap='1' data-score='' data-search="1993-07-21 07/21/1993 7/21/1993 7/21/93 07/21 7/21 7-21 july 21 1993 july 21 wednesday orange county fairgrounds middletown ny  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1993-07-21' target='_blank' rel='noopener noreferrer'>1993-07-21</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Orange County Fairgrounds</span><span class='r-place'>Middletown, NY</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Split Open and Melt</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:15.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 1</span></span></div></li>
 <li id='1993-07-18' data-date='1993-07-18' data-era='1.0' data-gap='1' data-score='' data-search="1993-07-18 07/18/1993 7/18/1993 7/18/93 07/18 7/18 7-18 july 18 1993 july 18 sunday ic light amphitheater pittsburgh pa  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1993-07-18' target='_blank' rel='noopener noreferrer'>1993-07-18</a><span class='dow'>Sun</span></span><span><span class='r-venue'>IC Light Amphitheater</span><span class='r-place'>Pittsburgh, PA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Poor Heart</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:15.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 2</span></span></div></li>
 <li id='1993-07-17' data-date='1993-07-17' data-era='1.0' data-gap='1' data-score='' data-search="1993-07-17 07/17/1993 7/17/1993 7/17/93 07/17 7/17 7-17 july 17 1993 july 17 saturday the filene center at wolf trap vienna va  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1993-07-17' target='_blank' rel='noopener noreferrer'>1993-07-17</a><span class='dow'>Sat</span></span><span><span class='r-venue'>The Filene Center at Wolf Trap</span><span class='r-place'>Vienna, VA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Tweezer</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:15.00%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 2</span></span></div></li>
-<li id='1993-07-16' data-date='1993-07-16' data-era='1.0' data-gap='-1' data-score='' data-search="1993-07-16 07/16/1993 7/16/1993 7/16/93 07/16 7/16 7-16 july 16 1993 july 16 friday the mann center for the performing arts philadelphia pa phish debut. phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1993-07-16' target='_blank' rel='noopener noreferrer'>1993-07-16</a><span class='dow'>Fri</span></span><span><span class='r-venue'>The Mann Center for the Performing Arts</span><span class='r-place'>Philadelphia, PA</span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Split Open and Melt</span></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='1993-07-16' data-date='1993-07-16' data-era='1.0' data-gap='-1' data-score='' data-search="1993-07-16 07/16/1993 7/16/1993 7/16/93 07/16 7/16 7-16 july 16 1993 july 16 friday the mann center for the performing arts philadelphia pa phish debut. phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1993-07-16' target='_blank' rel='noopener noreferrer'>1993-07-16</a><span class='dow'>Fri</span></span><span><span class='r-venue'>The Mann Center for the Performing Arts</span><span class='r-place'>Philadelphia, PA</span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Split Open and Melt</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

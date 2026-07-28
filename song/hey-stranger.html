@@ -306,7 +306,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .bar .track{display:block;position:relative;width:100%;height:14px}
 .bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
    height:2px;background:var(--rule)}
-.bar .track.bare::before{opacity:.55}
+/* No band to draw, so no scale is drawn. A dash where the mark would have
+   been, at the same height as the track, says the measurement was never
+   possible -- the ghost scale that used to sit here read as a bar that had
+   failed to render, and it was the emptiest graphic on the most interesting
+   rows. `.bare` is gone with it. */
+.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
+   color:var(--dim);opacity:.65;font-size:.75rem}
 .bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
    background:var(--band);opacity:.85;border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
@@ -532,7 +538,14 @@ footer a{color:var(--dim)}
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    var key='pl-seen-'+document.title.replace(/[^0-9-]/g,'').slice(0,10);
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
     var seen=parseInt(localStorage.getItem(key)||'0',10);
     if(seen>0&&rows.length>seen){
       rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
@@ -602,7 +615,7 @@ band ran them together rather than stopping between them.</p></header>
 <li id='2024-02-22' data-date='2024-02-22' data-era='4.0' data-gap='10' data-score='' data-search="2024-02-22 02/22/2024 2/22/2024 2/22/24 02/22 2/22 2-22 february 22 2024 february 22 thursday moon palace cancun quintana roo  "><div class='row'><span class='r-date'><a href='../show/2024-02-22.html'>2024-02-22</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Moon Palace</span><span class='r-place'>Cancun, Quintana Roo</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Driver</span><span class='nb-out'>Gumbo</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:64.78%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>10</span><span class='set'>SET 1</span></span></div></li>
 <li id='2023-10-08' data-date='2023-10-08' data-era='4.0' data-gap='20' data-score='47' data-search="2023-10-08 10/08/2023 10/8/2023 10/8/23 10/08 10/8 10-8 october 08 2023 october 8 sunday bridgestone arena nashville tn  "><div class='row'><span class='r-date'><a href='../show/2023-10-08.html'>2023-10-08</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Bridgestone Arena</span><span class='r-place'>Nashville, TN</span><span class='mark'>Rated <b>47</b> &middot; <a class='ext i-pin' href='https://phish.in/2023-10-08' target='_blank' rel='noopener noreferrer'>Listen</a></span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Beauty of a Broken Heart</span><span class='nb-out'>Taste</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:82.52%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>20</span><span class='set'>SET 1</span></span></div></li>
 <li id='2023-07-19' data-date='2023-07-19' data-era='4.0' data-gap='20' data-score='51' data-search="2023-07-19 07/19/2023 7/19/2023 7/19/23 07/19 7/19 7-19 july 19 2023 july 19 wednesday live oak bank pavilion at riverfront park wilmington nc  "><div class='row'><span class='r-date'><a href='../show/2023-07-19.html'>2023-07-19</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Live Oak Bank Pavilion at Riverfront Park</span><span class='r-place'>Wilmington, NC</span><span class='mark'>Rated <b>51</b> &middot; <a class='ext i-pin' href='https://phish.in/2023-07-19' target='_blank' rel='noopener noreferrer'>Listen</a></span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Funky Bitch</span><span class='nb-out'>Lawn Boy</span></span><span class='bar'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:82.52%'></span></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>20</span><span class='set'>SET 1</span></span></div></li>
-<li id='2022-12-29' data-date='2022-12-29' data-era='4.0' data-gap='-1' data-score='61' data-search="2022-12-29 12/29/2022 12/29/2022 12/29/22 12/29 12/29 12-29 december 29 2022 december 29 thursday madison square garden new york ny debut. phish debut."><div class='row'><span class='r-date'><a href='../show/2022-12-29.html'>2022-12-29</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span><span class='mark'>Rated <b>61</b> &middot; <a class='ext i-pin' href='https://phish.in/2022-12-29' target='_blank' rel='noopener noreferrer'>Listen</a></span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>Debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Bathtub Gin <span class='mk'>&gt;</span></span><span class='nb-out'>Tube</span></span><span class='bar'><span class='track bare'></span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 1</span></span></div></li>
+<li id='2022-12-29' data-date='2022-12-29' data-era='4.0' data-gap='-1' data-score='61' data-search="2022-12-29 12/29/2022 12/29/2022 12/29/22 12/29 12/29 12-29 december 29 2022 december 29 thursday madison square garden new york ny debut. phish debut."><div class='row'><span class='r-date'><a href='../show/2022-12-29.html'>2022-12-29</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span><span class='mark'>Rated <b>61</b> &middot; <a class='ext i-pin' href='https://phish.in/2022-12-29' target='_blank' rel='noopener noreferrer'>Listen</a></span><p class='note'><span class='tag'>Note</span>Phish debut.</p><p class='jam'><span class='tag'>Jam chart</span>Debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Bathtub Gin <span class='mk'>&gt;</span></span><span class='nb-out'>Tube</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 1</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
