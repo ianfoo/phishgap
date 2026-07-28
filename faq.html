@@ -554,21 +554,14 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .prose a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The contents block, shared by both prose pages. Generated from the same
+   list the sections are, so it cannot name one the page does not have or miss
+   one it does -- the FAQ has worked this way since it was built and the method
+   page does now too.
 
-/* Questions are questions, so they are set in the reading face rather than in
-   Bagnard like the method page's headings -- those are labels for sections,
-   these are sentences somebody would say out loud. */
-/* 500, not 600: Literata is requested across 400..500, so anything heavier
-   clamps to 500. Measured -- the same string sets to an identical 297.89px at
-   500, 600 and 700 -- so this is a declaration matching what is drawn rather
-   than a fix to something visible. `.prose b` asks for 700 and gets 500 the
-   same way, which is why bold prose on the method page is not faux-bolded. */
-.prose h2{font-family:'Literata',Georgia,serif;font-size:1.0625rem;
-   font-weight:500;font-variation-settings:'opsz' 16;margin:2.4rem 0 .6rem;
-   color:var(--ink);scroll-margin-top:1rem}
-.prose h2:first-child{margin-top:0}
-/* The contents. Generated from the same list the entries are, so it cannot
-   name a question the page does not answer or miss one it does.
+   Stated here rather than on the FAQ's sheet because the FAQ's sheet is built
+   on this one: a rule put there would have been a rule the method page could
+   not have, which is the shape of every one-sheet-of-three bug in this file.
 
    It used to be a bare caption over eight hairline-separated lines set in the
    reading face, one size down from the h2 under it and in a softer ink -- so
@@ -582,7 +575,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .toc .cap{display:block;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .6rem}
 /* Counter rather than list-style:decimal, so the number is a column of its own
-   and a question that wraps aligns under itself instead of under its number. */
+   and an entry that wraps aligns under itself instead of under its number. */
 .toc ol{list-style:none;margin:0;padding:0;counter-reset:q}
 .toc li{counter-increment:q;border-top:1px solid var(--rule-soft)}
 .toc li:first-child{border-top:0}
@@ -594,11 +587,19 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    font-size:.75rem;font-weight:600;color:var(--dim)}
 .toc a:hover{color:var(--hot)}
 .toc a:hover::before{color:var(--hot)}
-/* The way back up. Every answer gets one, because the point of an index is
+/* The way back up. Every answer and every section gets one, because the point of an index is
    being able to pick a second question after the first -- and without this the
    only route was scrolling back yourself. Mono and small: it is a control, not
    a sentence, and it must not read as another paragraph of the answer. */
-.backtop{margin:.8rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+/* .prose .backtop as well as .backtop, and it is not belt and braces. Inside
+   the prose these are <p> elements, so `.prose p` -- one class and one type --
+   out-specifies a bare `.backtop`, and order cannot help because the two are
+   not equal. The result was that this rule had never once been drawn: every
+   "All questions" link on the FAQ has been set in Literata at the body size
+   since the page was built, which is exactly the paragraph it was written not
+   to look like. Verified against the published sheet, not just this one. */
+.backtop,.prose .backtop{margin:.8rem 0 0;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .backtop a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -608,6 +609,19 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .backtop a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media print{.backtop{display:none}}
+
+/* Questions are questions, so they are set in the reading face rather than in
+   Bagnard like the method page's headings -- those are labels for sections,
+   these are sentences somebody would say out loud. */
+/* 500, not 600: Literata is requested across 400..500, so anything heavier
+   clamps to 500. Measured -- the same string sets to an identical 297.89px at
+   500, 600 and 700 -- so this is a declaration matching what is drawn rather
+   than a fix to something visible. `.prose b` asks for 700 and gets 500 the
+   same way, which is why bold prose on the method page is not faux-bolded. */
+.prose h2{font-family:'Literata',Georgia,serif;font-size:1.0625rem;
+   font-weight:500;font-variation-settings:'opsz' 16;margin:2.4rem 0 .6rem;
+   color:var(--ink);scroll-margin-top:1rem}
+.prose h2:first-child{margin-top:0}
 /* A mark and what it means. The mark is mono because it is a mark -- the same
    glyph the setlists print -- and the gloss is prose. */
 .defs{margin:0 0 1rem}
