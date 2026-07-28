@@ -585,31 +585,93 @@ anybody reaches for a charting library:
 Ian's framing in §3b applies to all of it: this is about delight, not
 completeness. **Do not turn it into a dashboard.**
 
-## 2f. The dormant songs should be explorable — Ian, 2026-07-28. NOT STARTED
+## 2f. The dormant songs should be explorable — Ian, 2026-07-28. PAGE DONE
+
+**`dormant.html` shipped 2026-07-28**, and the hero cell on `due.html` that
+stated a figure and led nowhere now leads here. The three *charts* in this
+section are still open and still want the "classify as of a past date"
+capability described at the end.
+
+### What landed
+
+- **284 songs, grouped by the year each was last heard, newest first.** Within
+  a year they are ordered by how often the band ever played it, so a year opens
+  on the staple that stopped and ends on the cover played once. That order is
+  not a preference — a dormant song has **no percentile to rank by**, which is
+  the definition of dormant, so the only figures available are when and how
+  often.
+- **The headline figure per row is all-time plays**, not shows-since. 126 of
+  the 284 were played exactly once, mostly one-off covers from the 2016
+  Halloween Bowie set and the 2017 LP-replay run; without that figure a reader
+  takes 284 for 284 songs that used to be in rotation, which is not what this
+  page is. The caption carries shows-since and the song's span (`1990–2017`).
+- **It reuses the due page's row grid wholesale** — `.d-song`, `.d-last`,
+  `.d-n`, `.typ`, and how they stack on a phone — so the new CSS is only what
+  the due page has no use for: the year headings and the strip of years at the
+  top. Asserted in the browser: the column header's computed
+  `grid-template-columns` is identical to a row's.
+- The year strip and the year headings come from **one grouping**, the way the
+  FAQ's contents block does, so the strip cannot offer a year the page has not
+  got. Every heading carries **↑ Top**, which is the house idiom by now.
+- **[ruling] it is not in the nav.** Seven items is a lot for a row that
+  already broke once at six (§8c), and Ian's own framing was that this is the
+  fourth list on the due page. Its doors are the due page's hero cell, two
+  links in that page's prose, and the FAQ's "what does due mean" answer. If it
+  feels buried, the fix is one nav item.
+- **[ruling] the figures are set in ink, not the accent.** The due page sets
+  its figure hot because it is sounding an alarm and because it is the order
+  the list is in. Neither is true here, and 284 rows shouting in the accent
+  colour spends it on everything.
+
+### Building it found two wrong figures, both shipping
+
+`due_rows` returned only a *count* for dormant, so the first job was making it
+return which songs. What came back was not entirely songs.
+
+- **`custom` is not a song, and it was about to headline the page.** It sorted
+  first on LONGEST GONE — the loudest figure on a new page. phish.net files
+  one-off and unlisted titles under it: nine performances, nine different
+  pieces of music in the notes (Me and Bobby McGee, Magilla, Mountain Dew,
+  Goodbye Jam, What's The Use?, Dog Log, and a Devil With a Blue Dress On jam),
+  every gap zero. **Structurally the same entry as `jam`**, which `NOT_A_SONG`
+  has excluded all along; this one had simply never been ranked first by
+  anything. Now excluded, with the same caveat on its own page.
+- **`since` was measured from a date no page displays.** `write_current()`
+  computed shows-since from each song's raw last performance, while everything
+  that prints a last-played date filters to the counting calendar first — a
+  soundcheck is not a night the band played. Five songs of 588 diverged, and
+  not by a little:
+
+  | song | was | is | its newest row |
+  |---|---|---|---|
+  | Midnight Rider | 90 | **1,234** | 2024-08-14 soundcheck |
+  | Stairway to Heaven | 90 | **598** | 2024-08-14 soundcheck |
+  | Windora Bug | 251 | **769** | 2020-02-19 soundcheck |
+  | Jam | 28 | **457** | 2026-01-27 Moon Palace |
+  | custom | 661 | **1,004** | 2009-10-29 |
+
+  Midnight Rider's own page has always said "Last played 1994-06-22"; the live
+  figure beside it said 90 shows, off by **1,144**. Exactly the shape the
+  archive's own rule is for — a wrong figure is worse than a missing one — and
+  it was found only because a new page happened to sort on it.
+- The correction moves two songs into dormancy (they were under the 100-show
+  line on the old figure) and `custom` out of it: **283 → 284**. The due page's
+  hero cell and the length of this page are one `due_rows()` call apart, so
+  they cannot disagree.
+
+### Verified
+
+No sideways scroll at 320/375/414/620/820/1100/1400. Header grid identical to
+row grid. `.lhead` sticky, and a year anchor lands at 47px with its bottom at
+34px — clear of it. Every internal link on all seven root pages resolves to a
+file that exists.
+
+### Ian's original words, and what is still open
 
 His words: "We should allow the users to explore dormant songs. There's some
-nostalgia and discovery in there."
-
-Ian also asked for the due page's new sections to get hero cells linking to
-them, which landed — except dormant, which has a cell stating 283 and no link,
-because there is nowhere yet to send it. His own suggestion: "maybe should be
-its own page because of the length? or maybe a collapsible section, which is a
-language we don't have on this site (yet)." **A page, most likely** — 283 rows
-is more than the shelf and overdue lists put together, and `songs.html` already
-carries 588 rows without trouble. A collapsible would be a new interaction
-idiom for one use.
-
-Right now §2d's fourth category is **a number in a hero cell that goes
-nowhere** — 283 songs the site has full histories for and offers no way to
-browse as a group. That is the largest single body of content on the site with
-no door into it. Everything needed exists: `due_rows` already identifies them,
-and each has its own page.
-
-The obvious shape is a third list, but note it cannot be a straight port of the
-due list: dormant songs have **no percentile to rank by**, which is the whole
-reason they are dormant. So it needs a different order and a different headline
-figure — longest gone, or last-played date, or era of last performance. Last
-played is probably the nostalgic one: "you have not heard this since 2014."
+nostalgia and discovery in there." He floated "its own page because of the
+length? or maybe a collapsible section, which is a language we don't have on
+this site (yet)." A page, and no new interaction idiom for one use.
 
 He also wants it as a **graph**, and this is the most interesting of the ideas
 in §2e because it is about the catalogue rather than about one song:

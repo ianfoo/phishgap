@@ -4671,7 +4671,9 @@ not more expected. A song at six times its usual gap is not one anybody is
 waiting on &mdash; it is drifting out of rotation. So past {mult}&times; a song
 is <a href="#slipping">slipping</a> rather than due, past {cap} shows it is
 <a href="#shelf">on the shelf</a>, and with no recent habit at all it is
-dormant. All three are below.</p>
+<a href="./dormant.html">dormant</a>. The first three are below; the dormant
+have a page of their own, because there are more of them than of everything
+else here put together.</p>
 <p class="dek">None of this knows what the band has planned. A themed night
 overrides every figure here &mdash; the 2021 Halloween runs built around
 numbers and animals, the elements nights of the first Sphere run, a run played
@@ -4714,8 +4716,12 @@ def due_rows(docs, counting, since):
     it links to.
 
     Returns (due, overdue, shelved, dormant). Each row in the first three is
-    (over, n, high, doc, last); dormant is a count. All four are exclusive, and
-    the question each answers is a different one:
+    (over, n, high, doc, last); a dormant row is (n, doc, played), because the
+    three figures the others are ranked by are exactly what a dormant song does
+    not have -- that is what makes it dormant. It used to be a bare count, and
+    the count was all anybody could do with it: the dormant hero cell on the due
+    page stated 283 and linked nowhere, because nothing in this file knew *which*
+    283. All four are exclusive, and the question each answers is different:
 
       due      past its norm, but only just -- a song you are expecting
       overdue  well past it, still inside the bustout line: might come back,
@@ -4723,7 +4729,7 @@ def due_rows(docs, counting, since):
       shelved  past its norm and past the bustout line; hearing it is an event
       dormant  no recent habit at all, and gone a bustout's worth
     """
-    rows, dormant = [], 0
+    rows, dormant, calendar = [], [], None
     for doc in docs:
         slug = doc["slug"]
         n = since.get(slug)
@@ -4738,7 +4744,22 @@ def due_rows(docs, counting, since):
                   if p.get("gap") is not None and p["date"] >= cutoff]
         if len(recent) < MIN_HISTORY:
             if n >= BUSTOUT_GAP:
-                dormant += 1
+                # `since` is computed from the song's raw last performance and
+                # this list is keyed to its last *counted* one, which for two
+                # songs in the archive are different dates -- both of them
+                # phish.net catch-all entries with a stray uncounted row on the
+                # end. Recomputed here from the date the row will actually
+                # print, so the page cannot say "last played 1997" beside a
+                # figure measured from 2009. See shows_since.
+                gone = n
+                if counting and played[-1]["date"] != perfs[-1]["date"]:
+                    if calendar is None:
+                        calendar = sorted(counting)
+                    gone = shows_since(calendar, played[-1]["date"])
+                # The whole counted history, not just its last row: a dormant
+                # song is described by how many times it was played and over
+                # what span, which are the only figures it has left.
+                dormant.append((gone, doc, played))
             continue
         high = _quantile(recent, BAND[1])
         if high <= 0 or n <= high:
@@ -4875,13 +4896,14 @@ def render_due(docs, counting, since, card=None):
         shelved)
 
     # The same hero vocabulary the index uses, counting the four categories and
-    # linking to the three that are on this page. Dormant is the odd one -- 283
-    # rows is a page of its own rather than a section (see TODO 2f) -- so its
-    # card states the figure and does not offer a link it cannot honour.
+    # linking to all four. Dormant is the odd one -- it is a page rather than a
+    # section, because 283 rows is more than the other two lists put together --
+    # and until that page existed this cell stated a figure and led nowhere,
+    # which made it the only dead card on the site.
     cards = [(len(due), "Due", " hot", "#main"),
              (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
-             (dormant, "Dormant", "", "")]
+             (len(dormant), "Dormant", "", "./dormant.html")]
     hero = "".join(
         ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
         + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
@@ -4891,9 +4913,11 @@ def render_due(docs, counting, since, card=None):
     n_due = len(due)
     subtitle = ("%d song%s you might reasonably expect tonight"
                 % (n_due, "" if n_due == 1 else "s"))
-    tail = ("A further %d have been gone long enough to be bustouts and have no "
-            "recent habit to be late against at all. They are dormant rather "
-            "than due." % dormant) if dormant else ""
+    tail = ("A further <a href=\"./dormant.html\">%d are dormant</a> &mdash; gone "
+            "long enough to be bustouts, with no recent habit to be late "
+            "against at all. They are not due, but they are the largest part of "
+            "the catalogue and they have their own page."
+            % len(dormant)) if dormant else ""
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
@@ -4907,6 +4931,192 @@ def render_due(docs, counting, since, card=None):
 
 
 DUE_SHELL_END = None
+
+
+#: The dormant list reuses the due page's row grid wholesale -- .d-song,
+#: .d-last, .d-n and .typ, including how they stack on a phone -- so the only
+#: rules here are the ones the due page has no use for: the year a song was
+#: last heard, and the strip of years at the top.
+DORMANT_CSS = INDEX_CSS + """
+/* One list with the years marked inside it, rather than eighteen lists. A
+   heading that is a row of the same ordered list keeps one column header, one
+   set of grid tracks, and one thing for a reader to scroll. */
+.yr{display:flex;align-items:baseline;gap:.7rem;
+   margin:1.8rem 0 .2rem;padding:0 .25rem .35rem;
+   border-bottom:1px solid var(--ink)}
+.yr:first-child{margin-top:.4rem}
+.yr h2{margin:0;font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.75rem;line-height:1;letter-spacing:-.01em;color:var(--ink)}
+.yr .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+/* Pushed to the right so the count and the way back sit at the two ends of the
+   rule, and the year has the left edge to itself. */
+.yr .up{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative}
+.yr .up::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+.yr .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The years, as a strip. Generated from the same grouping as the headings
+   below, so it cannot offer a year the page does not hold. */
+.years{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+.years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
+   line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
+   color:var(--ink-soft);text-decoration:none;white-space:nowrap}
+.years a:hover{color:var(--hot);border-color:var(--hot)}
+.years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
+/* The span of a song's life, which is the one figure a dormant song has that a
+   due song does not need: it was around from here to here, and then it was not. */
+.d-n .span{font-variant-numeric:tabular-nums}
+/* In ink, not in the accent. The due page sets its figure hot because it is
+   the thing the page is sounding an alarm about and the order the list is in.
+   Here the figure is neither: the list is ordered by year, and a play count is
+   a description rather than a warning. A page of 284 rows all shouting in the
+   accent colour spends it on everything and therefore on nothing. */
+.due.dormant .d-n > b{color:var(--ink)}
+"""
+
+
+DORMANT_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dormant &mdash; Possum Logic</title>
+<meta property="og:type" content="website">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+{sheet}
+<style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb sections"><span class="mark">Possum Logic</span>
+<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></nav>
+<div class="rule2"></div>
+<header><h1>Dormant</h1>
+<p class="show">{subtitle}</p>
+<p class="dek">The fourth list on <a href="./due.html">what&rsquo;s due</a>, and
+the longest by some way. A song is dormant here when it has been gone
+{cap} shows or more <em>and</em> has fewer than {floor} performances inside the
+last {years_n} years &mdash; so there is no habit left to be late against, and
+nothing to rank it by. That is the whole reason it needs a page rather than a
+place in a list: every other song on this site is ordered by how far past its
+own norm it is, and these have no norm.</p>
+<p class="dek">So they are ordered by when you last heard one, newest first,
+and within a year by how often the band played it. A song near the top of a
+year was a staple that stopped; a song near the bottom was played once. Both
+are here, because the difference between them is exactly what is interesting.</p>
+<p class="dek">None of this is a prediction. A dormant song coming back is a
+bustout, and the archive is full of them &mdash; that is what makes this list
+worth reading rather than a graveyard.</p>
+<nav class="years" aria-label="Years on this page">{years}</nav></header>
+<section class="hero {hero_cls}">{hero}</section>
+<div class="rule2"></div>
+<div class="lhead due-h"><span>Song</span>
+<span>Last played</span><span class="end">Times played</span></div>
+<ol class="due dormant" id="main" tabindex="-1">
+{rows}
+</ol>
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+
+def _dormant_row(gone, doc, played):
+    """One dormant song.
+
+    The same grid as a due row, because it is the same kind of object and the
+    reader has just come from that page -- but the third column answers a
+    different question. A due song's figure is how far past its norm it is; a
+    dormant song has no norm, so the figure is how many times it was ever
+    played, which is the one number that separates a staple that stopped from a
+    cover played once at a Halloween show.
+    """
+    last = played[-1]
+    place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
+    first_yr, last_yr = played[0]["date"][:4], last["date"][:4]
+    span = first_yr if first_yr == last_yr else "%s&ndash;%s" % (first_yr, last_yr)
+    return ("<li><a class='row' id='%s' href='./song/%s.html'>"
+            "<span class='d-song'>%s</span>"
+            "<span class='d-last'><span class='d-date'>%s</span>"
+            "<span class='d-where'>%s</span></span>"
+            "<span class='d-n'><b>%s&times;</b>"
+            "<span class='typ'><span>%s shows since</span>"
+            "<span class='span'>%s</span></span>"
+            "</span></a></li>"
+            % (html.escape(doc["slug"], quote=True),
+               html.escape(doc["slug"], quote=True),
+               html.escape(typographic(doc["song"])),
+               last["date"], html.escape(place),
+               "{:,}".format(len(played)), "{:,}".format(gone), span))
+
+
+def render_dormant(docs, counting, since):
+    """Every song the band has stopped playing, by the year it stopped."""
+    dormant = due_rows(docs, counting, since)[3]
+
+    # Grouped by the year of the last performance, newest first; inside a year,
+    # the most-played first, because that is the order of "would I remember
+    # this?" and there is no other order available -- a dormant song has no
+    # percentile to be sorted on.
+    years = {}
+    for row in dormant:
+        years.setdefault(row[2][-1]["date"][:4], []).append(row)
+    ordered = sorted(years.items(), reverse=True)
+
+    body, strip = [], []
+    for year, rows in ordered:
+        rows.sort(key=lambda r: (-len(r[2]), typographic(r[1]["song"])))
+        # The count is set beside the year rather than under it, which reads
+        # fine and announces as one number: "2024" and "3" run together into
+        # 20243 with nothing between them. The label says what the eye sees.
+        strip.append("<a href='#y%s' aria-label='%s, %d song%s'>%s<b>%d</b></a>"
+                     % (year, year, len(rows), "" if len(rows) == 1 else "s",
+                        year, len(rows)))
+        body.append(
+            "<li class='yr' id='y%s'><h2>%s</h2>"
+            "<span class='n'>%d song%s</span>"
+            "<a class='up' href='#top'>&uarr; Top</a></li>"
+            % (year, year, len(rows), "" if len(rows) == 1 else "s"))
+        body.extend(_dormant_row(*r) for r in rows)
+
+    # Four figures, and two of them are rows on this page, so they link to them.
+    # "Played once" is the one worth stating outright: it is nearly half the
+    # list, and without it a reader would take 283 for 283 songs that used to be
+    # in rotation, which is not what this page is.
+    most = max(dormant, key=lambda r: len(r[2])) if dormant else None
+    longest = max(dormant, key=lambda r: r[0]) if dormant else None
+    once = sum(1 for r in dormant if len(r[2]) == 1)
+    cards = [(len(dormant), "Songs", "", ""),
+             ("{:,}".format(len(most[2])) if most else "n/a", "Most played", "",
+              "#%s" % most[1]["slug"] if most else ""),
+             ("{:,}".format(longest[0]) if longest else "n/a", "Longest gone",
+              " hot", "#%s" % longest[1]["slug"] if longest else ""),
+             (once, "Played once", "", "")]
+    hero = "".join(
+        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
+        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
+        + ("</a>" if href else "</div>")
+        for val, lbl, cls, href in cards)
+
+    n = len(dormant)
+    subtitle = ("%s song%s the band has stopped playing"
+                % ("{:,}".format(n), "" if n == 1 else "s"))
+    blurb = ("Every Phish song that has dropped out of rotation, by the year it "
+             "was last played.")
+    return DORMANT_SHELL.format(
+        analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
+        css=DORMANT_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        theme_js=THEME_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
+        floor=MIN_HISTORY, years_n=RECENT_YEARS, years="".join(strip),
+        hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
+        rows="\n".join(body),
+        share=share_meta("Dormant &mdash; Possum Logic",
+                         html.escape(blurb, quote=True), "dormant.html"),
+        stamp="Updated %s" % _utcnow().date().isoformat())
 
 
 VENUES_SHELL = """<!DOCTYPE html>
@@ -5521,7 +5731,9 @@ that the habit it is being measured against has probably stopped being
 true.</dd>
 <dt>Dormant</dt><dd>No recent record at all, and gone a hundred shows or more.
 Nobody is expecting it, and ranking these would bury the songs somebody might
-actually shout for tonight.</dd>
+actually shout for tonight &mdash; so they have
+<a href="./dormant.html">a page of their own</a>, ordered by the year they were
+last heard rather than by a lateness they cannot have.</dd>
 </dl>
 <p><em>Slipping</em>, not <em>overdue</em>, because a show page already uses
 overdue for something narrower: a single performance that came back later than
@@ -6448,6 +6660,17 @@ NOT_A_SONG = {
            "not one composition but every jam the band never named. The figures "
            "below are real counts, but they describe how often that happens "
            "rather than how often a particular song is played.",
+    # Found by the dormant page, which put it top of its LONGEST GONE card --
+    # the loudest figure on a new page, attached to a thing that is not a song.
+    # Nine performances, nine different titles in the notes, every gap zero:
+    # Me and Bobby McGee, We've Only Just Begun, Magilla, Mountain Dew, Goodbye
+    # Jam, Down Home Dirty Blues, What's The Use?, Dog Log, and a Devil With a
+    # Blue Dress On jam. Structurally the same entry as "jam" above, and it had
+    # simply never been noticed, because nothing had ever ranked it first.
+    "custom": "phish.net files one-off and unlisted titles under this entry, so "
+              "the performances below are nine different pieces of music rather "
+              "than nine of one. Every count on this page is real and none of "
+              "them is about a single song.",
 }
 
 
@@ -6670,12 +6893,24 @@ def write_current(site_dir, dates=None):
         dates = load_calendar(site_dir)
     if not dates:
         return None
+    # Counted from the last performance that was at a *show*, which is not
+    # always the last performance. Every page that prints a last-played date
+    # filters to the counting calendar first -- a soundcheck is not a night the
+    # band played -- so measuring from the raw last row meant two songs in the
+    # archive carried a figure anchored to a date no page displays. Windora Bug
+    # read 251 shows since beside a last-played date of 2000-09-15, because its
+    # newest row is an uncounted 2020 soundcheck; the honest figure against the
+    # date its own page prints is 769. Two songs of 588 today, and wrong by five
+    # hundred shows on both -- exactly the shape this archive's rule is for: a
+    # wrong figure is worse than a missing one.
+    counting = set(dates)
     since = {}
     for slug in sorted(archived_songs(site_dir)):
         doc = song_history(site_dir, slug)
         perfs = (doc or {}).get("performances") or []
-        if perfs:
-            since[slug] = shows_since(dates, perfs[-1]["date"])
+        played = [p for p in perfs if p["date"] in counting] or perfs
+        if played:
+            since[slug] = shows_since(dates, played[-1]["date"])
     path = os.path.join(site_dir, "data", "current.json")
     write_if_changed(path, json.dumps(
         {"as_of": dates[-1], "shows": len(dates), "since": since},
@@ -7267,6 +7502,14 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
             log("wrote %s", due_page)
         want_card("due", due_card(docs, counting, since))
         n_due = len(due_rows(docs, counting, since)[0])
+        # Written beside the due page rather than on its own terms: it is the
+        # fourth of that page's four lists, and its only door is the hero cell
+        # there. Both are built from one due_rows() call's worth of definitions,
+        # so the figure on the card and the length of the page cannot disagree.
+        dormant_page = os.path.join(site_dir, "dormant.html")
+        if write_if_changed(dormant_page,
+                            render_dormant(docs, counting, since)):
+            log("wrote %s", dormant_page)
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
