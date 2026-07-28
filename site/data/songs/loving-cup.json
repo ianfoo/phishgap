@@ -186,6 +186,7 @@
   {"date": "2025-07-09", "venue": "Jerome Schottenstein Center", "city": "Columbus", "state": "OH", "gap": 29, "set": "2", "prev": "Backwards Down the Number Line"},
   {"date": "2025-07-25", "venue": "Broadview Stage at SPAC", "city": "Saratoga Springs", "state": "NY", "gap": 10, "set": "e", "out": ">", "next": "Run Like an Antelope"},
   {"date": "2026-01-31", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 17, "set": "e", "out": ">", "next": "Harry Hood"},
-  {"date": "2026-07-10", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 11, "set": "2", "prev": "Backwards Down the Number Line", "in": ">"}
+  {"date": "2026-07-10", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 11, "set": "2", "prev": "Backwards Down the Number Line", "in": ">"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 11, "set": "e"}
  ]
 }
