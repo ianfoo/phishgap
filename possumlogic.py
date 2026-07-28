@@ -1748,6 +1748,32 @@ RECENT_YEARS = 10
 # recent performances -- which is the honest answer for a bustout.
 BAND = (.15, .85)
 
+# Ian, reading the live list: "the songs we *expect* to hear, but that haven't
+# been played in a bit longer than we expect… I'm expecting due songs. I'm not
+# expecting overdue songs." Two conditions come out of that, and measuring
+# against the songs he named showed both are load-bearing.
+#
+# ONE: the band has to play it often enough to expect on a given night. His
+# phrasing was "median gaps of about 10-20". Without this, Fuck Your Face
+# qualifies -- gone 78 shows against a typical gap of 28.5, so only 2.7x late,
+# but a song you wait 28 shows for even when it is on time is not one you are
+# expecting tonight.
+DUE_CADENCE = 20
+#
+# TWO: it has to be late, but not wildly so. Measured against the song's own
+# *median* rather than its 85th percentile, which is what made the earlier
+# version wrong: Mr. Completely is 1.8x its 85th percentile and looked mildly
+# late, while being gone 98 shows against a typical gap of 15 -- 6.5x. The
+# 85th percentile is skewed by a song's few worst gaps and is the right gate
+# for "is it late at all"; it is the wrong scale for "how late".
+#
+# Every song Ian named lands between 1.8x and 3.2x its median: Golden Age 1.8,
+# Hey Stranger 2.0, Kill Devil Falls 2.2, A Life Beyond The Dream 2.2, Martian
+# Monster 2.4, 46 Days 2.5, Twist 3.2. Every song he pushed back on is well
+# clear of it -- I Never Needed You Like This Before at 12.9x, Death Don't Hurt
+# Very Long at 16.9x. The line sits above his examples and far below theirs.
+DUE_MULTIPLE = 3.5
+
 # A song out of rotation and gone this long is a bustout rather than an
 # unrateable blank. It also has to have been played MIN_HISTORY times at some
 # point: Sightless Escape at four plays ever, or Cream at one, are rare new
@@ -3800,6 +3826,7 @@ SONG_JS = """
        show calendar. */
     var high=parseFloat(box.getAttribute('data-high')),
         bust=parseFloat(box.getAttribute('data-bustout')),
+        mult=parseFloat(box.getAttribute('data-mult'))||2,
         v=box.querySelector('.v');
     if(high>0){
       /* Past its norm AND past the bustout line is not "overdue" -- it is a
@@ -3808,7 +3835,12 @@ SONG_JS = """
          must not disagree about the same song. */
       if(n>high&&n>=bust){ box.classList.add('dormant');
         if(v){ v.textContent='on the shelf'; v.className='v dim'; } }
-      else if(n>high){ box.classList.add('over'); if(v) v.textContent='overdue'; }
+      /* Due and overdue are different claims and the due page separates them,
+         so this must too or the same song is called two things in two places.
+         Past its norm but only just is the one a reader is expecting. */
+      else if(n>=high*mult){ box.classList.add('over');
+        if(v) v.textContent='overdue'; }
+      else if(n>high){ box.classList.add('over'); if(v) v.textContent='due'; }
       // "line 10" was the site talking to itself: the reader has no way to
       // know which line, and the number is the one this song becomes overdue
       // at. Say that.
@@ -4103,12 +4135,12 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # where there is enough history for one, the bustout line where there is
     # not -- so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
-             "data-bustout='%d'>"
+             "data-bustout='%d' data-mult='%s'>"
              "<div class='lbl'>Current Gap<span class='v'></span></div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
-                BUSTOUT_GAP))
+                BUSTOUT_GAP, DUE_MULTIPLE))
 
     top = best[0] if best else ""
     if top:
@@ -4541,15 +4573,19 @@ DUE_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
 <p class="show">{subtitle}</p>
-<p class="dek">Songs still in rotation that are past their own usual gap.
-Measured against each song&rsquo;s own recent gaps rather than one number for
-the whole catalogue &mdash; a staple is late at eight shows and a rarity is not
-late at eighty. Ranked by how far past, which is what the figure on the right
-says: 3&times; means gone three times the gap this song normally goes.</p>
-<p class="dek">Being late is not enough on its own. A song gone longer than
-{cap} shows would be a bustout if it turned up, and a bustout is a different
-thing from a song that is merely overdue, however late it is against its own
-habit. Those are <a href="#shelf">on the shelf</a>, below.</p></header>
+<p class="dek">Songs you are expecting: ones the band plays often enough to
+have a habit, which are now a little past it. Measured against each
+song&rsquo;s own recent gaps rather than one number for the whole catalogue
+&mdash; a staple is late at eight shows and a rarity is not late at eighty.
+The figure on the right is how far past: 2&times; means it has now been twice
+this song&rsquo;s usual gap, which is printed under it.</p>
+<p class="dek">Being late is not the same as being expected, and more late is
+not more expected. A song at six times its usual gap is not one anybody is
+waiting on &mdash; it is drifting out of rotation. So past {mult}&times; a song
+is <a href="#overdue">overdue</a> rather than due, past {cap} shows it is
+<a href="#shelf">on the shelf</a>, and with no recent habit at all it is
+dormant. All three are below.</p></header>
+<section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
 <div class="lhead due-h"><span>Song</span>
 <span>Last played</span><span class="end">How late</span></div>
@@ -4585,13 +4621,15 @@ def due_rows(docs, counting, since):
     three chances for the number on the front page to disagree with the page
     it links to.
 
-    Returns (due, shelved, dormant). Each row in the first two is
-    (over, n, high, doc, last); dormant is a count. The three are exclusive and
-    the questions they answer are different:
+    Returns (due, overdue, shelved, dormant). Each row in the first three is
+    (over, n, high, doc, last); dormant is a count. All four are exclusive, and
+    the question each answers is a different one:
 
-      due      has a habit, is past it, and is still inside the bustout line
-      shelved  has a habit and is past it, but coming back would be a bustout
-      dormant  has no recent habit at all and has been gone a bustout's worth
+      due      past its norm, but only just -- a song you are expecting
+      overdue  well past it, still inside the bustout line: might come back,
+               might be on its way out, and nobody is waiting on it tonight
+      shelved  past its norm and past the bustout line; hearing it is an event
+      dormant  no recent habit at all, and gone a bustout's worth
     """
     rows, dormant = [], 0
     for doc in docs:
@@ -4613,7 +4651,14 @@ def due_rows(docs, counting, since):
         high = _quantile(recent, BAND[1])
         if high <= 0 or n <= high:
             continue
-        rows.append((n / high, n, high, doc, played[-1]))
+        # The 85th percentile above is the gate -- past it, the song is later
+        # than it usually is. The median below is the scale everything is then
+        # measured and ranked on, because it is the gap a reader would call
+        # this song's usual, and it is the one printed on the row.
+        med = _median(recent)
+        if not med:
+            continue
+        rows.append((n / med, n, med, doc, played[-1]))
     rows.sort(key=lambda r: -r[0])
     # Past its own norm is necessary and not sufficient. A multiple alone put
     # Rise/Come Together top of the list at 12.8x -- gone 184 shows and four
@@ -4633,9 +4678,18 @@ def due_rows(docs, counting, since):
     # counting in days would not. Note the decline is not ongoing: 3.0 averaged
     # 40.0 a year and 4.0 averages 43.8, and the last five complete years run
     # 36, 46, 49, 41, 47. The drop happened at the 2000 hiatus, not since.
-    due = [r for r in rows if r[1] < BUSTOUT_GAP]
     shelved = [r for r in rows if r[1] >= BUSTOUT_GAP]
-    return due, shelved, dormant
+    live = [r for r in rows if r[1] < BUSTOUT_GAP]
+    # Both tests, and the cadence one matters as much as the multiple: a song
+    # too rare to expect on any given night is not due however neatly its
+    # multiple reads. Partitioned in one pass rather than by testing
+    # membership of `due`, which would compare the archived documents inside
+    # each row field by field.
+    due, overdue = [], []
+    for r in live:
+        expected = r[2] <= DUE_CADENCE and r[0] < DUE_MULTIPLE
+        (due if expected else overdue).append(r)
+    return due, overdue, shelved, dormant
 
 
 def _due_row(over, n, high, doc, last):
@@ -4652,10 +4706,13 @@ def _due_row(over, n, high, doc, last):
     One decimal, because the difference between 12.8 and 12.1 is the difference
     between two adjacent rows.
 
-    "Usually back by", not "usually". `high` is the 85th percentile of the
-    song's recent gaps, which is the point it is later than 85% of the time --
-    not its typical gap. Show of Life reads 53.8 here against a median of 29.5,
-    and calling 53.8 the usual figure was a claim its own history contradicts.
+    The figure printed is the song's median recent gap, which is the one a
+    reader would call its usual, and the one the multiple beside it is computed
+    against. It used to be the 85th percentile -- the gate for "is it late at
+    all" -- and that was both harder to read and misleading as a scale: Show of
+    Life's 85th percentile is 53.8 against a median of 29.5, and Mr. Completely
+    looked mildly late at 1.8x its 85th percentile while being gone 98 shows
+    against a typical gap of 15.
     """
     place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
     return ("<li><a class='row' href='./song/%s.html'>"
@@ -4669,7 +4726,7 @@ def _due_row(over, n, high, doc, last):
             # is now a whole statement: how long it has been, and what normal
             # is for this song.
             "<span class='typ'><span>%s shows</span>"
-            "<span>usually back by %s</span></span>"
+            "<span>usually every %s</span></span>"
             "</span></a></li>"
             % (html.escape(doc["slug"], quote=True),
                html.escape(typographic(doc["song"])),
@@ -4679,28 +4736,53 @@ def _due_row(over, n, high, doc, last):
 
 def render_due(docs, counting, since, card=None):
     """The page listing what is overdue going into tonight."""
-    due, shelved, dormant = due_rows(docs, counting, since)
+    due, overdue, shelved, dormant = due_rows(docs, counting, since)
 
     out = [_due_row(*r) for r in due]
 
-    # The shelf is listed rather than counted, because five songs somebody
-    # might still shout for is a different fact from three hundred nobody
-    # would, and the count at the foot of the page cannot tell them apart.
-    shelf = ""
-    if shelved:
-        shelf = (
-            "<h2 class='shelf-h' id='shelf'>On the shelf</h2>"
-            "<p class='dek'>Past their own usual gap as well, and gone long "
-            "enough that hearing one would be a bustout rather than a song "
-            "turning up late. Ordered the same way.</p>"
-            "<div class='lhead due-h'><span>Song</span>"
-            "<span>Last played</span><span class='end'>How late</span></div>"
-            "<ol class='due'>%s</ol>" % "\n".join(_due_row(*r) for r in shelved))
+    # Each list is shown rather than counted. The three say different things
+    # about a song and a reader arriving at "what should I shout for" wants to
+    # see the boundary, not be told a number on the far side of it.
+    def section(anchor, title, blurb, rows):
+        if not rows:
+            return ""
+        return ("<h2 class='shelf-h' id='%s'>%s</h2>"
+                "<p class='dek'>%s</p>"
+                "<div class='lhead due-h'><span>Song</span>"
+                "<span>Last played</span><span class='end'>How late</span></div>"
+                "<ol class='due'>%s</ol>"
+                % (anchor, title, blurb, "\n".join(_due_row(*r) for r in rows)))
+
+    shelf = section(
+        "overdue", "Overdue",
+        "Well past their usual gap rather than a little past it. These could "
+        "turn up, and they could equally be on their way out of rotation "
+        "&mdash; either way they are not what anybody is expecting tonight.",
+        overdue)
+    shelf += section(
+        "shelf", "On the shelf",
+        "Past their usual gap as well, and gone more than %d shows &mdash; far "
+        "enough that hearing one would be a bustout rather than a song turning "
+        "up late." % BUSTOUT_GAP,
+        shelved)
+
+    # The same hero vocabulary the index uses, counting the four categories and
+    # linking to the three that are on this page. Dormant is the odd one -- 283
+    # rows is a page of its own rather than a section (see TODO 2f) -- so its
+    # card states the figure and does not offer a link it cannot honour.
+    cards = [(len(due), "Due", " hot", "#main"),
+             (len(overdue), "Overdue", "", "#overdue"),
+             (len(shelved), "On the shelf", "", "#shelf"),
+             (dormant, "Dormant", "", "")]
+    hero = "".join(
+        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
+        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
+        + ("</a>" if href else "</div>")
+        for val, lbl, cls, href in cards)
 
     n_due = len(due)
-    subtitle = ("%d song%s in rotation and past %s own usual gap"
-                % (n_due, "" if n_due == 1 else "s",
-                   "its" if n_due == 1 else "their"))
+    subtitle = ("%d song%s you might reasonably expect tonight"
+                % (n_due, "" if n_due == 1 else "s"))
     tail = ("A further %d have been gone long enough to be bustouts and have no "
             "recent habit to be late against at all. They are dormant rather "
             "than due." % dormant) if dormant else ""
@@ -4709,6 +4791,7 @@ def render_due(docs, counting, since, card=None):
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
+        mult=_stat(DUE_MULTIPLE), hero=hero, hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, rows="\n".join(out), shelf=shelf, dormant=tail,
         share=share_meta("What's due &mdash; Possum Logic",
                          html.escape(blurb, quote=True), "due.html", card=card),
@@ -4821,17 +4904,17 @@ def render_venues(reports, card=None):
 
 def due_card(docs, counting, since):
     """The due page's preview: how many, and the one furthest past its norm."""
-    rows, _shelved, _dormant = due_rows(docs, counting, since)
-    # Sorted by how far past its own norm each song is, so the head of the list
-    # is the most overdue by definition. Deliberately not the longest wait --
-    # the longest wait is now on the shelf below, and the card would otherwise
-    # headline a song the page it previews does not lead with.
+    rows, _overdue, _shelved, _dormant = due_rows(docs, counting, since)
+    # The head of the due list, which is the song furthest past its norm among
+    # the ones still close enough to it to be expected. Not the furthest past
+    # overall -- that song is under Overdue or on the shelf, and the card would
+    # headline something the page it previews does not lead with.
     best = rows[0] if rows else None
     return card_markup(
-        "Phish", "What&rsquo;s <em>due</em>", "Songs past their own usual gap",
+        "Phish", "What&rsquo;s <em>due</em>", "Songs you might expect tonight",
         (("%d" % len(rows), "Songs due", ""),
          ("%s&times;" % _stat(best[0]) if best else "&mdash;",
-          html.escape(typographic(best[3]["song"][:22])) if best else "Most overdue",
+          html.escape(typographic(best[3]["song"][:22])) if best else "Most due",
           "hot")),
         size=104)
 
@@ -5304,24 +5387,27 @@ stage. That distinction is the whole of the previous paragraph: measured from
 its own last performance, a song that stopped being played in 2011 still has a
 tidy ten-year habit ending in 2011, and would be ranked as running late against
 a band that has since played a thousand shows without it.</p>
-<p>Being late is also not enough on its own, because a song can be so late that
-its return would be an event rather than a song turning up. The
-<a href="./due.html">due page</a> sorts songs into three:</p>
+<p>Being late is not the same as being expected, though, and more late is not
+more expected. A song at six times its usual gap is not one anybody is waiting
+on; it is drifting out of rotation. So the <a href="./due.html">due page</a>
+sorts songs into four:</p>
 <dl class="defs">
-<dt>Due</dt><dd>Still in rotation and past its own usual gap.</dd>
-<dt>On the shelf</dt><dd>Past its usual gap as well, but gone more than a
-hundred shows &mdash; far enough that hearing it would be a bustout.</dd>
+<dt>Due</dt><dd>Past its usual gap, but less than twice past. A song you would
+not be surprised to hear tonight.</dd>
+<dt>Overdue</dt><dd>More than twice its usual gap and still inside a hundred
+shows. Could come back, could be on the way out.</dd>
+<dt>On the shelf</dt><dd>Gone more than a hundred shows &mdash; far enough that
+hearing it would be a bustout rather than a song turning up late.</dd>
 <dt>Dormant</dt><dd>No recent habit at all, and gone a bustout&rsquo;s worth.
 Nobody is expecting it, and ranking these would bury the songs somebody might
 actually shout for tonight.</dd>
 </dl>
-<p>The line between the first two is a hundred shows, which is where this site
-already draws a bustout. It is counted in shows rather than in months on
-purpose: a gap of thirty-six shows is thirty-six chances to hear it, whether
-the band took eight months over them or two years. The band averaged about
-ninety-five shows a year through the 1990s and about forty-four across
-2021&ndash;2025, so counting in time would quietly mean something different in
-each era.</p>
+<p>The hundred-show line is where this site already draws a bustout. It is
+counted in shows rather than in months on purpose: a gap of thirty-six shows is
+thirty-six chances to hear it, whether the band took eight months over them or
+two years. The band averaged about ninety-five shows a year through the 1990s
+and about forty-four across 2021&ndash;2025, so counting in time would quietly
+mean something different in each era.</p>
 <p>Within each list the order is how far past each song is as a multiple of its
 own usual gap &mdash; the figure on the right of every row &mdash; not how many
 shows it has been gone, since a hundred shows is nothing for one song and a

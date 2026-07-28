@@ -201,22 +201,52 @@ with Wombat (176 shows, 4.0 yr) third; The Howling, gone 36 shows after
 twenty-one performances in four years, sat **ninth**. Both figures were
 correctly computed. Only one of those songs is due.
 
-**The fix is a ceiling, and it is the site's existing bustout line rather than
-a new number.** `BUSTOUT_GAP` (100) already answers this exact question — a
-song whose return phish.net would call a bustout is not merely late. Three
-exclusive categories now, from one function:
+**The first fix was a ceiling at `BUSTOUT_GAP`** — a song whose return
+phish.net would call a bustout is not merely late — which moved five songs onto
+a shelf. That was right and not enough. Ian, on the result:
 
-| | has a habit | past it | gone ≥ 100 | count |
-|---|---|---|---|---|
-| **due** | yes | yes | no | 35 |
-| **on the shelf** | yes | yes | yes | 5 |
-| **dormant** | no | — | yes | 283 |
+> I'm looking at the songs that have multipliers in the 1-2 range and median
+> gaps of about 10-20. *These* are the songs I would call "due"… The songs we
+> *expect* to hear, but that haven't been played in a bit longer than we
+> expect… I'm expecting due songs. I'm not expecting overdue songs.
 
-The five that moved to the shelf are exactly the five he named or implied:
-Rise/Come Together, Wombat, We Are Come to Outlive Our Brains, Crazy Sometimes,
-Show of Life. Nothing still called due is more than 98 shows / 2.0 years gone.
-The shelf is **listed, not counted** — five songs somebody might still shout
-for is a different fact from three hundred nobody would.
+### Two conditions, and measuring showed both are load-bearing
+
+**The scale was wrong.** "How late" was measured against the 85th percentile —
+the gate for *is it late at all* — which is skewed by a song's few worst gaps
+and is useless as a ruler. Mr. Completely read **1.8×**, looking mildly late,
+while gone 98 shows against a typical gap of 15: **6.5×** on the median. The
+multiple is computed and printed against the **median** now, and the row says
+"usually every 15" rather than "usually back by 55.2".
+
+**Cadence is a filter in its own right.** Without it Fuck Your Face qualifies —
+gone 78 shows, only 2.7× its median — but its median *is* 28.5, so even on time
+you wait 28 shows for it. Nobody expects that song tonight. `DUE_CADENCE = 20`
+is Ian's own "median gaps of about 10-20".
+
+Both thresholds were fitted to the songs he named, not chosen and then
+defended. Every one lands between **1.8× and 3.2×** its median — Golden Age
+1.8, Hey Stranger 2.0, Kill Devil Falls 2.2, A Life Beyond The Dream 2.2,
+Martian Monster 2.4, 46 Days 2.5, Twist 3.2 — and every song he rejected is far
+clear: I Never Needed You Like This Before **12.9×**, Death Don't Hurt Very
+Long **16.9×**. `DUE_MULTIPLE = 3.5` sits above his examples and well below
+those.
+
+| | plays ≤ every 20 | < 3.5× median | gone < 100 | has a habit | count |
+|---|---|---|---|---|---|
+| **due** | yes | yes | yes | yes | 9 |
+| **overdue** | — | — | yes | yes | 26 |
+| **on the shelf** | — | — | no | yes | 5 |
+| **dormant** | — | — | — | no | 283 |
+
+All four are listed or counted on the page, and each has a hero cell linking to
+its section (dormant excepted — see §2f).
+
+**One boundary case to put to Ian.** He named **The Howling** as due at 36
+shows; it lands in *overdue* at **5.1×** a typical gap of 7. He hedged on it in
+the same breath ("either still in rotation and just not been played, or shelved
+and on its way to dormant"), so this is left where the measure puts it.
+`DUE_MULTIPLE` is the one number that moves it.
 
 ### Show of Life: the figure was right, the word was wrong
 
@@ -308,8 +338,17 @@ completeness. **Do not turn it into a dashboard.**
 His words: "We should allow the users to explore dormant songs. There's some
 nostalgia and discovery in there."
 
-Right now §2d's third category is **a number in a sentence at the foot of the
-due page** — 283 songs the site has full histories for and offers no way to
+Ian also asked for the due page's new sections to get hero cells linking to
+them, which landed — except dormant, which has a cell stating 283 and no link,
+because there is nowhere yet to send it. His own suggestion: "maybe should be
+its own page because of the length? or maybe a collapsible section, which is a
+language we don't have on this site (yet)." **A page, most likely** — 283 rows
+is more than the shelf and overdue lists put together, and `songs.html` already
+carries 588 rows without trouble. A collapsible would be a new interaction
+idiom for one use.
+
+Right now §2d's fourth category is **a number in a hero cell that goes
+nowhere** — 283 songs the site has full histories for and offers no way to
 browse as a group. That is the largest single body of content on the site with
 no door into it. Everything needed exists: `due_rows` already identifies them,
 and each has its own page.
