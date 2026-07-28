@@ -18,8 +18,14 @@
       "prev_date": "2026-07-12",
       "prev_venue": "Ruoff Music Center",
       "prev_place": "Noblesville, IN",
-      "out": "",
-      "verdict": null
+      "out": ">",
+      "plays": 306,
+      "recent_plays": 43,
+      "gap_median": 8,
+      "gap_mean": 8.720930232558139,
+      "gap_low": 5.0,
+      "gap_high": 13.399999999999991,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -31,9 +37,51 @@
       "prev_venue": "Ruoff Music Center",
       "prev_place": "Noblesville, IN",
       "out": "",
-      "verdict": null
+      "plays": 110,
+      "recent_plays": 25,
+      "gap_median": 10,
+      "gap_mean": 14.08,
+      "gap_low": 6.0,
+      "gap_high": 24.599999999999994,
+      "verdict": "expected"
+    },
+    {
+      "set": "SET 1",
+      "song": "Ha Ha Ha",
+      "slug": "ha-ha-ha",
+      "gap": 231,
+      "jamchart": false,
+      "prev_date": "2021-08-27",
+      "prev_venue": "Gorge Amphitheatre",
+      "prev_place": "George, WA",
+      "out": "",
+      "plays": 34,
+      "recent_plays": 2,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": "bustout"
+    },
+    {
+      "set": "SET 1",
+      "song": "Scent of a Mule",
+      "slug": "scent-of-a-mule",
+      "gap": 96,
+      "jamchart": false,
+      "prev_date": "2024-08-02",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN",
+      "out": "",
+      "plays": 139,
+      "recent_plays": 8,
+      "gap_median": 32.5,
+      "gap_mean": 35.5,
+      "gap_low": 18.35,
+      "gap_high": 46.8,
+      "verdict": "overdue"
     }
   ],
-  "count_since": "2026-07-28T00:27:20+00:00",
+  "count_since": "2026-07-28T00:31:46+00:00",
   "provisional": true
 }
