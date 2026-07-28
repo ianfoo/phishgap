@@ -188,6 +188,160 @@ there; only which one is set large has changed. Asserted on the built page:
 the printed figure descends monotonically for all 40 rows. The standfirst and
 the FAQ entry both say what the order is, which neither did before.
 
+## 2d. "Due" needed a ceiling, not just a ratio — Ian, 2026-07-28. DONE
+
+Ian, after §2b landed: "I don't see how we can call a song that hasn't been
+played in 184 performances 'due' with a straight face. A song like that is on
+the shelf… Something like 'The Howling,' however, could be considered 'due.'
+36 shows. That's reasonable."
+
+He was right, and the ranking proved it. Sorted purely by multiple, the top of
+the list was **Rise/Come Together at 12.8× — gone 184 shows and four years**,
+with Wombat (176 shows, 4.0 yr) third; The Howling, gone 36 shows after
+twenty-one performances in four years, sat **ninth**. Both figures were
+correctly computed. Only one of those songs is due.
+
+**The fix is a ceiling, and it is the site's existing bustout line rather than
+a new number.** `BUSTOUT_GAP` (100) already answers this exact question — a
+song whose return phish.net would call a bustout is not merely late. Three
+exclusive categories now, from one function:
+
+| | has a habit | past it | gone ≥ 100 | count |
+|---|---|---|---|---|
+| **due** | yes | yes | no | 35 |
+| **on the shelf** | yes | yes | yes | 5 |
+| **dormant** | no | — | yes | 283 |
+
+The five that moved to the shelf are exactly the five he named or implied:
+Rise/Come Together, Wombat, We Are Come to Outlive Our Brains, Crazy Sometimes,
+Show of Life. Nothing still called due is more than 98 shows / 2.0 years gone.
+The shelf is **listed, not counted** — five songs somebody might still shout
+for is a different fact from three hundred nobody would.
+
+### Show of Life: the figure was right, the word was wrong
+
+Ian: "it hasn't been played in 131 shows, but according to the stats, it's…
+usually played every 53.8 shows..? I feel like they definitely played it more
+often than that."
+
+Both halves of his instinct check out. In the ten-year window it has **8
+plays**, gaps `[25, 50, 8, 56, 17, 54, 17, 34]` — so 53.8 is the correct 85th
+percentile. But its **median is 29.5**, and the page was calling the 85th
+percentile "usually", which is a claim the song's own history contradicts. It
+reads **"usually back by 53.8"** now, which is what an 85th percentile actually
+says: back within that, 85% of the time. His memory of it being played more
+often is about its 33 all-time plays, most of which predate the window.
+
+### Shows per year — his correction, measured
+
+Ian: "Phish doesn't play anywhere near 70 shows per year anymore… The number
+of shows per year probably needs to be considered."
+
+Measured across the whole counting calendar (2,107 shows, 1983–2026):
+
+| era | mean shows/yr | 100 shows = |
+|---|---|---|
+| 1990–2000 | 94.7 | 1.1 years |
+| 2009–2019 (3.0) | 40.0 | 2.5 years |
+| 2021–2025 (4.0) | 43.8 | 2.3 years |
+
+He is right that the rate is nothing like the 1990s. **He is not right that it
+is still declining** — 3.0 averaged 40.0 and 4.0 averages 43.8, and the last
+five complete years run 36, 46, 49, 41, 47. The drop happened at the 2000
+hiatus and the band has been steady since the reunion.
+
+**And the calculation already absorbs this, because gaps are counted in shows
+rather than in days.** A gap of 36 shows is 36 chances to hear it whether the
+band took eight months or two years over them; the percentile band is built
+from the last ten years, so it is calibrated to the current rate by
+construction. The one place a rate assumption was baked in was a code comment
+converting the cap to years — it now names the measured range and the era it
+applies to instead of a single number stated as if timeless.
+
+## 2e. Graphs — Ian, 2026-07-28. FILED, NOT STARTED
+
+His words: "This site needs pretty graphs. Lots more graphs… Especially ones
+that animate nicely when they show up on screen, or when the user selects
+something that alters what the data represented will be." He explicitly did not
+specify what to plot and asked for ideas. Deliberately vague; this is a
+direction, not a spec.
+
+**Constraints that fall out of the site as it stands**, worth stating before
+anybody reaches for a charting library:
+
+- No external JS. Everything here is hand-built and inlined; a library would
+  be the largest dependency on the site by an order of magnitude. Inline SVG
+  is the natural fit and already matches the `.track` / `.band` / `.at`
+  vocabulary the range bars use.
+- `prefers-reduced-motion` is already respected for `.bar .fill`. Any entrance
+  animation has to honour it, and the reduced case must be the finished chart
+  rather than no chart.
+- §5's DOM budget is real. 588 song pages × an SVG each is fine; 691 index
+  rows × anything is not.
+
+**Ideas, ranked by what the archive can actually support today:**
+
+1. **A song's heartbeat.** One horizontal strip per song page, a tick per
+   performance across its whole life, era-banded behind. This is the chart the
+   site is already half-drawing in prose — McGrupp reading 101 / 1 / 13 / 9 by
+   era is a song nearly dying and coming back, and a strip shows it instantly.
+   Draws left to right on entry.
+2. **Shows per year, 1983–2026.** The chart this very session had to compute by
+   hand to answer a question. It belongs on the method or FAQ page, because it
+   is the context that makes "gaps are counted in shows" make sense.
+3. **A song's gap distribution**, with its own percentile band overlaid. Would
+   make the range bar self-explanatory — the bar's meaning currently needs a
+   paragraph, and a histogram with the band drawn on it needs none.
+4. **Era distribution of a setlist** (already promised in §3b) and the
+   **debut-year spread** of one night — oldest song to newest as a dot plot. A
+   show opening on a 1988 song and closing on a 2024 one is a different night
+   from one drawn entirely from *Sigma Oasis*.
+5. **Version scores over time** for one song, from the fouldomain ratings
+   already archived. Answers "is this song getting better?", which nothing on
+   the site answers now.
+
+Ian's framing in §3b applies to all of it: this is about delight, not
+completeness. **Do not turn it into a dashboard.**
+
+## 2f. The dormant songs should be explorable — Ian, 2026-07-28. NOT STARTED
+
+His words: "We should allow the users to explore dormant songs. There's some
+nostalgia and discovery in there."
+
+Right now §2d's third category is **a number in a sentence at the foot of the
+due page** — 283 songs the site has full histories for and offers no way to
+browse as a group. That is the largest single body of content on the site with
+no door into it. Everything needed exists: `due_rows` already identifies them,
+and each has its own page.
+
+The obvious shape is a third list, but note it cannot be a straight port of the
+due list: dormant songs have **no percentile to rank by**, which is the whole
+reason they are dormant. So it needs a different order and a different headline
+figure — longest gone, or last-played date, or era of last performance. Last
+played is probably the nostalgic one: "you have not heard this since 2014."
+
+He also wants it as a **graph**, and this is the most interesting of the ideas
+in §2e because it is about the catalogue rather than about one song:
+
+- **Dormant count per year.** How much of the catalogue is out of rotation at
+  any moment, plotted over time. Needs the classification recomputed as of each
+  past date rather than only as of today — the archive supports it, since every
+  performance carries its date, but it is a real piece of work and not a
+  by-product of the current code.
+- **Rotation churn: into and out of dormancy.** Ian: "what is the nature of
+  rotation into and out of dormancy, or shelvedness?" A song crossing back over
+  the line is a bustout, and the archive knows every one of them. Two series —
+  songs going dormant in a year, songs returning — say something nobody has
+  said about this band with numbers.
+- **How stable the set is.** The share of a year's performances drawn from the
+  songs that were also in rotation the year before. A single number per year,
+  and probably the most revealing chart on the list.
+
+**Sequence it after §2e's simpler charts.** All three of these need a
+classification that can be evaluated *as of a past date*, which the current
+code cannot do — it answers only "what is dormant now". That is the actual
+piece of work, and the charts are cheap once it exists.
+
 ## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 
 His words: the directory "is cluttered. shows should probably go under a
