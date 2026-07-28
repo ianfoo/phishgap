@@ -224,6 +224,24 @@ table.no-last col.c-bar{width:44%}
 th{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
    color:var(--dim);font-weight:500;text-align:left;padding:.45rem .6rem;
    border-bottom:1px solid var(--rule)}
+/* The column headers ride with their own set. Each table is its own containing
+   block, so a header can only stay stuck while its own set is on screen: set
+   1's is carried back off by the bottom edge of set 1's table just as set 2's
+   arrives, and set 1's header is never left standing over set 2's rows. The
+   hand-off is the containing block doing it, not script.
+
+   Stuck on the cells rather than on <thead>: under border-collapse:collapse a
+   border belongs to the table and not to the cell, so a stuck thead can leave
+   its rule behind on the way up. The inset shadow draws it either way, and the
+   border-bottom above still does the work when nothing is stuck. */
+thead th{position:sticky;top:0;z-index:3;background:var(--paper);
+   box-shadow:inset 0 -1px 0 var(--rule)}
+/* A sticky strip at the top of the viewport is what makes an anchor land
+   underneath one. Nothing on a show page is jumped to from inside it today
+   except #main, so this costs nothing now and is here so that the first
+   anchor somebody adds is not the one that discovers the problem. */
+[id]{scroll-margin-top:2.6rem}
+@media print{thead th{position:static;box-shadow:none}}
 th.n,td.n{text-align:right;padding-right:1.1rem;white-space:nowrap}
 .gap,.song,.last .date{line-height:1.35rem}
 td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
