@@ -1082,6 +1082,30 @@ THEME_JS = """<script>
 </script>"""
 
 CSS = PALETTE_CSS + THEME_CSS + """
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
 /* Every figure on this site sits in a column beside another figure. Tabular
    numerals are what makes that work; the alternative is a hand-measured
@@ -1601,11 +1625,12 @@ SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <div class="rule2"></div>
 <header>{crumb}<h1>{date}<span class="dow">{dow}</span></h1>
 <p class="show">{tour}</p>
 <p class="where">{venue}</p>{rating}{aside}{live}</header>
-<section class="hero">{hero}</section>
+<section class="hero" id="main" tabindex="-1">{hero}</section>
 <div class="rule2"></div>
 <p class="links">{links}</p>
 {sections}{notes}
@@ -2260,6 +2285,30 @@ def render_html(report, bar_scale="linear", index_href=None,
 # ------------------------------------------------------------------ index ---
 
 INDEX_CSS = PALETTE_CSS + THEME_CSS + """
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
@@ -2622,8 +2671,13 @@ INDEX_JS = """
   function order(){
     var k=sort.value;
     if(k===ordered) return;
+    // An absent rating sorts last rather than as zero: four shows have none,
+    // and they are unrated, not badly rated.
+    function num(r,attr){ var v=r.getAttribute(attr); return v===''?-1:+v; }
     rows.slice().sort(function(a,b){
-      if(k==='gap') return b.getAttribute('data-longest')-a.getAttribute('data-longest');
+      if(k==='gap') return num(b,'data-longest')-num(a,'data-longest');
+      if(k==='songs') return num(b,'data-songs')-num(a,'data-songs');
+      if(k==='rated') return num(b,'data-score')-num(a,'data-score');
       var x=a.getAttribute('data-date'), y=b.getAttribute('data-date');
       return k==='oldest' ? x.localeCompare(y) : y.localeCompare(x);
     }).forEach(function(r){ list.appendChild(r); });
@@ -2730,6 +2784,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
 <a href="./method.html">How this is worked out</a></nav>
@@ -2739,7 +2794,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 {onstage}
 <section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
-<div class="tools">
+<div class="tools" id="main" tabindex="-1">
 <div class="tools-main">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search date, venue, city, song, year&hellip;" aria-label="Search reports">
@@ -2747,7 +2802,8 @@ INDEX_SHELL = """<!DOCTYPE html>
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="newest">Newest</option><option value="oldest">Oldest</option>
-<option value="gap">Longest gap</option></select></label>
+<option value="gap">Longest gap</option><option value="songs">Most songs</option>
+<option value="rated">Highest rated</option></select></label>
 <span class="count"><b id="shown">{count}</b> of {count} shows</span>
 </div>
 <div class="chips">{years}</div>
@@ -2787,6 +2843,9 @@ def summarize(report):
         "longest_song": next((s["song"] for s in report["songs"]
                               if s["gap"] == longest), "") if gaps else "",
         "titles": titles,
+        # phish.net's own score, by way of fouldomain. 707 of 711 shows carry
+        # one, which is enough for it to be a way of ordering the archive.
+        "rating": report.get("pnet_rating"),
     }
 
 
@@ -2941,13 +3000,15 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
                          html.escape(e["longest_song"])))
         rows.append(
             "<li data-date='%s' data-year='%s' data-era='%s' "
-            "data-longest='%d' data-search=\"%s\">"
+            "data-longest='%d' data-songs='%d' data-score='%s' "
+            "data-search=\"%s\">"
             "<a class='row' href='%s'>"
             "<span class='r-date'>%s</span>"
             "<span class='r-where'><span class='r-venue'>%s</span>"
             "<span class='r-place'>%s</span></span>"
             "<span class='r-stats'>%s</span></a></li>"
             % (e["date"], e["date"][:4], era(e["date"]), e["longest"] or 0,
+               e["songs"], "" if e["rating"] is None else e["rating"],
                html.escape(hay, quote=True),
                html.escape(page_href % e["date"], quote=True),
                e["date"], html.escape(e["venue"]), html.escape(e["place"]),
@@ -2973,10 +3034,13 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # there being large.
     peak = max((e for e in entries if e["longest"]),
                key=lambda e: e["longest"], default=None)
-    # The fullest single night is a different question from the longest gap,
-    # and one the index had no way of asking. Labelled by song count rather
-    # than "longest" so it does not read as a second gap figure.
-    most = max(entries, key=lambda e: e["songs"], default=None)
+    # The fullest night is deliberately *not* a hero card. It was one, and it
+    # is the wrong thing for that slot: once the backfill reaches 1999-12-31 it
+    # becomes Big Cypress and never moves again, so a permanently fixed number
+    # would sit among five that change with every show. It is a fine fact and a
+    # bad headline. It is reachable instead by sorting the archive on it, along
+    # with the rating -- which answers the same kind of question and could not
+    # be asked here at all before.
     # The songs card doubles as the way to the song index, since a reader who
     # has just noticed how many songs are logged is the reader who wants it.
     cards = [
@@ -2988,8 +3052,6 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         # page saying 379, which is the same word counting two things.
         ("{:,}".format(sum(e["songs"] for e in entries)),
          "Song Performances", "", "./songs.html"),
-        (most["songs"] if most else "n/a", "Most Songs", "",
-         page_href % most["date"] if most else ""),
         (len({e["venue"] for e in entries if e["venue"]}), "Venues", "",
          "./venues.html"),
     ]
@@ -3080,6 +3142,30 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
 SONG_FONTS = WEB_FONTS
 
 SONG_CSS = (PALETTE_CSS + THEME_CSS + """
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
 *{box-sizing:border-box}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
@@ -3675,6 +3761,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../method.html">How this is worked out</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
@@ -3693,7 +3780,7 @@ band ran them together rather than stopping between them.</p>{caveat}</header>
 <div class="rule2"></div>
 {best}
 <p class="links">{links}</p>
-<div class="tools">
+<div class="tools" id="main" tabindex="-1">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
 <button id="clear" class="clear" type="button" hidden>Clear</button>
@@ -4126,6 +4213,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
 <a href="./method.html">How this is worked out</a></nav>
@@ -4134,7 +4222,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <p class="show">{subtitle}</p></header>
 <section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
-<div class="tools">
+<div class="tools" id="main" tabindex="-1">
 <label class="count" for="sort">Sort
 <select id="sort" class="sort" disabled>
 <option value="played">Most played</option><option value="az">A&ndash;Z</option>
@@ -4207,6 +4295,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">Due</a><a href="./venues.html">Venues</a>
@@ -4219,7 +4308,7 @@ past it. Measured against each song&rsquo;s own recent gaps, not against a
 single number &mdash; a staple is late at eight shows and a rarity is not late
 at eighty.</p></header>
 <div class="rule2"></div>
-<ol class="due">
+<ol class="due" id="main" tabindex="-1">
 {rows}
 </ol>
 <p class="dek foot">{dormant}</p>
@@ -4322,6 +4411,7 @@ VENUES_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a class="here">Venues</a>
 <a href="./method.html">How this is worked out</a></nav>
@@ -4334,7 +4424,7 @@ search is already that page, and one that cannot fall out of step with the
 archive. What is here is what a search cannot tell you &mdash; how many nights,
 over what span, and the longest gap the room has heard.</p></header>
 <div class="rule2"></div>
-<ol class="vn">
+<ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>
 <footer><span><a href="./method.html">How this is worked out</a></span>{theme_ui}
@@ -4545,6 +4635,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 <link href="{sheet}" rel="stylesheet">
 <style>{css}</style>{theme_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
 <a class="here">How this is worked out</a></nav>
@@ -4552,7 +4643,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
 <div class="rule2"></div>
-<div class="prose">{body}</div>
+<div class="prose" id="main" tabindex="-1">{body}</div>
 <footer><span><a href="./index.html">All reports</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}

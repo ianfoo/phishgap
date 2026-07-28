@@ -322,6 +322,29 @@ free anchors.
 - Method page: ordering is scattered (the bar is discussed mid-gap-calculation)
   and it needs a table of contents.
 
+## 7b. Keyboard navigation — DONE 2026-07-28 (Ian)
+
+Basic navigation, searching and sorting now work without a pointer, without
+keyboard control taking over the design.
+
+- **A focus ring in the site's own accent, everywhere.** Search, sort and the
+  chips already had one; links, rows and hero cards fell through to Chrome's
+  1px blue default — off-palette on both papers, and thin on exactly the
+  things a keyboard travels between. Now 2px `--hot` on every focusable, tucked
+  inside rows and cards rather than floating off a full-width band.
+  `:focus-visible`, so a pointer click never draws it.
+- **A skip link on all seven page types.** The index puts 691 rows between the
+  search box and the footer. The link is off-screen until focused, then a real
+  145×39 control in the corner; its target carries `tabindex="-1"` so focus
+  actually lands there and the next Tab is the search box rather than the top
+  of the page again.
+- Verified with real Tab presses, not programmatic focus — `:focus-visible`
+  does not reliably match programmatic focus, so the first attempt to measure
+  this reported "no focus ring at all", which was wrong.
+- Already fine and left alone: rows on every list are real anchors, the era
+  chips are buttons, sort is a `<select>`, `/` focuses search and Escape
+  clears it, and the theme toggle is three buttons.
+
 ## 8. The watcher needs a real test before it is trusted again
 
 Three separate bugs in one night, each of which made the live feature quietly
@@ -421,11 +444,14 @@ working; all of them are here so the batch can be reviewed in one sitting.
    is what the wide layout already showed. The alternative was to flip the
    wide layout to venue-first and leave the markup alone. Reverting is two
    lines in `SHELL`.
-7. **`MOST SONGS` stays a hero card.** Ian notes it is effectively static —
-   once the backfill reaches 1999-12-31 it becomes Big Cypress permanently,
-   and that is a fact every Phish fan recognises rather than a stat that
-   goes stale. Open question only: whether the card should *name* the show
-   rather than making you click to find out.
+7. ~~**`MOST SONGS` stays a hero card**~~ — **reversed by Ian, correctly.**
+   It is static content in a slot whose other five figures move with every
+   show: once the backfill reaches 1999-12-31 it becomes Big Cypress and never
+   changes again. A fine fact, a bad headline. Removed from the hero (back to
+   five cards) and made reachable instead by sorting the archive — the index
+   sort gained **Most songs** and **Highest rated**, the latter answering the
+   same kind of question and not previously askable here at all. 707 of 711
+   shows carry a rating; the four without sort last rather than as zero.
 
 ## 9. Known and deliberately not fixed
 
