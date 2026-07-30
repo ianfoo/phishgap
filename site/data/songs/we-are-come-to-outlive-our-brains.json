@@ -7,7 +7,7 @@
  ],
  "performances": [
   {"date": "2018-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1819, "set": "2", "note": "Debut.", "nb": 1, "prev": "Everything is Hollow", "next": "Say It To Me S.A.N.T.O.S."},
-  {"date": "2018-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "1", "nb": 1, "next": "Martian Monster"},
+  {"date": "2018-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "1", "nb": 1, "first": 1, "next": "Martian Monster"},
   {"date": "2019-02-21", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 4, "set": "1", "nb": 1, "prev": "Everything's Right", "next": "Rise/Come Together"},
   {"date": "2019-06-12", "venue": "Chaifetz Arena, Saint Louis University", "city": "St. Louis", "state": "MO", "gap": 4, "set": "1", "nb": 1, "prev": "Roggae", "next": "Funky Bitch"},
   {"date": "2019-06-28", "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "gap": 10, "set": "2", "nb": 1, "prev": "No Men In No Man's Land", "in": ">", "next": "About to Run"},

@@ -74,12 +74,16 @@ resumable, and only asks for what it does not already hold:
 
 `--seed-songs` costs one call per song. `--seed-scores` fetches [fouldomain's](https://fouldomain.com/)
 ratings, which also carry phish.net's own show rating — phish.net's API does not
-expose it. `--seed-setlists` is the expensive one: a song's history says where it
-was played but not what came before it, so this fetches the full setlist of every
-show in the archive, about two thousand calls the first time and none after, since
-a new show's setlist is fetched anyway. It writes in batches and records what it
-has done in `site/data/neighbours.json`, so an interrupted run picks up where it
-stopped.
+expose it. `--seed-setlists` fills in what each performance followed and led
+into: a song's history says where it was played but not what stood next to it,
+which needs the whole setlist of every show in the archive.
+
+It used to be the expensive one. Now it walks `archive/setlist-order.json` — the
+running order of every show already fetched — and buys only the dates that file
+is missing, so re-walking all 2,008 shows after a rule change costs nothing and
+needs no API key. Each show is marked on its own rows as it is walked, so an
+interrupted run picks up where it stopped, and `--catch-up` records a new show's
+neighbours as it fetches it. `--force` re-walks everything.
 
 Ratings and jam charts arrive late — a version is scored from audio analysis, so
 it has none until a recording circulates, and jam chart entries are curated

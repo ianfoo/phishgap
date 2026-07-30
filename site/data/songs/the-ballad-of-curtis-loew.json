@@ -24,7 +24,7 @@
   {"date": "1989-02-06", "venue": "The Front", "city": "Burlington", "state": "VT", "gap": 15, "set": "3", "nb": 1, "prev": "Big Black Furry Creature from Mars", "next": "Colonel Forbin's Ascent"},
   {"date": "1989-05-26", "venue": "Valley Club Cafe", "city": "Rutland", "state": "VT", "gap": 48, "set": "3", "out": ">", "nb": 1, "prev": "Funky Bitch", "next": "Possum"},
   {"date": "1989-08-19", "venue": "Collis Center, Dartmouth College", "city": "Hanover", "state": "NH", "gap": 18, "set": "2", "nb": 1, "prev": "Funky Bitch", "next": "David Bowie"},
-  {"date": "1989-10-10", "venue": "The Front", "city": "Burlington", "state": "VT", "gap": 18, "set": "1", "nb": 1, "next": "Alumni Blues"},
+  {"date": "1989-10-10", "venue": "The Front", "city": "Burlington", "state": "VT", "gap": 18, "set": "1", "nb": 1, "first": 1, "next": "Alumni Blues"},
   {"date": "1990-01-25", "venue": "Penny Post", "city": "Old Town", "state": "ME", "gap": 36, "set": "2", "nb": 1, "prev": "Possum", "next": "You Enjoy Myself"},
   {"date": "1990-02-09", "venue": "Chameleon Club", "city": "Lancaster", "state": "PA", "gap": 13, "set": "2", "nb": 1, "prev": "Foam", "next": "David Bowie"},
   {"date": "1990-02-16", "venue": "The Paradise", "city": "Boston", "state": "MA", "gap": 3, "set": "2", "out": ">", "nb": 1, "prev": "Possum", "next": "The Lizards"},
@@ -32,7 +32,7 @@
   {"date": "1990-04-13", "venue": "The Inferno", "city": "Steamboat Springs", "state": "CO", "gap": 18, "set": "2", "nb": 1, "prev": "You Enjoy Myself", "next": "The Sloth"},
   {"date": "1990-04-26", "venue": "Dionysus Club, The 'Sco, Oberlin College", "city": "Oberlin", "state": "OH", "gap": 9, "set": "2", "out": ">", "nb": 1, "prev": "Sweet Adeline", "next": "Mike's Song"},
   {"date": "1990-06-05", "venue": "Cat's Cradle", "city": "Chapel Hill", "state": "NC", "gap": 23, "set": "2", "nb": 1, "prev": "You Enjoy Myself", "in": ">", "next": "Good Times Bad Times"},
-  {"date": "1990-08-04", "venue": "The Red Barn", "city": "Hinesburg", "state": "VT", "gap": 7, "set": "1", "nb": 1, "prev": "Communication Breakdown"},
+  {"date": "1990-08-04", "venue": "The Red Barn", "city": "Hinesburg", "state": "VT", "gap": 7, "set": "1", "nb": 1, "prev": "Communication Breakdown", "last": 1},
   {"date": "1990-10-20", "venue": "Solomon's", "city": "Tuscaloosa", "state": "AL", "gap": 30, "set": "2", "nb": 1, "prev": "Golgi Apparatus", "next": "The Oh Kee Pa Ceremony"},
   {"date": "1990-10-27", "venue": "Rhythm Room", "city": "Dallas", "state": "TX", "gap": 4, "set": "2", "nb": 1, "prev": "Llama", "next": "Mike's Song"},
   {"date": "1990-10-30", "venue": "El Dorado Caf\u00e9", "city": "Crested Butte", "state": "CO", "gap": 1, "set": "2", "out": ">", "nb": 1, "prev": "Llama", "next": "Fluffhead"},
@@ -52,7 +52,7 @@
   {"date": "2013-10-19", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 12, "set": "1", "out": ">", "nb": 1, "prev": "Fast Enough for You", "next": "Ya Mar"},
   {"date": "2014-08-01", "venue": "Amphitheater at the Wharf", "city": "Orange Beach", "state": "AL", "gap": 36, "set": "1", "nb": 1, "prev": "Wolfman's Brother", "next": "Free"},
   {"date": "2016-07-10", "venue": "Lakeview Amphitheater", "city": "Syracuse", "state": "NY", "gap": 66, "set": "1", "nb": 1, "prev": "Timber", "next": "Stealing Time From the Faulty Plan"},
-  {"date": "2016-10-16", "venue": "Jacksonville Veterans Memorial Arena", "city": "Jacksonville", "state": "FL", "gap": 15, "set": "e", "nb": 1, "next": "Character Zero"},
+  {"date": "2016-10-16", "venue": "Jacksonville Veterans Memorial Arena", "city": "Jacksonville", "state": "FL", "gap": 15, "set": "e", "nb": 1, "xprev": "Run Like an Antelope", "next": "Character Zero"},
   {"date": "2019-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 121, "set": "1", "nb": 1, "prev": "46 Days", "next": "Blaze On"}
  ]
 }

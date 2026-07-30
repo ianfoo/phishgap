@@ -13,7 +13,7 @@
   {"date": "2012-06-07", "venue": "DCU Center", "city": "Worcester", "state": "MA", "gap": 78, "set": "1", "nb": 1, "prev": "Rift", "next": "Ocelot"},
   {"date": "2015-08-16", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 139, "set": "1", "nb": 1, "prev": "555", "next": "No Men In No Man's Land"},
   {"date": "2017-01-15", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 58, "set": "1", "nb": 1, "prev": "Roggae", "next": "Ghost"},
-  {"date": "2022-06-01", "venue": "Credit One Stadium", "city": "Charleston", "state": "SC", "gap": 158, "set": "e", "out": ">", "nb": 1, "next": "When the Circus Comes"},
+  {"date": "2022-06-01", "venue": "Credit One Stadium", "city": "Charleston", "state": "SC", "gap": 158, "set": "e", "out": ">", "nb": 1, "xprev": "Blaze On", "next": "When the Circus Comes"},
   {"date": "2024-10-26", "venue": "MVP Arena", "city": "Albany", "state": "NY", "gap": 117, "set": "1", "nb": 1, "prev": "Back on the Train", "next": "Stash"}
  ]
 }

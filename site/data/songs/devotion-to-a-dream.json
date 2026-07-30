@@ -39,7 +39,7 @@
   {"date": "2014-07-30", "venue": "nTelos Pavilion", "city": "Portsmouth", "state": "VA", "gap": 6, "set": "1", "nb": 1, "prev": "Bathtub Gin", "next": "Yarmouth Road"},
   {"date": "2014-08-01", "venue": "Amphitheater at the Wharf", "city": "Orange Beach", "state": "AL", "gap": 1, "set": "1", "nb": 1, "prev": "Tube", "next": "Wolfman's Brother"},
   {"date": "2014-08-30", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 4, "set": "1", "nb": 1, "prev": "Sample in a Jar", "next": "Yarmouth Road"},
-  {"date": "2014-10-25", "venue": "Sleep Train Amphitheatre", "city": "Chula Vista", "state": "CA", "gap": 7, "set": "1", "nb": 1, "next": "AC/DC Bag"},
+  {"date": "2014-10-25", "venue": "Sleep Train Amphitheatre", "city": "Chula Vista", "state": "CA", "gap": 7, "set": "1", "nb": 1, "first": 1, "next": "AC/DC Bag"},
   {"date": "2015-01-03", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 10, "set": "1", "nb": 1, "prev": "Plasma", "next": "Water in the Sky"},
   {"date": "2015-07-21", "venue": "Les Schwab Amphitheater", "city": "Bend", "state": "OR", "gap": 1, "set": "1", "nb": 1, "prev": "Horn", "in": ">", "next": "Blaze On"},
   {"date": "2015-07-28", "venue": "Austin360 Amphitheater", "city": "Del Valle", "state": "TX", "gap": 4, "set": "1", "nb": 1, "prev": "Dirt", "next": "Sugar Shack"},

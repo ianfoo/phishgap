@@ -234,7 +234,270 @@ either add it to the daily run, or have `--catch-up` record neighbours for the
 show it just fetched, since `build()` already holds that show's full setlist and
 needs no extra call.
 
-### Same session, third round — the band is measured on a log scale now
+### Same session, third round — the agreed neighbour work, and the poller
+
+Everything here is pushed. Working tree clean.
+
+| § | what | state |
+|---|---|---|
+| 0 | The migration landmine deleted outright | done |
+| next.1 | Set / show opener–closer labels | done — 3,821 terminals named |
+| next.2 | Cross-boundary neighbours | done — 6,927 cross-set adjacencies shown |
+| 0 | `--seed-setlists` walks `archive/setlist-order.json` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
+| 0 | `--catch-up` records a new show's neighbours as it fetches it | done — no more blank column on the night |
+| 0 | The live page polls instead of hoping; "last checked" reworded | done — all four paths driven in a browser |
+
+**The archive paid for itself on its first use.** Re-walking all 2,009 shows
+under new rules cost 44 API calls — the 43 dates the extract was missing, plus
+tonight's. That is what `archive/README.md` promised and it held.
+
+**But an extract is a cache with no expiry, and it had already gone stale in
+the one place that matters.** The harvest ran mid-show, so it holds 2026-07-29
+at the 12 songs it had at 19:53. Walking that back would have frozen the
+running order of the one show whose running order was still moving — the same
+shape as the six-hour cache that cost the first hour of that night, minus even
+the six hours. A show whose report is still provisional is now always
+re-fetched, and never written into the extract: its order is partial by
+definition, and the day it settles a partial record stops being skipped and
+starts being believed.
+
+**The invariant, proved rather than sampled.** Of 37,148 walked performances,
+every one carries exactly one before-state (`prev` / `xprev` / `first`) and
+exactly one after-state (`next` / `xnext` / `last`) — 37,148 and 37,148, zero
+violations. A blank cell now means one thing only: we have not walked that
+setlist. That was the whole point of items 1 and 2.
+
+**A seventh instance of the family, caught before it shipped.**
+`save_song_history` carries neighbour fields forward across an API rewrite
+through a hardcoded list of four key names. Adding four new fields elsewhere
+would have left every one of them dropped on the next `--previous` run, in a
+function nobody would think to open. The list is now one named constant,
+`NB_CARRY`, next to the walk that produces it.
+
+### "N new since you last looked" could not know that, and now can
+
+Ian, on a screenshot: *"how can it know when I last looked? I went and
+scrolled to the bottom and then back to the top and it still said this, so
+right there, it's not true."* He was right, and the mechanism was dumber than
+the words. `seen` is a row count in `localStorage`, it was written **at page
+load**, and the tag was built once from it and never touched again. So the
+sentence meant "since this browser last loaded a document for this show", and
+the tag was a snapshot frozen at load — scrolling re-evaluated nothing.
+
+**Making the reloads real is what exposed it.** Before the poller the meta
+refresh never fired, the page almost never reloaded, and `seen > 0 &&
+rows > seen` therefore almost never came true. The claim had been false all
+along and nobody had been shown it often enough to notice.
+
+One rule fixes it: **the stored count only ever advances to rows that have
+actually been in view.** An IntersectionObserver on the last new row, with a
+one-second dwell so a flick past the table does not count as looking, retires
+the tag and banks the count at the same moment. Nothing is written at load
+when there is something new to show.
+
+**The first attempt was wrong in both directions and the first test caught
+it.** It also banked on `visibilitychange` and `pagehide`, to stop an unread
+page accumulating a claim. But a reload *fires* `pagehide`, so the count was
+banked from the document being torn down, and rows in the next document that
+the reader had still never seen were recorded as seen — two songs landing
+without a scroll between them would report "1 new", not 2. Accumulation was
+never the bug: if you never look at the new songs they are still new, and
+saying so is the entire point of the tag.
+
+Verified in a browser, all four paths: baseline 18 against 20 rows → tag
+"2 new", two rows marked, **stored still 18**; the last new row scrolled into
+view and held → tag gone, stored 20; back to the top → still gone, which is
+exactly what he did and did not get; reload with nothing new → no tag, no
+marks. Note for the next session: **the browser pane reports
+`document.visibilityState: "hidden"` unless the tab is fronted**, and an
+IntersectionObserver does not fire in a hidden document — the first run of
+this test looked like a broken observer and was a broken harness. Front the
+tab, then measure.
+
+**And his second thought: the count should be the way there.** The tag is now
+a link to the first new row. Every song row already carries its slug as an id
+— `#character-zero` — so this is a real `href` to a real fragment rather than
+a scripted scroll, which is the §2h ruling again: a fragment jump is
+reversible with the Back button and a scroll is not. It points at the *first*
+new row so the reader lands at the start of what they missed. `tabindex="-1"`
+on the target, and `[tabindex="-1"]:focus{outline:none}` in `BASE_CSS`
+already handles it correctly — a landing spot is a place, not a control. The
+rows already carry `scroll-margin-top:46.8px`, so it clears the sticky header
+without anything new.
+
+`text-decoration:none` had to be said out loud. The chip's own `color` beats
+the UA link colour so it was never going to come out browser blue, but it
+would have come out underlined — the same family as the four links that have
+shipped here wearing a default the author sheet never overrode.
+
+**A harness limit worth recording**: a synthetic click in the browser pane
+does **not** perform fragment navigation. Clicking the new link changed
+nothing, and so did clicking the *pre-existing* `#suspicious-minds` link —
+which is how it was shown to be the pane rather than the change. Verified
+instead by resolving the fragment directly: scroll 0 → 2273, target at
+`top:47` and in view, `document.activeElement` the row itself, no ring on it,
+and the target confirmed to be the first `tr.fresh`.
+
+### Three things Ian raised after the tag shipped
+
+**A song slug is not necessarily a unique id.** He is right in principle, and
+the show page already defends it: `render_html` numbers repeats, so a second
+Character Zero in a night is `#character-zero-2` (possumlogic.py, the
+`row_ids` / `seen_slugs` loop, with a comment saying exactly what he said).
+The jump link uses `target.id` verbatim, so it inherits that. Measured across
+all 712 show pages: **zero duplicate ids of any kind**, and no song slug
+collides with the one static id a show page carries (`main`). It is currently
+dormant — `build()` still drops repeats — which means **item 3 (reprises) is
+what will first exercise it.** Check it lands correctly when that work starts.
+
+**The Keys button showed on touch devices.** It is a discovery aid for keys a
+phone does not have, offering "[ and ] to step between shows" to a reader who
+cannot press either. Hidden under `@media (hover:none) and (pointer:coarse)`,
+in `BASE_CSS` so it is said once for all eight page types. The `?` handler
+stays bound, so an iPad with a keyboard attached still reaches the list.
+**Not verified on a real touch device**: the browser pane reports
+`pointer: fine` however narrow the viewport, so width is not the signal and
+resizing proves nothing. What was verified is that the query parses (it
+normalises rather than collapsing to `not all`), that the selector and
+declaration do hide the button, and that the footer — a flex row with `gap`
+and no separator characters — closes up with a 0px trailing gap. The iOS
+simulator was the way to close this and Xcode is not selected on this machine.
+
+**The jump could not be demonstrated end to end, and that is the harness.**
+See the note in the tag section: a synthetic click does not perform fragment
+navigation in the pane, and neither does a real `Enter` on the focused link,
+and neither does clicking the *pre-existing* `#suspicious-minds` link. Real
+Chrome was the other route and the extension is not connected. So what stands
+proven is the target (`href` equals the first `tr.fresh` id, confirmed
+identical), the resolution (setting the hash scrolls 0 → 2273, lands the row
+at `top:47` clear of the sticky header, focuses it, no ring), and the link's
+own semantics from the accessibility tree. The activation step itself is
+unexercised. **The next live show is the real test.**
+
+### Ian's idea: a `/live` endpoint, not a rebuilt page
+
+Raised in the same message and explicitly parked by him — *"I know we'd have
+to do something other than Github Actions for that."* The shape: the watcher
+serves a live endpoint and the `.html` page redirects to it while an event is
+on, so the reader is not waiting on a static publish at all. It would remove
+the whole publish-latency floor (60–90s of Pages deploy on top of the polling
+interval) that §0 records as "not a bug to chase". Worth keeping written down
+as the answer to that floor if the hosting ever moves.
+
+**And the push exposed one in the workflow — twice over, the same shape.**
+The hourly job's "Commit the data archive" step ran a bare `git push` under
+`bash -e`, so losing a race to the watcher killed the step, and with it the
+*publish* step below — the site sat a build behind over a commit that had
+already landed on `main`, and nothing in the failure said "publish did not
+run". `watch.yml` has had the fix for a while: replay onto `origin/main`,
+abort on conflict rather than publishing a tree with conflict markers inside
+`site/data/shows/<date>.json`, and never treat a rejected push as fatal.
+`possumlogic.yml` now has the same. **Twice tonight the rule lived in one of
+two callers**: `--catch-up` knew to withhold `nb` mid-show and the seed did
+not; the watcher knew to replay a rejected push and the hourly job did not.
+
+**The rebase exposed a hole in the fix.** The watcher pushed mid-session and
+`character-zero.json` conflicted — reading the conflict showed `seed_setlists`
+still stamped `nb=1` and `last` unconditionally. `--catch-up` had the guard;
+the seed did not, so a hand-run of `--seed-setlists` during a show would have
+written "closed the show" onto whatever song was last at that moment and
+marked the date answered — the one state no later run revisits. Both callers
+now go through `apply_neighbours`, which owns the rule. **Two callers of the
+same walk, and only one of them had been taught the rule.**
+
+**Ian's note on the live banner, mid-session.** "This page refreshes itself"
+is a separate idea from the counts and was running in after a middot, so it
+wrapped after "this" — consistently, because that is simply where the measure
+ran out. It has its own line now; `.live span:not(.since-you)` already makes
+every span there a block, so it cost no CSS. One line each on desktop, two and
+one at 375px. The remaining break is "this page was / built 1 minute ago",
+which is mid-phrase but strands no separator — **his call whether that wants
+its own line too.**
+
+**Two typographic things, both found by looking rather than reasoning.** A
+terminal line dropped the arrow slot and so hung two characters left of its
+own sibling — visible on 3,821 rows; the arrow is now hidden rather than
+removed. And the cross-boundary lines truncated mid-preposition at every
+desktop width ("Opened set 3, af…" on 40 of Tweezer's 50), because the column
+is 162px wide however wide the window is. Those lines now wrap, which cost 14
+of that page's 418 rows a line and the page 0.7% of its height. Titles still
+truncate: half a title is readable, half a preposition is not. Measured at
+1280px across eight song pages — 610 edge labels, none truncated.
+
+**What is still manual.** The extract only grows when `--seed-setlists` runs,
+which the workflows do not call, so it falls behind by however many nights
+since the last hand run. That is deliberate: it is a 3.4 MB single file, and
+committing it nightly in CI would put a fresh 3.4 MB blob in git history every
+day. `--catch-up` keeps the *reader-visible* data current on its own, so the
+lag costs nothing until the neighbour rules change again — and then it costs
+one call per un-archived night. If it is ever worth having CI maintain it,
+shard it by year first (~160 KB a year) and add `archive` to the `git add` in
+both workflows.
+
+### Picked up next session — two left of the four agreed with Ian
+
+Items 1 and 2 are done — see the round above. 3 and 4 are not started, and 3
+still needs his call before anything is written.
+
+1. ~~**Set / show opener–closer labels.**~~ **DONE.** Rendered as "Opened the
+   show" / "Closed the show" for the two true terminals, which carry no song
+   because there is none, and "Opened set 2" / "Closed the encore" for the
+   rest, which do.
+2. ~~**Cross-boundary neighbours.**~~ **DONE.** "Opened set 2, after Harry
+   Hood" — label primary, in ink against the dim song, and no mark ever, so
+   the page cannot imply a segue across a setbreak.
+3. **Reprises.** 683 of 1,966 shows repeat a song; **972 performances are
+   currently dropped**, because only the first occurrence per show is kept. Their
+   neighbours differ from the first pass, so neighbour accuracy needs them.
+   **Bring the cardinality question back to Ian before acting**: our 131 for Fly
+   Famous Mockingbird matches phish.net's own "played 131 time(s)" headline while
+   their table lists 143 rows, so adding rows diverges from their count and
+   touches gap and "shows since". Treat *neighbour accuracy* as separable from
+   *what counts as a performance*.
+4. **Scarcity, as distinct from recency.** Ian's observation: Colonel Forbin's
+   Ascent and Fly Famous Mockingbird are each **5 plays in ten years** yet
+   correctly not bustouts, because both were played at the Sphere in April. 252
+   of 588 songs have 1–8 plays in the last ten years and **40 of those were
+   played in the last 90 days**. Bustout measures recency; this is scarcity, and
+   the site has no vocabulary for it. §2d and the "under 8 plays in ten years"
+   note already half-know this.
+
+**No fetching required for 3.** `archive/setlist-order.json` holds the running
+order of all 2,008 settled dates — set, position, slug, song, trans_mark — which
+is everything reprises need. See `archive/README.md`.
+
+### ~~Also open: the live page does not auto-refresh~~ DONE 2026-07-30
+
+Two separate faults, found together on 2026-07-29, both fixed.
+
+**The label was misattributed, not wrong.** `checked = _utcnow()` is stamped at
+*render* time and `AGO_JS` recounts it client-side every 20s, so a stale document
+faithfully reports **its own age** — it was the only honest thing on Ian's stale
+page. But "last checked" read as a claim about the server. It now says "this
+page was built <em>4 minutes ago</em> · it updates as songs land", which is what
+the stamp measures and what the page now does.
+
+**The refresh did not fire.** `<meta http-equiv="refresh" content="120">` was
+present, well-formed and correctly placed. It failed twice over: Pages sends
+`cache-control: max-age=600`, so a reload inside ten minutes can be satisfied
+from cache; and browsers throttle or defer meta refresh in background tabs,
+unboundedly. Ian hit refresh by hand and the setlist **jumped five songs** —
+about 25 minutes of drift, past the cache window, so it was not firing at all.
+
+Replaced by `LIVE_JS`, which fetches `data/shows/<date>.json` with a changing
+query string — its own CDN cache key, which is what defeats both caches —
+and reloads **only** when the song count moves or the show settles. It does not
+poll while the tab is hidden; `visibilitychange` brings it up to date the moment
+the reader looks back, which is sooner than any interval. All four paths were
+driven in a browser against the real report file: no change → one fetch, no
+reload; a song added → one reload, `sessionStorage` marked; dispatched again
+against a document now genuinely stale → **no second reload**, which is the
+guard against a reload storm on a reader's phone; `provisional` flipped false →
+reload. Note the shape: the same "**anything long-running must re-read its
+inputs each pass**" lesson as the outages in `CLAUDE.md`, now on the client. The
+page was a long-running thing that reloaded on a timer and hoped.
+
+### Same session, fourth round — the band is measured on a log scale now
 
 Ian, from the 2026-07-29 show page: "This median range is WILD… it gives a song
 a really wide berth to being considered *expected*. Perhaps we should use some

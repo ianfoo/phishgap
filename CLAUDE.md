@@ -21,8 +21,13 @@ there, which makes local verification lie.
 `FAQ_CSS` extend `INDEX_CSS`. The rules that were identical in all three live
 in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS` and
 `FOOTER_LINK_CSS` — edit those once. **Everything else is still copied**:
-32–46 rules repeat pairwise, and the near-misses (`footer{…}`, `.crumb{…}`,
-`.hero{…}`) differ by real amounts. So a plain string replace on any rule
+32–46 rules repeat pairwise, and the near-misses `.crumb{…}` (four
+occurrences, all four different) and `.hero{…}` (flex in one sheet, grid in
+another) differ by real amounts. **`footer{…}` no longer does** — measured
+2026-07-30, its three layout copies are identical once whitespace is
+normalised, so it is a pure triplicate that could join the named blocks
+above; the entry here said otherwise for long enough to be worth correcting.
+So a plain string replace on any rule
 outside a named block will still hit two or three sheets, or — worse — one.
 Anchor on a neighbouring line that differs and assert the match count. Four
 bugs have come out of the copies: a nav that could not wrap, a footer link in
@@ -63,6 +68,27 @@ on dates the deleted index had recorded as walked. Only ~78 performances in the
 archive were genuinely never asked. **Do not delete the old record until the new
 one is on disk** — and the block is still there, unreachable but loaded, so
 `docs/TODO.md` §0 argues for removing it.
+
+**And the seventh, caught before it shipped: a carry-forward list in another
+function.** `save_song_history` rewrites a song's history from the API, and the
+neighbour fields are in no such response, so it copies them across by name —
+through a hardcoded tuple of four key names, in a function nobody editing the
+neighbour walk would think to open. Adding four new fields to the walk would
+have dropped every one of them on the next `--previous` run. The list is now
+one constant, `NB_CARRY`, sitting beside the walk that produces it. **When you
+add a field, grep for the list that copies fields.**
+
+**`archive/setlist-order.json` makes a re-walk free, and is a cache with no
+expiry at all.** It holds the running order of every settled show, so changing
+the neighbour rules and re-walking all 2,009 of them cost 44 API calls rather
+than 2,009, and needs no API key. But the first harvest ran *during* a show and
+wrote down that show at the 12 songs it had at the time. Reading that back
+would have frozen the running order of the one show still moving — the six-hour
+cache bug again, minus the six hours. So `--seed-setlists` always re-fetches a
+show whose report is still `provisional`, and never writes one into the extract:
+its order is partial by definition, and the day it settles a partial record
+stops being skipped and starts being believed. **An extract of a live source
+needs the same staleness rules as the cache it replaced.**
 
 **Measures are in `rem`, and one place was missed for a year.** `.wrap` is
 `max-width:60rem` precisely so it travels with the type scale, and the comment
@@ -108,6 +134,17 @@ the one show that could never be seen. It cost the whole first hour of
 2026-07-29 at MSG, live, and it had been latent every night since the original
 fix. When fixing a cache-staleness bug, check the bootstrap case: the first
 fetch is the one guaranteed to be too early.
+
+**The sixth was on the client, and it was the page itself.** The live show page
+carried `<meta http-equiv="refresh" content="120">` — present, well-formed,
+correctly placed, and never once firing: Pages sends `max-age=600`, so a reload
+inside ten minutes can be answered from the browser's own cache with the same
+document, and browsers throttle meta refresh in background tabs for as long as
+they like. A page that reloads on a timer is a long-running job that publishes
+from something it read once. It now polls the report JSON with a changing query
+string, which puts each request on its own CDN cache key, and reloads only when
+the song count actually moves. **Any reload-on-a-timer needs a changing URL, or
+it is asking the cache whether the cache has changed.**
 
 **A show can be counted before its setlist is known, and then every figure is
 wrong.** `--calendar` builds the counting calendar from phish.net's show list,

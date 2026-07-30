@@ -6,14 +6,14 @@
 
  ],
  "performances": [
-  {"date": "1995-10-13", "venue": "Will Rogers Auditorium", "city": "Fort Worth", "state": "TX", "gap": 985, "set": "1", "note": "Phish debut.", "nb": 1, "prev": "Fluffhead"},
+  {"date": "1995-10-13", "venue": "Will Rogers Auditorium", "city": "Fort Worth", "state": "TX", "gap": 985, "set": "1", "note": "Phish debut.", "nb": 1, "prev": "Fluffhead", "xnext": "Tube"},
   {"date": "1995-10-22", "venue": "Assembly Hall, University of Illinois", "city": "Champaign", "state": "IL", "gap": 7, "set": "2", "nb": 1, "prev": "Big Black Furry Creature from Mars", "next": "Uncle Pen"},
   {"date": "1995-10-25", "venue": "St. Paul Civic Center", "city": "St. Paul", "state": "MN", "gap": 2, "set": "2", "nb": 1, "prev": "Reba", "next": "Cars Trucks Buses"},
-  {"date": "1995-10-27", "venue": "Wing's Stadium", "city": "Kalamazoo", "state": "MI", "gap": 1, "set": "e", "nb": 1},
+  {"date": "1995-10-27", "venue": "Wing's Stadium", "city": "Kalamazoo", "state": "MI", "gap": 1, "set": "e", "nb": 1, "xprev": "Possum", "last": 1},
   {"date": "1995-11-09", "venue": "The Fox Theatre", "city": "Atlanta", "state": "GA", "gap": 4, "set": "2", "nb": 1, "prev": "The Man Who Stepped Into Yesterday", "next": "Hello My Baby"},
   {"date": "1995-11-15", "venue": "Sun Dome, University of South Florida", "city": "Tampa", "state": "FL", "gap": 5, "set": "2", "out": ">", "nb": 1, "prev": "Mike's Song", "in": ">", "next": "Weekapaug Groove"},
-  {"date": "1995-11-19", "venue": "Charlotte Coliseum", "city": "Charlotte", "state": "NC", "gap": 3, "set": "e", "out": ">", "nb": 1, "next": "Tweezer Reprise"},
-  {"date": "1995-11-24", "venue": "Civic Arena", "city": "Pittsburgh", "state": "PA", "gap": 3, "set": "e", "nb": 1, "next": "Rocky Top"},
+  {"date": "1995-11-19", "venue": "Charlotte Coliseum", "city": "Charlotte", "state": "NC", "gap": 3, "set": "e", "out": ">", "nb": 1, "xprev": "Suzy Greenberg", "next": "Tweezer Reprise"},
+  {"date": "1995-11-24", "venue": "Civic Arena", "city": "Pittsburgh", "state": "PA", "gap": 3, "set": "e", "nb": 1, "xprev": "Julius", "next": "Rocky Top"},
   {"date": "1996-07-21", "venue": "The Forum", "city": "N\u00fcremberg", "state": "Bavaria", "gap": 37, "set": "2", "nb": 1, "prev": "Reba", "next": "Free"},
   {"date": "1996-07-25", "venue": "Stadtpark", "city": "Hamburg", "state": "Hamburg", "gap": 4, "set": "1", "nb": 1, "prev": "Run Like an Antelope", "next": "Harry Hood"},
   {"date": "1996-08-07", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 5, "set": "2", "nb": 1, "prev": "Possum", "next": "You Enjoy Myself"},

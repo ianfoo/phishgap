@@ -6,7 +6,7 @@
 
  ],
  "performances": [
-  {"date": "2004-06-26", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 1417, "set": "1", "note": "Debut.", "out": ">", "nb": 1, "next": "Scents and Subtle Sounds"},
+  {"date": "2004-06-26", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 1417, "set": "1", "note": "Debut.", "out": ">", "nb": 1, "first": 1, "next": "Scents and Subtle Sounds"},
   {"date": "2009-12-29", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 54, "set": "1", "nb": 1, "prev": "Reba", "next": "Divided Sky"},
   {"date": "2010-10-26", "venue": "Verizon Wireless Arena", "city": "Manchester", "state": "NH", "gap": 43, "set": "1", "nb": 1, "prev": "Mellow Mood", "next": "Llama"},
   {"date": "2011-06-11", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 20, "set": "1", "nb": 1, "prev": "Ocelot", "next": "Vultures"},

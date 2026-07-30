@@ -7,7 +7,7 @@
  ],
  "performances": [
   {"date": "2009-10-31", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 1451, "set": "2", "note": "Phish debut; Sharon Jones and Saundra Williams on backup vocals, Dave Guy on trumpet, David Smith on trombone, and Tony Jarvis on saxophone.", "nb": 1, "prev": "I Just Want To See His Face", "in": ">", "next": "All Down the Line"},
-  {"date": "2011-08-16", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 96, "set": "1", "nb": 1, "prev": "Limb By Limb"},
+  {"date": "2011-08-16", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 96, "set": "1", "nb": 1, "prev": "Limb By Limb", "xnext": "Down with Disease"},
   {"date": "2012-06-30", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 23, "set": "1", "nb": 1, "prev": "Runaway Jim", "next": "Reba"}
  ]
 }

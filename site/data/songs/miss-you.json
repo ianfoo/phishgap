@@ -23,7 +23,7 @@
   {"date": "2021-12-31", "venue": "Rock Lititz", "city": "Lititz", "state": "PA", "gap": 17, "set": "2", "nb": 1, "prev": "Down with Disease", "in": ">", "next": "You Enjoy Myself"},
   {"date": "2022-05-29", "venue": "The Wharf Amphitheater", "city": "Orange Beach", "state": "AL", "gap": 11, "set": "2", "out": ">", "nb": 1, "prev": "Wolfman's Brother", "next": "Maze"},
   {"date": "2022-07-23", "venue": "Bethel Woods Center for the Arts", "city": "Bethel", "state": "NY", "gap": 12, "set": "2", "out": ">", "nb": 1, "prev": "Crosseyed and Painless", "in": ">", "next": "Set Your Soul Free"},
-  {"date": "2023-04-17", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 30, "set": "e", "nb": 1, "next": "Sand"},
+  {"date": "2023-04-17", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 30, "set": "e", "nb": 1, "xprev": "Rock and Roll", "next": "Sand"},
   {"date": "2023-07-23", "venue": "St. Joseph's Health Amphitheater at Lakeview", "city": "Syracuse", "state": "NY", "gap": 15, "set": "2", "nb": 1, "prev": "Oblivion", "next": "Wolfman's Brother"},
   {"date": "2024-07-31", "venue": "Chaifetz Arena, Saint Louis University", "city": "St. Louis", "state": "MO", "gap": 45, "set": "e", "out": ">", "nb": 1, "prev": "Grind", "next": "Harry Hood"}
  ]

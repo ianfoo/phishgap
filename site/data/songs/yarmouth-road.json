@@ -35,7 +35,7 @@
   {"date": "2017-07-26", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 12, "set": "1", "nb": 1, "prev": "Gumbo", "next": "Pebbles and Marbles"},
   {"date": "2019-06-23", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 66, "set": "1", "nb": 1, "prev": "Winterqueen", "next": "Shade"},
   {"date": "2019-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 27, "set": "1", "nb": 1, "prev": "Kill Devil Falls", "next": "The Wedge"},
-  {"date": "2021-07-30", "venue": "Oak Mountain Amphitheatre", "city": "Pelham", "state": "AL", "gap": 8, "set": "e", "nb": 1, "next": "Gumbo"},
+  {"date": "2021-07-30", "venue": "Oak Mountain Amphitheatre", "city": "Pelham", "state": "AL", "gap": 8, "set": "e", "nb": 1, "xprev": "Harry Hood", "next": "Gumbo"},
   {"date": "2021-09-03", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 18, "set": "1", "nb": 1, "prev": "Timber (Jerry the Mule)", "next": "Foam"},
   {"date": "2022-07-24", "venue": "Xfinity Theatre", "city": "Hartford", "state": "CT", "gap": 40, "set": "1", "nb": 1, "prev": "Free", "next": "Plasma"}
  ]

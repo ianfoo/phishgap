@@ -55,7 +55,7 @@
   {"date": "1997-02-14", "venue": "Le Botanique", "city": "Brussels", "state": "Brussels-Capital", "gap": 5, "set": "1", "nb": 1, "prev": "It's Ice", "in": ">", "next": "Uncle Pen"},
   {"date": "1997-02-17", "venue": "Paradiso", "city": "Amsterdam", "state": "North Holland", "gap": 2, "set": "1", "nb": 1, "prev": "Timber (Jerry the Mule)", "in": ">", "next": "Llama"},
   {"date": "1997-02-21", "venue": "Tenax", "city": "Florence", "state": "Tuscany", "gap": 3, "set": "2", "nb": 1, "prev": "AC/DC Bag", "in": ">", "next": "Reba"},
-  {"date": "1997-02-23", "venue": "Fillmore", "city": "Cortemaggiore", "state": "Emilia-Romagna", "gap": 2, "set": "e", "out": ">", "nb": 1, "next": "Rocky Top"},
+  {"date": "1997-02-23", "venue": "Fillmore", "city": "Cortemaggiore", "state": "Emilia-Romagna", "gap": 2, "set": "e", "out": ">", "nb": 1, "xprev": "Good Times Bad Times", "next": "Rocky Top"},
   {"date": "1997-03-01", "venue": "Markthalle", "city": "Hamburg", "state": "Hamburg", "gap": 4, "set": "2", "nb": 1, "prev": "The Mango Song", "in": ">", "next": "Theme from the Bottom"},
   {"date": "1997-06-13", "venue": "The S.F.X. Centre", "city": "Dublin", "state": "County Dublin", "gap": 3, "set": "1", "nb": 1, "prev": "Beauty of My Dreams", "in": ">", "next": "Limb By Limb"},
   {"date": "1997-06-25", "venue": "L\u2019Aeronef", "city": "Lille", "state": "Hauts-de-France", "gap": 8, "set": "1", "nb": 1, "prev": "Taste", "next": "AC/DC Bag"},

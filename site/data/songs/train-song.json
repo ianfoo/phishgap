@@ -63,7 +63,7 @@
   {"date": "2019-06-28", "venue": "BB&T Pavilion", "city": "Camden", "state": "NJ", "gap": 39, "set": "1", "out": ">", "nb": 1, "prev": "The Old Home Place", "next": "Horn"},
   {"date": "2019-08-30", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 12, "set": "1", "nb": 1, "prev": "Undermind", "next": "Wingsuit"},
   {"date": "2019-12-07", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 9, "set": "1", "out": ">", "nb": 1, "prev": "Halfway to the Moon", "in": ">", "next": "Guyute"},
-  {"date": "2023-04-15", "venue": "Climate Pledge Arena", "city": "Seattle", "state": "WA", "gap": 97, "set": "e", "nb": 1, "next": "Brian and Robert"},
+  {"date": "2023-04-15", "venue": "Climate Pledge Arena", "city": "Seattle", "state": "WA", "gap": 97, "set": "e", "nb": 1, "xprev": "Harry Hood", "next": "Brian and Robert"},
   {"date": "2023-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 41, "set": "1", "nb": 1, "prev": "Fuego", "in": "->", "next": "It's Ice"},
   {"date": "2024-08-06", "venue": "Van Andel Arena", "city": "Grand Rapids", "state": "MI", "gap": 22, "set": "1", "nb": 1, "prev": "Stash", "next": "Steam"}
  ]

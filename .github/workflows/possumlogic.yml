@@ -133,7 +133,35 @@ jobs:
             echo "no new shows"
           else
             git commit -m "Archive gap reports for new shows"
-            git push
+            # The watcher pushes to main every five minutes during a show, and
+            # a person pushing code races both. A rejected push here used to be
+            # fatal under `bash -e`, which took the *publish* step below with
+            # it: on 2026-07-30 the site sat a build behind over a commit that
+            # had already landed, and nothing about the failure said "publish
+            # did not run". The publish step has replayed on rejection for a
+            # while; this one now does too.
+            #
+            # Only the site/data JSON is tracked here -- every built page is
+            # gitignored -- so the rebase moves per-show files and nothing the
+            # publish reads. On conflict it aborts and gives up rather than
+            # replaying: a tree mid-rebase has conflict markers *inside* the
+            # data files, and `cp -R site/.` would copy them to gh-pages
+            # verbatim. That outage has happened here once already.
+            pushed=""
+            for attempt in 1 2 3; do
+              if git push -q; then pushed=yes; break; fi
+              echo "push rejected (attempt $attempt); replaying onto origin/main"
+              if ! git pull -q --rebase origin main; then
+                git rebase --abort || true
+                echo "rebase conflicted; leaving the archive to the next run"
+                break
+              fi
+            done
+            # Still publishes either way. The archive commit is the record; the
+            # built tree in site/ is correct whether or not that record landed,
+            # and withholding the site because a push raced is the failure this
+            # is here to stop.
+            [ -n "$pushed" ] || echo "archive not pushed; publishing anyway"
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 

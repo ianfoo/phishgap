@@ -96,6 +96,26 @@ RECHECK_DAYS = 3
 SET_ORDER = {"1": 0, "2": 1, "3": 2, "4": 3, "e": 4, "e2": 5, "e3": 6}
 SET_LABEL = {"1": "SET 1", "2": "SET 2", "3": "SET 3", "4": "SET 4",
              "e": "ENCORE", "e2": "ENCORE 2", "e3": "ENCORE 3"}
+# The same sets in running prose. SET_LABEL is a column label and is set in
+# caps; "Closed SET 1, before Tweezer" reads as shouting in the middle of a
+# sentence, and "the encore" takes an article where "set 2" does not.
+SET_PHRASE = {"1": "set 1", "2": "set 2", "3": "set 3", "4": "set 4",
+              "e": "the encore", "e2": "the second encore",
+              "e3": "the third encore"}
+
+# Everything a setlist walk decides about one performance. Cleared before the
+# walk's answer is written rather than merged over the old one: `p.update(nb)`
+# alone leaves a fossil the first time a rule changes -- a row recorded as a
+# set closer, then re-walked under a rule that knows what stood across the
+# break, would carry both answers and the renderer would show the older.
+NB_KEYS = ("prev", "in", "next", "xprev", "xnext", "first", "last")
+# The same, plus the flag saying the walk happened. Anything that rewrites a
+# song's history from a song-history response must carry all of these forward:
+# none of them is in that response, and each costs a setlist call to work out.
+# Listed once, here, because the first four were added in one session and the
+# list that copies them forward was in another function and was not updated --
+# which would have dropped every new field on the next --previous run.
+NB_CARRY = NB_KEYS + ("nb",)
 
 
 # -------------------------------------------------------------------- api ---
@@ -581,10 +601,19 @@ def share_meta(title, description, path="", image=OG_IMAGE, card=None):
 
 # ------------------------------------------------------------------ model ---
 
-def build(showdate, apikey, artist="Phish", **kw):
+def build(showdate, apikey, artist="Phish", rows_out=None, **kw):
+    """One show's report. `rows_out`, if given, is filled with the raw setlist.
+
+    Handed back rather than hung on the report: the report is written to disk
+    whole, by three separate callers, so a private key on it would have shipped
+    to readers the first time one of them forgot to strip it. The rows are what
+    the neighbour walk needs and they are already paid for here.
+    """
     rows = get("setlists/showdate/%s" % showdate, apikey, **kw)
     if not rows:
         raise ApiError("No setlist found for %s" % showdate)
+    if rows_out is not None:
+        rows_out.extend(rows)
 
     artists = {r.get("artist_name") for r in rows if r.get("artist_name")}
     if artist and len(artists) > 1:
@@ -956,11 +985,36 @@ THEME_CSS = """
 """
 
 NEW_ROWS_JS = """<script>
-/* Which rows are new since this reader last looked. A reload of a growing
-   setlist otherwise gives a longer table and no clue what changed, so finding
-   the new part means re-reading the whole thing -- which is why the tab gets
-   closed. The count last seen is kept in this browser only; nothing is sent
-   anywhere and nothing is stored server-side. */
+/* Which rows arrived while this reader was away, so a setlist that grew does
+   not have to be re-read from the top. The count is kept in this browser
+   only; nothing is sent anywhere and nothing is stored server-side.
+
+   The claim used to outlive the fact. The count was banked at page *load*,
+   the tag was built once from it and then never touched again -- so "since
+   you last looked" really meant "since this browser last loaded a document
+   for this show", and the tag was a snapshot frozen at load time. Scrolling
+   down to the new songs and back up left it still sitting there insisting
+   they were new, because nothing re-evaluated it. Ian caught it doing exactly
+   that, and asked the right question: how can it know when I last looked.
+
+   It could not, and it was nearly invisible before, because the meta refresh
+   it relied on never fired and the page therefore almost never reloaded.
+   Making the reloads real made the false claim frequent.
+
+   One rule makes the words true: **the stored count only ever advances to
+   rows that have actually been in view.** So "since you last looked" means
+   what it says -- since these rows were last in front of you -- and the tag
+   retires itself the moment that becomes true, instead of asserting it for
+   the life of the document.
+
+   A first attempt also banked the count when the page was hidden or
+   unloaded, to stop an unread page accumulating a claim. That was wrong in
+   both directions and the first test caught it. A reload fires pagehide, so
+   the count was banked from the document being torn down and the rows in the
+   *next* one that the reader had still never seen were recorded as seen: two
+   songs landing without a scroll in between reported "1 new", not 2.
+   Accumulation is not the bug -- if you never look at the new songs they are
+   still new, and saying so is the whole point. */
 (function(){
   function start(){
     var live=document.querySelector('.live');
@@ -976,20 +1030,122 @@ NEW_ROWS_JS = """<script>
     if(!show) return;
     var key='pl-seen-'+show;
     var seen=parseInt(localStorage.getItem(key)||'0',10);
-    if(seen>0&&rows.length>seen){
-      rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
-      var n=rows.length-seen;
-      var tag=document.createElement('span');
-      tag.className='since-you';
-      tag.textContent=n+' new since you last looked';
-      live.appendChild(tag);
+    function bank(){ try{ localStorage.setItem(key,String(rows.length)); }catch(e){} }
+    /* Banked here only when there is nothing new to show, where it is a
+       no-op or a correction for a setlist that shrank. With something new it
+       waits for the rows to be seen: writing the count at load is precisely
+       what made the old claim false. */
+    if(!(seen>0&&rows.length>seen)){ bank(); return; }
+    var fresh=rows.slice(seen);
+    fresh.forEach(function(r){ r.classList.add('fresh'); });
+    /* The count is also the way there. Every song row already carries its
+       slug as an id, so this is a real href to a real fragment rather than a
+       scripted scroll -- which matters because a fragment jump is reversible
+       with the Back button and a scroll is not, the same reasoning as the
+       show row's landing spot in docs/TODO.md 2h. It points at the *first*
+       new row, so the reader lands at the start of what they missed and
+       reads down.
+
+       tabindex="-1" so the jump moves focus as well as the viewport, and
+       [tabindex="-1"]:focus already drops the ring for exactly this case: a
+       landing spot is a place, not a control. */
+    var target=fresh[0];
+    var tag=document.createElement(target.id?'a':'span');
+    tag.className='since-you';
+    tag.textContent=(rows.length-seen)+' new since you last looked';
+    if(target.id){
+      target.setAttribute('tabindex','-1');
+      tag.href='#'+target.id;
+      /* Non-breaking, so the arrow can never be left on a line by itself. */
+      tag.textContent+='\\u00a0\\u2193';
     }
-    try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+    live.appendChild(tag);
+    if(!window.IntersectionObserver){ bank(); return; }
+    /* Retired once the last of those rows has held still in view for a
+       second. One frame would retire it during a flick past the table, which
+       is not looking at it; a second is long enough to mean a deliberate look
+       and short enough that any real one counts. */
+    var timer=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          if(!timer) timer=setTimeout(function(){
+            io.disconnect();
+            if(tag.parentNode) tag.parentNode.removeChild(tag);
+            bank();
+          },1000);
+        } else if(timer){ clearTimeout(timer); timer=null; }
+      });
+    });
+    io.observe(fresh[fresh.length-1]);
   }
   /* Same trap as the relative stamp beside it: this ships in the head, so it
      ran before .live or a single row existed and returned every time. */
   if(document.readyState==='loading')
     document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>"""
+
+
+LIVE_JS = """<script>
+/* Watch tonight's report for a song landing, and reload when one does.
+   Replaces <meta http-equiv="refresh">, which was present, well-formed and
+   correctly placed, and did not fire. Two reasons, and it needed both fixed:
+   Pages serves cache-control:max-age=600, so a reload inside ten minutes can
+   be answered out of the browser's own cache with the same document; and
+   browsers throttle or defer a meta refresh in a background tab for as long
+   as they like. Hitting reload by hand during the 2026-07-29 show brought in
+   five songs at once -- about 25 minutes of drift, well past the cache
+   window, so it had not fired at all.
+
+   The report JSON is what is watched rather than the page: it is a few KB
+   against 60, and a changing query string puts each request on its own CDN
+   cache key, which is what defeats both caches. The page reloads only when
+   the song count actually moves, or when the show settles and the banner
+   should go -- a timer that reloads regardless is what the meta refresh was.
+
+   Nothing is polled while the tab is hidden. A background tab is exactly
+   where a reader is not looking, and visibilitychange brings it up to date
+   the moment they look back, which is sooner than any interval would. */
+(function(){
+  function start(){
+    var el=document.querySelector('.live[data-show]');
+    if(!el||!window.fetch) return;
+    var show=el.getAttribute('data-show');
+    var url='../data/shows/'+show+'.json';
+    var seen=parseInt((el.querySelector('.n')||{}).textContent||'0',10);
+    var key='pl-reloaded-'+show, busy=false;
+    function look(){
+      if(busy||document.hidden) return;
+      busy=true;
+      fetch(url+'?t='+Date.now(),{cache:'no-store'}).then(function(r){
+        return r.ok?r.json():null;
+      }).then(function(d){
+        busy=false;
+        if(!d||!d.songs) return;
+        if(d.songs.length===seen&&d.provisional) return;
+        /* One reload per change, remembered for this tab. A reload fetches
+           the document fresh, but if a stale copy comes back anyway the
+           count still would not match and this would reload on every pass
+           for as long as the tab was open. */
+        var mark=d.songs.length+(d.provisional?'':'-done');
+        try{
+          if(sessionStorage.getItem(key)===mark) return;
+          sessionStorage.setItem(key,mark);
+        }catch(e){}
+        location.reload();
+      }).catch(function(){ busy=false; });
+    }
+    setInterval(look,60000);
+    document.addEventListener('visibilitychange',function(){
+      if(!document.hidden) look();
+    });
+  }
+  /* Ships in the head, so .live does not exist yet. The two scripts beside
+     this one were each broken for weeks by exactly that. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded',start);
   else start();
 })();
 </script>"""
@@ -1257,6 +1413,17 @@ body{font-variant-numeric:tabular-nums}
    border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
    cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
 .keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* Not on a touch device. It is a discovery aid for keys, and a phone has
+   none -- so it sat in the footer of every page offering "[ and ] to step
+   between shows" to a reader with no way to press either, and "Keys ?" is
+   doubly meaningless when there is no ? to press. The footer is a flex row
+   with gap and no separator characters, so this leaves nothing stranded
+   behind it.
+
+   The `?` handler stays bound either way: this hides a button, it does not
+   remove the feature, so an iPad with a keyboard attached -- whose *primary*
+   pointer is still coarse -- can open the same list. */
+@media (hover:none) and (pointer:coarse){.keyhint{display:none}}
 dialog.keys{border:1px solid var(--ink);background:var(--paper);
    color:var(--ink);padding:1.2rem 1.4rem 1rem;max-width:24rem;width:calc(100% - 2rem)}
 dialog.keys::backdrop{background:rgba(0,0,0,.5)}
@@ -1716,7 +1883,9 @@ tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
    column instead of hugging its own text. Beating it back with .live
    .since-you would only move the race one round on; excluding the chip here
    means the two rules cannot both apply. Same shape as the sticky-header hide
-   and .backtop before it: a modifier class losing to a descendant selector. */
+   and .backtop before it: a modifier class losing to a descendant selector.
+   The chip is an <a> now and this rule can no longer reach it either way; the
+   :not() stays as the guard against the next span that lands in here. */
 .live span:not(.since-you){display:block;margin-top:.15rem;font-size:.8125rem;
    color:var(--dim)}
 .live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
@@ -1729,6 +1898,14 @@ tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
 .since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
    background:var(--hot-text);padding:.15rem .4rem}
+/* It is an anchor now -- the count doubles as the jump to the first new row.
+   text-decoration has to be said out loud: the colour above already beats the
+   UA link colour, so this would not have come out browser blue, but it would
+   have come out underlined, and four links on this site have shipped wearing
+   a default the author sheet never overrode. The ring is not set here either;
+   a:focus-visible in BASE_CSS already draws it in --hot. */
+a.since-you{text-decoration:none}
+a.since-you:hover{text-decoration:underline}
 tr.fresh td{background:var(--hover)}
 tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
@@ -1928,13 +2105,13 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
 SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{titlestate}{date} &mdash; Possum Logic</title>{refresh}
+<title>{titlestate}{date} &mdash; Possum Logic</title>
 <meta property="og:type" content="article">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}{poll}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <div class="rule2"></div>
 <header>{crumb}<h1>{date}<span class="dow">{dow}</span></h1>
@@ -2733,7 +2910,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                  "do we. Nothing here feeds any figure on the rest of the "
                  "site.</span></p>")
 
-    live = refresh = ""
+    live = poll = ""
     if report.get("provisional"):
         # Two clocks, and the second is the one that matters. When the last
         # song arrived says how the show is going; when we last looked says
@@ -2752,16 +2929,27 @@ def render_html(report, bar_scale="linear", index_href=None,
         # song count -- "(20) 2026-07-27" -- so a key derived from it changed
         # every time a song landed, which is precisely when the mark is meant
         # to fire, and it never once did.
+        # "Last checked" was a claim about the server and this stamp cannot
+        # make one: it is written at render time, so a document sitting in a
+        # tab for an hour faithfully reports its own age and nothing else.
+        # That was the one honest thing on a stale page and it read as the
+        # opposite. It now says what it measures.
+        # Three ideas, and the third is not about the show at all -- it is a
+        # promise about the document. Run in with middots it wrapped after
+        # "this", consistently, because that is simply where the measure ran
+        # out: "... 1 minute ago * this / page refreshes itself". Its own line
+        # cannot stall like that, and .live span:not(.since-you) already makes
+        # every span here a block, so this costs no CSS.
         live = ("<p class='live' role='status' aria-live='polite'"
                 " data-show='%s'>"
                 "<b>This show is being played right now</b>"
                 "<span><b class='n'>%d</b> song%s so far &middot; "
-                "last checked <time class='ago' datetime='%s'>%s</time>"
-                " &middot; this page refreshes itself</span></p>"
+                "this page was built <time class='ago' datetime='%s'>%s</time>"
+                "</span><span>It updates itself as songs land</span></p>"
                 % (html.escape(report["date"], quote=True),
                    n, "" if n == 1 else "s",
                    html.escape(checked, quote=True), _clock(checked)))
-        refresh = '\n<meta http-equiv="refresh" content="120">'
+        poll = LIVE_JS
 
     rating = ""
     if report.get("pnet_rating") is not None:
@@ -2779,7 +2967,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         # this the live show's tab is indistinguishable from any archived one.
         titlestate=("(%d) " % len(report["songs"])
                     if report.get("provisional") else ""),
-        live=live, refresh=refresh, aside=aside,
+        live=live, poll=poll, aside=aside,
         venue=_venue_lines(report), hero=hero, rating=rating,
         links=_show_links(report["date"], on_phishin), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
@@ -4018,6 +4206,26 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* The set boundary, named. What is on the far side of a setbreak is a fact,
+   so the words carry the ink and the song beside them stays dim -- the label
+   is the answer, the song is the detail, and that order survives the column
+   truncating. Not bold: this column sits under a gap figure and a bar, and a
+   bold line here out-shouts both. */
+.nb b{font-weight:400;color:var(--ink)}
+/* These two wrap where every other line in the column truncates. The column
+   is 162px at any desktop width, and a line of this shape is a sentence, not
+   a title: 40 of Tweezer's 50 came out as "Opened set 3, af..." -- the cut
+   landing inside "after" rather than inside a song name. Wrapping made 14 of
+   that page's 418 rows taller and the page 0.7% longer, which is the whole
+   cost. A title still truncates, because half a title is still readable and
+   half a preposition is not. */
+.nb .edge{white-space:normal}
+/* No arrow on a show opener or closer: both name no song, so it would point
+   at nothing. Hidden rather than removed, so the slot is still there and
+   "Closed the show" starts where "Opened the encore, after ..." above it
+   starts. Dropping the slot instead left the two lines of one cell on
+   different left edges, which is visible on 3,821 rows. */
+.nb .term::before{opacity:0}
 /* Same -.06em as the report pages: enough to make -> one mark, not so
    much that it stops matching the > on the row above it. */
 .nb .mk.tight{letter-spacing:-.06em}
@@ -4667,17 +4875,43 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
             return ("<span class='mk%s'>%s</span>"
                     % (" tight" if mark == "->" else "", html.escape(mark)))
 
+        # A set boundary is named rather than left blank. Four states used to
+        # render identically to each other and to "we never asked": opened the
+        # set, closed the set, opened the show, closed the show. Only the last
+        # two are true terminals -- a set opener and a set closer each have a
+        # real song on the far side of a break -- so those two carry a song
+        # and the terminals carry only the words.
+        #
+        # The song across a break never takes a mark, whatever phish.net
+        # recorded, because a mark there would claim a segue across twenty
+        # minutes of setbreak. Adjacency is not the same claim: an encore is
+        # chosen in answer to how set 2 ended, and the blank cell threw that
+        # away.
+        # `or`, not a get() default: phish.net files the odd show under a set
+        # key this table does not have, and "Opened set , after Harpua" is a
+        # worse sentence than the one that does not name the set at all.
+        where = SET_PHRASE.get(p["set"]) or "the set"
         bits = []
         if p.get("prev"):
             bits.append("<span class='nb-in%s'>%s%s</span>"
                         % (" seg" if p.get("in") else "",
                            html.escape(p["prev"]),
                            " %s" % _mk(p["in"]) if p.get("in") else ""))
+        elif p.get("xprev"):
+            bits.append("<span class='nb-in edge'><b>Opened %s</b>, after %s"
+                        "</span>" % (where, html.escape(p["xprev"])))
+        elif p.get("first"):
+            bits.append("<span class='nb-in term'><b>Opened the show</b></span>")
         if p.get("next"):
             bits.append("<span class='nb-out%s'>%s%s</span>"
                         % (" seg" if p.get("out") else "",
                            "%s " % _mk(p["out"]) if p.get("out") else "",
                            html.escape(p["next"])))
+        elif p.get("xnext"):
+            bits.append("<span class='nb-out edge'><b>Closed %s</b>, before %s"
+                        "</span>" % (where, html.escape(p["xnext"])))
+        elif p.get("last"):
+            bits.append("<span class='nb-out term'><b>Closed the show</b></span>")
         nb = ("<span class='nb'>%s%s</span>"
               % ("<span class='cap'>Before / after</span>" if bits else "",
                  "".join(bits)))
@@ -6473,9 +6707,9 @@ def site_paths(site_dir, date):
 
 
 # A report is named for its date and nothing else is. data/ also holds indexes
-# now -- neighbours.json among them -- and globbing every .json in there read
-# one as a show whose date key was missing, which is a KeyError at build time
-# rather than anything as polite as a skip.
+# -- current.json, calendar.json, cards.json -- and globbing every .json in
+# there read one as a show whose date key was missing, which is a KeyError at
+# build time rather than anything as polite as a skip.
 #
 # Kept after the move to data/shows/, where nothing else lives and it therefore
 # guards nothing. It is what migrate_show_data() recognises a stray report by,
@@ -6931,7 +7165,7 @@ def save_song_history(site_dir, slug, song, rows, artist=None, best=None):
     # Neighbours cost a call per show to work out and are not in this response,
     # so a history rewritten from the API carries forward the ones it had
     # rather than making the twenty-minute backfill run again.
-    keep = {p["date"]: {k: p[k] for k in ("prev", "in", "next", "nb") if k in p}
+    keep = {p["date"]: {k: p[k] for k in NB_CARRY if k in p}
             for p in held.get("performances") or []}
     perfs = [_performance(r) for r in by_show(rows)]
     for p in perfs:
@@ -7411,17 +7645,97 @@ def archived_history(site_dir, slug, date):
              "gap": p.get("gap"), "out": p.get("out") or ""} for p in perfs]
 
 
+# The running order of every show we have ever walked, kept beside the code
+# rather than under site/ because it is a build input and readers never see it.
+# Absolute, from this file: the workflows and publish.sh run from the repo root
+# but a run from anywhere else must find the same archive, and silently walking
+# zero shows because the relative path missed is precisely the kind of quiet
+# nothing this project keeps paying for.
+ORDER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "archive", "setlist-order.json")
+# The only five fields kept. Everything else the endpoint returns is either
+# already in the archive or of no use here; see archive/README.md.
+ORDER_FIELDS = ("set", "position", "slug", "song", "trans_mark")
+
+
+def order_rows(rows, artist="Phish"):
+    """One show's running order, reduced to the five fields worth keeping."""
+    rows = [r for r in rows
+            if r.get("song") and (not artist or r.get("artist_name") == artist)]
+    rows.sort(key=lambda r: (SET_ORDER.get(str(r.get("set")), 9),
+                             int(r.get("position") or 0)))
+    return [{"set": str(r.get("set") or ""),
+             "position": int(r.get("position") or 0),
+             "slug": r.get("slug") or r.get("song") or "",
+             "song": r.get("song") or "",
+             "trans_mark": r.get("trans_mark") or ""}
+            for r in rows]
+
+
+def setlist_order(path=None):
+    """{date: rows} for every show the extract holds, or {} if it is missing.
+
+    Missing is not an error. It costs API calls, not correctness -- every date
+    absent here is simply fetched -- so a checkout without the archive still
+    builds, just slowly.
+    """
+    path = path or ORDER_PATH
+    if not os.path.isfile(path):
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        try:
+            return json.load(fh).get("shows") or {}
+        except ValueError:
+            log("warning: %s is not readable JSON; walking without it", path)
+            return {}
+
+
+def save_setlist_order(shows, path=None, artist="Phish"):
+    """Write the extract back, whole, via a temporary file.
+
+    Whole because it is one JSON document, and via a temporary file because a
+    3 MB write interrupted half way would leave the record of 1,966 walked
+    shows truncated -- and this file exists so those shows never have to be
+    fetched again.
+    """
+    path = path or ORDER_PATH
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    doc = {"artist": artist, "endpoint": "setlists/showdate/<date>",
+           "fields": list(ORDER_FIELDS), "shows": shows}
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        json.dump(doc, fh, sort_keys=True, separators=(",", ":"))
+    os.replace(tmp, path)
+    log("archive: running order for %d show%s",
+        len(shows), "" if len(shows) == 1 else "s")
+
+
 def setlist_neighbours(rows, artist=None):
     """What each song followed and led into, per slug, for one show.
 
-    Scoped to the set: a set opener has nothing before it, and saying it
-    followed the last song of the previous set would be a lie about a gap of
-    twenty minutes. A song played more than once in a night keeps the first
-    appearance, which is the row the archive keeps too.
+    Within a set, `prev`/`next` and the mark that joins them. Across a set
+    break, `xprev`/`xnext` -- the same adjacency, named as what it is and
+    never carrying a mark, because a mark across twenty minutes of setbreak
+    would be a lie about a segue. Adjacency itself is not: an encore is chosen
+    in answer to how set 2 ended, and a blank cell threw that away.
+
+    At the two ends of the night, `first` and `last`. Those are the only two
+    true terminals -- a set opener and a set closer both have a real song on
+    the far side of a break, which is why they get a song and these get a
+    flag. The four together mean a blank cell now says one thing only: we
+    have not walked this setlist.
 
     The mark between two songs belongs to the earlier of them -- phish.net
     stores it as the trailing punctuation -- so the way *into* a song is the
     previous row's mark, not its own.
+
+    "The show" means this artist's show. Rows by anyone else are dropped
+    before the ends are found, so at a festival the first Phish song is the
+    show opener even where another band played earlier. That is the same
+    reading every other page here takes.
+
+    A song played more than once in a night keeps the first appearance, which
+    is the row the archive keeps too.
 
     Every song found in `rows` gets an entry, even an empty one. That is the
     difference between "this setlist says the song opened its set" and "this
@@ -7447,20 +7761,96 @@ def setlist_neighbours(rows, artist=None):
             mark = (rows[i - 1].get("trans_mark") or "").strip()
             if mark and mark != ",":
                 nb["in"] = mark
+        elif i:
+            nb["xprev"] = rows[i - 1].get("song") or ""
+        else:
+            nb["first"] = 1
         if same(i + 1):
             nb["next"] = rows[i + 1].get("song") or ""
+        elif i + 1 < len(rows):
+            nb["xnext"] = rows[i + 1].get("song") or ""
+        else:
+            nb["last"] = 1
         out[slug] = nb
     return out
 
 
-NEIGHBOUR_INDEX = "neighbours.json"
+def apply_neighbours(perf, found, settled=True):
+    """Write one walk's answer onto one performance, replacing the last one.
+
+    Cleared before updating rather than merged over: a key this walk did not
+    set is a key that is no longer true, and merging would leave a row that
+    was a set closer carrying both that answer and the newer one.
+
+    `last` and `nb` are withheld while the show is still being played. `last`
+    means "closed the show", a claim about songs nobody has played yet, wrong
+    from the moment the next one lands. `nb` means the walk is finished, and
+    it is the thing that stops a date ever being asked again -- writing it
+    mid-show is how the Before / after column was emptied on 758 rows.
+    """
+    for k in NB_KEYS:
+        perf.pop(k, None)
+    perf.update(found)
+    if settled:
+        perf["nb"] = 1
+    else:
+        perf.pop("last", None)
+        perf.pop("nb", None)
+
+
+def record_neighbours(site_dir, date, rows, artist=None, settled=True):
+    """Write one show's neighbours into the songs that were played in it.
+
+    Free. The setlist that built the report is already in hand, so this is the
+    walk `--seed-setlists` does, done at the moment the show is fetched rather
+    than whenever somebody next runs the backfill by hand. Before this, a show
+    played tonight kept a blank Before / after column on every one of its songs
+    until a manual run -- which is how 2026-07-29 shipped.
+
+    Nothing is claimed about a show still being played. `last` means "closed
+    the show", a statement about songs that have not happened, wrong from the
+    moment the next one lands; `nb` means the walk is finished, and it is what
+    stops a date ever being asked again. Both wait for the show to settle.
+    Everything else is true as soon as the song after it exists, so the column
+    fills in live.
+    """
+    nb = setlist_neighbours(rows, artist)
+    wrote = 0
+    for slug, found in nb.items():
+        doc = song_history(site_dir, slug)
+        if not doc:
+            continue                      # song not archived, nothing to hold it
+        hit = False
+        for p in doc["performances"]:
+            if p["date"] != date:
+                continue
+            apply_neighbours(p, found, settled)
+            hit = True
+        if not hit:
+            continue
+        write_song_file(site_dir, slug,
+                        {k: doc.get(k, "") for k in ("song", "slug", "artist")},
+                        doc["performances"], doc.get("best") or [])
+        wrote += 1
+    if wrote:
+        log("neighbours: %s on %d song%s%s", date, wrote,
+            "" if wrote == 1 else "s",
+            "" if settled else " (show still on; not final)")
+    return wrote
+
+
 NEIGHBOUR_FLUSH = 150
 
 
-def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
+def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     """Backfill what came before and after each archived performance.
 
-    One setlist call per distinct show. Every row a call covers is marked
+    Walked from `archive/setlist-order.json` wherever it reaches, and fetched
+    only where it does not -- so changing the neighbour rules and re-walking
+    all 1,966 shows with `--force` costs nothing and needs no API key.
+
+    One setlist call per distinct show not in that archive. Every row a call
+    covers is marked
     asked, on the row itself rather than in an index of dates: a date index
     cannot tell "asked, and this song opened the set" from "never asked", so
     adding songs later left them with no neighbours on dates the index already
@@ -7475,33 +7865,32 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
         if doc:
             songs[slug] = doc
 
-    # One-time migration off the old date index: a song that already carries
-    # neighbours somewhere was walked while that index was being built, so its
-    # rows on those dates were genuinely asked about.
-    index = os.path.join(site_dir, "data", NEIGHBOUR_INDEX)
-    if os.path.isfile(index):
-        with open(index, encoding="utf-8") as fh:
-            try:
-                seen = set(json.load(fh).get("dates") or [])
-            except ValueError:
-                seen = set()
-        for doc in songs.values():
-            if not any(p.get("prev") or p.get("next") for p in doc["performances"]):
-                continue
-            for p in doc["performances"]:
-                if p["date"] in seen:
-                    p["nb"] = 1
-        os.remove(index)
-
     todo = sorted({p["date"] for d in songs.values() for p in d["performances"]
                    if force or not p.get("nb")})
     if not todo:
-        log("neighbours: nothing to fetch")
+        log("neighbours: nothing to walk")
         return 0
 
-    log("neighbours: %d show%s to fetch",
-        len(todo), "" if len(todo) == 1 else "s")
-    pending, fetched, missed, absent = {}, 0, [], 0
+    # The running order we already own. A date in here costs nothing, which is
+    # what the extract is for: the rules above can change and every one of
+    # 1,966 shows is re-walked for free. Only what it is missing is fetched,
+    # and what is fetched goes into it, so no date is ever paid for twice.
+    #
+    # Except for a show still being played. An extract is a cache with no
+    # expiry at all, and the archive already holds tonight's show at the 12
+    # songs it had when it was harvested. Reading that back would freeze the
+    # running order of the one show whose running order is still changing --
+    # the same shape as the six-hour cache that cost the first hour of
+    # 2026-07-29, and it would not even have the decency to expire. So a show
+    # whose report is still provisional is always re-fetched, and what comes
+    # back replaces what the extract held.
+    order = setlist_order()
+    unsettled = {r["date"] for r in saved_reports(site_dir)
+                 if r.get("provisional")}
+    have = sum(1 for d in todo if d in order and d not in unsettled)
+    log("neighbours: %d show%s to walk, %d from the archive, %d to fetch",
+        len(todo), "" if len(todo) == 1 else "s", have, len(todo) - have)
+    pending, walked, fetched, missed, absent, grew = {}, 0, 0, [], 0, False
 
     def flush():
         for slug in sorted(pending):
@@ -7512,12 +7901,44 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
         pending.clear()
 
     for i, date in enumerate(todo, 1):
-        try:
-            rows = get("setlists/showdate/%s" % date, apikey, **kw)
-        except ApiError as exc:
-            missed.append("%s (%s)" % (date, exc))
-            continue
-        nb = setlist_neighbours(rows, artist)
+        rows = None if date in unsettled else order.get(date)
+        if rows is None:
+            # Not in the extract, so this one has to be bought. The key is
+            # loaded here rather than up front: a re-walk the archive covers
+            # end to end needs no key at all, and asking for one would have
+            # made a free run fail on a machine that has none.
+            #
+            # A missing key is a missed date, not a dead run. Thirty seconds
+            # of walking is already on the floor by this point and the flush
+            # that would save it is at the bottom of this loop.
+            if apikey is None:
+                apikey = load_key(None, required=False) or ""
+            if not apikey:
+                missed.append("%s (no API key)" % date)
+                continue
+            try:
+                rows = get("setlists/showdate/%s" % date, apikey, **kw)
+            except ApiError as exc:
+                missed.append("%s (%s)" % (date, exc))
+                continue
+            nb = setlist_neighbours(rows, artist)
+            kept = order_rows(rows, artist)
+            if date in unsettled:
+                # A show still being played is never written down here. Its
+                # order is partial by definition, and the day it settles a
+                # partial record stops being skipped and starts being
+                # believed. Any earlier partial goes too: the extract was
+                # first harvested mid-show and holds one already.
+                if order.pop(date, None) is not None:
+                    grew = True
+            elif kept:
+                order[date] = kept
+                grew = True
+            fetched += 1
+        else:
+            # No artist filter: the extract is one artist already and does not
+            # carry `artist_name`, so filtering on it would empty every row.
+            nb = setlist_neighbours(rows)
         for slug, doc in songs.items():
             for p in doc["performances"]:
                 if p["date"] != date:
@@ -7539,14 +7960,19 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
                 if slug not in nb:
                     absent += 1
                     continue
-                p["nb"] = 1
-                p.update(nb[slug])
+                # Same guard as --catch-up's: a hand-run of this during a show
+                # would otherwise stamp "closed the show" on whatever song was
+                # last at that moment and mark the date answered, which is the
+                # one state no later run would revisit.
+                apply_neighbours(p, nb[slug], date not in unsettled)
                 pending[slug] = True
-        fetched += 1
+        walked += 1
         if i % NEIGHBOUR_FLUSH == 0:
             flush()
             log("  %d/%d shows", i, len(todo))
     flush()
+    if grew:
+        save_setlist_order(order)
     if missed:
         log("warning: no setlist for %d show%s: %s",
             len(missed), "" if len(missed) == 1 else "s", "; ".join(missed[:5]))
@@ -7558,8 +7984,9 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
         log("neighbours: %d performance%s not in the setlist fetched for its "
             "own date; left unmarked to ask again", absent,
             "" if absent == 1 else "s")
-    log("neighbours: %d show%s fetched", fetched, "" if fetched == 1 else "s")
-    return fetched
+    log("neighbours: %d show%s walked, %d of them fetched",
+        walked, "" if walked == 1 else "s", fetched)
+    return walked
 
 
 # How far back to keep asking about a show that still has no rating. Measured
@@ -8521,8 +8948,10 @@ def main():
             unarchived = date not in have
             live = (dict(kw, refresh=True) if date in recheck or unarchived
                     else kw)
+            setlist = []
             try:
-                report = build(date, key, artist=args.artist, **live)
+                report = build(date, key, artist=args.artist,
+                               rows_out=setlist, **live)
             except ApiError as exc:
                 # A tour-length run should not die on tonight's show having no
                 # setlist posted yet.
@@ -8541,6 +8970,14 @@ def main():
                 continue
             if args.site:
                 settle(report, prior, _utcnow())
+                # After settle(), because whether the show is still on decides
+                # what may be written down; and only with --previous, because
+                # without it the songs of a brand-new show have no archived
+                # history for these to be written into.
+                if args.previous:
+                    record_neighbours(args.site, report["date"], setlist,
+                                      artist=args.artist,
+                                      settled=not report.get("provisional"))
             reports.append(report)
 
         if args.seed_songs:
@@ -8552,8 +8989,9 @@ def main():
         if args.sweep_ratings:
             sweep_ratings(args.site, days=args.sweep_ratings, **kw)
         if args.seed_setlists:
-            key = key or load_key(args.apikey)
-            seed_setlists(args.site, key, artist=args.artist,
+            # No key loaded here on purpose: the walk buys one only if the
+            # archive turns out not to cover the dates it needs.
+            seed_setlists(args.site, key or args.apikey, artist=args.artist,
                           force=args.force, **kw)
         if args.seed_songs or args.seed_scores:
             seed_scores(args.site,
