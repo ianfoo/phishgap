@@ -98,6 +98,7 @@
   {"date": "2024-02-21", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 35, "set": "1", "prev": "Down with Disease", "in": ">", "next": "Everything's Right"},
   {"date": "2024-07-31", "venue": "Chaifetz Arena, Saint Louis University", "city": "St. Louis", "state": "MO", "gap": 17, "set": "2", "out": ">", "prev": "Mr. Completely", "next": "Twist"},
   {"date": "2025-04-18", "venue": "Climate Pledge Arena", "city": "Seattle", "state": "WA", "gap": 28, "set": "1", "prev": "Back on the Train", "next": "Tube"},
-  {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 63, "set": "e", "prev": "Monsters", "next": "Run Like an Antelope"}
+  {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 63, "set": "e", "prev": "Monsters", "next": "Run Like an Antelope"},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "1", "note": "Trey on acoustic."}
  ]
 }
