@@ -343,6 +343,7 @@
   {"date": "2022-08-14", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 38, "set": "2", "out": "->", "prev": "Broken Heart Attack", "in": ">", "next": "Martian Monster", "nb": 1},
   {"date": "2023-07-16", "venue": "Ameris Bank Amphitheatre", "city": "Alpharetta", "state": "GA", "gap": 25, "set": "e", "note": "Fish on guitar.", "prev": "The Night the Lights Went Out in Georgia", "in": ">", "next": "You Enjoy Myself", "nb": 1},
   {"date": "2023-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 9, "set": "2", "times": 2, "out": ">", "prev": "Also Sprach Zarathustra", "in": "->", "next": "Cracklin' Rosie", "nb": 1},
-  {"date": "2026-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 135, "set": "1", "note": "Fish on vacuum and \"GOOOAAALLL\" announcement from Trey.", "out": ">", "prev": "Love You", "in": ">", "next": "Sparkle", "nb": 1}
+  {"date": "2026-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 135, "set": "1", "note": "Fish on vacuum and \"GOOOAAALLL\" announcement from Trey.", "out": ">", "prev": "Love You", "in": ">", "next": "Sparkle", "nb": 1},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "2"}
  ]
 }
