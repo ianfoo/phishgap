@@ -6,9 +6,9 @@
 
  ],
  "performances": [
-  {"date": "2014-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1671, "set": "2", "note": "Debut."},
-  {"date": "2015-08-09", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 20, "set": "1"},
-  {"date": "2016-07-20", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 36, "set": "1", "out": ">"},
-  {"date": "2017-07-26", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 37, "set": "1"}
+  {"date": "2014-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1671, "set": "2", "note": "Debut.", "nb": 1, "prev": "The Haunted House", "next": "The Dogs"},
+  {"date": "2015-08-09", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 20, "set": "1", "nb": 1, "next": "Colonel Forbin's Ascent"},
+  {"date": "2016-07-20", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 36, "set": "1", "out": ">", "nb": 1, "prev": "McGrupp and the Watchful Hosemasters", "next": "Big Black Furry Creature from Mars"},
+  {"date": "2017-07-26", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 37, "set": "1", "nb": 1, "prev": "Roses Are Free", "in": ">", "next": "Gumbo"}
  ]
 }

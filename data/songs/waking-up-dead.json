@@ -6,13 +6,13 @@
 
  ],
  "performances": [
-  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 0, "set": "1", "note": "Debut."},
-  {"date": "2016-10-15", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 21, "set": "1", "out": ">"},
-  {"date": "2016-10-19", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 3, "set": "1"},
-  {"date": "2016-10-25", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 4, "set": "1"},
-  {"date": "2017-01-14", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 10, "set": "1"},
-  {"date": "2017-07-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 14, "set": "1"},
-  {"date": "2017-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 9, "set": "1", "out": ">"},
-  {"date": "2018-07-25", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 10, "set": "1"}
+  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 0, "set": "1", "note": "Debut.", "nb": 1, "prev": "Blaze On", "next": "Llama"},
+  {"date": "2016-10-15", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 21, "set": "1", "out": ">", "nb": 1, "prev": "Devotion to a Dream", "next": "Timber (Jerry the Mule)"},
+  {"date": "2016-10-19", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 3, "set": "1", "nb": 1, "prev": "My Sweet One", "next": "Halfway to the Moon"},
+  {"date": "2016-10-25", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 4, "set": "1", "nb": 1, "prev": "Foam", "next": "Divided Sky"},
+  {"date": "2017-01-14", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 10, "set": "1", "nb": 1, "prev": "The Line", "next": "Tube"},
+  {"date": "2017-07-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 14, "set": "1", "nb": 1, "prev": "Runaway Jim", "next": "Esther"},
+  {"date": "2017-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 9, "set": "1", "out": ">", "nb": 1, "prev": "Your Pet Cat", "in": ">", "next": "Theme from the Bottom"},
+  {"date": "2018-07-25", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 10, "set": "1", "nb": 1, "prev": "Ocelot", "in": ">", "next": "Backwards Down the Number Line"}
  ]
 }

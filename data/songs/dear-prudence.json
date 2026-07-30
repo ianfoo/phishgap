@@ -6,8 +6,8 @@
 
  ],
  "performances": [
-  {"date": "1994-10-31", "venue": "Glens Falls Civic Center", "city": "Glens Falls", "state": "NY", "gap": 919, "set": "2", "note": "Phish debut."},
-  {"date": "2016-06-22", "venue": "Xcel Energy Center", "city": "St. Paul", "state": "MN", "gap": 799, "set": "1"},
-  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 4, "set": "e", "out": ">"}
+  {"date": "1994-10-31", "venue": "Glens Falls Civic Center", "city": "Glens Falls", "state": "NY", "gap": 919, "set": "2", "note": "Phish debut.", "nb": 1, "prev": "Back in the U.S.S.R.", "in": ">", "next": "Glass Onion"},
+  {"date": "2016-06-22", "venue": "Xcel Energy Center", "city": "St. Paul", "state": "MN", "gap": 799, "set": "1", "nb": 1, "prev": "Undermind", "next": "Stash"},
+  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 4, "set": "e", "out": ">", "nb": 1, "next": "Harry Hood"}
  ]
 }

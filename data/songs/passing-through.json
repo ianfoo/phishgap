@@ -6,11 +6,11 @@
 
  ],
  "performances": [
-  {"date": "2018-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1811, "set": "2", "note": "Debut."},
-  {"date": "2018-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "2"},
-  {"date": "2019-06-21", "venue": "PNC Music Pavilion", "city": "Charlotte", "state": "NC", "gap": 10, "set": "1"},
-  {"date": "2020-02-23", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 35, "set": "2"},
-  {"date": "2021-09-01", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 19, "set": "1", "out": ">"},
-  {"date": "2022-07-19", "venue": "TD Pavilion at the Mann", "city": "Philadelphia", "state": "PA", "gap": 37, "set": "2", "out": ">"}
+  {"date": "2018-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1811, "set": "2", "note": "Debut.", "nb": 1, "prev": "Cool Amber and Mercury"},
+  {"date": "2018-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "2", "nb": 1, "prev": "Harry Hood", "in": ">", "next": "Harry Hood"},
+  {"date": "2019-06-21", "venue": "PNC Music Pavilion", "city": "Charlotte", "state": "NC", "gap": 10, "set": "1", "nb": 1, "prev": "Tweezer", "in": "->", "next": "Ya Mar"},
+  {"date": "2020-02-23", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 35, "set": "2", "nb": 1, "prev": "Back on the Train", "in": ">"},
+  {"date": "2021-09-01", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 19, "set": "1", "out": ">", "nb": 1, "prev": "Cities", "in": "->", "next": "Fluffhead"},
+  {"date": "2022-07-19", "venue": "TD Pavilion at the Mann", "city": "Philadelphia", "state": "PA", "gap": 37, "set": "2", "out": ">", "nb": 1, "prev": "Tweezer", "in": "->", "next": "Izabella"}
  ]
 }

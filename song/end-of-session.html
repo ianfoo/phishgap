@@ -529,7 +529,15 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   transform:translateY(-101%);transition:transform .22s ease;
   padding:.5rem clamp(1rem,5vw,3rem)}
 .stuck.on{transform:none}
-.stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
+/* 60rem, not 960px -- the same measure as .wrap and for the same reason given
+   there. This was the one place the px-to-rem conversion was missed, so when
+   the scale went up a step the content grew to 1080px and this bar held still
+   at 960. It carries .cols, the column labels whose whole job is to sit over
+   the columns they name, so the miss did not read as a narrow bar: it put
+   every label 60px off its own column, and a long note in the venue cell then
+   ran visibly past the "Before / after" label without ever touching that
+   column. The header was wrong, not the note. */
+.stuck .in{max-width:60rem;margin:0 auto;display:flex;align-items:baseline;
   gap:.7rem}
 .stuck .name{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -809,9 +817,9 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap</span></div>
 <ol class="perfs" id="list">
 <li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>1 show</span><span>2021&ndash;2021</span></h2></li>
-<li id='2021-10-20' data-date='2021-10-20' data-era='4.0' data-gap='127' data-score='' data-search="2021-10-20 10/20/2021 10/20/2021 10/20/21 10/20 10/20 10-20 october 20 2021 october 20 wednesday matthew knight arena eugene or the second airing of &quot;end of session&quot; is the meat of this &quot;split open and melt&quot; sandwich. "><div class='row'><span class='r-date'><a href='../show/2021-10-20.html'>2021-10-20</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Matthew Knight Arena</span><span class='r-place'>Eugene, OR</span><p class='jam'><span class='tag'>Jam chart</span>The second airing of &quot;End of Session&quot; is the meat of this &quot;Split Open and Melt&quot; sandwich.</p></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>127</span><span class='set'>SET 1</span></span></div></li>
+<li id='2021-10-20' data-date='2021-10-20' data-era='4.0' data-gap='127' data-score='' data-search="2021-10-20 10/20/2021 10/20/2021 10/20/21 10/20 10/20 10-20 october 20 2021 october 20 wednesday matthew knight arena eugene or the second airing of &quot;end of session&quot; is the meat of this &quot;split open and melt&quot; sandwich. "><div class='row'><span class='r-date'><a href='../show/2021-10-20.html'>2021-10-20</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Matthew Knight Arena</span><span class='r-place'>Eugene, OR</span><p class='jam'><span class='tag'>Jam chart</span>The second airing of &quot;End of Session&quot; is the meat of this &quot;Split Open and Melt&quot; sandwich.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Split Open and Melt <span class='mk'>&gt;</span></span><span class='nb-out seg'><span class='mk'>&gt;</span> Split Open and Melt</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>127</span><span class='set'>SET 1</span></span></div></li>
 <li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>1 show</span><span>2017&ndash;2017</span></h2></li>
-<li id='2017-07-25' data-date='2017-07-25' data-era='3.0' data-gap='-1' data-score='' data-search="2017-07-25 07/25/2017 7/25/2017 7/25/17 07/25 7/25 7-25 july 25 2017 july 25 tuesday madison square garden new york ny  debut."><div class='row'><span class='r-date'><a href='../show/2017-07-25.html'>2017-07-25</a><span class='dow'>Tue</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span><p class='note'><span class='tag'>Note</span>Debut.</p></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+<li id='2017-07-25' data-date='2017-07-25' data-era='3.0' data-gap='-1' data-score='' data-search="2017-07-25 07/25/2017 7/25/2017 7/25/17 07/25 7/25 7-25 july 25 2017 july 25 tuesday madison square garden new york ny  debut."><div class='row'><span class='r-date'><a href='../show/2017-07-25.html'>2017-07-25</a><span class='dow'>Tue</span></span><span><span class='r-venue'>Madison Square Garden</span><span class='r-place'>New York, NY</span><p class='note'><span class='tag'>Note</span>Debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Makisupa Policeman <span class='mk tight'>-&gt;</span></span><span class='nb-out seg'><span class='mk'>&gt;</span> Tuesday</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

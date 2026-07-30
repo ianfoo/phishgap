@@ -6,11 +6,11 @@
 
  ],
  "performances": [
-  {"date": "1998-08-08", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 1206, "set": "e", "note": "Phish debut."},
-  {"date": "1998-08-16", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 5, "set": "3", "out": "->"},
-  {"date": "1998-11-21", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 22, "set": "2", "out": ">"},
-  {"date": "2011-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 320, "set": "e"},
-  {"date": "2012-07-07", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 26, "set": "e"},
-  {"date": "2024-09-01", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 453, "set": "e", "out": ">"}
+  {"date": "1998-08-08", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 1206, "set": "e", "note": "Phish debut.", "nb": 1},
+  {"date": "1998-08-16", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 5, "set": "3", "out": "->", "nb": 1, "next": "Also Sprach Zarathustra"},
+  {"date": "1998-11-21", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 22, "set": "2", "out": ">", "nb": 1, "next": "Mike's Song"},
+  {"date": "2011-09-02", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 320, "set": "e", "nb": 1},
+  {"date": "2012-07-07", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 26, "set": "e", "nb": 1},
+  {"date": "2024-09-01", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 453, "set": "e", "out": ">", "nb": 1, "next": "Tweezer Reprise"}
  ]
 }

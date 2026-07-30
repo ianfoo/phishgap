@@ -6,6 +6,6 @@
 
  ],
  "performances": [
-  {"date": "2019-11-29", "venue": "Dunkin' Donuts Center", "city": "Providence", "state": "RI", "gap": 1848, "set": "1", "note": "Phish debut."}
+  {"date": "2019-11-29", "venue": "Dunkin' Donuts Center", "city": "Providence", "state": "RI", "gap": 1848, "set": "1", "note": "Phish debut.", "nb": 1, "prev": "My Soul", "next": "Sand"}
  ]
 }

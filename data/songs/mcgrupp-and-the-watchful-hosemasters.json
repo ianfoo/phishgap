@@ -154,6 +154,6 @@
   {"date": "2026-01-29", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 20, "set": "1", "out": ">", "prev": "Ya Mar", "next": "Say It To Me S.A.N.T.O.S.", "nb": 1},
   {"date": "2026-05-01", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 9, "set": "1", "prev": "Tela", "next": "Wingsuit", "nb": 1},
   {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 9, "set": "1", "times": 2, "out": "->", "prev": "Axilla (Part II)", "in": "->", "next": "Have Mercy", "nb": 1},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "1", "out": ">"}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "1", "out": ">", "nb": 1, "prev": "The Star-Spangled Banner", "next": "Axilla (Part II)"}
  ]
 }

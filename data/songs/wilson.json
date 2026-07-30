@@ -335,6 +335,6 @@
   {"date": "2025-09-17", "venue": "Ameris Bank Amphitheatre", "city": "Alpharetta", "state": "GA", "gap": 8, "set": "1", "out": ">", "prev": "Steam", "in": ">", "next": "Taste", "nb": 1},
   {"date": "2026-05-01", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 18, "set": "2", "next": "Seven Below", "nb": 1},
   {"date": "2026-07-12", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 5, "set": "e", "out": ">", "next": "Fluffhead", "nb": 1},
-  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 9, "set": "1", "out": ">"}
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 9, "set": "1", "out": ">", "nb": 1, "next": "Timber (Jerry the Mule)"}
  ]
 }

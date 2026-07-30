@@ -6,8 +6,8 @@
 
  ],
  "performances": [
-  {"date": "1997-07-26", "venue": "South Park Meadows", "city": "Austin", "state": "TX", "gap": 1140, "set": "2", "note": "Bob Gullotti on a second drum set.", "out": "->"},
-  {"date": "1998-07-09", "venue": "Zeleste", "city": "Barcelona", "state": "Catalonia", "gap": 51, "set": "2", "out": ">"},
-  {"date": "2012-07-07", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 392, "set": "2", "times": 2, "note": "First verse only.", "out": ">"}
+  {"date": "1997-07-26", "venue": "South Park Meadows", "city": "Austin", "state": "TX", "gap": 1140, "set": "2", "note": "Bob Gullotti on a second drum set.", "out": "->", "nb": 1, "prev": "Harry Hood", "in": "->", "next": "Harry Hood"},
+  {"date": "1998-07-09", "venue": "Zeleste", "city": "Barcelona", "state": "Catalonia", "gap": 51, "set": "2", "out": ">", "nb": 1, "prev": "Scent of a Mule", "in": "->", "next": "Scent of a Mule"},
+  {"date": "2012-07-07", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 392, "set": "2", "times": 2, "note": "First verse only.", "out": ">", "nb": 1, "prev": "Down with Disease", "in": "->", "next": "Down with Disease"}
  ]
 }

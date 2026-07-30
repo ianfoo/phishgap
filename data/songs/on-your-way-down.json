@@ -37,15 +37,15 @@
   {"date": "1989-04-15", "venue": "Billings Lounge, University of Vermont", "city": "Burlington", "state": "VT", "gap": 7, "set": "1", "out": ">", "nb": 1, "prev": "Peaches en Regalia", "next": "Alumni Blues"},
   {"date": "1989-05-01", "venue": "Pearl Street Ballroom", "city": "Northampton", "state": "MA", "gap": 9, "set": "2", "nb": 1, "prev": "Weekapaug Groove", "next": "Possum"},
   {"date": "1989-08-12", "venue": "Burlington Boathouse", "city": "Burlington", "state": "VT", "gap": 28, "set": "2", "nb": 1, "prev": "Rocky Top", "next": "Night and Day"},
-  {"date": "1999-09-16", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 1011, "set": "1"},
-  {"date": "1999-09-25", "venue": "Cynthia Woods Mitchell Pavilion", "city": "The Woodlands", "state": "TX", "gap": 7, "set": "1"},
-  {"date": "1999-10-02", "venue": "Target Center", "city": "Minneapolis", "state": "MN", "gap": 5, "set": "2", "out": ">"},
-  {"date": "2003-07-30", "venue": "Tweeter Center at the Waterfront", "city": "Camden", "state": "NJ", "gap": 110, "set": "1"},
-  {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 69, "set": "2"},
-  {"date": "2010-08-15", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 37, "set": "1"},
-  {"date": "2010-10-12", "venue": "1stBank Center", "city": "Broomfield", "state": "CO", "gap": 6, "set": "1"},
-  {"date": "2011-06-11", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 28, "set": "1", "out": ">"},
-  {"date": "2011-08-06", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 11, "set": "1"},
-  {"date": "2025-07-18", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 521, "set": "1"}
+  {"date": "1999-09-16", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 1011, "set": "1", "nb": 1, "prev": "Sparkle", "next": "Beauty of My Dreams"},
+  {"date": "1999-09-25", "venue": "Cynthia Woods Mitchell Pavilion", "city": "The Woodlands", "state": "TX", "gap": 7, "set": "1", "nb": 1, "prev": "Limb By Limb", "next": "Sleeping Monkey"},
+  {"date": "1999-10-02", "venue": "Target Center", "city": "Minneapolis", "state": "MN", "gap": 5, "set": "2", "out": ">", "nb": 1, "prev": "Tweezer", "in": ">", "next": "Piper"},
+  {"date": "2003-07-30", "venue": "Tweeter Center at the Waterfront", "city": "Camden", "state": "NJ", "gap": 110, "set": "1", "nb": 1, "prev": "Chalk Dust Torture", "next": "Fast Enough for You"},
+  {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 69, "set": "2", "nb": 1, "prev": "Golden Age", "next": "Fluffhead"},
+  {"date": "2010-08-15", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 37, "set": "1", "nb": 1, "prev": "AC/DC Bag", "next": "Divided Sky"},
+  {"date": "2010-10-12", "venue": "1stBank Center", "city": "Broomfield", "state": "CO", "gap": 6, "set": "1", "nb": 1, "prev": "Timber (Jerry the Mule)", "next": "Heavy Things"},
+  {"date": "2011-06-11", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 28, "set": "1", "out": ">", "nb": 1, "prev": "Reba", "next": "Run Like an Antelope"},
+  {"date": "2011-08-06", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 11, "set": "1", "nb": 1, "prev": "Poor Heart", "next": "Wolfman's Brother"},
+  {"date": "2025-07-18", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 521, "set": "1", "nb": 1, "prev": "Bathtub Gin", "next": "Limb By Limb"}
  ]
 }

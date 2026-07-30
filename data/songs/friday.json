@@ -6,18 +6,18 @@
 
  ],
  "performances": [
-  {"date": "2003-01-04", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 1368, "set": "e", "note": "Debut."},
-  {"date": "2003-02-16", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 3, "set": "e"},
-  {"date": "2003-02-22", "venue": "U.S. Bank Arena", "city": "Cincinnati", "state": "OH", "gap": 4, "set": "2", "out": ">"},
-  {"date": "2003-07-10", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 9, "set": "2", "out": ">"},
-  {"date": "2003-07-22", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 8, "set": "2"},
-  {"date": "2003-07-31", "venue": "Tweeter Center at the Waterfront", "city": "Camden", "state": "NJ", "gap": 7, "set": "2", "out": ">"},
-  {"date": "2003-11-29", "venue": "Wachovia Spectrum", "city": "Philadelphia", "state": "PA", "gap": 4, "set": "e"},
-  {"date": "2003-12-28", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 3, "set": "2", "out": ">"},
-  {"date": "2004-04-17", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 6, "set": "2"},
-  {"date": "2004-06-26", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 9, "set": "2", "out": ">"},
-  {"date": "2004-08-10", "venue": "Tweeter Center", "city": "Mansfield", "state": "MA", "gap": 2, "set": "2"},
-  {"date": "2004-08-14", "venue": "Newport State Airport", "city": "Coventry", "state": "VT", "gap": 3, "set": "3"},
-  {"date": "2016-10-25", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 325, "set": "2"}
+  {"date": "2003-01-04", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 1368, "set": "e", "note": "Debut.", "nb": 1},
+  {"date": "2003-02-16", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 3, "set": "e", "nb": 1},
+  {"date": "2003-02-22", "venue": "U.S. Bank Arena", "city": "Cincinnati", "state": "OH", "gap": 4, "set": "2", "out": ">", "nb": 1, "prev": "Bathtub Gin", "next": "David Bowie"},
+  {"date": "2003-07-10", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 9, "set": "2", "out": ">", "nb": 1, "prev": "Divided Sky", "next": "Free"},
+  {"date": "2003-07-22", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 8, "set": "2", "nb": 1, "prev": "Free", "in": ">", "next": "The Lizards"},
+  {"date": "2003-07-31", "venue": "Tweeter Center at the Waterfront", "city": "Camden", "state": "NJ", "gap": 7, "set": "2", "out": ">", "nb": 1, "prev": "Free", "in": ">", "next": "Harry Hood"},
+  {"date": "2003-11-29", "venue": "Wachovia Spectrum", "city": "Philadelphia", "state": "PA", "gap": 4, "set": "e", "nb": 1},
+  {"date": "2003-12-28", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 3, "set": "2", "out": ">", "nb": 1, "prev": "Water in the Sky", "next": "Harry Hood"},
+  {"date": "2004-04-17", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 6, "set": "2", "nb": 1, "prev": "Simple", "in": ">", "next": "Ghost"},
+  {"date": "2004-06-26", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 9, "set": "2", "out": ">", "nb": 1, "prev": "Free", "next": "Piper"},
+  {"date": "2004-08-10", "venue": "Tweeter Center", "city": "Mansfield", "state": "MA", "gap": 2, "set": "2", "nb": 1, "prev": "Dog Faced Boy", "next": "Harry Hood"},
+  {"date": "2004-08-14", "venue": "Newport State Airport", "city": "Coventry", "state": "VT", "gap": 3, "set": "3", "nb": 1, "prev": "Drowned", "in": ">"},
+  {"date": "2016-10-25", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 325, "set": "2", "nb": 1, "prev": "Taste", "in": ">", "next": "Waves"}
  ]
 }

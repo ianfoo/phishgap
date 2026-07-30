@@ -6,6 +6,6 @@
 
  ],
  "performances": [
-  {"date": "2026-04-17", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 0, "set": "e", "note": "Phish debut."}
+  {"date": "2026-04-17", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 0, "set": "e", "note": "Phish debut.", "nb": 1, "next": "Carini"}
  ]
 }

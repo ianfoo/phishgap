@@ -6,10 +6,10 @@
 
  ],
  "performances": [
-  {"date": "2014-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1671, "set": "2", "note": "Debut."},
-  {"date": "2016-07-01", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 45, "set": "1", "out": ">"},
-  {"date": "2016-10-29", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 29, "set": "1"},
-  {"date": "2017-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 21, "set": "1", "out": ">"},
-  {"date": "2018-07-22", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 18, "set": "1"}
+  {"date": "2014-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1671, "set": "2", "note": "Debut.", "nb": 1, "prev": "The Chinese Water Torture", "next": "Martian Monster"},
+  {"date": "2016-07-01", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 45, "set": "1", "out": ">", "nb": 1, "prev": "Stealing Time From the Faulty Plan", "next": "NICU"},
+  {"date": "2016-10-29", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 29, "set": "1", "nb": 1, "next": "Kill Devil Falls"},
+  {"date": "2017-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 21, "set": "1", "out": ">", "nb": 1, "prev": "Tela", "next": "The Line"},
+  {"date": "2018-07-22", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 18, "set": "1", "nb": 1, "prev": "The Curtain With", "next": "Birds of a Feather"}
  ]
 }
