@@ -274,6 +274,24 @@ would have left every one of them dropped on the next `--previous` run, in a
 function nobody would think to open. The list is now one named constant,
 `NB_CARRY`, next to the walk that produces it.
 
+**The rebase exposed a hole in the fix.** The watcher pushed mid-session and
+`character-zero.json` conflicted — reading the conflict showed `seed_setlists`
+still stamped `nb=1` and `last` unconditionally. `--catch-up` had the guard;
+the seed did not, so a hand-run of `--seed-setlists` during a show would have
+written "closed the show" onto whatever song was last at that moment and
+marked the date answered — the one state no later run revisits. Both callers
+now go through `apply_neighbours`, which owns the rule. **Two callers of the
+same walk, and only one of them had been taught the rule.**
+
+**Ian's note on the live banner, mid-session.** "This page refreshes itself"
+is a separate idea from the counts and was running in after a middot, so it
+wrapped after "this" — consistently, because that is simply where the measure
+ran out. It has its own line now; `.live span:not(.since-you)` already makes
+every span there a block, so it cost no CSS. One line each on desktop, two and
+one at 375px. The remaining break is "this page was / built 1 minute ago",
+which is mid-phrase but strands no separator — **his call whether that wants
+its own line too.**
+
 **Two typographic things, both found by looking rather than reasoning.** A
 terminal line dropped the arrow slot and so hung two characters left of its
 own sibling — visible on 3,821 rows; the arrow is now hidden rather than

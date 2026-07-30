@@ -2733,12 +2733,18 @@ def render_html(report, bar_scale="linear", index_href=None,
         # tab for an hour faithfully reports its own age and nothing else.
         # That was the one honest thing on a stale page and it read as the
         # opposite. It now says what it measures.
+        # Three ideas, and the third is not about the show at all -- it is a
+        # promise about the document. Run in with middots it wrapped after
+        # "this", consistently, because that is simply where the measure ran
+        # out: "... 1 minute ago * this / page refreshes itself". Its own line
+        # cannot stall like that, and .live span:not(.since-you) already makes
+        # every span here a block, so this costs no CSS.
         live = ("<p class='live' role='status' aria-live='polite'"
                 " data-show='%s'>"
                 "<b>This show is being played right now</b>"
                 "<span><b class='n'>%d</b> song%s so far &middot; "
                 "this page was built <time class='ago' datetime='%s'>%s</time>"
-                " &middot; it updates as songs land</span></p>"
+                "</span><span>It updates itself as songs land</span></p>"
                 % (html.escape(report["date"], quote=True),
                    n, "" if n == 1 else "s",
                    html.escape(checked, quote=True), _clock(checked)))
@@ -7546,6 +7552,29 @@ def setlist_neighbours(rows, artist=None):
     return out
 
 
+def apply_neighbours(perf, found, settled=True):
+    """Write one walk's answer onto one performance, replacing the last one.
+
+    Cleared before updating rather than merged over: a key this walk did not
+    set is a key that is no longer true, and merging would leave a row that
+    was a set closer carrying both that answer and the newer one.
+
+    `last` and `nb` are withheld while the show is still being played. `last`
+    means "closed the show", a claim about songs nobody has played yet, wrong
+    from the moment the next one lands. `nb` means the walk is finished, and
+    it is the thing that stops a date ever being asked again -- writing it
+    mid-show is how the Before / after column was emptied on 758 rows.
+    """
+    for k in NB_KEYS:
+        perf.pop(k, None)
+    perf.update(found)
+    if settled:
+        perf["nb"] = 1
+    else:
+        perf.pop("last", None)
+        perf.pop("nb", None)
+
+
 def record_neighbours(site_dir, date, rows, artist=None, settled=True):
     """Write one show's neighbours into the songs that were played in it.
 
@@ -7572,14 +7601,7 @@ def record_neighbours(site_dir, date, rows, artist=None, settled=True):
         for p in doc["performances"]:
             if p["date"] != date:
                 continue
-            for k in NB_KEYS:
-                p.pop(k, None)
-            p.update(found)
-            if settled:
-                p["nb"] = 1
-            else:
-                p.pop("last", None)
-                p.pop("nb", None)
+            apply_neighbours(p, found, settled)
             hit = True
         if not hit:
             continue
@@ -7715,13 +7737,11 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
                 if slug not in nb:
                     absent += 1
                     continue
-                p["nb"] = 1
-                # Cleared, not merged: this walk is the whole answer for this
-                # performance, and a key it does not set is a key that is no
-                # longer true.
-                for k in NB_KEYS:
-                    p.pop(k, None)
-                p.update(nb[slug])
+                # Same guard as --catch-up's: a hand-run of this during a show
+                # would otherwise stamp "closed the show" on whatever song was
+                # last at that moment and mark the date answered, which is the
+                # one state no later run would revisit.
+                apply_neighbours(p, nb[slug], date not in unsettled)
                 pending[slug] = True
         walked += 1
         if i % NEIGHBOUR_FLUSH == 0:
