@@ -2222,6 +2222,36 @@ DUE_MULTIPLE = 3.5
 # Sparks at 357 bustouts on 2026-07-24, and did not use it for Weigh at 88.
 BUSTOUT_GAP = 100
 
+# Above this many performances, a song that goes quiet was in rotation and left
+# it. Below it, there was never a rotation to leave -- which is a different fact
+# and was being published under the same word. Ian, reading the dormant page:
+# "Dormancy implies that it was once not dormant, but many songs that get played
+# once will never be played again."
+#
+# He is right, and the archive scores it. Every silence of BUSTOUT_GAP or more
+# in the whole archive (774 of them), grouped by how many times the song had
+# been played when it fell quiet, against whether it was ever played again:
+#
+#     1 play  28%   3 plays 62%   5-7  66%   16-40  85%
+#     2 plays 33%   4 plays 68%   8-15 70%   41+    93%
+#
+# Conditioned on silences that already reached 300 shows -- which is where this
+# page lives, its median row being gone 490 -- the same three bands read 20% /
+# 43% / 75%. A one-play song is the only kind that is likelier to stay gone than
+# to come back, so "dormant" was the one word it could not carry.
+#
+# Eight is MIN_HISTORY's value and not its meaning: that one counts *recent
+# gaps* and gates a verdict, this one counts *plays ever* and picks a noun. They
+# are related enough to share a number and separate enough that tuning one must
+# not silently move the other, which is why this is its own constant.
+#
+# Raw plays beat every cleverer rule tried against the same outcome -- plays
+# inside any 50- or 100- or 200-show window, and the span from first to last.
+# Span was the worst of the eleven (34 points of separation against 49): whether
+# a song was ever in rotation is answered by how many times they played it, not
+# by how long they had it lying around.
+ROTATION_PLAYS = 8
+
 
 def _quantile(vals, q):
     """Linear-interpolated quantile of an unsorted list."""
@@ -3045,6 +3075,16 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Structural, and load-bearing rather than tidiness. Every list section on the
+   due and out-of-rotation pages is wrapped in one of these so that its
+   position:sticky column header is held by the section instead of by the page:
+   sticky is bounded by the element's *parent*, so three headers sharing one
+   parent each stayed pinned for the whole rest of the document, and the header
+   of one list came to rest ruled across the heading of the next. Deliberately
+   carries no visual property -- there is nothing to draw here, and anything
+   added would land on both pages at once. `display:block` is a <section>'s own
+   default and is written out so the class is findable in this sheet. */
+.rot{display:block}
 .due{list-style:none;margin:0;padding:0}
 .due li{border-bottom:1px solid var(--rule-soft)}
 .due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
@@ -4337,8 +4377,18 @@ SONG_JS = """
       // at. Say that.
       else if(v){ v.textContent='due at '+Math.round(high); v.className='v quiet'; }
     }else if(n>=bust){
+      /* The same three names the out-of-rotation page uses, from the same
+         count and the same threshold, because this box and that page are
+         describing one song and must not call it two things. "Dormant" on a
+         song played once was the claim that page was rebuilt to stop making,
+         and it was being made here too -- the box outlives any one list, so
+         fixing only the page would have left the word loose on 126 song
+         pages. See ROTATION_PLAYS. */
+      var plays=parseFloat(box.getAttribute('data-plays'))||0,
+          rot=parseFloat(box.getAttribute('data-rotation'))||0;
       box.classList.add('dormant');
-      if(v){ v.textContent='dormant'; v.className='v dim'; }
+      if(v){ v.textContent=plays<=1?'one-off':plays<rot?'rarity':'dormant';
+             v.className='v dim'; }
     }
     box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
             ' shows that count toward a gap';
@@ -4626,12 +4676,13 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # where there is enough history for one, the bustout line where there is
     # not -- so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
-             "data-bustout='%d' data-mult='%s'>"
+             "data-bustout='%d' data-mult='%s' data-plays='%d' "
+             "data-rotation='%d'>"
              "<div class='lbl'>Current Gap<span class='v'></span></div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
-                BUSTOUT_GAP, DUE_MULTIPLE))
+                BUSTOUT_GAP, DUE_MULTIPLE, len(countable), ROTATION_PLAYS))
 
     top = best[0] if best else ""
     if top:
@@ -5111,11 +5162,13 @@ entirely out of one decade &mdash; and the theme is usually not public before
 the show. On a night like that the list below is the wrong question.</p></header>
 <section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
+<section class="rot">
 <div class="lhead due-h"><span>Song</span>
 <span>Last played</span><span class="end">How late</span></div>
 <ol class="due" id="main" tabindex="-1">
 {rows}
 </ol>
+</section>
 {shelf}
 <p class="dek foot">{dormant}</p>
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
@@ -5235,6 +5288,34 @@ def due_rows(docs, counting, since):
     return due, overdue, shelved, dormant
 
 
+def rotation_split(dormant):
+    """The fourth list, split by whether there was ever a rotation to leave.
+
+    due_rows answers "is anyone expecting this tonight", and for all 281 of
+    these the answer is no -- which is why they came back in one list. But no
+    is not one fact. 126 of them have been played exactly once, ever, and 42 of
+    those 126 were played on a Halloween night as part of a costume set: songs
+    performed once by design, which never had a habit and so cannot have
+    stopped. Filing them under a word that means "it used to be otherwise" was
+    the page's largest single claim and it was false about nearly half its rows.
+
+    Split on plays rather than on anything to do with the silence, because the
+    silence is the same fact for all three and the plays are what differ -- see
+    ROTATION_PLAYS for the measurement that puts the line at eight.
+
+    Returns (stopped, rare, once), exclusive and in that order, each holding the
+    same (gone, doc, played) rows due_rows built. One split, shared by the page
+    and by the due page's hero cell above it, for the reason due_rows itself is
+    shared: a second copy is a second chance for the two to disagree about how
+    many songs are dormant, and this site has already paid for that once.
+    """
+    stopped, rare, once = [], [], []
+    for row in dormant:
+        n = len(row[2])
+        (once if n == 1 else rare if n < ROTATION_PLAYS else stopped).append(row)
+    return stopped, rare, once
+
+
 def _due_row(over, n, high, doc, last):
     """One row, shared by the due list and the shelf under it.
 
@@ -5294,12 +5375,20 @@ def render_due(docs, counting, since, card=None):
     def section(anchor, title, blurb, rows):
         if not rows:
             return ""
-        return ("<h2 class='shelf-h' id='%s'>%s</h2>"
+        # Wrapped, for the reason render_dormant records at length: `.lhead` is
+        # sticky at top:0 and a sticky element is held by its parent, so three
+        # of them sharing one parent meant each stayed pinned for the rest of
+        # the page and Slipping's column header sat ruled across the words "On
+        # the shelf". Found on the out-of-rotation page, where 281 rows make it
+        # obvious; it was here first, under 43.
+        return ("<section class='rot'>"
+                "<h2 class='shelf-h' id='%s'>%s</h2>"
                 "<p class='dek'>%s</p>"
                 "<div class='lhead due-h'><span>Song</span>"
                 "<span>Last played</span><span class='end'>How late</span></div>"
                 "<ol class='due'>%s</ol>"
                 "<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
+                "</section>"
                 % (anchor, title, blurb, "\n".join(_due_row(*r) for r in rows)))
 
     shelf = section(
@@ -5327,13 +5416,20 @@ def render_due(docs, counting, since, card=None):
 
     # The same hero vocabulary the index uses, counting the four categories and
     # linking to all four. Dormant is the odd one -- it is a page rather than a
-    # section, because 283 rows is more than the other two lists put together --
+    # section, because 281 rows is more than the other two lists put together --
     # and until that page existed this cell stated a figure and led nowhere,
     # which made it the only dead card on the site.
+    #
+    # It counts the songs that were in rotation and left it, not everything on
+    # that page: 281 was two other populations wearing the word, and the cell
+    # is the one place on this site the word appears without its page around it
+    # to qualify it. Straight to the section rather than the page top, so the
+    # figure and what it lands on are the same set.
+    stopped, rare, once = rotation_split(dormant)
     cards = [(len(due), "Due", " hot", "#main"),
              (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
-             (len(dormant), "Dormant", "", "./dormant.html")]
+             (len(stopped), "Dormant", "", "./dormant.html#dormant")]
     hero = "".join(
         ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
         + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
@@ -5343,11 +5439,15 @@ def render_due(docs, counting, since, card=None):
     n_due = len(due)
     subtitle = ("%d song%s you might reasonably expect tonight"
                 % (n_due, "" if n_due == 1 else "s"))
-    tail = ("A further <a href=\"./dormant.html\">%d are dormant</a> &mdash; gone "
-            "long enough to be bustouts, with no recent habit to be late "
-            "against at all. They are not due, but they are the largest part of "
-            "the catalogue and they have their own page."
-            % len(dormant)) if dormant else ""
+    tail = ("A further %s are <a href=\"./dormant.html\">out of rotation</a> "
+            "&mdash; gone long enough to be bustouts, with no recent habit to "
+            "be late against at all. They are not due, they are the largest "
+            "part of the catalogue, and they are not one thing: %d were in "
+            "rotation and left it, %d were tried a handful of times and never "
+            "caught on, and %d have been played exactly once in the band&rsquo;s "
+            "life. That page keeps them apart."
+            % ("{:,}".format(len(dormant)), len(stopped), len(rare), len(once))
+            ) if dormant else ""
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
@@ -5387,21 +5487,18 @@ DORMANT_CSS = INDEX_CSS + """
 .yr .up::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 .yr .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* The years, as a strip. Generated from the same grouping as the headings
-   below, so it cannot offer a year the page does not hold. */
-.years{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
-.years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
-   line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
-   color:var(--ink-soft);text-decoration:none;white-space:nowrap}
-.years a:hover{color:var(--hot);border-color:var(--hot)}
-.years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
+/* The strip of jump links that used to sit here is gone with the years it
+   pointed at. Eighteen years needed a strip; three sections do not, and the
+   hero directly under it already names all three, counts them and links to
+   them -- so the two rows said the same three numbers a line apart. The hero
+   is the bigger and clearer of the two, so the strip went rather than it. */
 /* The span of a song's life, which is the one figure a dormant song has that a
    due song does not need: it was around from here to here, and then it was not. */
 .d-n .span{font-variant-numeric:tabular-nums}
 /* In ink, not in the accent. The due page sets its figure hot because it is
    the thing the page is sounding an alarm about and the order the list is in.
    Here the figure is neither: the list is ordered by year, and a play count is
-   a description rather than a warning. A page of 284 rows all shouting in the
+   a description rather than a warning. A page of 281 rows all shouting in the
    accent colour spends it on everything and therefore on nothing. */
 .due.dormant .d-n > b{color:var(--ink)}
 """
@@ -5410,7 +5507,7 @@ DORMANT_CSS = INDEX_CSS + """
 DORMANT_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dormant &mdash; Possum Logic</title>
+<title>Out of rotation &mdash; Possum Logic</title>
 <meta property="og:type" content="website">{share}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5424,30 +5521,32 @@ DORMANT_SHELL = """<!DOCTYPE html>
 <a href="./faq.html">FAQ</a>
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
-<header><h1>Dormant</h1>
+<header><h1>Out of rotation</h1>
 <p class="show">{subtitle}</p>
 <p class="dek">The fourth list on <a href="./due.html">what&rsquo;s due</a>, and
-the longest by some way. A song is dormant here when it has been gone
-{cap} shows or more <em>and</em> has fewer than {floor} performances inside the
-last {years_n} years &mdash; so there is no habit left to be late against, and
-nothing to rank it by. That is the whole reason it needs a page rather than a
-place in a list: every other song on this site is ordered by how far past its
-own norm it is, and these have no norm.</p>
-<p class="dek">So they are ordered by when you last heard one, newest first,
-and within a year by how often the band played it. A song near the top of a
-year was a staple that stopped; a song near the bottom was played once. Both
-are here, because the difference between them is exactly what is interesting.</p>
-<p class="dek">None of this is a prediction. A dormant song coming back is a
-bustout, and the archive is full of them &mdash; that is what makes this list
-worth reading rather than a graveyard.</p>
-<nav class="years" aria-label="Years on this page">{years}</nav></header>
-<section class="hero {hero_cls}">{hero}</section>
+the longest by some way. Every song here has been gone {cap} shows or more
+<em>and</em> has fewer than {floor} performances inside the last {years_n}
+years, so there is no habit left to be late against and nothing to rank it by.
+That is the whole reason it needs a page rather than a place in a list: every
+other song on this site is ordered by how far past its own norm it is, and
+these have no norm.</p>
+<p class="dek">They are not all the same thing, though, and calling them all
+<em>dormant</em> said something false about nearly half of them. Dormant means
+it used to be otherwise. A song played once at a Halloween show never had a
+rotation to fall out of &mdash; and in this archive, that difference is the
+strongest thing we know about whether it is ever coming back. So the page is in
+three parts, split on how many times the band ever played the song, and
+<a href="./method.html#rotation">how this works</a> shows the measurement.</p>
+<p class="dek">Inside each part they are ordered by when you last heard one,
+newest first, and within a year by how often the band played it. None of it is
+a prediction: a song coming back from here is a bustout, and the archive is
+full of them &mdash; that is what makes this worth reading rather than a
+graveyard.</p></header>
+<section class="hero {hero_cls}" aria-label="Sections on this page">{hero}</section>
 <div class="rule2"></div>
-<div class="lhead due-h"><span>Song</span>
-<span>Last played</span><span class="end">Times played</span></div>
-<ol class="due dormant" id="main" tabindex="-1">
+<div id="main" tabindex="-1">
 {rows}
-</ol>
+</div>
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -5484,48 +5583,115 @@ def _dormant_row(gone, doc, played):
                "{:,}".format(len(played)), "{:,}".format(gone), span))
 
 
-def render_dormant(docs, counting, since):
-    """Every song the band has stopped playing, by the year it stopped."""
-    dormant = due_rows(docs, counting, since)[3]
+#: The three parts of the page, in the order a reader meets them: the songs the
+#: word "dormant" was always about first, then the two populations it was wrong
+#: about. Each is (anchor, title, blurb). The anchors are also what the hero
+#: cells above them link to, and what the due page's Dormant cell links to, so
+#: renaming one moves three things.
+ROTATION_SECTIONS = (
+    ("dormant", "Dormant",
+     "Played {floor} times or more, and then not at all. These had a rotation "
+     "and left it, which is the only case where the word means what it says. "
+     "They are also the likeliest to come back: of every long silence in this "
+     "archive that began after {floor} or more performances, {rate}% has since "
+     "been ended by another one."),
+    ("rarities", "Rarities",
+     "Played more than once but fewer than {floor} times. The band tried them, "
+     "they did not catch on, and there was never enough of a habit to break. "
+     "Some are covers taken out for one tour; some are originals that never "
+     "found a place in a set."),
+    ("one-offs", "One-offs",
+     "Played exactly once, ever. Not dormant in any sense &mdash; there is no "
+     "earlier state to have left. A third of them were played on a Halloween "
+     "night as part of a costume set, which is a song performed once by "
+     "design. Their return rate is the lowest on the page by a distance, and "
+     "the honest reading of a row here is that you have already heard the "
+     "whole story."),
+)
 
-    # Grouped by the year of the last performance, newest first; inside a year,
-    # the most-played first, because that is the order of "would I remember
-    # this?" and there is no other order available -- a dormant song has no
-    # percentile to be sorted on.
+#: The return rates quoted in the blurbs above and on the method page. Measured
+#: over every silence of BUSTOUT_GAP or more in the archive on 2026-07-30 --
+#: 774 of them -- as the share that was ever ended by another performance. Held
+#: as a constant rather than recomputed per build for the same reason the page
+#: does not predict: it is a statement about the archive at a moment, and a
+#: figure that drifts by a point every show reads as a forecast. See
+#: ROTATION_PLAYS, and docs/TODO.md for the script that produced it.
+ROTATION_RETURN = {"dormant": 84, "rarities": 55, "one-offs": 28}
+
+
+def _rotation_years(rows, anchor):
+    """One section's rows, grouped by the year each song was last heard.
+
+    Anchors carry the section, because a year appears in all three and an id
+    has to be unique in a document -- #y2019 would have resolved to whichever
+    of the three came first, which is the section a reader was least likely to
+    want.
+    """
     years = {}
-    for row in dormant:
+    for row in rows:
         years.setdefault(row[2][-1]["date"][:4], []).append(row)
-    ordered = sorted(years.items(), reverse=True)
-
-    body, strip = [], []
-    for year, rows in ordered:
-        rows.sort(key=lambda r: (-len(r[2]), typographic(r[1]["song"])))
-        # The count is set beside the year rather than under it, which reads
-        # fine and announces as one number: "2024" and "3" run together into
-        # 20243 with nothing between them. The label says what the eye sees.
-        strip.append("<a href='#y%s' aria-label='%s, %d song%s'>%s<b>%d</b></a>"
-                     % (year, year, len(rows), "" if len(rows) == 1 else "s",
-                        year, len(rows)))
+    body = []
+    for year, group in sorted(years.items(), reverse=True):
+        # Inside a year, most-played first: that is the order of "would I
+        # remember this?", and there is no other order available -- none of
+        # these songs has a percentile to be sorted on.
+        group.sort(key=lambda r: (-len(r[2]), typographic(r[1]["song"])))
         body.append(
-            "<li class='yr' id='y%s'><h2>%s</h2>"
+            "<li class='yr' id='%s-%s'><h2>%s</h2>"
             "<span class='n'>%d song%s</span>"
             "<a class='up' href='#top'>&uarr; Top</a></li>"
-            % (year, year, len(rows), "" if len(rows) == 1 else "s"))
-        body.extend(_dormant_row(*r) for r in rows)
+            % (anchor, year, year, len(group), "" if len(group) == 1 else "s"))
+        body.extend(_dormant_row(*r) for r in group)
+    return "\n".join(body)
 
-    # Four figures, and two of them are rows on this page, so they link to them.
-    # "Played once" is the one worth stating outright: it is nearly half the
-    # list, and without it a reader would take 283 for 283 songs that used to be
-    # in rotation, which is not what this page is.
-    most = max(dormant, key=lambda r: len(r[2])) if dormant else None
+
+def render_dormant(docs, counting, since):
+    """Every song out of rotation, split by whether it ever had one."""
+    parts = rotation_split(due_rows(docs, counting, since)[3])
+
+    body = []
+    for (anchor, title, blurb), rows in zip(ROTATION_SECTIONS, parts):
+        if not rows:
+            continue
+        # The same furniture the due page puts above each of its lists -- the
+        # heading, the note, the column header, the way back up -- because this
+        # is the same object and the reader has just come from that page.
+        #
+        # Each part is wrapped, and the wrapper is load-bearing rather than
+        # tidiness. `.lhead` is position:sticky, top:0, and a sticky element is
+        # held by its *parent*: with all three headers sharing one parent, each
+        # stayed pinned for the whole rest of the page, so scrolling into
+        # Rarities showed the Dormant column header ruled straight across the
+        # word "Rarities". A parent per part means a header lets go when its
+        # own list ends. Measured, not reasoned: three .lhead, one containing
+        # block, top:0 on all of them.
+        body.append(
+            "<section class='rot'>"
+            "<h2 class='shelf-h' id='%s'>%s</h2><p class='dek'>%s</p>"
+            "<div class='lhead due-h'><span>Song</span>"
+            "<span>Last played</span><span class='end'>Times played</span></div>"
+            "<ol class='due dormant'>%s</ol>"
+            "<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
+            "</section>"
+            % (anchor, title,
+               blurb.format(floor=ROTATION_PLAYS,
+                            rate=ROTATION_RETURN[anchor]),
+               _rotation_years(rows, anchor)))
+
+    # Three counts and a row. The counts are the page's argument -- that these
+    # are three populations and not one -- so they lead, and each links to the
+    # section it counts. Longest gone keeps the fourth cell because it is the
+    # one figure here that is a superlative rather than a total, and it is the
+    # cell that found the Windora Bug anchoring bug. "Most played" gave up its
+    # place: it is now the first row of the first section, three lines below.
+    stopped, rare, once = parts
+    dormant = stopped + rare + once
     longest = max(dormant, key=lambda r: r[0]) if dormant else None
-    once = sum(1 for r in dormant if len(r[2]) == 1)
-    cards = [(len(dormant), "Songs", "", ""),
-             ("{:,}".format(len(most[2])) if most else "n/a", "Most played", "",
-              "#%s" % most[1]["slug"] if most else ""),
+    cards = [(len(stopped), "Dormant", "", "#dormant"),
+             (len(rare), "Rarities", "", "#rarities"),
+             (len(once), "One-offs", "", "#one-offs"),
              ("{:,}".format(longest[0]) if longest else "n/a", "Longest gone",
-              " hot", "#%s" % longest[1]["slug"] if longest else ""),
-             (once, "Played once", "", "")]
+              " hot", "#%s" % longest[1]["slug"] if longest else "")]
     hero = "".join(
         ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
         + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
@@ -5533,18 +5699,18 @@ def render_dormant(docs, counting, since):
         for val, lbl, cls, href in cards)
 
     n = len(dormant)
-    subtitle = ("%s song%s the band has stopped playing"
+    subtitle = ("%s song%s the band is not playing, in three kinds"
                 % ("{:,}".format(n), "" if n == 1 else "s"))
-    blurb = ("Every Phish song that has dropped out of rotation, by the year it "
-             "was last played.")
+    blurb = ("Every Phish song that has dropped out of rotation, split by "
+             "whether it ever had one.")
     return DORMANT_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=DORMANT_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
-        floor=MIN_HISTORY, years_n=RECENT_YEARS, years="".join(strip),
+        floor=MIN_HISTORY, years_n=RECENT_YEARS,
         hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         rows="\n".join(body),
-        share=share_meta("Dormant &mdash; Possum Logic",
+        share=share_meta("Out of rotation &mdash; Possum Logic",
                          html.escape(blurb, quote=True), "dormant.html"),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
@@ -5776,6 +5942,26 @@ METHOD_CSS = INDEX_CSS + """
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
+/* The one table on this page, and a real <table> rather than the grid the
+   listing pages use: those are grids because every row is one link and an <a>
+   cannot wrap a <tr>. Nothing here is a link, so the rows are rows.
+
+   Figures in the mono with tabular numerals, which is what makes a column of
+   percentages readable as a column -- this is the same lesson the show pages
+   learned, and the reason it is stated again is that it was fixed there by a
+   rule that lives on a sheet this page does not extend. Only on this sheet, so
+   a plain search for `.figs` finds one match rather than three. */
+.figs{max-width:66ch;width:100%;border-collapse:collapse;margin:0 0 1.4rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.8125rem;
+   font-variant-numeric:tabular-nums}
+.figs th{font-weight:400;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-align:left;
+   padding:0 .6rem .4rem 0;border-bottom:1px solid var(--ink)}
+.figs td{padding:.35rem .6rem .35rem 0;color:var(--ink-soft);
+   border-bottom:1px solid var(--rule-soft)}
+.figs tr:last-child td{border-bottom:0}
+.figs .end{text-align:right;padding-right:0}
+.figs td.end{color:var(--ink)}
 /* Stated here rather than on the FAQ's sheet, because this page links out too
    and had no rule for a link in running prose -- the first one added to it
    would have come out in the browser's default blue. */
@@ -5989,6 +6175,57 @@ rotation.</p>
 often the song was ever played: a gap counts shows, so a large one already
 proves the song has been in the catalogue a long while, and nothing newly
 written can reach the threshold.</p>"""),
+    ('rotation', 'Dormant, rarity, one-off', """
+<p>Songs with no recent record that have been gone a hundred shows or more sit
+<a href="./dormant.html">on their own page</a>, because there is nothing left
+to rank them by. For a long time that page called all
+<b class="num">281</b> of them <b>dormant</b>, and for
+<b class="num">126</b> of them that was false. Dormant means a song used to be
+otherwise. A song played once at a Halloween show, as part of a costume set,
+never had a rotation to fall out of &mdash; and a third of the songs played
+exactly once in this archive were played on a Halloween night.</p>
+<p>So the page splits on how many times the band ever played the song:
+<b>eight or more</b> and it was in rotation and left, which is
+<span class="verdict">dormant</span>; <b>two to seven</b> is a
+<b>rarity</b>, tried and never caught on; <b>exactly once</b> is a
+<b>one-off</b>.</p>
+<p>The archive decides where that line goes rather than taste. Take every
+silence of a hundred shows or more it holds &mdash; <b class="num">774</b> of
+them &mdash; group them by how many times the song had been played when it fell
+quiet, and ask how many were ever ended by another performance:</p>
+<table class="figs"><thead><tr><th>Plays when it fell quiet</th>
+<th class="end">Silences</th><th class="end">Ever came back</th></tr></thead>
+<tbody>
+<tr><td>1</td><td class="end">176</td><td class="end">28%</td></tr>
+<tr><td>2</td><td class="end">72</td><td class="end">33%</td></tr>
+<tr><td>3</td><td class="end">40</td><td class="end">62%</td></tr>
+<tr><td>4</td><td class="end">37</td><td class="end">68%</td></tr>
+<tr><td>5&ndash;7</td><td class="end">76</td><td class="end">66%</td></tr>
+<tr><td>8&ndash;15</td><td class="end">104</td><td class="end">70%</td></tr>
+<tr><td>16&ndash;40</td><td class="end">120</td><td class="end">85%</td></tr>
+<tr><td>41 or more</td><td class="end">149</td><td class="end">93%</td></tr>
+</tbody></table>
+<p>Collapsed to the three groups above that is <b class="num">84%</b>,
+<b class="num">55%</b> and <b class="num">28%</b>. Counting only silences that
+have already run three hundred shows &mdash; which is where most of that page
+lives &mdash; it is <b class="num">75%</b>, <b class="num">43%</b> and
+<b class="num">20%</b>. A one-off is the only kind of song on the page that is
+likelier to stay gone than to come back.</p>
+<p>Plays, and not something cleverer. Ten other rules were measured against the
+same outcome &mdash; performances inside any fifty-, hundred- or two-hundred-show
+window, and the span from a song's first performance to its last. None beat the
+plain count, and span was the worst of them: whether a song was ever in rotation
+is answered by how many times the band played it, not by how long they had it
+lying around.</p>
+<p>A song called back for one night after years away does not get a fourth
+name. It is an event rather than a state, and the play count already carries
+it: the song moves up by one, and if that was its second performance it is
+still a rarity, because two is not a rotation. Whether it sticks is not
+knowable on the night, but it is not a coin toss either. Of returns from a
+silence of three hundred shows or more that have since had three hundred shows
+of chance, the ones that had been played <b>once</b> before went quiet again for
+good <b class="num">43%</b> of the time; those played two to seven times,
+<b class="num">27%</b>; those played eight or more, <b class="num">7%</b>.</p>"""),
     ('ratings-and-jam-charts', 'Ratings and jam charts', """
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
@@ -6191,12 +6428,23 @@ night. Could come back, could be on the way out of rotation.</dd>
 <dt>On the shelf</dt><dd>Gone more than a hundred shows &mdash; long enough
 that the habit it is being measured against has probably stopped being
 true.</dd>
-<dt>Dormant</dt><dd>No recent record at all, and gone a hundred shows or more.
-Nobody is expecting it, and ranking these would bury the songs somebody might
-actually shout for tonight &mdash; so they have
-<a href="./dormant.html">a page of their own</a>, ordered by the year they were
+<dt>Out of rotation</dt><dd>No recent record at all, and gone a hundred shows or
+more. Nobody is expecting it, and ranking these would bury the songs somebody
+might actually shout for tonight &mdash; so they have
+<a href="./dormant.html">a page of their own</a>, grouped by the year they were
 last heard rather than by a lateness they cannot have.</dd>
 </dl>
+<p>That fourth group is three groups, and the difference matters more than the
+other three lists put together. <em>Dormant</em> means a song used to be
+otherwise, and that is only true of the ones the band actually played: a song
+performed once at a Halloween show never had a rotation to fall out of. So the
+page splits on how many times the song was ever played &mdash; eight or more is
+<strong>dormant</strong>, two to seven is a <strong>rarity</strong>, exactly
+once is a <strong>one-off</strong> &mdash; and the archive says the split is
+worth making. Of every silence of a hundred shows or more it holds, the share
+ever ended by another performance runs 84%, 55% and 28% down those three. A
+one-off is the only kind of song here that is likelier to stay gone than to come
+back, which is the one thing the old single list could not say.</p>
 <p><em>Slipping</em>, not <em>overdue</em>, because a show page already uses
 overdue for something narrower: a single performance that came back later than
 that song usually does. Every song on the due page would be stamped overdue if

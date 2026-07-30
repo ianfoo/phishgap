@@ -54,6 +54,29 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
+### Newest first: the 2026-07-30 session — "a one-off is not dormant"
+
+**§2j is the whole of it, and it supersedes parts of §2f.** Ian read the
+dormant page and objected that 126 of its 281 rows had been played exactly
+once, which is not what "dormant" means. Measured against the archive's own
+774 long silences, he is right and the effect is large: a song that fell quiet
+after one play came back 28% of the time, after 8+ plays 84%. The page is now
+three sections — **54 dormant, 101 rarities, 126 one-offs** — titled *Out of
+rotation*, at the same URL.
+
+Two things a fresh session should know:
+
+- **`ROTATION_PLAYS = 8` is a separate constant from `MIN_HISTORY = 8`** on
+  purpose. Same number, different meaning: one counts recent gaps and gates a
+  verdict, the other counts plays ever and picks a noun. Tuning one must not
+  move the other.
+- **The sticky-header bug fixed in §2j was on `due.html` too**, and had been
+  since §2. If another page grows a second `.lhead`, wrap each in its own
+  parent or the first one pins for the rest of the document.
+
+One judgement call is left open for him at the end of §2j: 8 versus 3 for the
+dormant/rarity line. Both figures are measured there.
+
 ### The 2026-07-28 session, second sitting — everything here is pushed
 
 Nothing is in flight. Working tree clean, `main` and `origin/gh-pages` agree,
@@ -612,7 +635,9 @@ with the reasoning. Listed here so the batch is in one place.
 | A show row's landing spot is **marked** rather than given a link back: a fragment jump is reversible by the browser, a scroll is not | §2h | delete two rules |
 | `dormant.html` is **not in the nav** — its doors are the due page and the FAQ | §2f | one nav item |
 | Dormant figures are set **in ink, not the accent** | §2f | one rule |
-| Dormant is ordered **by year last heard**, then by all-time plays | §2f | two lines in `render_dormant` |
+| ~~Dormant is ordered **by year last heard**, then by all-time plays~~ — superseded 2026-07-30: it is now split into three kinds first, and ordered by year *inside* each. See §2j | §2j | — |
+| The dormant/rarity line is **8 plays**, its own constant rather than `MIN_HISTORY` | §2j | one constant |
+| The page is titled **Out of rotation**; the URL stays `dormant.html` | §2j | one string |
 | `.backtop` now renders as the **mono control it was always written to be** — this changes the look of a page he has reviewed | §7 | revert one selector |
 | A tour whose name is inside another tour's name is **left unlinked** rather than linking to the wrong shows | §4 | delete `ambiguous_tours` |
 | The sitemap carries **no `<lastmod>`** | §4 | add one field |
@@ -746,6 +771,11 @@ those.
 
 All four are listed or counted on the page, and each has a hero cell linking to
 its section (dormant excepted — see §2f).
+
+**The fourth row is out of date and is left as written.** It is a record of
+what the page said on 2026-07-28. As of 2026-07-30 that 283 is 281 and is no
+longer one category: 54 dormant, 101 rarities, 126 one-offs, and the due page's
+hero cell counts only the 54. See §2j.
 
 **One boundary case to put to Ian.** He named **The Howling** as due at 36
 shows; it lands in *overdue* at **5.1×** a typical gap of 7. He hedged on it in
@@ -1045,6 +1075,12 @@ stated a figure and led nowhere now leads here. The three *charts* in this
 section are still open and still want the "classify as of a past date"
 capability described at the end.
 
+**Read §2j before this section.** On 2026-07-30 the page was split three ways
+and retitled, which makes several statements below stale: the year strip is
+gone, "284 songs grouped by year" is now 281 songs in three parts each grouped
+by year, and the count on the due page's hero cell is 54 rather than the whole
+list. The paragraphs are left as the record of what shipped that night.
+
 ### What landed
 
 - **284 songs, grouped by the year each was last heard, newest first.** Within
@@ -1147,6 +1183,125 @@ in §2e because it is about the catalogue rather than about one song:
 classification that can be evaluated *as of a past date*, which the current
 code cannot do — it answers only "what is dormant now". That is the actual
 piece of work, and the charts are cheap once it exists.
+
+## 2j. A one-off is not dormant — Ian, 2026-07-30. DONE
+
+His words, reading the page shipped in §2f: "A bunch of the songs on this list
+have been played once. I don't think it's fair to call a one-off 'dormant.'
+Dormancy implies that it was once not dormant, but many songs that get played
+once will never be played again." And on the MSG bustouts: "a lot of the 1,000+
+performance gaps we saw closed this week will open up new indefinite gaps
+again, and we'll never see those songs performed again."
+
+He was right, and 45% of the page was the problem: **126 of 281 rows had been
+played exactly once, ever**, and 42 of those 126 were played on a Halloween
+night as part of a costume set — performed once by design, with no rotation to
+fall out of.
+
+### The archive picks the line, not taste
+
+Every silence of `BUSTOUT_GAP` or more in the archive — **774** of them —
+grouped by plays-at-the-time and scored on whether it was ever ended:
+
+| plays when it fell quiet | silences | ever came back |
+|---|---:|---:|
+| 1 | 176 | **28%** |
+| 2 | 72 | 33% |
+| 3 | 40 | 62% |
+| 4 | 37 | 68% |
+| 5–7 | 76 | 66% |
+| 8–15 | 104 | 70% |
+| 16–40 | 120 | 85% |
+| 41+ | 149 | **93%** |
+
+Conditioned on silences that already reached 300 shows — where this page lives,
+its median row gone 490 — the three groups read **75% / 43% / 20%**. A one-off
+is the only kind that is likelier to stay gone than to return.
+
+**Eleven rules were measured against the same outcome.** Raw play count won at
+49 points of separation; `3+ in any 50 shows` and `3+ in any 200 shows` tied at
+48 and cost a concept; **`span >= 100 shows` was worst at 34**. Whether a song
+was ever in rotation is answered by how many times they played it, not by how
+long they had it lying around. `ROTATION_PLAYS = 8` carries this.
+
+### His MSG worry is a different population — worth telling him
+
+22 songs returned 2026-07-20..29 from a 100+ show silence, and **21 of them had
+8 or more plays first**: Sweet Adeline 176, The Curtain 124, Glide 117,
+Makisupa 109, Big Ball Jam 103, Love You 94, La Grange 83, Highway to Hell 78,
+Harpua 67, Drowned 49, Cold as Ice 48. Only Back in the U.S.S.R. (4) is a
+rarity. When these re-open their gaps they will be **correctly** called dormant.
+The one-off problem and the callback problem barely overlap.
+
+### The callback is an event, not a fourth category — [ruling]
+
+He asked how to handle a song called back for one night. It gets no new name:
+the play count already carries it, and a second performance still is not a
+rotation. It is also not a coin toss. Of returns from a 300+ show silence that
+have since had 300+ shows of chance, the ones played **once** before went quiet
+again for good **43%** of the time; 2–7 before, **27%**; 8+ before, **7%**.
+Baby Lemonade, Bohemian Rhapsody, Jungle Boogie and Theme from New York, New
+York are all 2-play New Year's callbacks still silent, and all now sit under
+Rarities rather than Dormant.
+
+### What landed
+
+- **`rotation_split()` beside `due_rows()`**, for the reason `due_rows` itself
+  is shared: the page and the due page's hero cell come from one call, so they
+  cannot disagree about how many songs are dormant.
+- **Three sections on one page** (his choice, offered against separate pages
+  and a filter), each with its own year grouping and anchored year ids —
+  `#dormant-2019` rather than `#y2019`, because a year appears in all three.
+- **Retitled *Out of rotation*; URL stays `dormant.html`** so nothing that
+  links here breaks.
+- **The due page's Dormant cell now counts 54, not 281,** and links to
+  `#dormant` rather than the page top, so the figure and what it lands on are
+  the same set. Its tail sentence names all three.
+- **A `rotation` section on the method page** carrying the table above, and the
+  FAQ's fourth definition renamed and extended.
+- **Song pages stamp `one-off` / `rarity` / `dormant`** from the same constant,
+  via new `data-plays` and `data-rotation`. The box outlives any one list, so
+  fixing only the page would have left the word loose on 126 song pages.
+- **The section strip was built and then removed.** Eighteen years needed a
+  jump strip; three sections do not, and the hero directly under it already
+  named, counted and linked all three — two rows saying the same three numbers
+  a line apart.
+
+### It found a live layout bug on a page Ian has reviewed
+
+`.lhead` is `position:sticky; top:0`, and a sticky element is held by its
+**parent**. All three column headers shared `#main`, so each stayed pinned for
+the whole rest of the page: scrolling into Rarities showed the Dormant header
+ruled straight across the word "Rarities". **`due.html` had this first** — its
+three headers all shared `.wrap` — and it has been shipping since §2 with 43
+rows to hide it. Both fixed by giving each section its own wrapper.
+
+### Verified
+
+- 54 + 101 + 126 = 281, and **every row's printed play count satisfies its own
+  section's rule** — dormant min 8, rarities 2–7, one-offs exactly 1, zero
+  violations. Not three examples: all 281.
+- **All 281 song pages agree with the section their song is in**, and all 589
+  carry `data-plays`. `sanity` → dormant, `the-connection` → rarity,
+  `and-flew-away` → one-off, read out of the live DOM after the fetch.
+- No duplicate ids on the page. Sticky headers release at their section end
+  (measured: tops −11555, −58, 256 rather than 0, 0, 0).
+- Rendered and screenshotted in **both themes**, desktop and 390px. No sideways
+  scroll on mobile (`scrollWidth` 390 = `innerWidth`).
+
+### Still open
+
+- The three **charts** in §2f are untouched and still want "classify as of a
+  past date". The split makes them more interesting, not less: churn into and
+  out of *dormancy* is now separable from songs the band merely tried once.
+- **Whether `ROTATION_PLAYS` should be 8 or 3.** 8 is defended above and gives
+  the cleanest Dormant list. But the sharpest single break in the return-rate
+  table is between 2 and 3 plays (33% → 62%), and at 3 the page would split
+  **107 / 48 / 126** — a Dormant section twice its current size, and a Rarities
+  section that is only the 2-play songs. Both are defensible; 8 was chosen
+  because it is where "had a rotation" stops being arguable and because it is
+  the number the rest of the file already uses for "enough history to judge".
+  One constant to move, and Ian may prefer the other.
 
 ## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 
