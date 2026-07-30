@@ -274,6 +274,56 @@ would have left every one of them dropped on the next `--previous` run, in a
 function nobody would think to open. The list is now one named constant,
 `NB_CARRY`, next to the walk that produces it.
 
+### "N new since you last looked" could not know that, and now can
+
+Ian, on a screenshot: *"how can it know when I last looked? I went and
+scrolled to the bottom and then back to the top and it still said this, so
+right there, it's not true."* He was right, and the mechanism was dumber than
+the words. `seen` is a row count in `localStorage`, it was written **at page
+load**, and the tag was built once from it and never touched again. So the
+sentence meant "since this browser last loaded a document for this show", and
+the tag was a snapshot frozen at load — scrolling re-evaluated nothing.
+
+**Making the reloads real is what exposed it.** Before the poller the meta
+refresh never fired, the page almost never reloaded, and `seen > 0 &&
+rows > seen` therefore almost never came true. The claim had been false all
+along and nobody had been shown it often enough to notice.
+
+One rule fixes it: **the stored count only ever advances to rows that have
+actually been in view.** An IntersectionObserver on the last new row, with a
+one-second dwell so a flick past the table does not count as looking, retires
+the tag and banks the count at the same moment. Nothing is written at load
+when there is something new to show.
+
+**The first attempt was wrong in both directions and the first test caught
+it.** It also banked on `visibilitychange` and `pagehide`, to stop an unread
+page accumulating a claim. But a reload *fires* `pagehide`, so the count was
+banked from the document being torn down, and rows in the next document that
+the reader had still never seen were recorded as seen — two songs landing
+without a scroll between them would report "1 new", not 2. Accumulation was
+never the bug: if you never look at the new songs they are still new, and
+saying so is the entire point of the tag.
+
+Verified in a browser, all four paths: baseline 18 against 20 rows → tag
+"2 new", two rows marked, **stored still 18**; the last new row scrolled into
+view and held → tag gone, stored 20; back to the top → still gone, which is
+exactly what he did and did not get; reload with nothing new → no tag, no
+marks. Note for the next session: **the browser pane reports
+`document.visibilityState: "hidden"` unless the tab is fronted**, and an
+IntersectionObserver does not fire in a hidden document — the first run of
+this test looked like a broken observer and was a broken harness. Front the
+tab, then measure.
+
+### Ian's idea: a `/live` endpoint, not a rebuilt page
+
+Raised in the same message and explicitly parked by him — *"I know we'd have
+to do something other than Github Actions for that."* The shape: the watcher
+serves a live endpoint and the `.html` page redirects to it while an event is
+on, so the reader is not waiting on a static publish at all. It would remove
+the whole publish-latency floor (60–90s of Pages deploy on top of the polling
+interval) that §0 records as "not a bug to chase". Worth keeping written down
+as the answer to that floor if the hosting ever moves.
+
 **And the push exposed one in the workflow — twice over, the same shape.**
 The hourly job's "Commit the data archive" step ran a bare `git push` under
 `bash -e`, so losing a race to the watcher killed the step, and with it the
