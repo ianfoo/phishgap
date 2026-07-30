@@ -314,6 +314,30 @@ IntersectionObserver does not fire in a hidden document — the first run of
 this test looked like a broken observer and was a broken harness. Front the
 tab, then measure.
 
+**And his second thought: the count should be the way there.** The tag is now
+a link to the first new row. Every song row already carries its slug as an id
+— `#character-zero` — so this is a real `href` to a real fragment rather than
+a scripted scroll, which is the §2h ruling again: a fragment jump is
+reversible with the Back button and a scroll is not. It points at the *first*
+new row so the reader lands at the start of what they missed. `tabindex="-1"`
+on the target, and `[tabindex="-1"]:focus{outline:none}` in `BASE_CSS`
+already handles it correctly — a landing spot is a place, not a control. The
+rows already carry `scroll-margin-top:46.8px`, so it clears the sticky header
+without anything new.
+
+`text-decoration:none` had to be said out loud. The chip's own `color` beats
+the UA link colour so it was never going to come out browser blue, but it
+would have come out underlined — the same family as the four links that have
+shipped here wearing a default the author sheet never overrode.
+
+**A harness limit worth recording**: a synthetic click in the browser pane
+does **not** perform fragment navigation. Clicking the new link changed
+nothing, and so did clicking the *pre-existing* `#suspicious-minds` link —
+which is how it was shown to be the pane rather than the change. Verified
+instead by resolving the fragment directly: scroll 0 → 2273, target at
+`top:47` and in view, `document.activeElement` the row itself, no ring on it,
+and the target confirmed to be the first `tr.fresh`.
+
 ### Ian's idea: a `/live` endpoint, not a rebuilt page
 
 Raised in the same message and explicitly parked by him — *"I know we'd have
