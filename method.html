@@ -924,12 +924,29 @@ average over that would call almost anything ordinary.</p>
 <p>A gap outside the middle 70% of that ten-year window gets called. Below it,
 <span class="verdict premature">premature</span>; above it,
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
-most songs. The band's ends are interpolated values that appear nowhere in the
+most songs. The band's ends are computed values that appear nowhere in the
 song's actual gaps, which is why they are not printed as numbers.</p>
+<p>That middle 70% is measured as a <b>ratio</b> around the song's typical gap
+rather than as a fixed number of shows either side of it. A gap can be 5 or 112
+but never less than nothing, so a step from 5 to 8 and a step from 68 to 71 are
+not the same distance, and reading two percentiles off the list treats them as
+though they were. Checked against what actually happened next &mdash; band built
+from a song's earlier gaps, then compared with the gap that followed, over
+<span class="num">32,605</span> performances &mdash; percentiles held the next
+gap <span class="num">76%</span> of the time for the staples and
+<span class="num">44%</span> for the rarest songs, so the word
+&ldquo;usually&rdquo; meant two different things depending on the row. On a
+ratio scale it runs <span class="num">70%</span> to
+<span class="num">49%</span>.</p>
 <p>The band is wide enough that a verdict stays worth reading: roughly
-<span class="num">13%</span> of performances come out premature,
-<span class="num">67%</span> expected and <span class="num">20%</span>
+<span class="num">9%</span> of performances come out premature,
+<span class="num">69%</span> expected and <span class="num">22%</span>
 overdue.</p>
+<p>Some songs do two things rather than one &mdash; a fortnight's rotation, and
+then a year away &mdash; and a single range describes neither. Where the record
+breaks cleanly in two, the hover says so instead of averaging them: Esther's
+range tops out under sixty shows, but three of her recent gaps ran
+<span class="num">68</span> or longer.</p>
 <p class="backtop"><a href="#sections">&uarr; All sections</a></p>
 <h2 id="the-bar">The bar</h2>
 <p>The bar is a <b>position, not a length</b>. Its shaded middle is the band

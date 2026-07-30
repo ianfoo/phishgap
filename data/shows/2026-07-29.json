@@ -25,6 +25,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": "bustout"
     },
     {
@@ -41,8 +42,9 @@
       "recent_plays": 11,
       "gap_median": 21,
       "gap_mean": 34.09090909090909,
-      "gap_low": 13.0,
-      "gap_high": 56.5,
+      "gap_low": 11.665198685759288,
+      "gap_high": 57.538141083152844,
+      "gap_away": null,
       "verdict": "premature"
     },
     {
@@ -59,8 +61,9 @@
       "recent_plays": 27,
       "gap_median": 7,
       "gap_mean": 39.96296296296296,
-      "gap_low": 5.0,
-      "gap_high": 14.099999999999998,
+      "gap_low": 2.9027962450842693,
+      "gap_high": 27.18660841964711,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -77,8 +80,12 @@
       "recent_plays": 12,
       "gap_median": 17.5,
       "gap_mean": 33.166666666666664,
-      "gap_low": 10.6,
-      "gap_high": 70.8,
+      "gap_low": 8.159762972388423,
+      "gap_high": 57.78576824089216,
+      "gap_away": [
+        3,
+        68
+      ],
       "verdict": "expected"
     },
     {
@@ -95,8 +102,9 @@
       "recent_plays": 13,
       "gap_median": 28,
       "gap_mean": 29.384615384615383,
-      "gap_low": 16.8,
-      "gap_high": 44.199999999999996,
+      "gap_low": 16.99600017873486,
+      "gap_high": 42.65522152698204,
+      "gap_away": null,
       "verdict": "premature"
     },
     {
@@ -115,6 +123,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": "bustout"
     },
     {
@@ -131,8 +140,9 @@
       "recent_plays": 15,
       "gap_median": 17,
       "gap_mean": 29.866666666666667,
-      "gap_low": 9.2,
-      "gap_high": 37.7,
+      "gap_low": 6.4724365254522604,
+      "gap_high": 50.94891058088133,
+      "gap_away": null,
       "verdict": "premature"
     },
     {
@@ -151,6 +161,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": null
     },
     {
@@ -169,6 +180,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": null
     },
     {
@@ -187,6 +199,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": null
     },
     {
@@ -205,6 +218,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": "bustout"
     },
     {
@@ -221,8 +235,9 @@
       "recent_plays": 49,
       "gap_median": 6,
       "gap_mean": 6.673469387755102,
-      "gap_low": 3.0,
-      "gap_high": 10.0,
+      "gap_low": 2.522651868195787,
+      "gap_high": 11.203371834454295,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -239,8 +254,9 @@
       "recent_plays": 34,
       "gap_median": 7.0,
       "gap_mean": 10.029411764705882,
-      "gap_low": 3.95,
-      "gap_high": 13.100000000000001,
+      "gap_low": 2.836394820859855,
+      "gap_high": 17.178349307826068,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -257,9 +273,10 @@
       "recent_plays": 13,
       "gap_median": 26,
       "gap_mean": 29.307692307692307,
-      "gap_low": 16.2,
-      "gap_high": 47.0,
-      "verdict": "premature"
+      "gap_low": 13.30463854510768,
+      "gap_high": 48.221694603926636,
+      "gap_away": null,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -277,6 +294,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": "bustout"
     },
     {
@@ -295,6 +313,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": null
     },
     {
@@ -311,8 +330,9 @@
       "recent_plays": 34,
       "gap_median": 9.0,
       "gap_mean": 11.088235294117647,
-      "gap_low": 6.0,
-      "gap_high": 19.05,
+      "gap_low": 5.3002364403079,
+      "gap_high": 17.108791403173484,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -329,8 +349,9 @@
       "recent_plays": 73,
       "gap_median": 5,
       "gap_mean": 5.109589041095891,
-      "gap_low": 3.0,
-      "gap_high": 8.0,
+      "gap_low": 2.561450716429091,
+      "gap_high": 7.873640384954511,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -347,8 +368,9 @@
       "recent_plays": 8,
       "gap_median": 27.5,
       "gap_mean": 43.875,
-      "gap_low": 14.450000000000001,
-      "gap_high": 42.95,
+      "gap_low": 13.585159567839984,
+      "gap_high": 71.51481454875051,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -365,8 +387,9 @@
       "recent_plays": 53,
       "gap_median": 6,
       "gap_mean": 6.09433962264151,
-      "gap_low": 3.0,
-      "gap_high": 9.199999999999996,
+      "gap_low": 2.523149300200204,
+      "gap_high": 10.01844012741732,
+      "gap_away": null,
       "verdict": "expected"
     }
   ],

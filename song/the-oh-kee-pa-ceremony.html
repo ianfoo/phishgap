@@ -1160,7 +1160,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     if(typeof n!=='number') return;
     box.querySelector('.num').textContent=n.toLocaleString();
     /* The same two thresholds the report pages apply, in the same order: the
-       85th percentile of recent gaps where the song has enough history to have
+       upper edge of the song's usual range where it has enough history to have
        one, and the bustout line where it does not. Ours against ours -- this
        is not a claim about phish.net's gap, which is not reproducible from a
        show calendar. */
