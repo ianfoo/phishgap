@@ -39,6 +39,7 @@ import os
 import random
 import re
 import shutil
+import statistics
 import subprocess
 import sys
 import tempfile
@@ -713,7 +714,8 @@ def remeasure(site_dir, artist="Phish"):
                 # event that is not a show is wrong whatever the history says,
                 # so that much can still be withdrawn.
                 if not counts:
-                    for k in ("verdict", "gap_median", "gap_low", "gap_high"):
+                    for k in ("verdict", "gap_median", "gap_low", "gap_high",
+                              "gap_away"):
                         s.pop(k, None)
                     s["verdict"] = None
                 skipped += 1
@@ -722,7 +724,7 @@ def remeasure(site_dir, artist="Phish"):
             # no longer carry one loses it rather than keeping a stale value.
             for k in ("gap", "verdict", "debut", "prev_date", "prev_venue",
                       "prev_place", "gap_median", "gap_mean", "gap_low",
-                      "gap_high", "plays", "recent_plays", "out"):
+                      "gap_high", "gap_away", "plays", "recent_plays", "out"):
                 s.pop(k, None)
             _finish_song(s, hist, report["date"], counting)
         after = json.dumps(report, sort_keys=True)
@@ -796,7 +798,7 @@ def _finish_song(s, hist, date, counting=None):
                            plays=None if idx is None else idx + 1))
     else:
         for k in ("verdict", "gap_median", "gap_mean", "gap_low", "gap_high",
-                  "plays", "recent_plays"):
+                  "gap_away", "plays", "recent_plays"):
             s.pop(k, None)
         s["verdict"] = None
     prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
@@ -2011,6 +2013,39 @@ RECENT_YEARS = 10
 # recent performances -- which is the honest answer for a bustout.
 BAND = (.15, .85)
 
+# ...and the middle 70% is *measured* on a log scale, which is the whole of what
+# `gap_band` does differently from reading two percentiles off the list. The band
+# has to be earned rather than nominal: it says "usually", so it should contain
+# the next gap about 70% of the time. Replaying all 32,605 rateable performances
+# from the archive -- band built from prior gaps only, then checked against the
+# gap that actually followed -- showed the percentile band did not, and missed in
+# a pattern:
+#
+#   median gap    0-4    4-7   7-11  11-20  20-40    40+
+#   percentiles   76%    70%    67%    63%    53%    44%
+#   log scale     70%    69%    68%    67%    61%    49%
+#
+# Rare songs were the badly served ones, and note the direction: their bands
+# were too *narrow*, landing inside barely half the time. Ian's read of a wild
+# Esther row was right about the row and inverted about the cause -- the wide
+# band belongs to songs whose spread is large relative to their own median,
+# which is nearly independent of how rare they are. Scaling the width by rarity
+# would have tightened the group already missing most often.
+#
+# Percentiles are not wrong here so much as the wrong shape. Two gaps and a
+# straight line between them treats 5-to-8 and 68-to-71 as the same distance,
+# and for a quantity that can be 5 or 112 but never negative, they are not: the
+# honest unit is a ratio. Ordinary mean +/- SD is worse than either -- it covers
+# 78% where it aims for 68% and puts the low end at or below zero on 38% of
+# rows (Esther's is -0.5). A median-and-IQR version in log space resists
+# outliers but undercovers at 62%, so it is not that either.
+#
+# K is the z-score matching BAND[1], so "the middle 70%" stays literally what is
+# being computed rather than a leftover phrase. Overdue lands at 21.7% against
+# the percentile band's 21.4%, which is what keeps the tuning note above intact;
+# premature rises from 6.5% to 9.3%, nearer the 15% it always claimed.
+BAND_K = statistics.NormalDist().inv_cdf(BAND[1])
+
 # Ian, reading the live list: "the songs we *expect* to hear, but that haven't
 # been played in a bit longer than we expect… I'm expecting due songs. I'm not
 # expecting overdue songs." Two conditions come out of that, and measuring
@@ -2024,11 +2059,14 @@ BAND = (.15, .85)
 DUE_CADENCE = 20
 #
 # TWO: it has to be late, but not wildly so. Measured against the song's own
-# *median* rather than its 85th percentile, which is what made the earlier
-# version wrong: Mr. Completely is 1.8x its 85th percentile and looked mildly
-# late, while being gone 98 shows against a typical gap of 15 -- 6.5x. The
-# 85th percentile is skewed by a song's few worst gaps and is the right gate
-# for "is it late at all"; it is the wrong scale for "how late".
+# *median* rather than the top of its usual range, which is what made the earlier
+# version wrong: Mr. Completely sat 1.8x above that edge and looked mildly late,
+# while being gone 98 shows against a typical gap of 15 -- 6.5x. The upper edge
+# is pulled out by a song's few worst gaps and is the right gate for "is it late
+# at all"; it is the wrong scale for "how late". (The 1.8x was measured when the
+# edge was the 85th percentile of the gap list; `gap_band` computes it
+# differently now, and the reasoning is about which figure to use, not which
+# estimator produced it.)
 #
 # Every song Ian named lands between 1.8x and 3.2x its median: Golden Age 1.8,
 # Hey Stranger 2.0, Kill Devil Falls 2.2, A Life Beyond The Dream 2.2, Martian
@@ -2046,17 +2084,77 @@ DUE_MULTIPLE = 3.5
 BUSTOUT_GAP = 100
 
 
-def _quantile(vals, q):
-    """Linear-interpolated quantile of an unsorted list."""
-    if not vals:
-        return None
-    ordered = sorted(vals)
-    if len(ordered) == 1:
-        return float(ordered[0])
-    pos = (len(ordered) - 1) * q
-    low = int(pos)
-    high = min(low + 1, len(ordered) - 1)
-    return ordered[low] + (ordered[high] - ordered[low]) * (pos - low)
+def gap_band(recent):
+    """Where this song's gaps usually land -- the one definition of "usually".
+
+    -> (low, high), or (None, None) with too little history to say.
+
+    Measured multiplicatively: the spread of log gaps, back-exponentiated, so
+    the band is a ratio around the song's typical gap rather than a fixed number
+    of shows either side of it. See the note on BAND_K for why, and for what the
+    percentile version got wrong. The +1 is so a gap of 0 has a logarithm -- You
+    Enjoy Myself has one, two shows in a row at Dick's.
+
+    Shared by all four callers on purpose. The report row, the song page figure,
+    that page's `data-high` and the due page each read two percentiles off the
+    list themselves, which is four chances to disagree about what "usually"
+    means -- and this file has already shipped that bug twice, once when the
+    song page and its preview card computed longest-gap differently, and once
+    when a card index and the published images disagreed about being current.
+    """
+    if len(recent) < MIN_HISTORY:
+        return None, None
+    logs = [math.log(g + 1) for g in recent]
+    mid = statistics.mean(logs)
+    spread = statistics.stdev(logs) if len(logs) > 1 else 0.0
+    return (math.exp(mid - BAND_K * spread) - 1,
+            math.exp(mid + BAND_K * spread) - 1)
+
+
+# A break this size, above the median, is taken to separate two behaviours
+# rather than to mark one long gap: the song's rotation, and the stretches it
+# spent off the list entirely. Esther's recent gaps are 5 8 12 13 14 16 19 20 26
+# 29 68 76 112 -- nine of one thing and three of another, and 29 -> 68 is the
+# 2.3x that says so.
+AWAY_JUMP = 2.0
+
+
+def layoff_break(recent):
+    """The gaps that are an absence rather than a longer wait, if any.
+
+    -> the sorted layoff gaps, or [] where the record is one behaviour.
+
+    A band is a single range and cannot say "either a fortnight or two years",
+    which is exactly what a song like Esther does. Rather than average the two
+    into a range describing neither, the band keeps measuring the whole record
+    and the row says the second thing in words.
+
+    Four conditions, and each one is turning something down. A break of at least
+    AWAY_JUMP, or there is only one behaviour here. At least two gaps beyond it,
+    because one is an outlier and naming it as a habit overstates it -- Mr.
+    Completely's single 380 is its longest gap, which its own page already says.
+    No more than a third of the record, or the "absences" are the behaviour. And
+    the break has to sit at twice the median at least, so this is a song that
+    goes away rather than one that is merely uneven.
+
+    Fires on 10.8% of rateable performances and 9 of the 214 songs rateable
+    today, all nine of them visibly two clusters: Axilla 3-36 then 81 and 82,
+    Contact 4-41 then 95 and 95, The Sloth 10-45 then 97 and 98.
+    """
+    if len(recent) < MIN_HISTORY:
+        return []
+    mid = _median(recent)
+    ordered = sorted(recent)
+    best = ()
+    for i in range(len(ordered) - 1):
+        if ordered[i] >= mid and ordered[i] > 0:
+            best = max(best, (ordered[i + 1] / ordered[i], i + 1))
+    if not best or best[0] < AWAY_JUMP:
+        return []
+    away = ordered[best[1]:]
+    if len(away) < 2 or len(away) > len(recent) / 3 or not mid:
+        return []
+    return away if away[0] >= 2 * mid else []
 
 
 def _years_before(iso, years):
@@ -2117,12 +2215,20 @@ def _classify(gap, prior, on_date, plays=None):
               and str(h.get("gap")).lstrip("-").isdigit()]
     stats = {"plays": plays, "recent_plays": len(recent), "gap_median": None,
              "gap_mean": None, "gap_low": None, "gap_high": None,
-             "verdict": None}
+             "gap_away": None, "verdict": None}
     if len(recent) >= MIN_HISTORY:
         stats["gap_median"] = _median(recent)
         stats["gap_mean"] = sum(recent) / len(recent)
-        stats["gap_low"] = _quantile(recent, BAND[0])
-        stats["gap_high"] = _quantile(recent, BAND[1])
+        stats["gap_low"], stats["gap_high"] = gap_band(recent)
+        # Carried on the row because the renderer sees the row and not the
+        # history it came from -- as [how many, from what], the two numbers the
+        # sentence needs. Null rather than absent on the rows with nothing to
+        # say, like gap_low and gap_mean beside it: the renderers read these by
+        # subscript because the report shape has always guaranteed them, which
+        # is the reason prev_date is assigned unconditionally further down.
+        away = layoff_break(recent)
+        if away:
+            stats["gap_away"] = [len(away), away[0]]
         if gap is not None:
             stats["verdict"] = (
                 "premature" if gap < stats["gap_low"] else
@@ -2334,6 +2440,16 @@ def render_html(report, bar_scale="linear", index_href=None,
             tip = ("%s show%s; usually %s to %s"
                    % (_stat(g), "" if g == 1 else "s",
                       _stat(round(s["gap_low"])), _stat(round(s["gap_high"]))))
+            # A band is one range, and some songs do two things -- see
+            # layoff_break. Where they do, the range alone reads as though the
+            # song merely waits a long time, and "but" is doing the work: the
+            # sentence has stopped describing one behaviour and started naming
+            # the second. Esther is the case that prompted it, and her range
+            # tops out at 55 against three absences of 68, 76 and 112.
+            if s.get("gap_away") and s.get("recent_plays"):
+                tip += (", but %d of its last %d gaps ran %s or longer"
+                        % (s["gap_away"][0], s["recent_plays"],
+                           _stat(s["gap_away"][1])))
         elif g is not None and s.get("recent_plays") is not None:
             # No band, so no bar -- and an empty column is the most confusing
             # thing on the row unless it says why it is empty. This is not a
@@ -2361,9 +2477,9 @@ def render_html(report, bar_scale="linear", index_href=None,
         typical = ""
         if s.get("gap_median") is not None:
             # The median alone. The mean sits within 20% of it for two thirds
-            # of songs, so it earned its space rarely, and the percentile band
-            # that actually decides the verdict read as jargon on the page --
-            # its ends are interpolated values that appear nowhere in the
+            # of songs, so it earned its space rarely, and the band that
+            # actually decides the verdict read as jargon on the page --
+            # its ends are computed values that appear nowhere in the
             # song's real gaps. Both are still archived in the JSON.
             typical = "<span class='typ'>med %s</span>" % _stat(s["gap_median"])
         elif s.get("recent_plays") is not None:
@@ -4103,7 +4219,7 @@ SONG_JS = """
     if(typeof n!=='number') return;
     box.querySelector('.num').textContent=n.toLocaleString();
     /* The same two thresholds the report pages apply, in the same order: the
-       85th percentile of recent gaps where the song has enough history to have
+       upper edge of the song's usual range where it has enough history to have
        one, and the bustout line where it does not. Ours against ours -- this
        is not a claim about phish.net's gap, which is not reproducible from a
        show calendar. */
@@ -4414,15 +4530,15 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # Filled in the browser from data/current.json; see SONG_JS. It carries the
     # thresholds rather than the verdict, because the count it has to be judged
     # against is the thing that is not known until the page is open. They are
-    # the same two the report pages use -- the 85th percentile of recent gaps
-    # where there is enough history for one, the bustout line where there is
-    # not -- so a song called overdue here is overdue by the site's one rule.
+    # the same two the report pages use -- the upper edge of `gap_band` where
+    # there is enough history for one, the bustout line where there is not --
+    # so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
              "data-bustout='%d' data-mult='%s'>"
              "<div class='lbl'>Current Gap<span class='v'></span></div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
-                _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
+                gap_band(recent)[1] if len(recent) >= MIN_HISTORY else "",
                 BUSTOUT_GAP, DUE_MULTIPLE))
 
     top = best[0] if best else ""
@@ -4458,8 +4574,13 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     # One band for the whole page: this is a single song, so "usually" is a
     # single answer rather than a per-row one.
-    low = _quantile(recent, BAND[0]) if len(recent) >= MIN_HISTORY else None
-    high = _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else None
+    #
+    # No layoff sentence here, though `layoff_break` would answer for this song
+    # too. This page draws the band and never states it in words, so there is no
+    # sentence to add the clause to -- only a new paragraph on all 588 pages, to
+    # reach the nine it would say anything about. That is the mistake the marks
+    # link below was moved to stop making.
+    low, high = gap_band(recent)
     rows, seen_era = [], None
     for i, p in enumerate(perfs):
         date, g = p["date"], p["gap"]
@@ -4957,10 +5078,10 @@ def due_rows(docs, counting, since):
                 # what span, which are the only figures it has left.
                 dormant.append((gone, doc, played))
             continue
-        high = _quantile(recent, BAND[1])
-        if high <= 0 or n <= high:
+        high = gap_band(recent)[1]
+        if high is None or high <= 0 or n <= high:
             continue
-        # The 85th percentile above is the gate -- past it, the song is later
+        # The band's upper edge above is the gate -- past it, the song is later
         # than it usually is. The median below is the scale everything is then
         # measured and ranked on, because it is the gap a reader would call
         # this song's usual, and it is the one printed on the row.
@@ -5017,10 +5138,10 @@ def _due_row(over, n, high, doc, last):
 
     The figure printed is the song's median recent gap, which is the one a
     reader would call its usual, and the one the multiple beside it is computed
-    against. It used to be the 85th percentile -- the gate for "is it late at
-    all" -- and that was both harder to read and misleading as a scale: Show of
-    Life's 85th percentile is 53.8 against a median of 29.5, and Mr. Completely
-    looked mildly late at 1.8x its 85th percentile while being gone 98 shows
+    against. It used to be the top of the song's usual range -- the gate for "is
+    it late at all" -- and that was both harder to read and misleading as a
+    scale: Show of Life's upper edge was 53.8 against a median of 29.5, and Mr.
+    Completely looked mildly late at 1.8x that edge while being gone 98 shows
     against a typical gap of 15.
     """
     place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
@@ -5257,7 +5378,7 @@ def render_dormant(docs, counting, since):
     # Grouped by the year of the last performance, newest first; inside a year,
     # the most-played first, because that is the order of "would I remember
     # this?" and there is no other order available -- a dormant song has no
-    # percentile to be sorted on.
+    # usual range to be sorted on.
     years = {}
     for row in dormant:
         years.setdefault(row[2][-1]["date"][:4], []).append(row)
@@ -5669,12 +5790,29 @@ average over that would call almost anything ordinary.</p>"""),
 <p>A gap outside the middle 70% of that ten-year window gets called. Below it,
 <span class="verdict premature">premature</span>; above it,
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
-most songs. The band's ends are interpolated values that appear nowhere in the
+most songs. The band's ends are computed values that appear nowhere in the
 song's actual gaps, which is why they are not printed as numbers.</p>
+<p>That middle 70% is measured as a <b>ratio</b> around the song's typical gap
+rather than as a fixed number of shows either side of it. A gap can be 5 or 112
+but never less than nothing, so a step from 5 to 8 and a step from 68 to 71 are
+not the same distance, and reading two percentiles off the list treats them as
+though they were. Checked against what actually happened next &mdash; band built
+from a song's earlier gaps, then compared with the gap that followed, over
+<span class="num">32,605</span> performances &mdash; percentiles held the next
+gap <span class="num">76%</span> of the time for the staples and
+<span class="num">44%</span> for the rarest songs, so the word
+&ldquo;usually&rdquo; meant two different things depending on the row. On a
+ratio scale it runs <span class="num">70%</span> to
+<span class="num">49%</span>.</p>
 <p>The band is wide enough that a verdict stays worth reading: roughly
-<span class="num">13%</span> of performances come out premature,
-<span class="num">67%</span> expected and <span class="num">20%</span>
-overdue.</p>"""),
+<span class="num">9%</span> of performances come out premature,
+<span class="num">69%</span> expected and <span class="num">22%</span>
+overdue.</p>
+<p>Some songs do two things rather than one &mdash; a fortnight's rotation, and
+then a year away &mdash; and a single range describes neither. Where the record
+breaks cleanly in two, the hover says so instead of averaging them: Esther's
+range tops out under sixty shows, but three of her recent gaps ran
+<span class="num">68</span> or longer.</p>"""),
     ('the-bar', 'The bar', """
 <p>The bar is a <b>position, not a length</b>. Its shaded middle is the band
 above &mdash; where this song usually lands &mdash; the hairline through it is

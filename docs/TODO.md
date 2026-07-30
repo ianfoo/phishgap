@@ -234,6 +234,70 @@ either add it to the daily run, or have `--catch-up` record neighbours for the
 show it just fetched, since `build()` already holds that show's full setlist and
 needs no extra call.
 
+### Same session, third round — the band is measured on a log scale now
+
+Ian, from the 2026-07-29 show page: "This median range is WILD… it gives a song
+a really wide berth to being considered *expected*. Perhaps we should use some
+sort of scaling math to shrink the range as the rarity of a song goes up." He
+also guessed standard deviation was involved somewhere. Both instincts pointed
+at something real; neither was the mechanism.
+
+**The test that settled it, and the one to reuse.** Replay every rateable
+performance in the archive, build the band from that song's *earlier* gaps only,
+then check it against the gap that actually followed. A band that says "usually"
+should contain the next gap about 70% of the time; where it holds more than
+that it is too generous, and where it holds less it is claiming more than it can.
+32,605 performances, no API calls.
+
+**Scaling by rarity would have been backwards.** Coverage *fell* as songs got
+rarer — 76% for staples down to 44% for the rarest — so the rare bands were
+already too narrow, and the wide bands he was looking at belong to songs whose
+spread is large relative to their own median, which is nearly independent of
+rarity. Ordinary mean ± SD is worse than the percentiles: 78% coverage against a
+nominal 68%, and a low end at or below zero on 38% of rows.
+
+**What shipped**: the band is the spread of *log* gaps, exponentiated — a ratio
+around the song's typical gap rather than a fixed number of shows either side.
+`gap_band()` is now the single definition, replacing four independent
+`_quantile(recent, BAND[…])` call sites (report row, song page figure, that
+page's `data-high`, due page gate); `_quantile` is gone with them. `BAND` still
+means "the middle 70%" and `BAND_K` is the matching z-score, so the phrase stays
+literally what is computed.
+
+| | staples → rarest | premature / expected / overdue |
+|---|---|---|
+| percentiles | 76% → 44% | 6.5 / 72.2 / 21.4 |
+| log scale | 70% → 49% | 9.3 / 69.1 / 21.7 |
+
+Overdue barely moved, which is what keeps §2d's tuning note intact.
+
+**Second half, for clarity rather than data**: some songs do two things, and one
+range describes neither. `layoff_break()` finds a clean break above the median
+and the row says the second thing in words — Esther reads "usually 8 to 58, but
+3 of its last 12 gaps ran 68 or longer". Fires on 10.8% of performances, 9 of
+214 songs today, carried on the row as `gap_away` because the renderer sees the
+row and not the history. Not added to song pages: they draw the band and never
+state it in words, so it would have meant a new paragraph on all 588 pages to
+reach nine.
+
+**Verified**: 712 show pages replayed against their data with 0 tooltip
+mismatches; all 11,938 archived bands and 370 clauses recomputed from song
+histories with 0 disagreements; real hover in light and dark; no horizontal
+overflow at 375 or 1280. Due page moved 43 → 39 rows (11 → 10 due, 27 → 24
+slipping), and all six moves were checked by hand.
+
+**Stale wording elsewhere in this file.** §2, §2b and §2d describe the gate as
+"the 85th percentile", which was true when they were written and is not now —
+the figure is the same gate, computed differently. Left as history rather than
+rewritten, but do not design against the phrase; CLAUDE.md's warning about a
+stale constraint being more expensive than a missing one applies to this file.
+
+**Also, and unrelated to the change**: `.claude/launch.json` hardcoded port 8769
+with no `autoPort`, so a second worktree could not serve the site at all — and
+the server already running on 8769 belonged to another worktree and served the
+*old* build. Verifying against it would have shown this change as missing.
+Now `autoPort: true` with the port taken from `$PORT`.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
