@@ -167,6 +167,6 @@
   {"date": "2025-07-04", "venue": "Folsom Field", "city": "Boulder", "state": "CO", "gap": 49, "set": "1", "nb": 1, "prev": "Timber (Jerry the Mule)", "next": "Back on the Train"},
   {"date": "2026-04-23", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 34, "set": "1", "nb": 1, "prev": "46 Days", "next": "Maze"},
   {"date": "2026-07-17", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 12, "set": "1", "nb": 1, "prev": "Destiny Unbound", "next": "Golgi Apparatus"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "1", "prev": "Esther", "next": "Talk", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "1", "nb": 1, "prev": "Esther", "next": "Talk"}
  ]
 }

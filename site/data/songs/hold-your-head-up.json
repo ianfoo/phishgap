@@ -344,6 +344,6 @@
   {"date": "2023-07-16", "venue": "Ameris Bank Amphitheatre", "city": "Alpharetta", "state": "GA", "gap": 25, "set": "e", "note": "Fish on guitar.", "nb": 1, "prev": "The Night the Lights Went Out in Georgia", "in": ">", "next": "You Enjoy Myself"},
   {"date": "2023-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 9, "set": "2", "times": 2, "out": ">", "nb": 1, "prev": "Also Sprach Zarathustra", "in": "->", "next": "Cracklin' Rosie"},
   {"date": "2026-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 135, "set": "1", "note": "Fish on vacuum and \"GOOOAAALLL\" announcement from Trey.", "out": ">", "nb": 1, "prev": "Love You", "in": ">", "next": "Sparkle"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "2", "prev": "Suspicious Minds", "in": ">", "next": "Crosseyed and Painless", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "2", "nb": 1, "prev": "Suspicious Minds", "in": ">", "next": "Crosseyed and Painless"}
  ]
 }

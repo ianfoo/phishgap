@@ -19,6 +19,6 @@
   {"date": "1995-12-15", "venue": "CoreStates Spectrum", "city": "Philadelphia", "state": "PA", "gap": 3, "set": "1", "out": ">", "nb": 1, "prev": "Ha Ha Ha", "in": ">", "next": "Hold Your Head Up"},
   {"date": "1996-10-29", "venue": "Leon County Civic Center", "city": "Tallahassee", "state": "FL", "gap": 47, "set": "2", "note": "Karl Perazzo on percussion.", "out": ">", "nb": 1, "prev": "Character Zero", "next": "Hold Your Head Up"},
   {"date": "1996-12-06", "venue": "The Aladdin Theatre", "city": "Las Vegas", "state": "NV", "gap": 24, "set": "e", "note": "Four Elvis impersonators.", "out": "->", "nb": 1, "prev": "Harpua", "in": "->", "next": "Harpua"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1021, "set": "2", "prev": "I Didn't Know", "in": ">", "next": "Hold Your Head Up", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1021, "set": "2", "nb": 1, "prev": "I Didn't Know", "in": ">", "next": "Hold Your Head Up"}
  ]
 }

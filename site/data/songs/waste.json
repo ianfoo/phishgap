@@ -141,6 +141,6 @@
   {"date": "2025-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "1", "nb": 1, "prev": "Stash", "next": "My Friend, My Friend"},
   {"date": "2026-04-18", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 6, "set": "2", "nb": 1, "prev": "Tweezer", "next": "Twist"},
   {"date": "2026-07-08", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 7, "set": "e", "nb": 1, "xprev": "Harry Hood", "next": "First Tube"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "2", "prev": "You Enjoy Myself", "in": ">", "next": "I Didn't Know", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "2", "nb": 1, "prev": "You Enjoy Myself", "in": ">", "next": "I Didn't Know"}
  ]
 }

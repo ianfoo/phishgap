@@ -22,6 +22,6 @@
   {"date": "2003-02-25", "venue": "First Union Spectrum", "city": "Philadelphia", "state": "PA", "gap": 169, "set": "1", "nb": 1, "prev": "Julius", "next": "46 Days"},
   {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 83, "set": "e", "note": "Acoustic.", "nb": 1, "prev": "Driver", "next": "Secret Smile"},
   {"date": "2023-10-13", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 536, "set": "2", "jamchart": true, "jam": "Beautifully emerges -> from \"Hood's\"  jam and -> back to \"Hood\". Quite a way to make its first appearance in 14 years.", "out": "->", "nb": 1, "prev": "Harry Hood", "in": "->", "next": "Harry Hood"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 122, "set": "1", "note": "Trey on acoustic.", "prev": "Guyute", "next": "If I Could", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 122, "set": "1", "note": "Trey on acoustic.", "nb": 1, "prev": "Guyute", "next": "If I Could"}
  ]
 }

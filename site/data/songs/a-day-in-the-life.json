@@ -105,6 +105,6 @@
   {"date": "2024-08-02", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 161, "set": "1", "jamchart": true, "jam": "Worth the wait (162 shows), Phish explodes. Everything about this version is excellent, including those in attendance (listen to the AUD).", "nb": 1, "prev": "Runaway Jim", "xnext": "The Oh Kee Pa Ceremony"},
   {"date": "2025-07-05", "venue": "Folsom Field", "city": "Boulder", "state": "CO", "gap": 42, "set": "1", "nb": 1, "prev": "The Lizards", "xnext": "Wilson"},
   {"date": "2025-09-12", "venue": "Highland Festival Grounds at Kentucky Expo Center", "city": "Louisville", "state": "KY", "gap": 14, "set": "1", "out": ">", "nb": 1, "prev": "Evolve", "next": "Possum"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 39, "set": "e", "note": "Trey in Knicks jersey.", "xprev": "Character Zero", "next": "Backwards Down the Number Line", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 39, "set": "e", "note": "Trey in Knicks jersey.", "nb": 1, "xprev": "Character Zero", "next": "Backwards Down the Number Line"}
  ]
 }
