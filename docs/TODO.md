@@ -1419,14 +1419,6 @@ only the first standfirst — the trailing paragraph sat flush against the colum
 header. Fixed with `.rot .dek`, a no-op on the due page. And `<br>` between the
 two paragraphs gave a line break where a paragraph break was wanted.
 
-### Still open
-
-- The three **charts** in §2f are untouched and still want "classify as of a
-  past date". The split makes them more interesting, not less: churn into and
-  out of *dormancy* is now separable from songs the band merely tried once.
-Nothing. The `FEW_PLAYS` trap this section used to list as open was closed in a
-third round the same day — see below.
-
 ### Third round — the words come from the constant, or the build stops
 
 **The heading is "Once or twice", not "One or two nights".** Ian, on the first
@@ -1506,6 +1498,7 @@ They now render an empty `data-quiet` and the box says nothing, which is this
 file's standing answer where the data will not support a claim.
 
 **Four of the nine were shipping a false word before this.** The old ternary
+
 read `plays<=1?'one-off':…` off a `data-plays` of `0`, so a zero-play song came
 out as a one-off — but only where the verdict branch fires at all, which needs
 `since >= BUSTOUT_GAP`. Liquid Time, No Reply at All, Sunshine Superman and
