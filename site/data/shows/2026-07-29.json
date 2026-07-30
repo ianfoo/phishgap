@@ -6,7 +6,7 @@
   "state": "NY",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "<p>This show was Phish's 96th performance at Madison Square Garden. Trey wore the velour button-down from the Clifford Ball. Before the show, the light rig approximated the NY Knicks' logo. The Star Spangled Banner was <span>last performed </span><a href=\"https://phish.net/setlists/phish-december-28-2016-madison-square-garden-new-york-ny-usa.html\"><span>December 28, 2016</span></a><span> (362 shows). Talk was last performed </span><a href=\"https://phish.net/setlists/phish-october-13-2023-united-center-chicago-il-usa.html\"><span>October 13, 2023</span></a><span> (122 shows). In Axilla (Part II) Trey began the lyrics to part I, said \"Wait we did that one already\", and recommenced part II.</span></p>",
+  "notes": "<p>This show was Phish's 96th performance at Madison Square Garden. Trey wore the velour button-down from the Clifford Ball. Before the show, the light rig approximated the NY Knicks' logo. This show featured multiple bustouts: The Star Spangled Banner <span>(last played </span><a href=\"https://phish.net/setlists/phish-december-28-2016-madison-square-garden-new-york-ny-usa.html\"><span>December 28, 2016</span></a><span>, or 362 shows), Talk (last played </span><a href=\"https://phish.net/setlists/phish-october-13-2023-united-center-chicago-il-usa.html\"><span>October 13, 2023</span></a><span>, or 122 shows), and Harpua (last played </span><a href=\"https://phish.net/setlists/phish-december-31-2023-madison-square-garden-new-york-ny-usa.html\"><span>December 31, 2023</span></a><span>, or 116 shows). In Axilla (Part II) Trey began the lyrics to part I, said \"Wait we did that one already\", and recommenced part II.</span></p>",
   "permalink": "https://phish.net/setlists/phish-july-29-2026-madison-square-garden-new-york-ny-usa.html",
   "songs": [
     {
@@ -188,9 +188,27 @@
       "gap_low": null,
       "gap_high": null,
       "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Harpua",
+      "slug": "harpua",
+      "gap": 116,
+      "jamchart": false,
+      "prev_date": "2023-12-31",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 67,
+      "recent_plays": 3,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": "bustout"
     }
   ],
-  "count_since": "2026-07-30T01:14:11+00:00",
+  "count_since": "2026-07-30T01:24:28+00:00",
   "encored": false,
   "provisional": true
 }
