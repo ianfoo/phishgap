@@ -1514,6 +1514,22 @@ FIGURE_CSS = """.num.hot{color:var(--hot)}
    color:var(--dim);margin-bottom:.35rem}
 """
 
+#: A hero card that is also a link, in the three of these rules that do not
+#: depend on where it goes. Named the moment a third sheet wanted it: the song
+#: page's new Debuted card would have been an exact third copy of the show
+#: page's block, which is the shape every stylesheet bug in this file has had.
+#:
+#: The fourth rule is deliberately *not* here. It carries the arrow, and the
+#: arrow is the one thing that genuinely differs: the index points right,
+#: because the card leaves for another page; the show and song pages point
+#: down, because the card lands further down the page you are on. Kept at each
+#: point of use so the glyph is readable beside the sheet it belongs to, rather
+#: than parameterised into a token nobody can picture.
+CARD_LINK_CSS = """a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+"""
+
 #: The standfirst. Two sheets stated this identically, which is how it comes to
 #: be one block; and it is the one size that does not simply ride the root lift
 #: above. A dek introduces the page's body text, so setting it *smaller* than
@@ -1836,10 +1852,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    card that leads to a row of this one, which is why the mark is a down arrow
    rather than the index's right one. A right arrow inside a setlist is a claim
    about the music -- see the note on td.last's label. */
-a.card{text-decoration:none;color:inherit}
-a.card:hover{background:var(--hover)}
-a.card .lbl::after{content:" \\2193";color:var(--dim);white-space:nowrap}
-a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+""" + CARD_LINK_CSS + """a.card .lbl::after{content:" \\2193";color:var(--dim);white-space:nowrap}
 /* Where you landed. A jump into the middle of a forty-row setlist puts the
    reader somewhere with nothing to say they arrived, and the row they wanted
    looks exactly like the thirty-nine around it. The way back from here is the
@@ -2169,6 +2182,19 @@ def _show_links(date, on_phishin=None):
 # Below this many prior performances a song has no meaningful "typical", so it
 # gets numbers but no verdict. A song played four times cannot be overdue.
 MIN_HISTORY = 8
+
+# At or below this many countable performances a song page stops being a list
+# and becomes a statement, and the apparatus for reading a list is dropped:
+# search, sort, era chips and the "n of n" counter. 134 of 589 songs are played
+# exactly once, and on those the tools bar and three "n/a" cards were 367px of
+# chrome on a phone in front of a single 257px row -- a search field over one
+# searchable thing, a four-way sort that cannot reorder anything, and one era
+# chip anchoring to the row directly beneath it.
+#
+# A constant rather than a literal 1 because the same argument is nearly as
+# strong at two or three rows and the line is Ian's to move; raising it is this
+# one number. Every branch below tests `sparse`, never a count.
+SPARSE_HISTORY = 1
 
 # The "typical" gap is measured over this many years before the show, never
 # over all of history. Forty years of a working band is several different bands:
@@ -3014,15 +3040,13 @@ h1 em{font-style:normal;color:var(--hot)}
 h1 a{color:inherit;text-decoration:none}
 h1 a:hover em{color:var(--ink)}
 /* A hero card that is also a way in. Only some of them are. */
-a.card{text-decoration:none;color:inherit}
-a.card:hover{background:var(--hover)}
-/* Some of the cards are links and some are not, so the ones that are need to
+""" + CARD_LINK_CSS + """/* Some of the cards are links and some are not, so the ones that are need to
    say so -- but a rule under a letterspaced label reads as a stray underline
    rather than an affordance, and it was the one line in the hero not doing
    structural work. An arrow after the label carries the same message and
-   disappears into the type. */
+   disappears into the type. Right, not down: this card leaves for another
+   page, where the show and song sheets' cards land further down their own. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
-a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
@@ -3965,6 +3989,17 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
    letter-spacing:0;margin-top:auto}
+/* The debut card goes to the debut's own row. SONG_CSS had no `a.card` rules
+   at all -- this is the one sheet where a card had never been a link -- and
+   writing them out here would have made an exact third copy of the show
+   sheet's block, so they were named instead. Down-arrow, not the index's
+   right: the destination is on this page. */
+""" + CARD_LINK_CSS + """a.card .lbl::after{content:" \\2193";color:var(--dim);white-space:nowrap}
+/* A date rather than a count: ten characters where every other figure on this
+   row is one to five, so it is set down a step. Only reachable on a
+   one-performance page, where the hero is two cards and there is half the
+   measure to spend on it -- five across it would wrap at 900, 1024 and 375. */
+.num.when{font-size:1.75rem}
 """ + FIGURE_CSS + """.lbl .abbr{display:none}
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
@@ -4391,6 +4426,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
+  /* Two columns here, so the date has a 45% card rather than half the row:
+     1.5rem wants 162px against about 151px of it at 375. */
+  .num.when{font-size:1.25rem}
   .lbl{font-size:.625rem;letter-spacing:.14em}
   /* "Median gap, last 10 years" is the clear label and the default one; the
      column is simply not wide enough for it here. */
@@ -4399,6 +4437,18 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .show{font-size:.75rem;letter-spacing:0}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
+}
+/* A one-performance hero is two cards and one of them is a ten-character date,
+   which is a different problem from the five-card row: two cards share the
+   width, so each gets about 124px at 320px and the date wants 135. Measured
+   rather than guessed -- it is fine at 330 and wraps at 320, so the pair stack
+   below 360 rather than at the edge of fitting, where a fallback face a little
+   wider than IBM Plex Mono would put it back. Five cards already stack on a
+   phone; these two just do it one breakpoint later. */
+@media screen and (max-width:360px){
+  .hero.sparse .card{flex:1 1 100%;border-left:0;padding-left:0}
+  .hero.sparse .card+.card{border-top:1px solid var(--rule)}
+  .hero.sparse .num.when{font-size:1.5rem}
 }
 """)
 # After the sheet is composed, not inside its last segment: the placeholders sit
@@ -4530,22 +4580,30 @@ SONG_JS = """
   }
   var clear=document.getElementById('clear');
   function setQuery(v){ q.value=v; apply(); }
-  q.addEventListener('input', apply);
-  sort.addEventListener('change', order);
-  // Clicking a venue asks the question you were about to type.
-  list.addEventListener('click', function(e){
-    var v=e.target.closest && e.target.closest('.r-venue');
-    if(!v) return;
-    setQuery(v.textContent.trim());
-    q.scrollIntoView({block:'nearest'});
-  });
-  if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
-  document.addEventListener('keydown', function(e){
-    if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
-    if(e.key==='Escape' && q.value){ setQuery(''); q.blur(); }
-  });
-  q.disabled=false; sort.disabled=false;
-  apply();
+  /* A one-performance page ships no tools bar at all, so every handler below
+     is wired only where there is something to wire it to. Guarded here rather
+     than by returning early: the sticky header and the deep-link landing at the
+     foot of this function belong to every song page, and an early return took
+     them out on the 134 pages that have one row -- which are exactly the pages
+     a report links *into* by date. */
+  if(q&&sort){
+    q.addEventListener('input', apply);
+    sort.addEventListener('change', order);
+    // Clicking a venue asks the question you were about to type.
+    list.addEventListener('click', function(e){
+      var v=e.target.closest && e.target.closest('.r-venue');
+      if(!v) return;
+      setQuery(v.textContent.trim());
+      q.scrollIntoView({block:'nearest'});
+    });
+    if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+      if(e.key==='Escape' && q.value){ setQuery(''); q.blur(); }
+    });
+    q.disabled=false; sort.disabled=false;
+    apply();
+  }
 
   // The condensed header appears once the real one is off screen, and the
   // real one is the thing to watch rather than a scroll offset -- no
@@ -4586,7 +4644,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="{skip}">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
@@ -4596,11 +4654,28 @@ SONG_SHELL = """<!DOCTYPE html>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
 {pairs}{caveat}</header>
-<section class="hero">{hero}</section>
+<section class="hero{herocls}">{hero}</section>
 <div class="rule2"></div>
 {best}
 <p class="links">{links}</p>
-<div class="tools" id="main" tabindex="-1">
+{tools}
+{head}
+<ol class="perfs" id="list"{listattrs}>
+{rows}
+</ol>
+<p class="empty" id="empty" hidden>No performances match that search.</p>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
+<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div><script>{js}</script></body></html>
+"""
+
+# Lifted out of SONG_SHELL so that a page with nothing to search, sort or
+# filter can leave it out entirely rather than ship it disabled. See
+# SPARSE_HISTORY. Braces are the shell's own .format() vocabulary, so this stays
+# a plain block with two fields and no CSS or script in it.
+SONG_TOOLS = """<div class="tools" id="main" tabindex="-1">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
 <button id="clear" class="clear" type="button" hidden>Clear</button>
@@ -4611,18 +4686,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <option value="rating">Highest rated</option><option value="gap">Longest gap</option>
 </select></label>
 <span class="count"><b id="shown">{count}</b> of {count} shows</span>
-</div>
-{head}
-<ol class="perfs" id="list">
-{rows}
-</ol>
-<p class="empty" id="empty" hidden>No performances match that search.</p>
-<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
-<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
-{analytics}
-</div><script>{js}</script></body></html>
-"""
+</div>"""
 
 SONG_LINKS = (
     ("phish.net", "https://phish.net/song/%s", ICON_PNET, False),
@@ -4696,6 +4760,41 @@ def countable_gaps(doc, counting=None):
     return countable, debut_date, gaps
 
 
+def _debut_card(debut_date, sparse=False):
+    """The hero card for when a song started, or nothing if it never counted.
+
+    It takes the slot "Times Played" had, which was the same integer the page
+    already printed three more times -- in the subtitle a dozen pixels above the
+    card, in the "n of n shows" counter, and in the sticky bar -- while the
+    debut was one small-caps phrase in that subtitle and its row was at the foot
+    of a list up to 629 rows long. Every gap figure here is "n/a" on a quarter
+    to a third of songs; the debut is missing on 9 of 589, which makes it the
+    most widely available thing the hero was not showing.
+
+    The figure is the **year**, and that is a measurement rather than a taste:
+    five cards across leaves 117-160px inside each one between 900 and 1280px,
+    and "1986-02-03" wants 243px at the .num size and still 162px shrunk to
+    1.5rem. It wrapped to two lines at 900, 1024 and 375. Widening the card to
+    fit starves the other four below 1024. So the exact date goes where there is
+    room for it: the card is a link to the debut's own row, which is the sort
+    reversal this card exists to save, and the row states the full date, the
+    venue and the note.
+
+    A one-performance page has two cards and half the row each, so there the
+    full date fits and is printed -- and there is nothing to link to that is not
+    already the only thing on the page.
+    """
+    if not debut_date:
+        return ""
+    if sparse:
+        return ("<div class='card dbt'><div class='lbl'>Played</div>"
+                "<div class='num when'>%s</div></div>" % debut_date)
+    return ("<a class='card dbt' href='#%s' title='Debuted %s'>"
+            "<div class='lbl'>Debuted</div>"
+            "<div class='num'>%s</div></a>" % (debut_date, debut_date,
+                                               debut_date[:4]))
+
+
 def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     """One song's whole performance history, newest first.
 
@@ -4726,15 +4825,20 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
               and p["date"] != debut_date]
     lbl10 = ("Median Gap, <span class='full'>Last %d Years</span>"
              "<span class='abbr'>%d Yr</span>" % (RECENT_YEARS, RECENT_YEARS))
-    hero = "".join(
-        "<div class='card'><div class='lbl'>%s</div>"
-        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-        for val, lbl, cls in (
-            (len(countable), "Times Played", ""),
-            (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
-            (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
-            (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
-        ))
+    # A song played once has one figure worth a card and it is not a gap: three
+    # of the four below read "n/a", and the fourth restates the subtitle. What
+    # it has instead is a date and a distance from now, so that is what it gets.
+    sparse = len(countable) <= SPARSE_HISTORY
+    hero = _debut_card(debut_date, sparse)
+    if not sparse:
+        hero += "".join(
+            "<div class='card'><div class='lbl'>%s</div>"
+            "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
+            for val, lbl, cls in (
+                (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
+                (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
+                (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
+            ))
     # Filled in the browser from data/current.json; see SONG_JS. It carries the
     # thresholds rather than the verdict, because the count it has to be judged
     # against is the thing that is not known until the page is open. They are
@@ -4805,7 +4909,10 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         if not counted:
             g = None
         this = era(date)
-        if this != seen_era:
+        # A heading over one row says "3.0 - 1 show - 2010-2010", which is the
+        # year that is in the row beneath it and the count that is in the
+        # subtitle above it. There is nothing for it to divide.
+        if this != seen_era and not sparse:
             seen_era = this
             lo, hi = span[this]
             rows.append(
@@ -4988,6 +5095,22 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         % (e.replace(".", "-"), e, tally[e])
         for e in seen_order)
 
+    # The whole tools bar goes on a sparse page: a search field over one row, a
+    # sort with four options that all produce the same page, a chip anchoring to
+    # the row below it, and "1 of 1 shows". The bar carried `id="main"`, which
+    # is what "Skip to content" skips *to*, so the skip link is re-pointed at
+    # the list rather than left aiming at an element that is no longer rendered.
+    # It aims at the id the list already has: a second `id` on the same <ol>
+    # parses as a duplicate, only the first survives, and `#main` silently
+    # resolved to nothing -- which is precisely the failure the skip link exists
+    # to prevent, and it is invisible unless you tab into the page.
+    tools = "" if sparse else SONG_TOOLS.format(eras=chips, count=len(countable))
+    listattrs = ' tabindex="-1"' if sparse else ""
+    skip = "#list" if sparse else "#main"
+    # Named on the section because the pair of cards below wants a rule the
+    # five-card row must not get: see `.hero.sparse` in SONG_CSS.
+    herocls = " sparse" if sparse else ""
+
     # The labels alone, so the sticky bar can carry a second copy without
     # dragging the median's <style> block into a div with it.
     #
@@ -5039,8 +5162,11 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     caveat = NOT_A_SONG.get(doc.get("slug") or "")
     caveat = "<p class='caveat'>%s</p>" % html.escape(caveat) if caveat else ""
+    # No "Debut" clause: the hero card is that date, in figure type, a dozen
+    # pixels below. Printing it here as well is the duplication the swap was
+    # made to end, only pointing the other way. What is left is the pair the
+    # hero does *not* carry.
     subtitle = " &middot; ".join(x for x in (
-        "Debut %s" % first if first else "",
         "Last played %s" % last if last and last != first else "",
         "%d performance%s" % (n, "" if n == 1 else "s"),
     ) if x)
@@ -5058,6 +5184,16 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         % (url % doc["slug"], "flip" if flip else "", icon, label)
         for label, url, icon, flip in SONG_LINKS)
 
+    # `countable`, not `perfs`. The sticky bar counted every archived row where
+    # the hero, the subtitle and the counter all count only the rows that count
+    # toward a gap, so on 136 of 589 pages the bar contradicted the page it was
+    # a condensed copy of: You Enjoy Myself read "629 shows" stuck to the top of
+    # a page whose every other figure said 627. Same source as the rest now, and
+    # pluralised, because a song played once was told it had "1 shows".
+    stuckstat = ("<b>%d</b> show%s &middot; median gap <b>%s</b>"
+                 % (n, "" if n == 1 else "s",
+                    _stat(_median(gaps)) if gaps else "&mdash;"))
+
     return SONG_SHELL.format(
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
@@ -5065,12 +5201,12 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../fonts.css"),
         cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
-        hero=hero, best=top, links=links, count=len(countable), eras=chips,
+        hero=hero, best=top, links=links, tools=tools, listattrs=listattrs,
+        skip=skip, herocls=herocls,
         share=share_meta(html.escape(typographic(song)),
                          html.escape(blurb, quote=True),
                          "song/%s.html" % doc["slug"], card=card),
-        stuckstat="<b>%d</b> shows &middot; median gap <b>%s</b>"
-                  % (len(perfs), _stat(_median(gaps)) if gaps else "&mdash;"),
+        stuckstat=stuckstat,
         head=head,          # already carries medmark; see where it is built
         rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
         # Dated by the data rather than by the clock. A build stamp changed

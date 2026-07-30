@@ -2376,6 +2376,79 @@ studio and TV/radio sessions — the entries phish.net does not count.
   column starts wherever the word ended. A grid with a `max-content` column
   fixes the second — the same fix §3c just used on the pairings block.
 
+## 8h. Sparse song pages, and a Debuted hero — Ian, 2026-07-30. DONE
+
+He opened on <https://possumlogic.com/song/lit-o-bit.html>: a one-performance
+history does not need a search/sort/filter, "basically none of the heroes even
+make sense", and such a page "can almost have an entirely different layout
+because it's such a different story". Then, separately: a `debuted on` hero is
+worth having on a song with lots of plays — "just a quick sort reversal away,
+but it's useful data about the song" — and there is probably a weaker hero it
+could replace.
+
+### What the measurement said
+
+- **134 of 589 songs are played exactly once**, 193 twice or fewer. On a
+  one-play page three of the four static cards read `n/a` and the fourth
+  restated the subtitle; at 375px the hero and tools bar were **367px of
+  chrome in front of a single 257px row**.
+- **n/a rate per hero**, over all 589: Times played 2%, *Debut 2%*, median
+  10-year 33%, median all-time 24%, longest gap 24%. The debut is the most
+  widely available figure the hero was not showing.
+- **The two medians earn their two cards.** They differ as printed on **275 of
+  the 392** songs that have both — the standing defence in `render_song` holds,
+  so neither is the one to drop. Longest gap equals the all-time median on only
+  52 of 446.
+- **Times played was the weak one, and not because it is uninteresting.** The
+  same integer was already printed three more times on the page: the subtitle a
+  dozen pixels above the card, the `n of n shows` counter, and the sticky bar.
+  It moved nowhere — it is still in the subtitle.
+
+### What shipped
+
+`SPARSE_HISTORY = 1`. At or below it a song page drops the tools bar whole
+(search, clear, era chips, sort, counter), drops the era heading over its one
+row, and takes a two-card hero: the date, and the current gap with its verdict.
+Above it, every page gains a **Debuted** card in the slot Times played held,
+linking to the debut's own row — the sort reversal, as one click — and the
+subtitle drops its `Debut` clause so the date is stated once.
+
+**The figure is the year, and that is measurement not taste.** Five cards
+across leave 117–160px inside each between 900 and 1280px; `1986-02-03` wants
+243px at `.num` size and still 162px shrunk to 1.5rem, and it wrapped at 900,
+1024 and 375. Widening the card starves the other four below 1024. The full
+date goes where there is room: the sparse page's two-card hero, and the row the
+card links to. Swept 5 pages × 15 widths from 300 to 1440: **0 wrapped figures,
+0 sideways scroll.**
+
+### Two bugs found on the way
+
+1. **The sticky bar counted rows the rest of the page does not.** It used
+   `len(perfs)` where the hero, subtitle and counter all use `len(countable)`,
+   so on **136 of 589 pages** the condensed header contradicted the page it
+   condenses — You Enjoy Myself read `629 shows` stuck above a page whose every
+   other figure said 627. It also told a one-play song it had "1 shows". Both
+   fixed; an invariant now asserts sticky == counter == countable on all 589.
+2. **`id="main"` was very nearly duplicated.** The first cut moved the skip
+   target onto the `<ol>`, which already had `id="list"` — two `id` attributes
+   on one element, only the first honoured, and `#main` silently resolving to
+   nothing. Invisible unless you tab into the page. The skip link is now
+   re-pointed at `#list` instead, and the sweep asserts every page's skip href
+   resolves to exactly one element.
+
+### Open, for Ian
+
+- **Is the line at one, or higher?** The same argument is nearly as strong at
+  two or three: `baby-lemonade` still ships a search box, a four-way sort and
+  two era chips over **two** rows. 193 songs have ≤2, 239 have ≤5. Raising
+  `SPARSE_HISTORY` is a one-number change — every branch tests `sparse`, never
+  a count.
+- **The preview card now says less than the page it pictures.** `song_card`
+  still prints Times played / Median gap / Longest gap, so a shared one-play
+  song previews as `1 / n/a / n/a` while the page shows a date and a distance.
+  Deliberately not touched: redrawing cards locally is the §8g trap, so this
+  wants to be a CI-side change. `cards.json` is untouched by this work.
+
 ## 9. Known and deliberately not fixed
 
 - GitHub Pages serves `cache-control: max-age=600` and cannot be configured,

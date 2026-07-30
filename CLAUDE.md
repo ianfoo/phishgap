@@ -19,8 +19,14 @@ there, which makes local verification lie.
 **There are still three base stylesheets, but what they share is now named.**
 `CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and
 `FAQ_CSS` extend `INDEX_CSS`. The rules that were identical in all three live
-in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS` and
-`FOOTER_LINK_CSS` — edit those once. **Everything else is still copied**:
+in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS`,
+`FOOTER_LINK_CSS` and `CARD_LINK_CSS` — edit those once. (`DEK_CSS` is the same
+idea across two of the three, not all three.) `CARD_LINK_CSS` was named on
+2026-07-30 the moment a third sheet wanted a linked hero card, rather than
+after: it holds the three rules that do not depend on where the card goes, and
+deliberately leaves out the fourth, which carries the arrow — the index points
+right because the card leaves the page, the show and song sheets point down
+because it lands further down this one. **Everything else is still copied**:
 32–46 rules repeat pairwise, and the near-misses `.crumb{…}` (four
 occurrences, all four different) and `.hero{…}` (flex in one sheet, grid in
 another) differ by real amounts. **`footer{…}` no longer does** — measured
