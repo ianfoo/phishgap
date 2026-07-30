@@ -6,7 +6,7 @@
   "state": "NY",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "<p>This show was Phish's 96th performance at Madison Square Garden and featured songs from 1996 as well as multiple references to <a href=\"https://phish.net/faq/clifford-ball\">The Clifford Ball</a>: Trey and Mike wore their iconic outfits, and <span>The Harpua narration freed Jimmy from his </span><a href=\"https://phish.net/setlists/phish-august-17-1996-plattsburgh-air-force-base-plattsburgh-ny-usa\"><span>30 year prison of vibration above Plattsburgh, NY</span></a><span>.</span> Before the show, the light rig approximated the NY Knicks' logo. This show featured multiple bustouts: The Star Spangled Banner <span>(last played </span><a href=\"https://phish.net/setlists/phish-december-28-2016-madison-square-garden-new-york-ny-usa.html\"><span>December 28, 2016</span></a><span>, or 362 shows), Talk (last played </span><a href=\"https://phish.net/setlists/phish-october-13-2023-united-center-chicago-il-usa.html\"><span>October 13, 2023</span></a><span>, or 122 shows), Harpua (last played </span><a href=\"https://phish.net/setlists/phish-december-31-2023-madison-square-garden-new-york-ny-usa.html\"><span>December 31, 2023</span></a><span>, or 116 shows), and Suspicious Minds (last played </span><a href=\"https://phish.net/setlists/phish-december-06-1996-the-aladdin-theatre-las-vegas-nv-usa.html\"><span>December 6, 1996</span></a><span>, or 1021 shows). In Axilla (Part II) Trey began the lyrics to part I, said \"Wait </span><a href=\"https://phish.net/setlists/phish-july-22-2026-madison-square-garden-new-york-ny-usa\"><span>we did that one already</span></a><span>\", and sang part II. In YEM, Trey played the mini drum kit. In I Didn't Know Trey introduced Fish as \"a man who played in this room in 1969, Elvis Presley!\"</span></p>",
+  "notes": "<p>This show was Phish's 96th performance at Madison Square Garden and featured songs from 1996 as well as multiple references to <a href=\"https://phish.net/faq/clifford-ball\">The Clifford Ball</a>: Trey and Mike wore their iconic outfits, and <span>The Harpua narration freed Jimmy from his </span><a href=\"https://phish.net/setlists/phish-august-17-1996-plattsburgh-air-force-base-plattsburgh-ny-usa\"><span>30 year prison of vibration above Plattsburgh, NY</span></a><span>.</span> Before the show, the light rig approximated the NY Knicks' logo. This show featured multiple bustouts: The Star Spangled Banner <span>(last played </span><a href=\"https://phish.net/setlists/phish-december-28-2016-madison-square-garden-new-york-ny-usa.html\"><span>December 28, 2016</span></a><span>, or 362 shows), Talk (last played </span><a href=\"https://phish.net/setlists/phish-october-13-2023-united-center-chicago-il-usa.html\"><span>October 13, 2023</span></a><span>, or 122 shows), Harpua (last played </span><a href=\"https://phish.net/setlists/phish-december-31-2023-madison-square-garden-new-york-ny-usa.html\"><span>December 31, 2023</span></a><span>, or 116 shows), and Suspicious Minds (last played </span><a href=\"https://phish.net/setlists/phish-december-06-1996-the-aladdin-theatre-las-vegas-nv-usa.html\"><span>December 6, 1996</span></a><span>, or 1021 shows). In Axilla (Part II) Trey began the lyrics to part I, said \"Wait </span><a href=\"https://phish.net/setlists/phish-july-22-2026-madison-square-garden-new-york-ny-usa\"><span>we did that one already</span></a><span>\", and sang part II. In YEM, Trey played the mini drum kit. In I Didn't Know Trey introduced Fish as \"a man who played in this room in 1969, Elvis Presley!\" After suspicious minds, Fish said \"Thank you very much\" </span><span class=\"Latn\">\u00e0 la</span><span> Elvis. During Crosseyed and Painless, Fish announced \"Elvis has not left the building.\"</span></p>",
   "permalink": "https://phish.net/setlists/phish-july-29-2026-madison-square-garden-new-york-ny-usa.html",
   "songs": [
     {
@@ -278,9 +278,45 @@
       "gap_low": null,
       "gap_high": null,
       "verdict": "bustout"
+    },
+    {
+      "set": "SET 2",
+      "song": "Hold Your Head Up",
+      "slug": "hold-your-head-up",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-07-22",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 314,
+      "recent_plays": 7,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "verdict": null
+    },
+    {
+      "set": "SET 2",
+      "song": "Crosseyed and Painless",
+      "slug": "crosseyed-and-painless",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-07-15",
+      "prev_venue": "Enmarket Arena",
+      "prev_place": "Savannah, GA",
+      "out": "",
+      "plays": 73,
+      "recent_plays": 34,
+      "gap_median": 9.0,
+      "gap_mean": 11.088235294117647,
+      "gap_low": 6.0,
+      "gap_high": 19.05,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-07-30T02:46:36+00:00",
+  "count_since": "2026-07-30T02:51:45+00:00",
   "encored": false,
   "provisional": true
 }
