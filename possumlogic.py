@@ -2252,6 +2252,37 @@ BUSTOUT_GAP = 100
 # by how long they had it lying around.
 ROTATION_PLAYS = 8
 
+# And below this many, the song never got going at all. Ian, on the first cut:
+# "We can't call two a 'one shot' ... but for most intents and purposes, they
+# should probably be grouped with the one shots."
+#
+# The archive agrees, and by more than it agreed with the old line. Splitting
+# 1 / 2-7 / 8+ the three groups ever came back 28% / 55% / 84%; splitting
+# 1-2 / 3-7 / 8+ they come back 30% / 65% / 84%. Merging widens the bottom
+# boundary from 27 points to 35 and costs nothing at the top -- a song played
+# twice and then dropped is, on the evidence, the same object as a song played
+# once and dropped.
+FEW_PLAYS = 2
+
+# Ian also asked whether the *spacing* of those plays separates "they did a bit
+# for a minute and dropped it" from "a one-shot revived years later". It does,
+# but not where he expected and not cleanly enough to draw a line:
+#
+#   - There are no two clusters to find. Shows-per-play across every song that
+#     fell quiet at 2-7 plays is one hump with a long right tail; the 48
+#     two-play songs on the page run 8 / 12 / 8 / 8 / 12 across the spacing
+#     buckets. Any cut here would be a number this file invented.
+#   - Among the 1-2 group it barely moves: clustered 36%, scattered 27%. They
+#     are not coming back either way, which is the argument for merging them
+#     rather than splitting them further.
+#   - Among 3-7 it moves a lot: clustered (<=200 shows per play) 70%, scattered
+#     38%. That is the real finding, and it belongs to the rarities.
+#
+# So it is described rather than modelled -- and the page was already printing
+# it. The span on every row reads "2009" for a song played twice three shows
+# apart and "1992-2021" for one played twice 1,308 apart. 13 of the 48 print a
+# single year. Nothing pointed a reader at that column; the blurbs now do.
+
 
 def _quantile(vals, q):
     """Linear-interpolated quantile of an unsorted list."""
@@ -3114,6 +3145,13 @@ header{padding-bottom:.9rem}
    font-weight:400;font-size:2.125rem;line-height:1.15;
    scroll-margin-top:2.6rem}
 .shelf-h+.dek{margin-bottom:1.1rem}
+/* The adjacent-sibling rule above reaches the *first* standfirst under a
+   heading and no further, which was every case until a section blurb grew a
+   second paragraph. `.dek` is margin-bottom:0 by default, so the trailing
+   paragraph sat flush against the column header below it -- measured at 0px,
+   against 19.8px for the one above it. Every `.dek` inside a section instead.
+   A no-op on the due page, whose sections still carry one apiece. */
+.rot .dek{margin-bottom:1.1rem}
 /* The way back up. This is the fourth place it has been wanted -- the FAQ's
    answers, and now each section here -- so it is a house idiom rather than a
    page's own trick: jumping somewhere should never maroon a reader there, and
@@ -4377,17 +4415,28 @@ SONG_JS = """
       // at. Say that.
       else if(v){ v.textContent='due at '+Math.round(high); v.className='v quiet'; }
     }else if(n>=bust){
-      /* The same three names the out-of-rotation page uses, from the same
-         count and the same threshold, because this box and that page are
-         describing one song and must not call it two things. "Dormant" on a
-         song played once was the claim that page was rebuilt to stop making,
-         and it was being made here too -- the box outlives any one list, so
-         fixing only the page would have left the word loose on 126 song
-         pages. See ROTATION_PLAYS. */
+      /* The same thresholds the out-of-rotation page splits on, from the same
+         count, because this box and that page are describing one song and must
+         not call it two things. "Dormant" on a song played once was the claim
+         that page was rebuilt to stop making, and it was being made here too --
+         the box outlives any one list, so fixing only the page would have left
+         the word loose on 174 song pages. See ROTATION_PLAYS and FEW_PLAYS.
+
+         The first two say "one-off" and "played twice" where the page heads
+         both as "One or two nights". Not a disagreement: the section cannot
+         name a count it holds two of, and this box knows which one this song
+         is, so it says the sharper of the two true things.
+
+         Both those words spell out FEW_PLAYS = 2, as does the section title.
+         Moving that constant means rewriting three strings, and the compiler
+         will not tell you: a FEW_PLAYS of 3 would leave a three-play song
+         reading "played twice". Grep the title if you move it. */
       var plays=parseFloat(box.getAttribute('data-plays'))||0,
-          rot=parseFloat(box.getAttribute('data-rotation'))||0;
+          rot=parseFloat(box.getAttribute('data-rotation'))||0,
+          few=parseFloat(box.getAttribute('data-few'))||0;
       box.classList.add('dormant');
-      if(v){ v.textContent=plays<=1?'one-off':plays<rot?'rarity':'dormant';
+      if(v){ v.textContent=plays<=1?'one-off':plays<=few?'played twice':
+                           plays<rot?'rarity':'dormant';
              v.className='v dim'; }
     }
     box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
@@ -4677,12 +4726,13 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # not -- so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
              "data-bustout='%d' data-mult='%s' data-plays='%d' "
-             "data-rotation='%d'>"
+             "data-rotation='%d' data-few='%d'>"
              "<div class='lbl'>Current Gap<span class='v'></span></div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
-                BUSTOUT_GAP, DUE_MULTIPLE, len(countable), ROTATION_PLAYS))
+                BUSTOUT_GAP, DUE_MULTIPLE, len(countable), ROTATION_PLAYS,
+                FEW_PLAYS))
 
     top = best[0] if best else ""
     if top:
@@ -5301,19 +5351,20 @@ def rotation_split(dormant):
 
     Split on plays rather than on anything to do with the silence, because the
     silence is the same fact for all three and the plays are what differ -- see
-    ROTATION_PLAYS for the measurement that puts the line at eight.
+    ROTATION_PLAYS and FEW_PLAYS for the two measurements that place the lines.
 
-    Returns (stopped, rare, once), exclusive and in that order, each holding the
+    Returns (stopped, rare, few), exclusive and in that order, each holding the
     same (gone, doc, played) rows due_rows built. One split, shared by the page
     and by the due page's hero cell above it, for the reason due_rows itself is
     shared: a second copy is a second chance for the two to disagree about how
     many songs are dormant, and this site has already paid for that once.
     """
-    stopped, rare, once = [], [], []
+    stopped, rare, few = [], [], []
     for row in dormant:
         n = len(row[2])
-        (once if n == 1 else rare if n < ROTATION_PLAYS else stopped).append(row)
-    return stopped, rare, once
+        (few if n <= FEW_PLAYS
+         else rare if n < ROTATION_PLAYS else stopped).append(row)
+    return stopped, rare, few
 
 
 def _due_row(over, n, high, doc, last):
@@ -5425,7 +5476,7 @@ def render_due(docs, counting, since, card=None):
     # is the one place on this site the word appears without its page around it
     # to qualify it. Straight to the section rather than the page top, so the
     # figure and what it lands on are the same set.
-    stopped, rare, once = rotation_split(dormant)
+    stopped, rare, few = rotation_split(dormant)
     cards = [(len(due), "Due", " hot", "#main"),
              (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
@@ -5443,10 +5494,10 @@ def render_due(docs, counting, since, card=None):
             "&mdash; gone long enough to be bustouts, with no recent habit to "
             "be late against at all. They are not due, they are the largest "
             "part of the catalogue, and they are not one thing: %d were in "
-            "rotation and left it, %d were tried a handful of times and never "
-            "caught on, and %d have been played exactly once in the band&rsquo;s "
-            "life. That page keeps them apart."
-            % ("{:,}".format(len(dormant)), len(stopped), len(rare), len(once))
+            "rotation and left it, %d were given a run that did not take, and "
+            "%d turned up on one or two nights in the band&rsquo;s whole life "
+            "and never again. That page keeps them apart."
+            % ("{:,}".format(len(dormant)), len(stopped), len(rare), len(few))
             ) if dormant else ""
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
@@ -5531,9 +5582,9 @@ That is the whole reason it needs a page rather than a place in a list: every
 other song on this site is ordered by how far past its own norm it is, and
 these have no norm.</p>
 <p class="dek">They are not all the same thing, though, and calling them all
-<em>dormant</em> said something false about nearly half of them. Dormant means
-it used to be otherwise. A song played once at a Halloween show never had a
-rotation to fall out of &mdash; and in this archive, that difference is the
+<em>dormant</em> said something false about nearly two thirds of them. Dormant
+means it used to be otherwise. A song played once at a Halloween show never had
+a rotation to fall out of &mdash; and in this archive, that difference is the
 strongest thing we know about whether it is ever coming back. So the page is in
 three parts, split on how many times the band ever played the song, and
 <a href="./method.html#rotation">how this works</a> shows the measurement.</p>
@@ -5596,17 +5647,27 @@ ROTATION_SECTIONS = (
      "archive that began after {floor} or more performances, {rate}% has since "
      "been ended by another one."),
     ("rarities", "Rarities",
-     "Played more than once but fewer than {floor} times. The band tried them, "
-     "they did not catch on, and there was never enough of a habit to break. "
-     "Some are covers taken out for one tour; some are originals that never "
-     "found a place in a set."),
-    ("one-offs", "One-offs",
-     "Played exactly once, ever. Not dormant in any sense &mdash; there is no "
-     "earlier state to have left. A third of them were played on a Halloween "
-     "night as part of a costume set, which is a song performed once by "
-     "design. Their return rate is the lowest on the page by a distance, and "
-     "the honest reading of a row here is that you have already heard the "
-     "whole story."),
+     "More than {few} performances and fewer than {floor}. The band gave these "
+     "a run and it did not take &mdash; enough of a habit to notice, never "
+     "enough to break. Some are covers taken out for one tour; some are "
+     "originals that never found a place in a set. {rate}% have come back."
+     "</p><p class='dek'>This is the one section where <em>when</em> the plays happened "
+     "changes the answer. Read the years at the right of each row: a song "
+     "whose handful of performances sat close together came back {tight}% of "
+     "the time, and one whose were strewn across decades only {loose}%."),
+    ("one-or-two", "One or two nights",
+     "{n_once} played once, {n_twice} played twice &mdash; and then never "
+     "again. These never had a rotation to fall out of, so <em>dormant</em> "
+     "was never the word. A third of the single plays were a Halloween "
+     "costume set, which is a song performed once by design. {rate}% ever "
+     "return, the lowest figure on the page, and the honest reading of a row "
+     "here is that you have already heard the whole story."
+     "</p><p class='dek'>Two plays sit here with one because the archive says they are the "
+     "same object: whether the pair was three shows apart or thirteen hundred, "
+     "the song came back about as rarely either way. The years at the right of "
+     "the row tell you which it was &mdash; a single year is a song they tried "
+     "twice one summer, a range is a one-off someone revived a lifetime "
+     "later."),
 )
 
 #: The return rates quoted in the blurbs above and on the method page. Measured
@@ -5615,8 +5676,15 @@ ROTATION_SECTIONS = (
 #: as a constant rather than recomputed per build for the same reason the page
 #: does not predict: it is a statement about the archive at a moment, and a
 #: figure that drifts by a point every show reads as a forecast. See
-#: ROTATION_PLAYS, and docs/TODO.md for the script that produced it.
-ROTATION_RETURN = {"dormant": 84, "rarities": 55, "one-offs": 28}
+#: ROTATION_PLAYS, and docs/TODO.md §2j for the scripts that produced it.
+ROTATION_RETURN = {"dormant": 84, "rarities": 65, "one-or-two": 30}
+
+#: Within the rarities, the same figure split by how tightly the song's few
+#: performances sat: at most 200 counting shows per play against more than
+#: that. 70% and 38%, n=132 and n=21. The equivalent split on the one-or-two
+#: group is 36% against 27% -- close enough to be worth saying it does not
+#: matter there, which is what that blurb says.
+RARITY_TIGHT, RARITY_LOOSE = 70, 38
 
 
 def _rotation_years(rows, anchor):
@@ -5649,6 +5717,12 @@ def render_dormant(docs, counting, since):
     """Every song out of rotation, split by whether it ever had one."""
     parts = rotation_split(due_rows(docs, counting, since)[3])
 
+    # Two of the blurbs quote the shape of their own section back at the
+    # reader, so the figures come from the rows rather than from prose that
+    # would go quietly stale the first time a song moved between sections.
+    n_once = sum(1 for r in parts[2] if len(r[2]) == 1)
+    n_twice = len(parts[2]) - n_once
+
     body = []
     for (anchor, title, blurb), rows in zip(ROTATION_SECTIONS, parts):
         if not rows:
@@ -5674,8 +5748,11 @@ def render_dormant(docs, counting, since):
             "<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
             "</section>"
             % (anchor, title,
-               blurb.format(floor=ROTATION_PLAYS,
-                            rate=ROTATION_RETURN[anchor]),
+               blurb.format(floor=ROTATION_PLAYS, few=FEW_PLAYS,
+                            rate=ROTATION_RETURN[anchor],
+                            tight=RARITY_TIGHT, loose=RARITY_LOOSE,
+                            n_once="{:,}".format(n_once),
+                            n_twice="{:,}".format(n_twice)),
                _rotation_years(rows, anchor)))
 
     # Three counts and a row. The counts are the page's argument -- that these
@@ -5684,12 +5761,18 @@ def render_dormant(docs, counting, since):
     # one figure here that is a superlative rather than a total, and it is the
     # cell that found the Windora Bug anchoring bug. "Most played" gave up its
     # place: it is now the first row of the first section, three lines below.
-    stopped, rare, once = parts
-    dormant = stopped + rare + once
+    #
+    # The third cell is labelled "One or two" and not by the section's full
+    # name. A hero label is a caption on a figure, set at .625rem in caps, and
+    # "ONE OR TWO NIGHTS" wraps to two lines in that cell at every width the
+    # site supports while the other three labels hold one. The heading it links
+    # to says the whole thing a screen away.
+    stopped, rare, few = parts
+    dormant = stopped + rare + few
     longest = max(dormant, key=lambda r: r[0]) if dormant else None
     cards = [(len(stopped), "Dormant", "", "#dormant"),
              (len(rare), "Rarities", "", "#rarities"),
-             (len(once), "One-offs", "", "#one-offs"),
+             (len(few), "One or two", "", "#one-or-two"),
              ("{:,}".format(longest[0]) if longest else "n/a", "Longest gone",
               " hot", "#%s" % longest[1]["slug"] if longest else "")]
     hero = "".join(
@@ -6175,20 +6258,20 @@ rotation.</p>
 often the song was ever played: a gap counts shows, so a large one already
 proves the song has been in the catalogue a long while, and nothing newly
 written can reach the threshold.</p>"""),
-    ('rotation', 'Dormant, rarity, one-off', """
+    ('rotation', 'Dormant, rarity, one or two nights', """
 <p>Songs with no recent record that have been gone a hundred shows or more sit
 <a href="./dormant.html">on their own page</a>, because there is nothing left
 to rank them by. For a long time that page called all
 <b class="num">281</b> of them <b>dormant</b>, and for
-<b class="num">126</b> of them that was false. Dormant means a song used to be
+<b class="num">174</b> of them that was false. Dormant means a song used to be
 otherwise. A song played once at a Halloween show, as part of a costume set,
 never had a rotation to fall out of &mdash; and a third of the songs played
 exactly once in this archive were played on a Halloween night.</p>
 <p>So the page splits on how many times the band ever played the song:
 <b>eight or more</b> and it was in rotation and left, which is
-<span class="verdict">dormant</span>; <b>two to seven</b> is a
-<b>rarity</b>, tried and never caught on; <b>exactly once</b> is a
-<b>one-off</b>.</p>
+<span class="verdict">dormant</span>; <b>three to seven</b> is a
+<b>rarity</b>, given a run that did not take; <b>once or twice</b> and it
+never got going at all.</p>
 <p>The archive decides where that line goes rather than taste. Take every
 silence of a hundred shows or more it holds &mdash; <b class="num">774</b> of
 them &mdash; group them by how many times the song had been played when it fell
@@ -6206,11 +6289,32 @@ quiet, and ask how many were ever ended by another performance:</p>
 <tr><td>41 or more</td><td class="end">149</td><td class="end">93%</td></tr>
 </tbody></table>
 <p>Collapsed to the three groups above that is <b class="num">84%</b>,
-<b class="num">55%</b> and <b class="num">28%</b>. Counting only silences that
-have already run three hundred shows &mdash; which is where most of that page
-lives &mdash; it is <b class="num">75%</b>, <b class="num">43%</b> and
-<b class="num">20%</b>. A one-off is the only kind of song on the page that is
-likelier to stay gone than to come back.</p>
+<b class="num">65%</b> and <b class="num">30%</b>. A song that has been played
+once or twice is the only kind on that page likelier to stay gone than to come
+back.</p>
+<p><b>One and two are one group, and that is the second thing the table
+decides.</b> The obvious line is under the one-offs, and it is the wrong one:
+splitting <b>1 / 2&ndash;7 / 8+</b> the three groups return 28%, 55% and 84%,
+while splitting <b>1&ndash;2 / 3&ndash;7 / 8+</b> they return 30%, 65% and 84%.
+Merging widens the gap at the bottom boundary from 27 points to 35 and costs
+nothing at the top. On the evidence, a song played twice and dropped is the
+same object as a song played once and dropped &mdash; which is why the section
+is named for the nights rather than for a count.</p>
+<p><b>When those few plays happened matters too, but only for the rarities.</b>
+Take how many shows passed per performance, and split at two hundred. A rarity
+whose handful of plays sat close together came back <b class="num">70%</b> of
+the time against <b class="num">38%</b> for one whose plays were strewn across
+decades. Do the same to the one-or-two group and it is <b class="num">36%</b>
+against <b class="num">27%</b> &mdash; those songs are not coming back whether
+the pair was three shows apart or thirteen hundred, which is the other reason
+they belong together.</p>
+<p>There is no finer cut than that available, and the page does not pretend
+there is. Shows-per-play is a single hump with a long tail rather than two
+clusters &mdash; the forty-eight songs played exactly twice run 8, 12, 8, 8, 12
+across the spacing buckets &mdash; so any threshold below the one above would
+be a number this site made up. The years printed at the right of every row say
+it exactly and without inventing anything: a single year is a song they tried
+twice one summer, a range of decades is a one-off somebody revived.</p>
 <p>Plays, and not something cleverer. Ten other rules were measured against the
 same outcome &mdash; performances inside any fifty-, hundred- or two-hundred-show
 window, and the span from a song's first performance to its last. None beat the
@@ -6219,13 +6323,14 @@ is answered by how many times the band played it, not by how long they had it
 lying around.</p>
 <p>A song called back for one night after years away does not get a fourth
 name. It is an event rather than a state, and the play count already carries
-it: the song moves up by one, and if that was its second performance it is
-still a rarity, because two is not a rotation. Whether it sticks is not
-knowable on the night, but it is not a coin toss either. Of returns from a
-silence of three hundred shows or more that have since had three hundred shows
-of chance, the ones that had been played <b>once</b> before went quiet again for
-good <b class="num">43%</b> of the time; those played two to seven times,
-<b class="num">27%</b>; those played eight or more, <b class="num">7%</b>.</p>"""),
+it: the song moves up by one, and if that was its second performance it has not
+moved section, because one or two nights is still one or two nights. Whether it
+sticks is not knowable on the night, but it is not a coin toss either. Of
+returns from a silence of three hundred shows or more that have since had three
+hundred shows of chance, the ones that had been played <b>once</b> before went
+quiet again for good <b class="num">43%</b> of the time; those played two to
+seven times, <b class="num">27%</b>; those played eight or more,
+<b class="num">7%</b>.</p>"""),
     ('ratings-and-jam-charts', 'Ratings and jam charts', """
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
@@ -6439,12 +6544,13 @@ other three lists put together. <em>Dormant</em> means a song used to be
 otherwise, and that is only true of the ones the band actually played: a song
 performed once at a Halloween show never had a rotation to fall out of. So the
 page splits on how many times the song was ever played &mdash; eight or more is
-<strong>dormant</strong>, two to seven is a <strong>rarity</strong>, exactly
-once is a <strong>one-off</strong> &mdash; and the archive says the split is
-worth making. Of every silence of a hundred shows or more it holds, the share
-ever ended by another performance runs 84%, 55% and 28% down those three. A
-one-off is the only kind of song here that is likelier to stay gone than to come
-back, which is the one thing the old single list could not say.</p>
+<strong>dormant</strong>, three to seven is a <strong>rarity</strong>, once or
+twice is <strong>one or two nights</strong> &mdash; and the archive says the
+split is worth making. Of every silence of a hundred shows or more it holds,
+the share ever ended by another performance runs 84%, 65% and 30% down those
+three. A song played once or twice is the only kind here that is likelier to
+stay gone than to come back, which is the one thing the old single list could
+not say.</p>
 <p><em>Slipping</em>, not <em>overdue</em>, because a show page already uses
 overdue for something narrower: a single performance that came back later than
 that song usually does. Every song on the due page would be stamped overdue if

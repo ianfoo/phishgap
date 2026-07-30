@@ -61,8 +61,8 @@ dormant page and objected that 126 of its 281 rows had been played exactly
 once, which is not what "dormant" means. Measured against the archive's own
 774 long silences, he is right and the effect is large: a song that fell quiet
 after one play came back 28% of the time, after 8+ plays 84%. The page is now
-three sections — **54 dormant, 101 rarities, 126 one-offs** — titled *Out of
-rotation*, at the same URL.
+three sections — **54 dormant, 53 rarities, 174 one or two nights** — titled
+*Out of rotation*, at the same URL.
 
 Two things a fresh session should know:
 
@@ -74,8 +74,9 @@ Two things a fresh session should know:
   since §2. If another page grows a second `.lhead`, wrap each in its own
   parent or the first one pins for the rest of the document.
 
-One judgement call is left open for him at the end of §2j: 8 versus 3 for the
-dormant/rarity line. Both figures are measured there.
+He then read the split and moved the bottom line himself: one and two plays are
+one group (`FEW_PLAYS = 2`). The archive backs him — see §2j, second round.
+Nothing is left open.
 
 ### The 2026-07-28 session, second sitting — everything here is pushed
 
@@ -774,7 +775,7 @@ its section (dormant excepted — see §2f).
 
 **The fourth row is out of date and is left as written.** It is a record of
 what the page said on 2026-07-28. As of 2026-07-30 that 283 is 281 and is no
-longer one category: 54 dormant, 101 rarities, 126 one-offs, and the due page's
+longer one category: 54 dormant, 53 rarities, 174 one-or-two, and the due page's
 hero cell counts only the 54. See §2j.
 
 **One boundary case to put to Ian.** He named **The Howling** as due at 36
@@ -1259,7 +1260,8 @@ Rarities rather than Dormant.
   the same set. Its tail sentence names all three.
 - **A `rotation` section on the method page** carrying the table above, and the
   FAQ's fourth definition renamed and extended.
-- **Song pages stamp `one-off` / `rarity` / `dormant`** from the same constant,
+- **Song pages stamp `one-off` / `played twice` / `rarity` / `dormant`** from
+  the same constants,
   via new `data-plays` and `data-rotation`. The box outlives any one list, so
   fixing only the page would have left the word loose on 126 song pages.
 - **The section strip was built and then removed.** Eighteen years needed a
@@ -1279,29 +1281,71 @@ rows to hide it. Both fixed by giving each section its own wrapper.
 ### Verified
 
 - 54 + 101 + 126 = 281, and **every row's printed play count satisfies its own
-  section's rule** — dormant min 8, rarities 2–7, one-offs exactly 1, zero
+  section's rule** — dormant min 8, rarities 3–7, one-or-two 1 or 2, zero
   violations. Not three examples: all 281.
 - **All 281 song pages agree with the section their song is in**, and all 589
   carry `data-plays`. `sanity` → dormant, `the-connection` → rarity,
-  `and-flew-away` → one-off, read out of the live DOM after the fetch.
+  `baby-lemonade` → played twice, `and-flew-away` → one-off, read out of the
+  live DOM after the fetch.
 - No duplicate ids on the page. Sticky headers release at their section end
   (measured: tops −11555, −58, 256 rather than 0, 0, 0).
 - Rendered and screenshotted in **both themes**, desktop and 390px. No sideways
   scroll on mobile (`scrollWidth` 390 = `innerWidth`).
+
+### Second round, same day — Ian moved the bottom line, and was right
+
+He kept 8 for the rotation line ("the line for having a rotation at 8 does seem
+to make sense") and rejected the bottom one: *"We can't call two a 'one shot' …
+but for most intents and purposes, they should probably be grouped with the one
+shots."*
+
+**Measured, and merging is the better cut.** Splitting 1 / 2–7 / 8+ the three
+groups ever came back **28% / 55% / 84%**; splitting 1–2 / 3–7 / 8+ they come
+back **30% / 65% / 84%**. The gap at the bottom boundary widens from 27 points
+to 35 and nothing at the top moves. `FEW_PLAYS = 2` carries it. Sections are now
+**54 / 53 / 174**.
+
+**He also asked about the *spacing* of a rare song's plays** — "two plays 1,000
+shows apart was a one-shot that was revived… two plays a handful of shows apart
+paints a different story" — and said he wasn't sure how to model it. Three
+findings, and the effect is not where either of us expected:
+
+| group | clustered (≤200 shows/play) | scattered (>200/play) |
+|---|---:|---:|
+| 1–2 plays | 36% (n=50) | 27% (n=22) |
+| 3–7 plays | **70%** (n=132) | **38%** (n=21) |
+
+- Among the **1–2** group spacing barely moves the answer — which is a second,
+  independent argument for merging them rather than splitting them further.
+- Among the **3–7 rarities** it is a 32-point spread. That is the real finding
+  and it belongs to that section, whose blurb now states it.
+- **There is no natural line to draw.** Shows-per-play across everything that
+  fell quiet at 2–7 plays is one hump with a long right tail; the 48 two-play
+  songs run 8 / 12 / 8 / 8 / 12 across the spacing buckets. Any threshold below
+  the one above would be invented, so none was.
+- **The page was already printing his distinction.** The span at the right of
+  every row reads `2009` for a song played twice three shows apart and
+  `1992–2021` for one played twice 1,308 apart; 13 of the 48 print a single
+  year. Nothing pointed a reader at that column. Both blurbs now do — described
+  rather than modelled, which is the honest treatment of a continuum.
+
+**Two more layout defects found while verifying this round**, both measured
+rather than eyeballed: the second paragraph of a section blurb had
+`margin-bottom: 0` against 19.8px for the first, because `.shelf-h+.dek` reaches
+only the first standfirst — the trailing paragraph sat flush against the column
+header. Fixed with `.rot .dek`, a no-op on the due page. And `<br>` between the
+two paragraphs gave a line break where a paragraph break was wanted.
 
 ### Still open
 
 - The three **charts** in §2f are untouched and still want "classify as of a
   past date". The split makes them more interesting, not less: churn into and
   out of *dormancy* is now separable from songs the band merely tried once.
-- **Whether `ROTATION_PLAYS` should be 8 or 3.** 8 is defended above and gives
-  the cleanest Dormant list. But the sharpest single break in the return-rate
-  table is between 2 and 3 plays (33% → 62%), and at 3 the page would split
-  **107 / 48 / 126** — a Dormant section twice its current size, and a Rarities
-  section that is only the 2-play songs. Both are defensible; 8 was chosen
-  because it is where "had a rotation" stops being arguable and because it is
-  the number the rest of the file already uses for "enough history to judge".
-  One constant to move, and Ian may prefer the other.
+- **A trap for whoever moves `FEW_PLAYS`.** It is spelled out in three strings —
+  the section title "One or two nights", the song-page badge "played twice", and
+  the method page's "once or twice" — and nothing will fail if you change the
+  constant and not them. A `FEW_PLAYS` of 3 leaves a three-play song reading
+  "played twice".
 
 ## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 
