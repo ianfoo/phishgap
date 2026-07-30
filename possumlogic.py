@@ -5980,7 +5980,8 @@ means it used to be otherwise. A song played once at a Halloween show never had
 a rotation to fall out of &mdash; and in this archive, that difference is the
 strongest thing we know about whether it is ever coming back. So the page is in
 three parts, split on how many times the band ever played the song, and
-<a href="./method.html#rotation">how this works</a> shows the measurement.</p>
+<a href="./method.html#songs-with-no-verdict">how this works</a> shows the
+measurement.</p>
 <p class="dek">Inside each part they are ordered by when you last heard one,
 newest first, and within a year by how often the band played it. None of it is
 a prediction: a song coming back from here is a bustout, and the archive is
