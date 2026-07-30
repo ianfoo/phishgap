@@ -353,6 +353,16 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Structural, and load-bearing rather than tidiness. Every list section on the
+   due and out-of-rotation pages is wrapped in one of these so that its
+   position:sticky column header is held by the section instead of by the page:
+   sticky is bounded by the element's *parent*, so three headers sharing one
+   parent each stayed pinned for the whole rest of the document, and the header
+   of one list came to rest ruled across the heading of the next. Deliberately
+   carries no visual property -- there is nothing to draw here, and anything
+   added would land on both pages at once. `display:block` is a <section>'s own
+   default and is written out so the class is findable in this sheet. */
+.rot{display:block}
 .due{list-style:none;margin:0;padding:0}
 .due li{border-bottom:1px solid var(--rule-soft)}
 .due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
@@ -393,6 +403,13 @@ header{padding-bottom:.9rem}
    font-weight:400;font-size:2.125rem;line-height:1.15;
    scroll-margin-top:2.6rem}
 .shelf-h+.dek{margin-bottom:1.1rem}
+/* The adjacent-sibling rule above reaches the *first* standfirst under a
+   heading and no further, which was every case until a section blurb grew a
+   second paragraph. `.dek` is margin-bottom:0 by default, so the trailing
+   paragraph sat flush against the column header below it -- measured at 0px,
+   against 19.8px for the one above it. Every `.dek` inside a section instead.
+   A no-op on the due page, whose sections still carry one apiece. */
+.rot .dek{margin-bottom:1.1rem}
 /* The way back up. This is the fourth place it has been wanted -- the FAQ's
    answers, and now each section here -- so it is a house idiom rather than a
    page's own trick: jumping somewhere should never maroon a reader there, and
@@ -591,6 +608,26 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
+/* The one table on this page, and a real <table> rather than the grid the
+   listing pages use: those are grids because every row is one link and an <a>
+   cannot wrap a <tr>. Nothing here is a link, so the rows are rows.
+
+   Figures in the mono with tabular numerals, which is what makes a column of
+   percentages readable as a column -- this is the same lesson the show pages
+   learned, and the reason it is stated again is that it was fixed there by a
+   rule that lives on a sheet this page does not extend. Only on this sheet, so
+   a plain search for `.figs` finds one match rather than three. */
+.figs{max-width:66ch;width:100%;border-collapse:collapse;margin:0 0 1.4rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.8125rem;
+   font-variant-numeric:tabular-nums}
+.figs th{font-weight:400;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-align:left;
+   padding:0 .6rem .4rem 0;border-bottom:1px solid var(--ink)}
+.figs td{padding:.35rem .6rem .35rem 0;color:var(--ink-soft);
+   border-bottom:1px solid var(--rule-soft)}
+.figs tr:last-child td{border-bottom:0}
+.figs .end{text-align:right;padding-right:0}
+.figs td.end{color:var(--ink)}
 /* Stated here rather than on the FAQ's sheet, because this page links out too
    and had no rule for a link in running prose -- the first one added to it
    would have come out in the browser's default blue. */
@@ -1000,12 +1037,25 @@ night. Could come back, could be on the way out of rotation.</dd>
 <dt>On the shelf</dt><dd>Gone more than a hundred shows &mdash; long enough
 that the habit it is being measured against has probably stopped being
 true.</dd>
-<dt>Dormant</dt><dd>No recent record at all, and gone a hundred shows or more.
-Nobody is expecting it, and ranking these would bury the songs somebody might
-actually shout for tonight &mdash; so they have
-<a href="./dormant.html">a page of their own</a>, ordered by the year they were
+<dt>Out of rotation</dt><dd>No recent record at all, and gone a hundred shows or
+more. Nobody is expecting it, and ranking these would bury the songs somebody
+might actually shout for tonight &mdash; so they have
+<a href="./dormant.html">a page of their own</a>, grouped by the year they were
 last heard rather than by a lateness they cannot have.</dd>
 </dl>
+<p>That fourth group is three groups, and the difference matters more than the
+other three lists put together. <em>Dormant</em> means a song used to be
+otherwise, and that is only true of the ones the band actually played: a song
+performed once at a Halloween show never had a rotation to fall out of. So the
+page splits on how many times the song was ever played &mdash; 8 or more
+is <strong>dormant</strong>, 3 to 7 is a <strong>rarity</strong>, and a
+song played <strong>once or twice</strong> is filed under exactly that &mdash;
+and the archive says the
+split is worth making. Of every silence of a hundred shows or more it holds,
+the share ever ended by another performance runs 84%, 65% and 30% down those
+three. A song played once or twice is the only kind here that is likelier to
+stay gone than to come back, which is the one thing the old single list could
+not say.</p>
 <p><em>Slipping</em>, not <em>overdue</em>, because a show page already uses
 overdue for something narrower: a single performance that came back later than
 that song usually does. Every song on the due page would be stamped overdue if

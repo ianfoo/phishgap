@@ -353,6 +353,16 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Structural, and load-bearing rather than tidiness. Every list section on the
+   due and out-of-rotation pages is wrapped in one of these so that its
+   position:sticky column header is held by the section instead of by the page:
+   sticky is bounded by the element's *parent*, so three headers sharing one
+   parent each stayed pinned for the whole rest of the document, and the header
+   of one list came to rest ruled across the heading of the next. Deliberately
+   carries no visual property -- there is nothing to draw here, and anything
+   added would land on both pages at once. `display:block` is a <section>'s own
+   default and is written out so the class is findable in this sheet. */
+.rot{display:block}
 .due{list-style:none;margin:0;padding:0}
 .due li{border-bottom:1px solid var(--rule-soft)}
 .due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
@@ -393,6 +403,13 @@ header{padding-bottom:.9rem}
    font-weight:400;font-size:2.125rem;line-height:1.15;
    scroll-margin-top:2.6rem}
 .shelf-h+.dek{margin-bottom:1.1rem}
+/* The adjacent-sibling rule above reaches the *first* standfirst under a
+   heading and no further, which was every case until a section blurb grew a
+   second paragraph. `.dek` is margin-bottom:0 by default, so the trailing
+   paragraph sat flush against the column header below it -- measured at 0px,
+   against 19.8px for the one above it. Every `.dek` inside a section instead.
+   A no-op on the due page, whose sections still carry one apiece. */
+.rot .dek{margin-bottom:1.1rem}
 /* The way back up. This is the fourth place it has been wanted -- the FAQ's
    answers, and now each section here -- so it is a house idiom rather than a
    page's own trick: jumping somewhere should never maroon a reader there, and

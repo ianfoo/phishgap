@@ -353,6 +353,16 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Structural, and load-bearing rather than tidiness. Every list section on the
+   due and out-of-rotation pages is wrapped in one of these so that its
+   position:sticky column header is held by the section instead of by the page:
+   sticky is bounded by the element's *parent*, so three headers sharing one
+   parent each stayed pinned for the whole rest of the document, and the header
+   of one list came to rest ruled across the heading of the next. Deliberately
+   carries no visual property -- there is nothing to draw here, and anything
+   added would land on both pages at once. `display:block` is a <section>'s own
+   default and is written out so the class is findable in this sheet. */
+.rot{display:block}
 .due{list-style:none;margin:0;padding:0}
 .due li{border-bottom:1px solid var(--rule-soft)}
 .due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
@@ -393,6 +403,13 @@ header{padding-bottom:.9rem}
    font-weight:400;font-size:2.125rem;line-height:1.15;
    scroll-margin-top:2.6rem}
 .shelf-h+.dek{margin-bottom:1.1rem}
+/* The adjacent-sibling rule above reaches the *first* standfirst under a
+   heading and no further, which was every case until a section blurb grew a
+   second paragraph. `.dek` is margin-bottom:0 by default, so the trailing
+   paragraph sat flush against the column header below it -- measured at 0px,
+   against 19.8px for the one above it. Every `.dek` inside a section instead.
+   A no-op on the due page, whose sections still carry one apiece. */
+.rot .dek{margin-bottom:1.1rem}
 /* The way back up. This is the fourth place it has been wanted -- the FAQ's
    answers, and now each section here -- so it is a house idiom rather than a
    page's own trick: jumping somewhere should never maroon a reader there, and
@@ -591,6 +608,26 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
+/* The one table on this page, and a real <table> rather than the grid the
+   listing pages use: those are grids because every row is one link and an <a>
+   cannot wrap a <tr>. Nothing here is a link, so the rows are rows.
+
+   Figures in the mono with tabular numerals, which is what makes a column of
+   percentages readable as a column -- this is the same lesson the show pages
+   learned, and the reason it is stated again is that it was fixed there by a
+   rule that lives on a sheet this page does not extend. Only on this sheet, so
+   a plain search for `.figs` finds one match rather than three. */
+.figs{max-width:66ch;width:100%;border-collapse:collapse;margin:0 0 1.4rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.8125rem;
+   font-variant-numeric:tabular-nums}
+.figs th{font-weight:400;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-align:left;
+   padding:0 .6rem .4rem 0;border-bottom:1px solid var(--ink)}
+.figs td{padding:.35rem .6rem .35rem 0;color:var(--ink-soft);
+   border-bottom:1px solid var(--rule-soft)}
+.figs tr:last-child td{border-bottom:0}
+.figs .end{text-align:right;padding-right:0}
+.figs td.end{color:var(--ink)}
 /* Stated here rather than on the FAQ's sheet, because this page links out too
    and had no rule for a link in running prose -- the first one added to it
    would have come out in the browser's default blue. */
@@ -898,7 +935,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <div class="rule2"></div>
 <div class="prose" id="main" tabindex="-1">
 <nav class="toc" id="sections" tabindex="-1" aria-label="Sections on this page"><span class="cap">Sections on this page</span>
-<ol><li><a href="#what-a-gap-is"><span>What a gap is</span></a></li><li><a href="#the-median-and-why-ten-years"><span>The median, and why ten years</span></a></li><li><a href="#the-verdicts"><span>The verdicts</span></a></li><li><a href="#the-bar"><span>The bar</span></a></li><li><a href="#before-and-after"><span>What came before and after</span></a></li><li><a href="#which-show-this-was"><span>Which show this was</span></a></li><li><a href="#songs-with-no-verdict"><span>Songs with no verdict</span></a></li><li><a href="#bustouts"><span>Bustouts</span></a></li><li><a href="#ratings-and-jam-charts"><span>Ratings and jam charts</span></a></li><li><a href="#when-a-report-appears"><span>When a report appears</span></a></li></ol></nav>
+<ol><li><a href="#what-a-gap-is"><span>What a gap is</span></a></li><li><a href="#the-median-and-why-ten-years"><span>The median, and why ten years</span></a></li><li><a href="#the-verdicts"><span>The verdicts</span></a></li><li><a href="#the-bar"><span>The bar</span></a></li><li><a href="#before-and-after"><span>What came before and after</span></a></li><li><a href="#which-show-this-was"><span>Which show this was</span></a></li><li><a href="#songs-with-no-verdict"><span>Songs with no verdict</span></a></li><li><a href="#bustouts"><span>Bustouts</span></a></li><li><a href="#rotation"><span>Dormant, rarity, once or twice</span></a></li><li><a href="#ratings-and-jam-charts"><span>Ratings and jam charts</span></a></li><li><a href="#when-a-report-appears"><span>When a report appears</span></a></li></ol></nav>
 <h2 id="what-a-gap-is">What a gap is</h2>
 <p>The number beside a song is how many shows the band played between this
 performance and the one before it. A gap of <b class="num">0</b> means they
@@ -1033,6 +1070,80 @@ rotation.</p>
 often the song was ever played: a gap counts shows, so a large one already
 proves the song has been in the catalogue a long while, and nothing newly
 written can reach the threshold.</p>
+<p class="backtop"><a href="#sections">&uarr; All sections</a></p>
+<h2 id="rotation">Dormant, rarity, once or twice</h2>
+<p>Songs with no recent record that have been gone a hundred shows or more sit
+<a href="./dormant.html">on their own page</a>, because there is nothing left
+to rank them by. For a long time that page called all
+<b class="num">281</b> of them <b>dormant</b>, and for
+<b class="num">174</b> of them that was false. Dormant means a song used to be
+otherwise. A song played once at a Halloween show, as part of a costume set,
+never had a rotation to fall out of &mdash; and a third of the songs played
+exactly once in this archive were played on a Halloween night.</p>
+<p>So the page splits on how many times the band ever played the song:
+<b class="num">8</b> or more and it was in rotation and left, which is
+<span class="verdict">dormant</span>; <b class="num">3</b> to
+<b class="num">7</b> is a <b>rarity</b>, given a run that did not take;
+<b>once or twice</b> and it never got going at all.</p>
+<p>The archive decides where that line goes rather than taste. Take every
+silence of a hundred shows or more it holds &mdash; <b class="num">774</b> of
+them &mdash; group them by how many times the song had been played when it fell
+quiet, and ask how many were ever ended by another performance:</p>
+<table class="figs"><thead><tr><th>Plays when it fell quiet</th>
+<th class="end">Silences</th><th class="end">Ever came back</th></tr></thead>
+<tbody>
+<tr><td>1</td><td class="end">176</td><td class="end">28%</td></tr>
+<tr><td>2</td><td class="end">72</td><td class="end">33%</td></tr>
+<tr><td>3</td><td class="end">40</td><td class="end">62%</td></tr>
+<tr><td>4</td><td class="end">37</td><td class="end">68%</td></tr>
+<tr><td>5&ndash;7</td><td class="end">76</td><td class="end">66%</td></tr>
+<tr><td>8&ndash;15</td><td class="end">104</td><td class="end">70%</td></tr>
+<tr><td>16&ndash;40</td><td class="end">120</td><td class="end">85%</td></tr>
+<tr><td>41 or more</td><td class="end">149</td><td class="end">93%</td></tr>
+</tbody></table>
+<p>Collapsed to the three groups above that is <b class="num">84%</b>,
+<b class="num">65%</b> and <b class="num">30%</b>. A song that has been played
+once or twice is the only kind on that page likelier to stay gone than to come
+back.</p>
+<p><b>One and two are one group, and that is the second thing the table
+decides.</b> The obvious line is under the one-offs, and it is the wrong one:
+splitting <b>1 / 2&ndash;7 / 8+</b> the three groups return 28%, 55% and 84%,
+while splitting <b>1&ndash;2 / 3&ndash;7 / 8+</b> they return 30%, 65% and 84%.
+Merging widens the gap at the bottom boundary from 27 points to 35 and costs
+nothing at the top. On the evidence, a song played twice and dropped is the
+same object as a song played once and dropped &mdash; which is why the section
+is named for the nights rather than for a count.</p>
+<p><b>When those few plays happened matters too, but only for the rarities.</b>
+Take how many shows passed per performance, and split at two hundred. A rarity
+whose handful of plays sat close together came back <b class="num">70%</b> of
+the time against <b class="num">38%</b> for one whose plays were strewn across
+decades. Do the same to the once or twice group and it is <b class="num">36%</b>
+against <b class="num">27%</b> &mdash; those songs are not coming back whether
+the pair was three shows apart or thirteen hundred, which is the other reason
+they belong together.</p>
+<p>There is no finer cut than that available, and the page does not pretend
+there is. Shows-per-play is a single hump with a long tail rather than two
+clusters &mdash; the forty-eight songs played exactly twice run 8, 12, 8, 8, 12
+across the spacing buckets &mdash; so any threshold below the one above would
+be a number this site made up. The years printed at the right of every row say
+it exactly and without inventing anything: a single year is a song they tried
+twice one summer, a range of decades is a one-off somebody revived.</p>
+<p>Plays, and not something cleverer. Ten other rules were measured against the
+same outcome &mdash; performances inside any fifty-, hundred- or two-hundred-show
+window, and the span from a song's first performance to its last. None beat the
+plain count, and span was the worst of them: whether a song was ever in rotation
+is answered by how many times the band played it, not by how long they had it
+lying around.</p>
+<p>A song called back for one night after years away does not get a fourth
+name. It is an event rather than a state, and the play count already carries
+it: the song moves up by one, and a second performance has not moved it out of
+the section it was already in. Whether it
+sticks is not knowable on the night, but it is not a coin toss either. Of
+returns from a silence of three hundred shows or more that have since had three
+hundred shows of chance, the ones that had been played <b>once</b> before went
+quiet again for good <b class="num">43%</b> of the time; those played two to
+seven times, <b class="num">27%</b>; those played eight or more,
+<b class="num">7%</b>.</p>
 <p class="backtop"><a href="#sections">&uarr; All sections</a></p>
 <h2 id="ratings-and-jam-charts">Ratings and jam charts</h2>
 <p>Version scores and the Phish.net show rating both come by way of
