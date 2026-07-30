@@ -71,6 +71,7 @@
   {"date": "2015-09-06", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 96, "set": "e", "note": "Unfinished. Narration included Jimmy being a guy from the east coast coming west and needing an oxygen tank. Trey sucked from an oxygen tank.", "out": ">"},
   {"date": "2017-07-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 65, "set": "2", "out": ">"},
   {"date": "2021-10-30", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 130, "set": "2", "note": "Partially spoken in French by Page and Mike.", "out": ">"},
-  {"date": "2023-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 96, "set": "2", "note": "Unfinished.", "out": ">"}
+  {"date": "2023-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 96, "set": "2", "note": "Unfinished.", "out": ">"},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 116, "set": "1", "note": "\"Free jimmy\" tone."}
  ]
 }
