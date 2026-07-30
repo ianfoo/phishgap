@@ -274,6 +274,18 @@ would have left every one of them dropped on the next `--previous` run, in a
 function nobody would think to open. The list is now one named constant,
 `NB_CARRY`, next to the walk that produces it.
 
+**And the push exposed one in the workflow — twice over, the same shape.**
+The hourly job's "Commit the data archive" step ran a bare `git push` under
+`bash -e`, so losing a race to the watcher killed the step, and with it the
+*publish* step below — the site sat a build behind over a commit that had
+already landed on `main`, and nothing in the failure said "publish did not
+run". `watch.yml` has had the fix for a while: replay onto `origin/main`,
+abort on conflict rather than publishing a tree with conflict markers inside
+`site/data/shows/<date>.json`, and never treat a rejected push as fatal.
+`possumlogic.yml` now has the same. **Twice tonight the rule lived in one of
+two callers**: `--catch-up` knew to withhold `nb` mid-show and the seed did
+not; the watcher knew to replay a rejected push and the hourly job did not.
+
 **The rebase exposed a hole in the fix.** The watcher pushed mid-session and
 `character-zero.json` conflicted — reading the conflict showed `seed_setlists`
 still stamped `nb=1` and `last` unconditionally. `--catch-up` had the guard;
