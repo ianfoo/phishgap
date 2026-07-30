@@ -17,10 +17,13 @@ there, which makes local verification lie.
 ## Gotchas
 
 **There are still three base stylesheets, but what they share is now named.**
-`CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and
-`FAQ_CSS` extend `INDEX_CSS`. The rules that were identical in all three live
-in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS` and
-`FOOTER_LINK_CSS` — edit those once. **Everything else is still copied**:
+`CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS`,
+`FAQ_CSS`, `DORMANT_CSS` and `YEARS_CSS` extend `INDEX_CSS`. The rules that
+were identical in all three live in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`,
+`RULE2_CSS`, `FIGURE_CSS` and `FOOTER_LINK_CSS` — edit those once. The year
+strip that the dormant and years pages both draw is `YEAR_STRIP_CSS`, named
+when the second page wanted it rather than copied; `DORMANT_CSS` came out
+byte-identical, which is the check to run when extracting another. **Everything else is still copied**:
 32–46 rules repeat pairwise, and the near-misses `.crumb{…}` (four
 occurrences, all four different) and `.hero{…}` (flex in one sheet, grid in
 another) differ by real amounts. **`footer{…}` no longer does** — measured

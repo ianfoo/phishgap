@@ -102,6 +102,11 @@ SET_LABEL = {"1": "SET 1", "2": "SET 2", "3": "SET 3", "4": "SET 4",
 SET_PHRASE = {"1": "set 1", "2": "set 2", "3": "set 3", "4": "set 4",
               "e": "the encore", "e2": "the second encore",
               "e3": "the third encore"}
+# Back the other way. A saved report stores the column label ("SET 1") where
+# the running-order extract stores the key ("1"), and the years page reads
+# both -- the extract for the career, a report for whichever show is too new
+# to be in it. Derived rather than typed out, so the two cannot drift.
+SET_SLUG = {v: k for k, v in SET_LABEL.items()}
 
 # Everything a setlist walk decides about one performance. Cleared before the
 # walk's answer is written rather than merged over the old one: `p.update(nb)`
@@ -2824,6 +2829,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                  "<a href='../songs.html'>Songs</a>"
                  "<a href='../due.html'>Due</a>"
                  "<a href='../venues.html'>Venues</a>"
+                 "<a href='../years.html'>Years</a>"
                  "<a href='../faq.html'>FAQ</a>"
                  "<a href='../method.html'>How this works</a></nav>"
                  # No "All reports" in the middle: the row above already has
@@ -3546,6 +3552,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./years.html">Years</a>
 <a href="./faq.html">FAQ</a>
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
@@ -4587,7 +4594,7 @@ SONG_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../years.html">Years</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -5119,6 +5126,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./years.html">Years</a>
 <a href="./faq.html">FAQ</a>
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
@@ -5206,6 +5214,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a class="here">Due</a><a href="./venues.html">Venues</a>
+<a href="./years.html">Years</a>
 <a href="./faq.html">FAQ</a>
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
@@ -5488,6 +5497,24 @@ DUE_SHELL_END = None
 #: .d-last, .d-n and .typ, including how they stack on a phone -- so the only
 #: rules here are the ones the due page has no use for: the year a song was
 #: last heard, and the strip of years at the top.
+# A strip of years across the top of a page, each carrying its own count.
+# Two pages draw one: the dormant list, grouped by the year a song was last
+# heard, and the years page itself. Both build it from the same grouping the
+# headings come from, so neither can offer a year its body does not hold.
+#
+# Named rather than copied, because a rule that appears in two sheets in this
+# file has four times gone on to appear in two sheets and be edited in one.
+YEAR_STRIP_CSS = """/* The years, as a strip. Generated from the same grouping as the headings
+   below, so it cannot offer a year the page does not hold. */
+.years{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+.years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
+   line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
+   color:var(--ink-soft);text-decoration:none;white-space:nowrap}
+.years a:hover{color:var(--hot);border-color:var(--hot)}
+.years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
+"""
+
+
 DORMANT_CSS = INDEX_CSS + """
 /* One list with the years marked inside it, rather than eighteen lists. A
    heading that is a row of the same ordered list keeps one column header, one
@@ -5508,15 +5535,7 @@ DORMANT_CSS = INDEX_CSS + """
 .yr .up::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 .yr .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
-/* The years, as a strip. Generated from the same grouping as the headings
-   below, so it cannot offer a year the page does not hold. */
-.years{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
-.years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
-   line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
-   color:var(--ink-soft);text-decoration:none;white-space:nowrap}
-.years a:hover{color:var(--hot);border-color:var(--hot)}
-.years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
-/* The span of a song's life, which is the one figure a dormant song has that a
+""" + YEAR_STRIP_CSS + """/* The span of a song's life, which is the one figure a dormant song has that a
    due song does not need: it was around from here to here, and then it was not. */
 .d-n .span{font-variant-numeric:tabular-nums}
 /* In ink, not in the accent. The due page sets its figure hot because it is
@@ -5542,6 +5561,7 @@ DORMANT_SHELL = """<!DOCTYPE html>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
 <a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./years.html">Years</a>
 <a href="./faq.html">FAQ</a>
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
@@ -5683,6 +5703,7 @@ VENUES_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a class="here">Venues</a>
+<a href="./years.html">Years</a>
 <a href="./faq.html">FAQ</a>
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
@@ -5871,6 +5892,506 @@ def render_songs(docs, stamp=None, card=None):
         stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
 
 
+# ------------------------------------------------------------------ years ---
+#
+# What a year sounded like, read off the running order rather than off the
+# gaps. Every other list on this site is about one song's habits; this is the
+# only one about the band's, and it is the only page whose input is the order
+# the songs came in rather than the dates they fell on.
+
+# Nights the repetition figure is stated over. See year_repeat for why a fixed
+# number and not the year's own length; 20 is the largest round number that
+# still lets 1987 (21 nights) and 2017 (28) answer.
+YEARS_SAMPLE = 20
+# A song is part of a year's sound if it turned up on at least this many of
+# that year's nights, and on at least this share of them. Both, because three
+# nights out of 124 is noise and three out of 21 is a habit.
+YEARS_FLOOR = 3
+YEARS_SHARE = .10
+# And a move belongs to a year only if a quarter of every time it ever
+# happened was that year.
+YEARS_OWN = .25
+# How many songs a fact line will name before it stops and says how many more
+# there were.
+YEARS_NAMED = 5
+
+
+def year_order(order, counting, reports=()):
+    """{date: rows} for every counting show whose running order is known.
+
+    Two sources, because neither is complete on its own. The extract holds the
+    whole career and is free to re-read, but it deliberately refuses a show
+    whose report is still provisional -- so on the one night anyone would look
+    hardest, the newest show is the one missing from it. The saved reports
+    carry a running order too and go back only as far as the archive does.
+    Extract first, then a report for anything the extract has not got.
+
+    Filtered to the counting calendar throughout, so a year's shows here are
+    the same shows the rest of the site counts. Nine of the archive's entries
+    are soundchecks and radio sessions; a soundcheck is not a night.
+    """
+    known = {date: rows for date, rows in order.items() if date in counting}
+    for report in reports:
+        date = report["date"]
+        if date in known or date not in counting:
+            continue
+        rows = [{"set": SET_SLUG.get(s.get("set"), ""), "position": i,
+                 "slug": s["slug"], "song": s.get("song") or s["slug"],
+                 "trans_mark": s.get("out") or ""}
+                for i, s in enumerate(report.get("songs") or (), 1)
+                if s.get("slug")]
+        if rows:
+            known[date] = rows
+    return known
+
+
+def year_songs(rows):
+    """One show's songs in running order, minus the entries that are not songs.
+
+    `jam` and `custom` are filed here for the same reason they carry a caveat
+    on their own pages: neither is a composition, so counting either as the
+    most-played song of a year answers a different question than the reader is
+    asking. `custom` alone would have put nine different pieces of music into
+    one row.
+    """
+    return [r for r in sorted(rows, key=lambda e: (SET_ORDER.get(e["set"], 9),
+                                                   e["position"]))
+            if r["slug"] not in NOT_A_SONG]
+
+
+def year_moves(rows):
+    """The song-to-song moves inside one show, as ordered pairs of slugs.
+
+    Inside a set only. What follows the break is not what the band segued
+    into, and treating it as one would make "Antelope, then Chalk Dust" the
+    same object as "Antelope > Chalk Dust", which is the distinction the whole
+    page is about.
+    """
+    songs = year_songs(rows)
+    return [(a["slug"], b["slug"]) for a, b in zip(songs, songs[1:])
+            if a["set"] == b["set"]]
+
+
+def year_repeat(dates, order, sample=YEARS_SAMPLE):
+    """The share of a year's moves that recur, stated over a fixed `sample`.
+
+    The obvious figure -- what share of a year's moves happened more than once
+    that year -- cannot be compared across years, and a page of years is
+    nothing but a comparison. It climbs with the number of shows for purely
+    arithmetic reasons: 124 nights give a pair 124 chances to turn up twice,
+    28 nights give it 28. Measured, that is most of the distance between the
+    two ends of this archive. Cut every year down to the same 29 nights and
+    1991 falls from 68% to 39% -- while 2017, which already had 29, stays at
+    1.4%. The ordering survives; the raw numbers do not deserve to.
+
+    So what is published is the figure a reader who saw `sample` nights of
+    that year would have seen, which every long-enough year can answer on the
+    same terms. Exact rather than sampled: a move that appears on m of the
+    year's n nights appears on X of a random `sample` of them, X being
+    hypergeometric, and it reads as a repeat whenever X is 2 or more --
+
+        E[repeats] = sum over moves of  E[X] - P(X = 1)
+
+    Checked against 120 random draws of every year: no year moved by more than
+    0.3 points, which is the difference between a statistic and a die roll.
+
+    A move that happens twice in one night is a sandwich rather than a habit,
+    so each move counts once per night. -> percent, or None below `sample`.
+    """
+    n = len(dates)
+    if n < sample:
+        return None
+    nights = collections.Counter()
+    for date in dates:
+        nights.update(set(year_moves(order[date])))
+    whole = math.comb(n, sample)
+    alone, top, bottom = {}, 0.0, 0.0
+    for m in nights.values():
+        bottom += m * sample / n
+        if m not in alone:
+            alone[m] = (m * math.comb(n - m, sample - 1) / whole
+                        if n - m >= sample - 1 else 0.0)
+        top += m * sample / n - alone[m]
+    return 100 * top / bottom if bottom else None
+
+
+def year_profiles(order, counting, docs=()):
+    """One profile per year of the band's career, newest first.
+
+    `order` is what year_order returned, so everything here is already
+    restricted to nights the site counts and whose running order is known.
+    """
+    by_year, played = {}, {}
+    for date in order:
+        by_year.setdefault(date[:4], []).append(date)
+    for date in counting:
+        played[date[:4]] = played.get(date[:4], 0) + 1
+
+    # A song's debut, from the fullest source that has it. A song page holds
+    # every performance phish.net knows of, which is better evidence than this
+    # extract -- 100 shows before 1992 have no running order on file, so a
+    # song first played at one of them looks younger here than it is. Only 589
+    # songs have a page, though (a page exists for a song the archive's own
+    # reports name, and those start in 2009), so the extract answers for the
+    # rest and the earlier of the two answers wins.
+    pages, debut, names = set(), {}, {}
+    for doc in docs:
+        pages.add(doc["slug"])
+        first = next((p["date"] for p in doc.get("performances") or ()
+                      if p["date"] in counting), None)
+        if first:
+            debut[doc["slug"]] = first[:4]
+
+    plays, nights, moves = {}, {}, {}
+    for year, dates in by_year.items():
+        p, s, m = collections.Counter(), collections.Counter(), collections.Counter()
+        for date in dates:
+            songs = year_songs(order[date])
+            for row in songs:
+                p[row["slug"]] += 1
+                names[row["slug"]] = row["song"]
+            s.update({row["slug"] for row in songs})
+            # Once a night. A move made twice in one show is a sandwich, and a
+            # sandwich is a thing that happened once.
+            m.update(set(year_moves(order[date])))
+        plays[year], nights[year], moves[year] = p, s, m
+        for slug in p:
+            if slug not in debut or year < debut[slug]:
+                debut[slug] = year
+
+    anywhere, ever = collections.Counter(), collections.Counter()
+    for year in by_year:
+        anywhere += nights[year]
+        ever += moves[year]
+    everything = sum(len(dates) for dates in by_year.values())
+
+    # A song nobody heard in any other year. Computed against every night the
+    # archive holds an order for rather than against every night played, which
+    # is the honest limit of the claim and is what the page says it is.
+    lonely = {}
+    for slug in names:
+        seen = [year for year in by_year if plays[year].get(slug)]
+        if len(seen) == 1:
+            lonely.setdefault(seen[0], []).append(slug)
+
+    def named(slugs, figure):
+        return [(slug, names[slug], figure(slug)) for slug in slugs]
+
+    out = []
+    for year in sorted(by_year, reverse=True):
+        dates = sorted(by_year[year])
+        n = len(dates)
+        p, s = plays[year], nights[year]
+        performances = sum(p.values())
+
+        # What made this year sound like itself rather than like the band:
+        # how much of the year a song was in, weighed against how much of
+        # every other year it was in. The log keeps a song that played twice
+        # as often as usual on 60% of nights above one that played fifty times
+        # as often on three -- rarity alone would fill every row with one-offs,
+        # which is the next fact line down and a different question.
+        rest = everything - n
+        # Songs the band played only this year are left out of it, because the
+        # line below says that about them and says it harder. In they went
+        # first, and 1995 answered Acoustic Army, Taste That Surrounds and
+        # Keyboard Army twice over -- the same three chips in two rows, where
+        # the second row is the stronger claim. Out of this list, 1995 says
+        # Strange Design, A Day in the Life and I'm Blue, I'm Lonesome, which
+        # is what the year sounded like rather than what was unique to it.
+        alone = set(lonely.get(year, ()))
+        sound = []
+        for slug, count in s.items():
+            if slug in alone or count < YEARS_FLOOR or count < YEARS_SHARE * n:
+                continue
+            here = count / n
+            elsewhere = (anywhere[slug] - count) / rest if rest else 0
+            # Never anywhere else: a rate of zero has no logarithm, so it is
+            # held at half a night rather than allowed to run to infinity.
+            elsewhere = elsewhere or .5 / rest
+            sound.append((here * math.log2(here / elsewhere), here, slug))
+        sound.sort(reverse=True)
+
+        # The move that was most this year's own, rather than the one it made
+        # most often. Ranked on the raw count, nearly every year of the
+        # archive answers with one of two pairs: The Horse into Silent in the
+        # Morning is one piece of music filed as two rows, and Mike's Song
+        # into I Am Hydrogen is a fixed sequence the band has played since
+        # 1988. Both are true and neither is about a year. Weighed against how
+        # often the pair ever happened, 1993 answers Big Ball Jam into Hold
+        # Your Head Up -- 16 of the 22 nights it has ever happened, all of them
+        # that year -- which is the thing worth knowing.
+        habit, best = None, 0
+        for pair, count in moves[year].items():
+            # A quarter of every time it ever happened, at least, or the line
+            # is not about this year and does not appear. Without the floor
+            # 2021 answers Mike's Song into I Am Hydrogen on the strength of 3
+            # nights out of 335 -- the best any 2021 pair could do, and still
+            # a statement about 1988. Four years say nothing here instead.
+            if count < YEARS_FLOOR or count < YEARS_OWN * ever[pair]:
+                continue
+            score = count * count / ever[pair]
+            if score > best:
+                habit, best = (names[pair[0]], names[pair[1]], count,
+                               ever[pair]), score
+
+        ages = sorted(int(year) - int(debut[slug])
+                      for slug, count in p.items() for _ in range(count))
+        only = sorted(lonely.get(year, ()), key=lambda x: (-p[x], names[x]))
+        out.append({
+            "year": year,
+            "shows": played.get(year, n),
+            "known": n,
+            "songs": len(p),
+            "performances": performances,
+            "per_night": performances / n,
+            "age": _median(ages),
+            "repeat": year_repeat(dates, order),
+            "most": named([slug for slug, _ in p.most_common(YEARS_NAMED)],
+                          lambda slug: "%d" % p[slug]),
+            "sound": named([slug for _, _, slug in sound[:YEARS_NAMED]],
+                           lambda slug: "%.0f%%" % (100 * s[slug] / n)),
+            "only": named(only[:YEARS_NAMED], lambda slug: "%d" % p[slug]),
+            "only_n": len(only),
+            "habit": habit,
+        })
+    return out
+
+
+YEARS_CSS = INDEX_CSS + YEAR_STRIP_CSS + """
+/* One block a year, and the year itself set the size the song titles are set
+   on a show page -- this is a page of forty headings and the reader is
+   scanning for one of them. */
+.yb{margin:0 0 2.6rem}
+.yb:first-of-type{margin-top:.4rem}
+.yh{display:flex;align-items:baseline;gap:.7rem;margin:0 0 .7rem;
+   padding:0 .25rem .35rem;border-bottom:1px solid var(--ink)}
+.yh .y{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1.75rem;
+   line-height:1;letter-spacing:-.01em;color:var(--ink)}
+.yh .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.yh .up{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative}
+.yh .up::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+.yh .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The four figures, as a grid rather than a sentence with middots in it.
+   Set as running text they stranded a separator at the end of every wrapped
+   line; a grid cell cannot strand punctuation it does not carry. */
+.shape{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem 1rem;
+   margin:0 0 .9rem;padding:0 .25rem}
+.shape dt{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin:0}
+.shape dd{margin:.15rem 0 0;font-size:.9375rem;color:var(--ink-soft);
+   font-variant-numeric:tabular-nums}
+.shape dd b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   color:var(--ink)}
+/* Said only where it is true, and it is true only before 1992. */
+.part{margin:0 0 .9rem;padding:0 .25rem;font-family:'Literata',Georgia,serif;
+   font-size:.875rem;line-height:1.5;font-variation-settings:'opsz' 14;
+   color:var(--dim)}
+.fact{display:grid;grid-template-columns:9.5rem 1fr;align-items:baseline;
+   gap:.5rem .9rem;padding:.45rem .25rem;border-top:1px solid var(--rule-soft)}
+.fact h3{margin:0;font-size:.625rem;letter-spacing:.14em;font-weight:400;
+   text-transform:uppercase;color:var(--dim)}
+/* Songs as chips, one size down from the year strip they echo. A run of
+   titles set as text put its commas at the ends of lines; an enclosed item
+   carries no punctuation to strand. */
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chips a,.chips span{font-size:.8125rem;line-height:1.15;padding:.3rem .45rem;
+   border:1px solid var(--edge);color:var(--ink-soft);text-decoration:none}
+.chips a:hover{color:var(--hot);border-color:var(--hot)}
+.chips b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
+   color:var(--dim);margin-left:.35rem;font-variant-numeric:tabular-nums}
+.chips a:hover b{color:var(--hot)}
+/* Not a chip: it is one sentence about two songs, and breaking it into two
+   enclosures would hide the only thing it says, which is the arrow. */
+.habit{margin:0;font-size:.8125rem;line-height:1.35;color:var(--ink-soft)}
+.habit .to{color:var(--dim);margin:0 .3rem}
+.habit .n{font-family:'IBM Plex Mono',ui-monospace,monospace;color:var(--dim);
+   margin-left:.4rem;font-variant-numeric:tabular-nums}
+.more{font-size:.75rem;color:var(--dim);align-self:center}
+@media (max-width:620px){
+  .shape{grid-template-columns:repeat(2,1fr)}
+  .fact{grid-template-columns:1fr;gap:.3rem}
+}
+"""
+
+
+YEARS_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Years &mdash; Possum Logic</title>
+<meta property="og:type" content="website">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+{sheet}
+<style>{css}</style>{theme_js}{keys_js}</head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a class="here">Years</a>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></nav>
+<div class="rule2"></div>
+<header><h1>Years</h1>
+<p class="show">{subtitle}</p>
+<p class="dek">What a year sounded like, taken from the order the songs came
+in rather than from how long the band went without them. Every other list here
+is about one song&rsquo;s habits. This one is about the band&rsquo;s.</p>
+<p class="dek"><b>Sounded like</b> is not the same list as <b>most played</b>,
+and the difference is the point: Possum was played every year, so it says
+nothing about any of them. A song earns a place in the first list by being a
+bigger share of that year than of every other year put together.</p>
+<p class="dek"><b>Moves that recur</b> is the share of a year&rsquo;s
+song-to-song moves that turn up on more than one night &mdash; stated over a
+fixed {sample} nights, because otherwise it is a count of how many shows the
+band played. A long year gets more chances to repeat itself for reasons that
+have nothing to do with how it sounded. Over the same {sample} nights, 1993
+reads {high} and 2017 reads {low}.</p>
+<p class="dek">Built from the running order of {read} nights. The archive has
+no running order for {missing} of the shows the calendar counts, almost all of
+them before 1992, so a year short of its own count says so under its figures
+&mdash; and <b>only in</b> means only in the nights read here.</p>
+<nav class="years" aria-label="Years on this page">{years}</nav></header>
+<section class="hero {hero_cls}">{hero}</section>
+<div class="rule2"></div>
+<main id="main" tabindex="-1">
+{blocks}
+</main>
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+
+def _year_chips(items, pages, root="./"):
+    """A run of songs, each with its figure, linked where the song has a page.
+
+    Not every song does. A page exists for a song some saved report names, and
+    the reports start in 2009 -- so Acoustic Army, 27 performances and all of
+    them in 1995, is a name here and nothing more. Set as an unlinked chip
+    rather than left out: what the page is saying about 1995 is that the song
+    existed, and a missing page is not a reason to un-say it.
+    """
+    out = []
+    for slug, song, figure in items:
+        label = "%s<b>%s</b>" % (html.escape(typographic(song)),
+                                 html.escape(figure))
+        if slug in pages:
+            out.append("<a href='%ssong/%s.html'>%s</a>"
+                       % (root, html.escape(slug, quote=True), label))
+        else:
+            out.append("<span>%s</span>" % label)
+    return "".join(out)
+
+
+def _year_fact(label, body, more=""):
+    return ("<div class='fact'><h3>%s</h3><div class='chips'>%s%s</div></div>"
+            % (label, body,
+               "<span class='more'>%s</span>" % more if more else ""))
+
+
+def _year_block(profile, pages):
+    """One year, as a heading, four figures and up to four fact lines."""
+    year, n = profile["year"], profile["known"]
+    age = profile["age"]
+    figures = [
+        ("A night", "<b>%.0f</b> songs" % profile["per_night"]),
+        ("In rotation", "<b>%d</b> songs" % profile["songs"]),
+        ("Median song", "new" if not age else
+         "<b>%.0f</b> year%s old" % (age, "" if age == 1 else "s")),
+        ("Moves that recur",
+         "&mdash;" if profile["repeat"] is None
+         else "<b>%.0f%%</b>" % profile["repeat"]),
+    ]
+    body = ["<section class='yb' id='y%s'>"
+            "<h2 class='yh'><span class='y'>%s</span>"
+            "<span class='n'>%s show%s</span>"
+            "<a class='up' href='#top'>&uarr; Top</a></h2>"
+            % (year, year, "{:,}".format(profile["shows"]),
+               "" if profile["shows"] == 1 else "s"),
+            "<dl class='shape'>%s</dl>"
+            % "".join("<div><dt>%s</dt><dd>%s</dd></div>" % f for f in figures)]
+
+    # Only when it is not the whole year, and it never is after 1991.
+    if n < profile["shows"]:
+        body.append("<p class='part'>Running order known for %d of these %d "
+                    "nights; the figures above are what those %d hold.</p>"
+                    % (n, profile["shows"], n))
+
+    if profile["most"]:
+        body.append(_year_fact("Most played",
+                               _year_chips(profile["most"], pages)))
+    if profile["sound"]:
+        body.append(_year_fact("Sounded like",
+                               _year_chips(profile["sound"], pages)))
+    if profile["only"]:
+        spare = profile["only_n"] - len(profile["only"])
+        body.append(_year_fact(
+            "Only in %s" % year, _year_chips(profile["only"], pages),
+            "and %d more" % spare if spare else ""))
+    if profile["habit"]:
+        first, second, count, ever = profile["habit"]
+        body.append(
+            "<div class='fact'><h3>Ran together</h3>"
+            "<p class='habit'>%s<span class='to'>&rarr;</span>%s"
+            "<span class='n'>%d night%s, of %d ever</span></p></div>"
+            % (html.escape(typographic(first)),
+               html.escape(typographic(second)),
+               count, "" if count == 1 else "s", ever))
+    body.append("</section>")
+    return "".join(body)
+
+
+def render_years(profiles, missing, pages=()):
+    """Forty years of this band, one block each, newest first."""
+    read = sum(p["known"] for p in profiles)
+    strip = "".join(
+        "<a href='#y%s' aria-label='%s, %d show%s'>%s<b>%d</b></a>"
+        % (p["year"], p["year"], p["shows"], "" if p["shows"] == 1 else "s",
+           p["year"], p["shows"]) for p in profiles)
+
+    rated = [p for p in profiles if p["repeat"] is not None]
+    most = max(rated, key=lambda p: p["repeat"], default=None)
+    least = min(rated, key=lambda p: p["repeat"], default=None)
+    widest = max(profiles, key=lambda p: p["songs"], default=None)
+    cards = [(len(profiles), "Years", "", ""),
+             ("{:,}".format(read), "Nights read", "", ""),
+             (most["year"] if most else "n/a", "Most habitual", " hot",
+              "#y%s" % most["year"] if most else ""),
+             (widest["year"] if widest else "n/a", "Widest rotation", "",
+              "#y%s" % widest["year"] if widest else "")]
+    hero = "".join(
+        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
+        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
+        + ("</a>" if href else "</div>")
+        for val, lbl, cls, href in cards)
+
+    span = "%s&ndash;%s" % (profiles[-1]["year"], profiles[0]["year"]) if profiles else ""
+    subtitle = "%d years of Phish, %s" % (len(profiles), span)
+    blurb = ("What each year of Phish sounded like: the songs that were only "
+             "that year's, and how much of the band's own running order they "
+             "repeated.")
+    return YEARS_SHELL.format(
+        analytics=ANALYTICS, css=YEARS_CSS, fonts=WEB_FONTS,
+        sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        theme_ui=THEME_UI, years=strip, hero=hero,
+        hero_cls=hero_cols(len(cards)), subtitle=subtitle,
+        sample=YEARS_SAMPLE, read="{:,}".format(read),
+        missing="{:,}".format(missing),
+        high="%.0f%%" % next((p["repeat"] for p in profiles
+                              if p["year"] == "1993"), 0),
+        low="%.0f%%" % next((p["repeat"] for p in profiles
+                             if p["year"] == "2017"), 0),
+        blocks="\n".join(_year_block(p, pages) for p in profiles),
+        share=share_meta("Years &mdash; Possum Logic",
+                         html.escape(blurb, quote=True), "years.html"),
+        stamp="Updated %s" % _utcnow().date().isoformat())
+
+
 # ----------------------------------------------------------------- method ---
 
 METHOD_CSS = INDEX_CSS + """
@@ -5973,6 +6494,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./years.html">Years</a>
 <a href="./faq.html">FAQ</a>
 <a class="here">How this works</a></nav>
 <div class="rule2"></div>
@@ -6228,6 +6750,7 @@ FAQ_SHELL = """<!DOCTYPE html>
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./years.html">Years</a>
 <a class="here">FAQ</a>
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
@@ -8403,6 +8926,21 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     venues_page = os.path.join(site_dir, "venues.html")
     if write_if_changed(venues_page, render_venues(shows)):
         log("wrote %s", venues_page)
+
+    # The one page whose input is the running order rather than the gaps, so
+    # the one page that reads the extract at build time. A checkout without it
+    # still builds: year_order falls back to the running order inside each
+    # saved report, and the page then covers the years the archive reaches
+    # rather than the career -- shorter, and honest about being shorter,
+    # because every figure on it is stated against the nights it read.
+    read = year_order(setlist_order(), counting, known)
+    if read:
+        years_page = os.path.join(site_dir, "years.html")
+        if write_if_changed(years_page, render_years(
+                year_profiles(read, counting, docs), len(counting) - len(read),
+                pages={doc["slug"] for doc in docs})):
+            log("wrote %s (%d of %d counting nights read)",
+                years_page, len(read), len(counting))
     changed = write_if_changed(
         index, render_index(shows, card="index", aside=aside, n_due=n_due))
     want_card("index", index_card(shows))

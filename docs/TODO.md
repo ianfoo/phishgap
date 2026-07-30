@@ -561,6 +561,82 @@ the server already running on 8769 belonged to another worktree and served the
 *old* build. Verifying against it would have shown this change as missing.
 Now `autoPort: true` with the port taken from `$PORT`.
 
+### The 2026-07-30 session — `years.html`, and one figure that needed fixing
+before it could be published
+
+Ian, after the MSG run of five shows each modelled on a year (1992 through
+1996, down to Trey's mini drum kit and Fish's original mumu): "It could be
+interesting to be able to explore the mood of the years." He asked for the
+measurement first and the page second, and the measurement is what decided the
+shape — see the ruling in §4, which this does not break.
+
+**Everything below is pushed.** The page is built from
+`archive/setlist-order.json` at render time, so it costs no API calls and adds
+~30 ms to a rebuild.
+
+| what | state |
+|---|---|
+| `years.html` — a block a year, 1983–2026, from the running order | done, 39 years, 1,950 of 2,108 counting nights read |
+| `Years` in the nav on all nine page types | done — checked from every depth, 0 dangling links across 1,312 pages |
+| `YEAR_STRIP_CSS` named rather than copied into a fourth sheet | done — `DORMANT_CSS` byte-identical after, sha1 unchanged |
+
+**The figure that had to be normalised, and why it is worth knowing.** "Moves
+that recur" — the share of a year's song-to-song moves that turn up on more
+than one night — is the most interesting number the archive has about this
+band, and the raw version of it is nearly a fraud. It reads 68% for 1991 and
+1.4% for 2017, which sounds like a finding and is mostly a count of shows: 124
+nights give a pair 124 chances to coincide, 28 nights give it 28. Cut every
+year to the same 29 nights and 1991 falls to 39% while 2017 does not move.
+The signal survives, but the published number could not be the raw one.
+
+So the page states it over a fixed 20 nights for every year, computed exactly
+rather than sampled — a move appears on X of a random 20, X hypergeometric,
+and reads as a repeat when X ≥ 2, so E[repeats] = Σ E[X] − P(X = 1). Checked
+against 150 random draws per year: worst disagreement 0.74 points, and that
+includes rounding to a whole percent. **This is the shape to reuse for any
+per-year figure added later** — almost all of them will have the same
+confound, because the band played 124 shows in 1991 and 28 in 2017.
+
+**Two editorial calls made from what the data returned, both cheap to undo:**
+
+- **"Ran together" is not the most repeated move.** Ranked on the raw count,
+  28 of 39 years answer with The Horse → Silent in the Morning or Mike's Song
+  → I Am Hydrogen — one piece of music filed as two rows, and a sequence fixed
+  since 1988. True, and not about a year. Weighed against how often the pair
+  ever happened, 1992 answers Cold as Ice → Cracklin' Rosie, 20 nights of the
+  20 it has ever happened. A move must be ≥ 25% of its own career to appear at
+  all, so 11 years say nothing here rather than something meaningless.
+- **"Sounded like" excludes songs played only that year**, because the line
+  directly under it makes the stronger claim about exactly those songs. 1995
+  was printing Acoustic Army, Taste That Surrounds and Keyboard Army in both
+  rows; without them it says Strange Design, A Day in the Life and I'm Blue,
+  I'm Lonesome, which is what 1995 sounded like rather than what only it had.
+
+**What the page cannot say, and says so on its face.** phish.net has no
+running order for 158 of the counting calendar's shows — 1985 is 11 of 22,
+1988 is 52 of 95, and everything from 1992 is complete. Those years carry a
+line under their figures naming what they were computed from. It also limits
+"only in 1994": it means only in the nights read. 163 such claims are on the
+page, 66 of them are checkable against a full song history (a song has one
+only if a saved report names it, and the reports start in 2009), and **0 of
+the 66 are contradicted**. The other 97 rest on the extract alone.
+
+**Still open from the measurement, and deliberately not built:**
+
+- **Segue density per year** — the share of moves marked `>` or `->` runs 23%
+  in 1988 to 50% in 2012, which would be the second-best number on the page if
+  it is real. It may instead be phish.net's transcription conventions drifting
+  as old tapes were catalogued decades later. Left off until someone can tell
+  those apart; a figure this suggestive is exactly the kind this archive should
+  not publish on a guess.
+- **The MSG tribute scoring.** 111 of the 114 songs across the five nights
+  were in the modelled year's rotation, no song on any night postdated its
+  year bar the closing Backwards Down the Number Line, and the deepest cut was
+  AC/DC Bag on the 1992 night — played once in all of 1992. It belongs on the
+  five show pages rather than here, and it is the obvious next thing.
+- **Per-year pages.** Not built, and the ruling in §4 explains why one page
+  came first. If the blocks earn their own pages, `years.html` is the index.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
@@ -1796,6 +1872,17 @@ rather than looking for a scrollbar.
 - **[ruling]** Do *not* build `/venue/` and `/year/` page trees. URL-addressable
   search gets the same result with no new build output and nothing to fall out
   of sync. Build real venue pages only for per-venue *statistics*.
+
+  **Held, and `years.html` is the second half of it rather than an exception.**
+  Ian asked on 2026-07-30 for a year profile after the MSG run of shows modelled
+  on 1992–96, and the test the ruling implies is the right one: can search
+  produce this? It cannot. Nothing on this site could tell you that 1991 opened
+  with Chalk Dust Torture 16 times, that Acoustic Army was played 27 times and
+  every one of them in 1995, or that Cold as Ice ran into Cracklin' Rosie on 20
+  nights and all 20 were 1992. That is per-year *statistics*, which is exactly
+  what the ruling reserves a real page for. What was not built is the tree: one
+  page, 39 blocks, no `/year/1993.html`. If the blocks ever earn pages of their
+  own, that is a second decision and this page is its index.
 
 ## 5. DOM growth before the 1983 backfill
 
