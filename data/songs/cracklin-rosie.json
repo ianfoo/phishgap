@@ -44,7 +44,7 @@
   {"date": "1993-08-06", "venue": "Cincinnati Zoo Peacock Pavilion", "city": "Cincinnati", "state": "OH", "gap": 21, "set": "2", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
   {"date": "1993-08-24", "venue": "Commodore Ballroom", "city": "Vancouver", "state": "British Columbia", "gap": 13, "set": "2", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
   {"date": "1993-12-31", "venue": "Worcester Centrum Centre", "city": "Worcester", "state": "MA", "gap": 7, "set": "3", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
-  {"date": "1994-04-17", "venue": "Patriot Center, George Mason University", "city": "Fairfax", "state": "VA", "gap": 12, "set": "e", "out": ">", "nb": 1, "next": "Hold Your Head Up"},
+  {"date": "1994-04-17", "venue": "Patriot Center, George Mason University", "city": "Fairfax", "state": "VA", "gap": 12, "set": "e", "out": ">", "nb": 1, "xprev": "Golgi Apparatus", "next": "Hold Your Head Up"},
   {"date": "1994-06-25", "venue": "Nautica Stage", "city": "Cleveland", "state": "OH", "gap": 47, "set": "2", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
   {"date": "1994-10-26", "venue": "Varsity Gym, Appalachian State University", "city": "Boone", "state": "NC", "gap": 30, "set": "2", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
   {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 15, "set": "2", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},

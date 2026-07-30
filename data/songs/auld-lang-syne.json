@@ -29,13 +29,13 @@
   {"date": "2019-12-31", "score": 32, "venue": "Madison Square Garden", "city": "New York", "state": "NY", "link": "https://fouldomain.com/tracks/35772"}
  ],
  "performances": [
-  {"date": "1989-12-30", "venue": "The Wetlands Preserve", "city": "New York", "state": "NY", "gap": 313, "set": "e", "note": "First known Phish performance.", "out": "->", "next": "Mike's Song", "nb": 1},
-  {"date": "1989-12-31", "venue": "Boston World Trade Center Exhibition Hall", "city": "Boston", "state": "MA", "gap": 1, "set": "1", "out": ">", "prev": "AC/DC Bag", "next": "Run Like an Antelope", "nb": 1},
+  {"date": "1989-12-30", "venue": "The Wetlands Preserve", "city": "New York", "state": "NY", "gap": 313, "set": "e", "note": "First known Phish performance.", "out": "->", "nb": 1, "xprev": "Golgi Apparatus", "next": "Mike's Song"},
+  {"date": "1989-12-31", "venue": "Boston World Trade Center Exhibition Hall", "city": "Boston", "state": "MA", "gap": 1, "set": "1", "out": ">", "nb": 1, "prev": "AC/DC Bag", "next": "Run Like an Antelope"},
   {"date": "1991-12-31", "venue": "Worcester Memorial Auditorium", "city": "Worcester", "state": "MA", "gap": 274, "set": "2", "out": ">", "nb": 1, "prev": "Buried Alive", "in": ">", "next": "Runaway Jim"},
   {"date": "1992-12-31", "venue": "Matthews Arena, Northeastern University", "city": "Boston", "state": "MA", "gap": 122, "set": "3", "out": ">", "nb": 1, "prev": "Mike's Song", "in": ">", "next": "Weekapaug Groove"},
-  {"date": "1993-12-31", "venue": "Worcester Centrum Centre", "city": "Worcester", "state": "MA", "gap": 111, "set": "3", "out": ">", "nb": 1, "next": "Down with Disease"},
+  {"date": "1993-12-31", "venue": "Worcester Centrum Centre", "city": "Worcester", "state": "MA", "gap": 111, "set": "3", "out": ">", "nb": 1, "xprev": "You Enjoy Myself", "next": "Down with Disease"},
   {"date": "1994-12-31", "venue": "Boston Garden", "city": "Boston", "state": "MA", "gap": 125, "set": "3", "times": 2, "out": ">", "nb": 1, "prev": "Also Sprach Zarathustra", "in": ">", "next": "Chalk Dust Torture"},
-  {"date": "1995-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 81, "set": "3", "out": ">", "nb": 1, "next": "Weekapaug Groove"},
+  {"date": "1995-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 81, "set": "3", "out": ">", "nb": 1, "xprev": "Digital Delay Loop Jam", "next": "Weekapaug Groove"},
   {"date": "1996-12-31", "venue": "FleetCenter", "city": "Boston", "state": "MA", "gap": 70, "set": "3", "out": "->", "nb": 1, "prev": "Also Sprach Zarathustra", "in": ">", "next": "Down with Disease"},
   {"date": "1997-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 78, "set": "3", "out": ">", "nb": 1, "prev": "Also Sprach Zarathustra", "in": ">", "next": "Tweezer"},
   {"date": "1998-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 67, "set": "3", "out": "->", "nb": 1, "prev": "Runaway Jim", "in": "->", "next": "Simple"},

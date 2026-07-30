@@ -81,9 +81,9 @@
   {"date": "2011-06-08", "venue": "Darien Lake Performing Arts Center", "city": "Darien Center", "state": "NY", "gap": 25, "set": "1", "nb": 1, "prev": "It's Ice", "in": ">", "next": "Brian and Robert"},
   {"date": "2014-11-01", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 144, "set": "1", "nb": 1, "prev": "555", "next": "Fuck Your Face"},
   {"date": "2015-08-11", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 20, "set": "1", "out": ">", "nb": 1, "prev": "Vultures", "next": "David Bowie"},
-  {"date": "2016-10-24", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 50, "set": "2", "out": ">", "nb": 1, "next": "Seven Below"},
+  {"date": "2016-10-24", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 50, "set": "2", "out": ">", "nb": 1, "xprev": "David Bowie", "next": "Seven Below"},
   {"date": "2019-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 114, "set": "1", "nb": 1, "prev": "Weigh", "in": ">", "next": "Twenty Years Later"},
   {"date": "2021-10-30", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 41, "set": "1", "nb": 1, "prev": "Shaggy Dog", "next": "The Sloth"},
-  {"date": "2026-01-28", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 185, "set": "e", "nb": 1, "next": "Ghost"}
+  {"date": "2026-01-28", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 185, "set": "e", "nb": 1, "xprev": "Character Zero", "next": "Ghost"}
  ]
 }

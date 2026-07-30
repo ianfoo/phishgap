@@ -440,6 +440,26 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* The set boundary, named. What is on the far side of a setbreak is a fact,
+   so the words carry the ink and the song beside them stays dim -- the label
+   is the answer, the song is the detail, and that order survives the column
+   truncating. Not bold: this column sits under a gap figure and a bar, and a
+   bold line here out-shouts both. */
+.nb b{font-weight:400;color:var(--ink)}
+/* These two wrap where every other line in the column truncates. The column
+   is 162px at any desktop width, and a line of this shape is a sentence, not
+   a title: 40 of Tweezer's 50 came out as "Opened set 3, af..." -- the cut
+   landing inside "after" rather than inside a song name. Wrapping made 14 of
+   that page's 418 rows taller and the page 0.7% longer, which is the whole
+   cost. A title still truncates, because half a title is still readable and
+   half a preposition is not. */
+.nb .edge{white-space:normal}
+/* No arrow on a show opener or closer: both name no song, so it would point
+   at nothing. Hidden rather than removed, so the slot is still there and
+   "Closed the show" starts where "Opened the encore, after ..." above it
+   starts. Dropping the slot instead left the two lines of one cell on
+   different left edges, which is visible on 3,821 rows. */
+.nb .term::before{opacity:0}
 /* Same -.06em as the report pages: enough to make -> one mark, not so
    much that it stops matching the > on the row above it. */
 .nb .mk.tight{letter-spacing:-.06em}
@@ -819,8 +839,8 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>1 show</span><span>2011&ndash;2011</span></h2></li>
 <li id='2011-09-04' data-date='2011-09-04' data-era='3.0' data-gap='539' data-score='' data-search="2011-09-04 09/04/2011 9/4/2011 9/4/11 09/04 9/4 9-4 september 04 2011 september 4 sunday dick&#x27;s sporting goods park commerce city co  incomplete."><div class='row'><span class='r-date'><a href='../show/2011-09-04.html'>2011-09-04</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Dick&#x27;s Sporting Goods Park</span><span class='r-place'>Commerce City, CO</span><p class='note'><span class='tag'>Note</span>Incomplete.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Rock and Roll <span class='mk tight'>-&gt;</span></span><span class='nb-out seg'><span class='mk tight'>-&gt;</span> Twist</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>539</span><span class='set'>SET 2</span></span></div></li>
 <li class='yr' id='era-1-0' data-era='1.0'><h2><span class='tab'>1.0</span><span>1 show</span><span>1995&ndash;1999</span></h2></li>
-<li id='1999-06-24' data-date='1999-06-24' data-era='1.0' data-gap='-1' data-score='' data-counted='0' data-search="1999-06-24 06/24/1999 6/24/1999 6/24/99 06/24 6/24 6-24 june 24 1999 june 24 thursday the barn outer burlington vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-06-24' target='_blank' rel='noopener noreferrer'>1999-06-24</a><span class='dow'>Thu</span></span><span><span class='r-venue'>The Barn</span><span class='r-place'>Outer Burlington, VT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Meatstick <span class='mk'>&gt;</span></span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Not a show</span><span class='set'>SET 1</span></span></div></li>
-<li id='1995-12-08' data-date='1995-12-08' data-era='1.0' data-gap='-1' data-score='' data-search="1995-12-08 12/08/1995 12/8/1995 12/8/95 12/08 12/8 12-8 december 08 1995 december 8 friday csu convocation center cleveland oh  phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1995-12-08' target='_blank' rel='noopener noreferrer'>1995-12-08</a><span class='dow'>Fri</span></span><span><span class='r-venue'>CSU Convocation Center</span><span class='r-place'>Cleveland, OH</span><p class='note'><span class='tag'>Note</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> A Day in the Life</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>ENCORE</span></span></div></li>
+<li id='1999-06-24' data-date='1999-06-24' data-era='1.0' data-gap='-1' data-score='' data-counted='0' data-search="1999-06-24 06/24/1999 6/24/1999 6/24/99 06/24 6/24 6-24 june 24 1999 june 24 thursday the barn outer burlington vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1999-06-24' target='_blank' rel='noopener noreferrer'>1999-06-24</a><span class='dow'>Thu</span></span><span><span class='r-venue'>The Barn</span><span class='r-place'>Outer Burlington, VT</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Meatstick <span class='mk'>&gt;</span></span><span class='nb-out edge'><b>Closed set 1</b>, before Back on the Train</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Not a show</span><span class='set'>SET 1</span></span></div></li>
+<li id='1995-12-08' data-date='1995-12-08' data-era='1.0' data-gap='-1' data-score='' data-search="1995-12-08 12/08/1995 12/8/1995 12/8/95 12/08 12/8 12-8 december 08 1995 december 8 friday csu convocation center cleveland oh  phish debut."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1995-12-08' target='_blank' rel='noopener noreferrer'>1995-12-08</a><span class='dow'>Fri</span></span><span><span class='r-venue'>CSU Convocation Center</span><span class='r-place'>Cleveland, OH</span><p class='note'><span class='tag'>Note</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in edge'><b>Opened the encore</b>, after Run Like an Antelope</span><span class='nb-out seg'><span class='mk'>&gt;</span> A Day in the Life</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>ENCORE</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

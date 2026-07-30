@@ -440,6 +440,26 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* The set boundary, named. What is on the far side of a setbreak is a fact,
+   so the words carry the ink and the song beside them stays dim -- the label
+   is the answer, the song is the detail, and that order survives the column
+   truncating. Not bold: this column sits under a gap figure and a bar, and a
+   bold line here out-shouts both. */
+.nb b{font-weight:400;color:var(--ink)}
+/* These two wrap where every other line in the column truncates. The column
+   is 162px at any desktop width, and a line of this shape is a sentence, not
+   a title: 40 of Tweezer's 50 came out as "Opened set 3, af..." -- the cut
+   landing inside "after" rather than inside a song name. Wrapping made 14 of
+   that page's 418 rows taller and the page 0.7% longer, which is the whole
+   cost. A title still truncates, because half a title is still readable and
+   half a preposition is not. */
+.nb .edge{white-space:normal}
+/* No arrow on a show opener or closer: both name no song, so it would point
+   at nothing. Hidden rather than removed, so the slot is still there and
+   "Closed the show" starts where "Opened the encore, after ..." above it
+   starts. Dropping the slot instead left the two lines of one cell on
+   different left edges, which is visible on 3,821 rows. */
+.nb .term::before{opacity:0}
 /* Same -.06em as the report pages: enough to make -> one mark, not so
    much that it stops matching the > on the row above it. */
 .nb .mk.tight{letter-spacing:-.06em}
@@ -818,7 +838,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <ol class="perfs" id="list">
 <li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>3 shows</span><span>2021&ndash;2023</span></h2></li>
 <li id='2023-04-19' data-date='2023-04-19' data-era='4.0' data-gap='42' data-score='' data-search="2023-04-19 04/19/2023 4/19/2023 4/19/23 04/19 4/19 4-19 april 19 2023 april 19 wednesday william randolph hearst greek theatre, university of california, berkeley  berkeley ca  "><div class='row'><span class='r-date'><a href='../show/2023-04-19.html'>2023-04-19</a><span class='dow'>Wed</span></span><span><span class='r-venue'>William Randolph Hearst Greek Theatre, University of California, Berkeley </span><span class='r-place'>Berkeley, CA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Weekapaug Groove <span class='mk'>&gt;</span></span><span class='nb-out seg'><span class='mk'>&gt;</span> Set Your Soul Free</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>42</span><span class='set'>SET 2</span></span></div></li>
-<li id='2022-06-01' data-date='2022-06-01' data-era='4.0' data-gap='28' data-score='' data-search="2022-06-01 06/01/2022 6/1/2022 6/1/22 06/01 6/1 6-1 june 01 2022 june 1 wednesday credit one stadium charleston sc  "><div class='row'><span class='r-date'><a href='../show/2022-06-01.html'>2022-06-01</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Credit One Stadium</span><span class='r-place'>Charleston, SC</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out'>Foam</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>28</span><span class='set'>SET 1</span></span></div></li>
+<li id='2022-06-01' data-date='2022-06-01' data-era='4.0' data-gap='28' data-score='' data-search="2022-06-01 06/01/2022 6/1/2022 6/1/22 06/01 6/1 6-1 june 01 2022 june 1 wednesday credit one stadium charleston sc  "><div class='row'><span class='r-date'><a href='../show/2022-06-01.html'>2022-06-01</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Credit One Stadium</span><span class='r-place'>Charleston, SC</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in term'><b>Opened the show</b></span><span class='nb-out'>Foam</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>28</span><span class='set'>SET 1</span></span></div></li>
 <li id='2021-09-04' data-date='2021-09-04' data-era='4.0' data-gap='34' data-score='' data-search="2021-09-04 09/04/2021 9/4/2021 9/4/21 09/04 9/4 9-4 september 04 2021 september 4 saturday dick&#x27;s sporting goods park commerce city co  "><div class='row'><span class='r-date'><a href='../show/2021-09-04.html'>2021-09-04</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Dick&#x27;s Sporting Goods Park</span><span class='r-place'>Commerce City, CO</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Blaze On</span><span class='nb-out seg'><span class='mk'>&gt;</span> Ghost</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>34</span><span class='set'>SET 1</span></span></div></li>
 <li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>6 shows</span><span>2009&ndash;2019</span></h2></li>
 <li id='2019-12-01' data-date='2019-12-01' data-era='3.0' data-gap='44' data-score='' data-search="2019-12-01 12/01/2019 12/1/2019 12/1/19 12/01 12/1 12-1 december 01 2019 december 1 sunday nassau veterans memorial coliseum uniondale ny  "><div class='row'><span class='r-date'><a href='../show/2019-12-01.html'>2019-12-01</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Nassau Veterans Memorial Coliseum</span><span class='r-place'>Uniondale, NY</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Timber (Jerry the Mule) <span class='mk'>&gt;</span></span><span class='nb-out seg'><span class='mk'>&gt;</span> Roggae</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>44</span><span class='set'>SET 1</span></span></div></li>

@@ -54,7 +54,7 @@
   {"date": "1995-11-10", "venue": "The Fox Theatre", "city": "Atlanta", "state": "GA", "gap": 4, "set": "2", "nb": 1, "prev": "You Enjoy Myself", "next": "Sparkle"},
   {"date": "1995-11-14", "venue": "University of Central Florida Arena", "city": "Orlando", "state": "FL", "gap": 3, "set": "2", "nb": 1, "prev": "Stash", "next": "You Enjoy Myself"},
   {"date": "1995-11-19", "venue": "Charlotte Coliseum", "city": "Charlotte", "state": "NC", "gap": 4, "set": "1", "out": ">", "nb": 1, "prev": "Stash", "next": "It's Ice"},
-  {"date": "1995-11-22", "venue": "USAir Arena", "city": "Landover", "state": "MD", "gap": 2, "set": "2", "nb": 1, "prev": "You Enjoy Myself"},
+  {"date": "1995-11-22", "venue": "USAir Arena", "city": "Landover", "state": "MD", "gap": 2, "set": "2", "nb": 1, "prev": "You Enjoy Myself", "xnext": "Poor Heart"},
   {"date": "1995-11-25", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 2, "set": "2", "out": ">", "nb": 1, "prev": "I'm Blue, I'm Lonesome", "next": "Weekapaug Groove"},
   {"date": "1995-11-30", "venue": "Ervin J. Nutter Center, Wright State University", "city": "Dayton", "state": "OH", "gap": 3, "set": "2", "nb": 1, "prev": "Free", "next": "Amazing Grace"},
   {"date": "1995-12-07", "venue": "Niagara Falls Convention Center", "city": "Niagara Falls", "state": "NY", "gap": 5, "set": "2", "out": ">", "nb": 1, "prev": "Split Open and Melt", "next": "Taste That Surrounds"},
@@ -96,9 +96,9 @@
   {"date": "2019-07-14", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 124, "set": "1", "out": ">", "nb": 1, "prev": "About to Run", "next": "Timber (Jerry the Mule)"},
   {"date": "2019-12-07", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 10, "set": "1", "nb": 1, "prev": "Guyute", "next": "Moonage Daydream"},
   {"date": "2022-04-20", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 50, "set": "1", "nb": 1, "prev": "Leaves", "next": "Stash"},
-  {"date": "2022-07-29", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 22, "set": "e", "nb": 1, "next": "Heavy Things"},
+  {"date": "2022-07-29", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 22, "set": "e", "nb": 1, "xprev": "Shine a Light", "next": "Heavy Things"},
   {"date": "2024-08-30", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 99, "set": "1", "nb": 1, "prev": "Evolve", "next": "Run Like an Antelope"},
-  {"date": "2025-06-20", "venue": "SNHU Arena", "city": "Manchester", "state": "NH", "gap": 21, "set": "e", "out": ">", "nb": 1, "next": "Harry Hood"},
-  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 61, "set": "e", "nb": 1, "next": "Loving Cup"}
+  {"date": "2025-06-20", "venue": "SNHU Arena", "city": "Manchester", "state": "NH", "gap": 21, "set": "e", "out": ">", "nb": 1, "xprev": "Everything's Right", "next": "Harry Hood"},
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 61, "set": "e", "nb": 1, "xprev": "Free", "next": "Loving Cup"}
  ]
 }

@@ -440,6 +440,26 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* The set boundary, named. What is on the far side of a setbreak is a fact,
+   so the words carry the ink and the song beside them stays dim -- the label
+   is the answer, the song is the detail, and that order survives the column
+   truncating. Not bold: this column sits under a gap figure and a bar, and a
+   bold line here out-shouts both. */
+.nb b{font-weight:400;color:var(--ink)}
+/* These two wrap where every other line in the column truncates. The column
+   is 162px at any desktop width, and a line of this shape is a sentence, not
+   a title: 40 of Tweezer's 50 came out as "Opened set 3, af..." -- the cut
+   landing inside "after" rather than inside a song name. Wrapping made 14 of
+   that page's 418 rows taller and the page 0.7% longer, which is the whole
+   cost. A title still truncates, because half a title is still readable and
+   half a preposition is not. */
+.nb .edge{white-space:normal}
+/* No arrow on a show opener or closer: both name no song, so it would point
+   at nothing. Hidden rather than removed, so the slot is still there and
+   "Closed the show" starts where "Opened the encore, after ..." above it
+   starts. Dropping the slot instead left the two lines of one cell on
+   different left edges, which is visible on 3,821 rows. */
+.nb .term::before{opacity:0}
 /* Same -.06em as the report pages: enough to make -> one mark, not so
    much that it stops matching the > on the row above it. */
 .nb .mk.tight{letter-spacing:-.06em}
@@ -818,9 +838,9 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <ol class="perfs" id="list">
 <li class='yr' id='era-3-0' data-era='3.0'><h2><span class='tab'>3.0</span><span>4 shows</span><span>2010&ndash;2015</span></h2></li>
 <li id='2015-09-06' data-date='2015-09-06' data-era='3.0' data-gap='134' data-score='' data-search="2015-09-06 09/06/2015 9/6/2015 9/6/15 09/06 9/6 9-6 september 06 2015 september 6 sunday dick&#x27;s sporting goods park commerce city co  "><div class='row'><span class='r-date'><a href='../show/2015-09-06.html'>2015-09-06</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Dick&#x27;s Sporting Goods Park</span><span class='r-place'>Commerce City, CO</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Halfway to the Moon</span><span class='nb-out'>Frankenstein</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>134</span><span class='set'>SET 1</span></span></div></li>
-<li id='2012-06-28' data-date='2012-06-28' data-era='3.0' data-gap='35' data-score='' data-search="2012-06-28 06/28/2012 6/28/2012 6/28/12 06/28 6/28 6-28 june 28 2012 june 28 thursday klipsch music center noblesville in  "><div class='row'><span class='r-date'><a href='../show/2012-06-28.html'>2012-06-28</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Klipsch Music Center</span><span class='r-place'>Noblesville, IN</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out'>The Curtain With</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>35</span><span class='set'>SET 1</span></span></div></li>
+<li id='2012-06-28' data-date='2012-06-28' data-era='3.0' data-gap='35' data-score='' data-search="2012-06-28 06/28/2012 6/28/2012 6/28/12 06/28 6/28 6-28 june 28 2012 june 28 thursday klipsch music center noblesville in  "><div class='row'><span class='r-date'><a href='../show/2012-06-28.html'>2012-06-28</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Klipsch Music Center</span><span class='r-place'>Noblesville, IN</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in term'><b>Opened the show</b></span><span class='nb-out'>The Curtain With</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>35</span><span class='set'>SET 1</span></span></div></li>
 <li id='2011-06-15' data-date='2011-06-15' data-era='3.0' data-gap='18' data-score='' data-search="2011-06-15 06/15/2011 6/15/2011 6/15/11 06/15 6/15 6-15 june 15 2011 june 15 wednesday verizon wireless amphitheatre at encore park alpharetta ga  "><div class='row'><span class='r-date'><a href='../show/2011-06-15.html'>2011-06-15</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Verizon Wireless Amphitheatre at Encore Park</span><span class='r-place'>Alpharetta, GA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Character Zero</span><span class='nb-out seg'><span class='mk tight'>-&gt;</span> Kung</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>18</span><span class='set'>SET 2</span></span></div></li>
-<li id='2010-12-28' data-date='2010-12-28' data-era='3.0' data-gap='-1' data-score='' data-search="2010-12-28 12/28/2010 12/28/2010 12/28/10 12/28 12/28 12-28 december 28 2010 december 28 tuesday dcu center worcester ma  phish debut."><div class='row'><span class='r-date'><a href='../show/2010-12-28.html'>2010-12-28</a><span class='dow'>Tue</span></span><span><span class='r-venue'>DCU Center</span><span class='r-place'>Worcester, MA</span><p class='note'><span class='tag'>Note</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Stealing Time From the Faulty Plan</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 1</span></span></div></li>
+<li id='2010-12-28' data-date='2010-12-28' data-era='3.0' data-gap='-1' data-score='' data-search="2010-12-28 12/28/2010 12/28/2010 12/28/10 12/28 12/28 12-28 december 28 2010 december 28 tuesday dcu center worcester ma  phish debut."><div class='row'><span class='r-date'><a href='../show/2010-12-28.html'>2010-12-28</a><span class='dow'>Tue</span></span><span><span class='r-venue'>DCU Center</span><span class='r-place'>Worcester, MA</span><p class='note'><span class='tag'>Note</span>Phish debut.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Stealing Time From the Faulty Plan</span><span class='nb-out edge'><b>Closed set 1</b>, before Carini</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 1</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

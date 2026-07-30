@@ -12,7 +12,7 @@
   {"date": "1987-10-31", "venue": "Sculpture Room, Goddard College", "city": "Plainfield", "state": "VT", "gap": 17, "set": "1", "nb": 1, "prev": "Halley's Comet", "in": ">", "next": "Love You"},
   {"date": "1988-05-14", "venue": "Goddard College", "city": "Plainfield", "state": "VT", "gap": 39, "set": "1", "nb": 1, "prev": "Halley's Comet", "in": ">", "next": "You Enjoy Myself"},
   {"date": "1988-05-23", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 4, "set": "1", "nb": 1, "prev": "Rocky Top", "next": "I Didn't Know"},
-  {"date": "1988-07-24", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 18, "set": "2", "nb": 1, "next": "Fluffhead"},
+  {"date": "1988-07-24", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 18, "set": "2", "nb": 1, "xprev": "Bold As Love", "next": "Fluffhead"},
   {"date": "1988-07-25", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 1, "set": "1", "nb": 1, "prev": "Bold As Love", "next": "Fluffhead"},
   {"date": "1988-07-29", "venue": "The Roma", "city": "Telluride", "state": "CO", "gap": 2, "set": "3", "nb": 1, "prev": "Rocky Top", "next": "Contact"},
   {"date": "1988-08-03", "venue": "Fly Me to the Moon Saloon", "city": "Telluride", "state": "CO", "gap": 2, "set": "2", "nb": 1, "prev": "Suzy Greenberg", "in": ">", "next": "Fee"},
@@ -25,6 +25,6 @@
   {"date": "2010-10-29", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 20, "set": "1", "nb": 1, "prev": "Sample in a Jar", "next": "Sugar Shack"},
   {"date": "2011-06-14", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 21, "set": "1", "note": "Unfinished.", "out": ">", "nb": 1, "prev": "Bathtub Gin", "next": "Cavern"},
   {"date": "2012-06-22", "venue": "Riverbend Music Center", "city": "Cincinnati", "state": "OH", "gap": 33, "set": "1", "out": ">", "nb": 1, "prev": "Runaway Jim", "next": "Wilson"},
-  {"date": "2012-07-06", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 9, "set": "1", "nb": 1, "prev": "Corinna"}
+  {"date": "2012-07-06", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 9, "set": "1", "nb": 1, "prev": "Corinna", "xnext": "Chalk Dust Torture"}
  ]
 }

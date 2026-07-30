@@ -440,6 +440,26 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* The set boundary, named. What is on the far side of a setbreak is a fact,
+   so the words carry the ink and the song beside them stays dim -- the label
+   is the answer, the song is the detail, and that order survives the column
+   truncating. Not bold: this column sits under a gap figure and a bar, and a
+   bold line here out-shouts both. */
+.nb b{font-weight:400;color:var(--ink)}
+/* These two wrap where every other line in the column truncates. The column
+   is 162px at any desktop width, and a line of this shape is a sentence, not
+   a title: 40 of Tweezer's 50 came out as "Opened set 3, af..." -- the cut
+   landing inside "after" rather than inside a song name. Wrapping made 14 of
+   that page's 418 rows taller and the page 0.7% longer, which is the whole
+   cost. A title still truncates, because half a title is still readable and
+   half a preposition is not. */
+.nb .edge{white-space:normal}
+/* No arrow on a show opener or closer: both name no song, so it would point
+   at nothing. Hidden rather than removed, so the slot is still there and
+   "Closed the show" starts where "Opened the encore, after ..." above it
+   starts. Dropping the slot instead left the two lines of one cell on
+   different left edges, which is visible on 3,821 rows. */
+.nb .term::before{opacity:0}
 /* Same -.06em as the report pages: enough to make -> one mark, not so
    much that it stops matching the > on the row above it. */
 .nb .mk.tight{letter-spacing:-.06em}
@@ -817,7 +837,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap</span></div>
 <ol class="perfs" id="list">
 <li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>1 show</span><span>2023&ndash;2023</span></h2></li>
-<li id='2023-07-16' data-date='2023-07-16' data-era='4.0' data-gap='-1' data-score='' data-search="2023-07-16 07/16/2023 7/16/2023 7/16/23 07/16 7/16 7-16 july 16 2023 july 16 sunday ameris bank amphitheatre alpharetta ga  phish debut; fish on guitar."><div class='row'><span class='r-date'><a href='../show/2023-07-16.html'>2023-07-16</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Ameris Bank Amphitheatre</span><span class='r-place'>Alpharetta, GA</span><p class='note'><span class='tag'>Note</span>Phish debut; Fish on guitar.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out seg'><span class='mk'>&gt;</span> Hold Your Head Up</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>ENCORE</span></span></div></li>
+<li id='2023-07-16' data-date='2023-07-16' data-era='4.0' data-gap='-1' data-score='' data-search="2023-07-16 07/16/2023 7/16/2023 7/16/23 07/16 7/16 7-16 july 16 2023 july 16 sunday ameris bank amphitheatre alpharetta ga  phish debut; fish on guitar."><div class='row'><span class='r-date'><a href='../show/2023-07-16.html'>2023-07-16</a><span class='dow'>Sun</span></span><span><span class='r-venue'>Ameris Bank Amphitheatre</span><span class='r-place'>Alpharetta, GA</span><p class='note'><span class='tag'>Note</span>Phish debut; Fish on guitar.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in edge'><b>Opened the encore</b>, after More</span><span class='nb-out seg'><span class='mk'>&gt;</span> Hold Your Head Up</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>ENCORE</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>

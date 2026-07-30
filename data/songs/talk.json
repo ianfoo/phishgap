@@ -15,13 +15,13 @@
   {"date": "1996-11-14", "venue": "Hilton Coliseum", "city": "Ames", "state": "IA", "gap": 3, "set": "1", "note": "Trey on acoustic guitar.", "nb": 1, "prev": "Bathtub Gin", "next": "Julius"},
   {"date": "1996-12-30", "venue": "FleetCenter", "city": "Boston", "state": "MA", "gap": 17, "set": "1", "note": "Trey on acoustic guitar.", "nb": 1, "prev": "Reba", "next": "Funky Bitch"},
   {"date": "1997-02-22", "venue": "Teatro Olimpico", "city": "Rome", "state": "Lazio", "gap": 9, "set": "1", "note": "Trey on acoustic guitar.", "nb": 1, "prev": "When the Circus Comes", "next": "Split Open and Melt"},
-  {"date": "1997-02-26", "venue": "SWF3 Studios", "city": "Baden-Baden", "state": "Baden-W\u00fcrttemberg", "gap": 0, "set": "1", "nb": 1, "next": "Camel Walk"},
+  {"date": "1997-02-26", "venue": "SWF3 Studios", "city": "Baden-Baden", "state": "Baden-W\u00fcrttemberg", "gap": 0, "set": "1", "nb": 1, "first": 1, "next": "Camel Walk"},
   {"date": "1997-06-14", "venue": "The S.F.X. Centre", "city": "Dublin", "state": "County Dublin", "gap": 9, "set": "1", "nb": 1, "prev": "Dirt", "next": "My Soul"},
   {"date": "1997-06-24", "venue": "La Laiterie", "city": "Strasbourg", "state": "Grand Est", "gap": 6, "set": "1", "nb": 1, "prev": "Runaway Jim", "next": "Free"},
   {"date": "1998-08-06", "venue": "Lakewood Amphitheatre", "city": "Atlanta", "state": "GA", "gap": 84, "set": "2", "nb": 1, "prev": "Wolfman's Brother", "in": ">", "next": "NICU"},
   {"date": "2003-02-25", "venue": "First Union Spectrum", "city": "Philadelphia", "state": "PA", "gap": 169, "set": "1", "nb": 1, "prev": "Julius", "next": "46 Days"},
   {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 83, "set": "e", "note": "Acoustic.", "nb": 1, "prev": "Driver", "next": "Secret Smile"},
   {"date": "2023-10-13", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 536, "set": "2", "jamchart": true, "jam": "Beautifully emerges -> from \"Hood's\"  jam and -> back to \"Hood\". Quite a way to make its first appearance in 14 years.", "out": "->", "nb": 1, "prev": "Harry Hood", "in": "->", "next": "Harry Hood"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 122, "set": "1", "note": "Trey on acoustic.", "nb": 1, "prev": "Guyute", "next": "If I Could"}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 122, "set": "1", "note": "Trey on acoustic.", "prev": "Guyute", "next": "If I Could"}
  ]
 }

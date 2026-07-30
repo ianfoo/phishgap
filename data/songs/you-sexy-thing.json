@@ -7,8 +7,8 @@
  ],
  "performances": [
   {"date": "2017-07-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1765, "set": "2", "times": 2, "jamchart": true, "jam": "Hot Chocolate cover (befitting that night's \"Double Chocolate\" theme), with Mike using every last bit of his vocal range to sing it. Just like \"1999\", it turns into a surprising improv vehicle, with a weird Page-led groove emerging from the back end as Trey goes to the wah-wah and utilizes his effects. The jam grows in power, then gets deep and dark, with Mike really pushing things forward. > into a great version of \"Mercury\", which this song actually sandwiches.", "note": "Phish debut.", "out": ">", "nb": 1, "prev": "Chalk Dust Torture", "next": "Mercury"},
-  {"date": "2018-08-05", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 27, "set": "1", "times": 2, "nb": 1, "next": "Tweezer Reprise"},
+  {"date": "2018-08-05", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 27, "set": "1", "times": 2, "nb": 1, "first": 1, "next": "Tweezer Reprise"},
   {"date": "2020-02-22", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 70, "set": "1", "out": ">", "nb": 1, "prev": "Set Your Soul Free", "next": "46 Days"},
-  {"date": "2021-08-11", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 12, "set": "1", "nb": 1, "next": "Wombat"}
+  {"date": "2021-08-11", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 12, "set": "1", "nb": 1, "first": 1, "next": "Wombat"}
  ]
 }

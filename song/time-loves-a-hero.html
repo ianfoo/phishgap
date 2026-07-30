@@ -440,6 +440,26 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* Where a transition mark is shown it points on its own; the plain arrow is
    only for rows that have none, so no line ever reads "-> ->". */
 .nb .seg::before{content:none}
+/* The set boundary, named. What is on the far side of a setbreak is a fact,
+   so the words carry the ink and the song beside them stays dim -- the label
+   is the answer, the song is the detail, and that order survives the column
+   truncating. Not bold: this column sits under a gap figure and a bar, and a
+   bold line here out-shouts both. */
+.nb b{font-weight:400;color:var(--ink)}
+/* These two wrap where every other line in the column truncates. The column
+   is 162px at any desktop width, and a line of this shape is a sentence, not
+   a title: 40 of Tweezer's 50 came out as "Opened set 3, af..." -- the cut
+   landing inside "after" rather than inside a song name. Wrapping made 14 of
+   that page's 418 rows taller and the page 0.7% longer, which is the whole
+   cost. A title still truncates, because half a title is still readable and
+   half a preposition is not. */
+.nb .edge{white-space:normal}
+/* No arrow on a show opener or closer: both name no song, so it would point
+   at nothing. Hidden rather than removed, so the slot is still there and
+   "Closed the show" starts where "Opened the encore, after ..." above it
+   starts. Dropping the slot instead left the two lines of one cell on
+   different left edges, which is visible on 3,821 rows. */
+.nb .term::before{opacity:0}
 /* Same -.06em as the report pages: enough to make -> one mark, not so
    much that it stops matching the > on the row above it. */
 .nb .mk.tight{letter-spacing:-.06em}
@@ -825,7 +845,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <li class='yr' id='era-1-0' data-era='1.0'><h2><span class='tab'>1.0</span><span>4 shows</span><span>1988&ndash;1998</span></h2></li>
 <li id='1998-08-11' data-date='1998-08-11' data-era='1.0' data-gap='1026' data-score='' data-search="1998-08-11 08/11/1998 8/11/1998 8/11/98 08/11 8/11 8-11 august 11 1998 august 11 tuesday star lake amphitheatre burgettstown pa  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1998-08-11' target='_blank' rel='noopener noreferrer'>1998-08-11</a><span class='dow'>Tue</span></span><span><span class='r-venue'>Star Lake Amphitheatre</span><span class='r-place'>Burgettstown, PA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Wolfman&#x27;s Brother <span class='mk tight'>-&gt;</span></span><span class='nb-out'>Bittersweet Motel</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>1,026</span><span class='set'>SET 1</span></span></div></li>
 <li id='1988-11-05' data-date='1988-11-05' data-era='1.0' data-gap='2' data-score='' data-search="1988-11-05 11/05/1988 11/5/1988 11/5/88 11/05 11/5 11-5 november 05 1988 november 5 saturday sigma phi fraternity, hamilton college clinton ny  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1988-11-05' target='_blank' rel='noopener noreferrer'>1988-11-05</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Sigma Phi Fraternity, Hamilton College</span><span class='r-place'>Clinton, NY</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>Slave to the Traffic Light</span><span class='nb-out'>Fire</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>2</span><span class='set'>SET 1</span></span></div></li>
-<li id='1988-11-03' data-date='1988-11-03' data-era='1.0' data-gap='1' data-score='' data-search="1988-11-03 11/03/1988 11/3/1988 11/3/88 11/03 11/3 11-3 november 03 1988 november 3 thursday molly&#x27;s cafe boston ma  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1988-11-03' target='_blank' rel='noopener noreferrer'>1988-11-03</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Molly&#x27;s Cafe</span><span class='r-place'>Boston, MA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-out'>Walk Away</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 2</span></span></div></li>
+<li id='1988-11-03' data-date='1988-11-03' data-era='1.0' data-gap='1' data-score='' data-search="1988-11-03 11/03/1988 11/3/1988 11/3/88 11/03 11/3 11-3 november 03 1988 november 3 thursday molly&#x27;s cafe boston ma  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1988-11-03' target='_blank' rel='noopener noreferrer'>1988-11-03</a><span class='dow'>Thu</span></span><span><span class='r-venue'>Molly&#x27;s Cafe</span><span class='r-place'>Boston, MA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in edge'><b>Opened set 2</b>, after Good Times Bad Times</span><span class='nb-out'>Walk Away</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>1</span><span class='set'>SET 2</span></span></div></li>
 <li id='1988-10-29' data-date='1988-10-29' data-era='1.0' data-gap='-1' data-score='' data-search="1988-10-29 10/29/1988 10/29/1988 10/29/88 10/29 10/29 10-29 october 29 1988 october 29 saturday sculpture room, goddard college plainfield vt  first known phish performance."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1988-10-29' target='_blank' rel='noopener noreferrer'>1988-10-29</a><span class='dow'>Sat</span></span><span><span class='r-venue'>Sculpture Room, Goddard College</span><span class='r-place'>Plainfield, VT</span><p class='note'><span class='tag'>Note</span>First known Phish performance.</p></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in'>The Lizards</span><span class='nb-out'>Golgi Apparatus</span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 1</span></span></div></li>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>

@@ -7,23 +7,23 @@
  ],
  "performances": [
   {"date": "1998-07-21", "venue": "Desert Sky Pavilion", "city": "Phoenix", "state": "AZ", "gap": 1198, "set": "2", "note": "Debut.", "out": ">", "nb": 1, "prev": "Simple", "in": "->", "next": "Weekapaug Groove"},
-  {"date": "1998-07-26", "venue": "Starplex Amphitheatre", "city": "Dallas", "state": "TX", "gap": 3, "set": "e", "nb": 1, "prev": "Punch You in the Eye", "in": ">"},
-  {"date": "1998-07-29", "venue": "Riverport Amphitheater", "city": "Maryland Heights", "state": "MO", "gap": 2, "set": "e", "nb": 1, "prev": "Golgi Apparatus", "in": ">"},
-  {"date": "1998-08-02", "venue": "Deer Creek Music Center", "city": "Noblesville", "state": "IN", "gap": 3, "set": "e", "nb": 1, "prev": "Harry Hood", "in": ">"},
+  {"date": "1998-07-26", "venue": "Starplex Amphitheatre", "city": "Dallas", "state": "TX", "gap": 3, "set": "e", "nb": 1, "prev": "Punch You in the Eye", "in": ">", "last": 1},
+  {"date": "1998-07-29", "venue": "Riverport Amphitheater", "city": "Maryland Heights", "state": "MO", "gap": 2, "set": "e", "nb": 1, "prev": "Golgi Apparatus", "in": ">", "last": 1},
+  {"date": "1998-08-02", "venue": "Deer Creek Music Center", "city": "Noblesville", "state": "IN", "gap": 3, "set": "e", "nb": 1, "prev": "Harry Hood", "in": ">", "last": 1},
   {"date": "1998-08-07", "venue": "Walnut Creek Amphitheater", "city": "Raleigh", "state": "NC", "gap": 3, "set": "1", "nb": 1, "prev": "Foam", "next": "Ghost"},
   {"date": "1998-08-11", "venue": "Star Lake Amphitheatre", "city": "Burgettstown", "state": "PA", "gap": 3, "set": "1", "nb": 1, "prev": "Time Loves a Hero", "next": "Reba"},
   {"date": "1998-08-16", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 3, "set": "3", "nb": 1, "prev": "Character Zero", "in": ">", "next": "While My Guitar Gently Weeps"},
   {"date": "1998-11-02", "venue": "The \u201cE\u201d Center", "city": "West Valley City", "state": "UT", "gap": 9, "set": "1", "note": "Trey on acoustic guitar.", "nb": 1, "prev": "Driver", "next": "Limb By Limb"},
-  {"date": "1999-07-21", "venue": "Star Lake Amphitheatre", "city": "Burgettstown", "state": "PA", "gap": 38, "set": "1", "nb": 1, "prev": "Taste"},
-  {"date": "1999-12-16", "venue": "Reynolds Coliseum", "city": "Raleigh", "state": "NC", "gap": 44, "set": "e", "out": ">", "nb": 1, "next": "Tweezer Reprise"},
+  {"date": "1999-07-21", "venue": "Star Lake Amphitheatre", "city": "Burgettstown", "state": "PA", "gap": 38, "set": "1", "nb": 1, "prev": "Taste", "xnext": "Mike's Song"},
+  {"date": "1999-12-16", "venue": "Reynolds Coliseum", "city": "Raleigh", "state": "NC", "gap": 44, "set": "e", "out": ">", "nb": 1, "xprev": "Runaway Jim", "next": "Tweezer Reprise"},
   {"date": "1999-12-31", "venue": "Big Cypress Seminole Indian Reservation", "city": "Big Cypress", "state": "FL", "gap": 4, "set": "2", "nb": 1, "prev": "Silent in the Morning", "in": ">", "next": "Piper"},
-  {"date": "2000-07-03", "venue": "E Centre", "city": "Camden", "state": "NJ", "gap": 23, "set": "2", "nb": 1, "prev": "Chalk Dust Torture"},
-  {"date": "2000-09-15", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 16, "set": "1", "nb": 1, "prev": "Golgi Apparatus"},
+  {"date": "2000-07-03", "venue": "E Centre", "city": "Camden", "state": "NJ", "gap": 23, "set": "2", "nb": 1, "prev": "Chalk Dust Torture", "xnext": "Waste"},
+  {"date": "2000-09-15", "venue": "Hersheypark Stadium", "city": "Hershey", "state": "PA", "gap": 16, "set": "1", "nb": 1, "prev": "Golgi Apparatus", "xnext": "Piper"},
   {"date": "2003-07-29", "venue": "Post-Gazette Pavilion at Star Lake", "city": "Burgettstown", "state": "PA", "gap": 48, "set": "2", "out": ">", "nb": 1, "prev": "Harpua", "in": ">", "next": "Harpua"},
-  {"date": "2009-08-02", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 52, "set": "e", "nb": 1, "next": "Bouncing Around the Room"},
+  {"date": "2009-08-02", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 52, "set": "e", "nb": 1, "xprev": "Character Zero", "next": "Bouncing Around the Room"},
   {"date": "2012-07-04", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 132, "set": "1", "nb": 1, "prev": "Kill Devil Falls", "next": "The Moma Dance"},
   {"date": "2016-07-06", "venue": "Cross Insurance Arena", "city": "Portland", "state": "ME", "gap": 146, "set": "2", "out": ">", "nb": 1, "prev": "Wingsuit", "in": ">", "next": "Fluffhead"},
-  {"date": "2019-12-06", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 134, "set": "e", "note": "Lyrics changed to \"halfway from Charleston to Pittsburgh.\"", "out": ">", "nb": 1, "next": "Death Don't Hurt Very Long"},
-  {"date": "2021-08-28", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 26, "set": "e", "out": ">", "nb": 1, "next": "Heavy Things"}
+  {"date": "2019-12-06", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 134, "set": "e", "note": "Lyrics changed to \"halfway from Charleston to Pittsburgh.\"", "out": ">", "nb": 1, "xprev": "Suzy Greenberg", "next": "Death Don't Hurt Very Long"},
+  {"date": "2021-08-28", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 26, "set": "e", "out": ">", "nb": 1, "xprev": "Possum", "next": "Heavy Things"}
  ]
 }

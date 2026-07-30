@@ -12,7 +12,7 @@
   {"date": "1988-05-22", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 30, "set": "2", "note": "Fish trombone solo.", "nb": 1, "prev": "Fluffhead", "next": "Good Times Bad Times"},
   {"date": "1989-02-07", "venue": "The Front", "city": "Burlington", "state": "VT", "gap": 70, "set": "3", "out": ">", "nb": 1, "prev": "Slave to the Traffic Light", "next": "Whipping Post"},
   {"date": "1989-07-01", "venue": "Les Foufounes \u00c9lectriques", "city": "Montr\u00e9al", "state": "Quebec", "gap": 59, "set": "1", "nb": 1, "prev": "David Bowie", "next": "The Sloth"},
-  {"date": "1989-10-13", "venue": "Copperfield's", "city": "Syracuse", "state": "NY", "gap": 26, "set": "2", "nb": 1, "next": "The Man Who Stepped Into Yesterday"},
+  {"date": "1989-10-13", "venue": "Copperfield's", "city": "Syracuse", "state": "NY", "gap": 26, "set": "2", "nb": 1, "xprev": "Possum", "next": "The Man Who Stepped Into Yesterday"},
   {"date": "1990-04-07", "venue": "El Dorado Caf\u00e9", "city": "Crested Butte", "state": "CO", "gap": 75, "set": "2", "nb": 1, "prev": "You Enjoy Myself", "next": "Harpua"},
   {"date": "1990-04-21", "venue": "Canyon West Room, Lincoln Center", "city": "Fort Collins", "state": "CO", "gap": 9, "set": "1", "nb": 1, "prev": "Suzy Greenberg", "next": "Run Like an Antelope"},
   {"date": "1990-10-13", "venue": "Greenstreets", "city": "Columbia", "state": "SC", "gap": 59, "set": "2", "nb": 1, "prev": "Stash", "next": "Mike's Song"},

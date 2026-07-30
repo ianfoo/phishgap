@@ -6,8 +6,8 @@
 
  ],
  "performances": [
-  {"date": "2014-12-31", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 1674, "set": "3", "note": "Phish debut; Fish on vacuum.", "out": ">", "nb": 1, "next": "Auld Lang Syne"},
-  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 40, "set": "2", "nb": 1, "prev": "Backwards Down the Number Line"},
-  {"date": "2017-08-04", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 55, "set": "2", "nb": 1, "next": "No Men In No Man's Land"}
+  {"date": "2014-12-31", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 1674, "set": "3", "note": "Phish debut; Fish on vacuum.", "out": ">", "nb": 1, "xprev": "Martian Monster", "next": "Auld Lang Syne"},
+  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 40, "set": "2", "nb": 1, "prev": "Backwards Down the Number Line", "xnext": "Dear Prudence"},
+  {"date": "2017-08-04", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 55, "set": "2", "nb": 1, "xprev": "First Tube", "next": "No Men In No Man's Land"}
  ]
 }
