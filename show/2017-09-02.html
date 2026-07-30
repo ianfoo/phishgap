@@ -513,7 +513,9 @@ tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
    column instead of hugging its own text. Beating it back with .live
    .since-you would only move the race one round on; excluding the chip here
    means the two rules cannot both apply. Same shape as the sticky-header hide
-   and .backtop before it: a modifier class losing to a descendant selector. */
+   and .backtop before it: a modifier class losing to a descendant selector.
+   The chip is an <a> now and this rule can no longer reach it either way; the
+   :not() stays as the guard against the next span that lands in here. */
 .live span:not(.since-you){display:block;margin-top:.15rem;font-size:.8125rem;
    color:var(--dim)}
 .live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
@@ -526,6 +528,14 @@ tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
 .since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
    background:var(--hot-text);padding:.15rem .4rem}
+/* It is an anchor now -- the count doubles as the jump to the first new row.
+   text-decoration has to be said out loud: the colour above already beats the
+   UA link colour, so this would not have come out browser blue, but it would
+   have come out underlined, and four links on this site have shipped wearing
+   a default the author sheet never overrode. The ring is not set here either;
+   a:focus-visible in BASE_CSS already draws it in --hot. */
+a.since-you{text-decoration:none}
+a.since-you:hover{text-decoration:underline}
 tr.fresh td{background:var(--hover)}
 tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
@@ -910,9 +920,27 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     if(!(seen>0&&rows.length>seen)){ bank(); return; }
     var fresh=rows.slice(seen);
     fresh.forEach(function(r){ r.classList.add('fresh'); });
-    var tag=document.createElement('span');
+    /* The count is also the way there. Every song row already carries its
+       slug as an id, so this is a real href to a real fragment rather than a
+       scripted scroll -- which matters because a fragment jump is reversible
+       with the Back button and a scroll is not, the same reasoning as the
+       show row's landing spot in docs/TODO.md 2h. It points at the *first*
+       new row, so the reader lands at the start of what they missed and
+       reads down.
+
+       tabindex="-1" so the jump moves focus as well as the viewport, and
+       [tabindex="-1"]:focus already drops the ring for exactly this case: a
+       landing spot is a place, not a control. */
+    var target=fresh[0];
+    var tag=document.createElement(target.id?'a':'span');
     tag.className='since-you';
     tag.textContent=(rows.length-seen)+' new since you last looked';
+    if(target.id){
+      target.setAttribute('tabindex','-1');
+      tag.href='#'+target.id;
+      /* Non-breaking, so the arrow can never be left on a line by itself. */
+      tag.textContent+='\u00a0\u2193';
+    }
     live.appendChild(tag);
     if(!window.IntersectionObserver){ bank(); return; }
     /* Retired once the last of those rows has held still in view for a

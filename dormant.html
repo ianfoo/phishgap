@@ -779,9 +779,27 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     if(!(seen>0&&rows.length>seen)){ bank(); return; }
     var fresh=rows.slice(seen);
     fresh.forEach(function(r){ r.classList.add('fresh'); });
-    var tag=document.createElement('span');
+    /* The count is also the way there. Every song row already carries its
+       slug as an id, so this is a real href to a real fragment rather than a
+       scripted scroll -- which matters because a fragment jump is reversible
+       with the Back button and a scroll is not, the same reasoning as the
+       show row's landing spot in docs/TODO.md 2h. It points at the *first*
+       new row, so the reader lands at the start of what they missed and
+       reads down.
+
+       tabindex="-1" so the jump moves focus as well as the viewport, and
+       [tabindex="-1"]:focus already drops the ring for exactly this case: a
+       landing spot is a place, not a control. */
+    var target=fresh[0];
+    var tag=document.createElement(target.id?'a':'span');
     tag.className='since-you';
     tag.textContent=(rows.length-seen)+' new since you last looked';
+    if(target.id){
+      target.setAttribute('tabindex','-1');
+      tag.href='#'+target.id;
+      /* Non-breaking, so the arrow can never be left on a line by itself. */
+      tag.textContent+='\u00a0\u2193';
+    }
     live.appendChild(tag);
     if(!window.IntersectionObserver){ bank(); return; }
     /* Retired once the last of those rows has held still in view for a
