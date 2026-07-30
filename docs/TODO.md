@@ -105,6 +105,54 @@ sections, but the shape is worth carrying:
 | The index scrolled sideways at 375px on one 45-character song title | it was six pixels away before tonight |
 | Venue and tour links came out in browser blue | caught before shipping, by measuring |
 
+### The 2026-07-29 session — a live outage, found by Ian mid-show
+
+Ian opened with "there is a show going on RIGHT NOW and there is nothing
+happening on possumlogic". He was right, and the cause was a hole in the fix
+for an earlier outage rather than anything new.
+
+The watcher was healthy the whole time — gate `true`, resident job alive,
+passes every five minutes. It was fetching a setlist from a six-hour cache
+that had been poisoned by its own first pass. `--catch-up` bypassed the cache
+only for shows in `recheck` (archived but still provisional); a show with no
+report yet was never in it, which is every show on the night it is played. The
+window opens at 23:00 UTC, the first song is posted around 23:30, so the first
+pass reliably cached an empty setlist and every pass after it re-read that
+emptiness. No report meant never provisional, meant never rechecked, meant
+never refreshed.
+
+| § | what | state |
+|---|---|---|
+| 0 | Setlist refreshed for a show with no report yet, not just one in `recheck` — the condition widened rather than replaced, so `--recheck` keeps working | done — `1cb640f59`, verified live |
+| 0 | The counting-before-setlist hazard below | **open** |
+
+Verified against the published tree, not the local build: the show archived
+with its songs, `show/2026-07-29.html` live with "This show is being played
+right now", an "ON STAGE NOW" banner on the index, and the invariant that
+*exactly* the songs played that night read `since == 0` — six played, six
+zeroed, nothing else zeroed.
+
+**The open item, and it is a data-integrity one.** `--calendar` builds the
+counting calendar from phish.net's show list, so it counts tonight's show as
+soon as the API lists it. `--catch-up` fetches the setlist separately and can
+fail. When it does, `current.json` advances anyway: on 2026-07-29 it went to
+`as_of: 2026-07-29`, `shows: 2108`, and all 588 songs moved up one, with none
+of the six actually played reset to zero. The root cause is fixed so the window
+is now one pass instead of a whole show, but the two steps remain independent.
+Options, cheapest first: hold `write_current` at the last calendar date that
+has an archived report; or make `--calendar` add a date only once its setlist
+is archived (but note the calendar entry is what puts the show at the top of the
+index, so this would trade a wrong figure for a mis-sorted index). **Needs
+Ian's call on which reading is more honest**, since holding the count means the
+site says "counted through 2026-07-27" on a night a show is playing.
+
+Two smaller things noticed and not acted on: the display name "Possum Logic" is
+hardcoded in 24 template spots with no `SITE_NAME` constant, which is what a
+rename would cost (the domain is already one constant with a `PL_DOMAIN`
+override); and `recent_shows` filters on the UTC date, so a show is "already
+played" from 00:00 UTC — fine today because the watch window gates it, but it
+would mislead anything that called it without that gate.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's

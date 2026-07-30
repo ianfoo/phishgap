@@ -50,6 +50,29 @@ minutes, reverting everything pushed during a show; and a card index that said
 588 previews were current while the published images were a build behind.
 Assume a fifth exists.
 
+**The fifth existed, and the cure had a hole in exactly the shape of the
+common case.** The six-hour cache above was fixed by refreshing the setlist of
+any show in `recheck` — archived but still provisional. A show with no report
+yet is not in `recheck`, and that is every show on the night it is played: the
+window opens at 23:00 UTC, the first song is posted around 23:30, so the
+watcher's first pass asks for a setlist that does not exist and then serves
+that emptiness back for six hours. Nothing archived means never provisional,
+means never rechecked, means never refreshed — the one show being watched was
+the one show that could never be seen. It cost the whole first hour of
+2026-07-29 at MSG, live, and it had been latent every night since the original
+fix. When fixing a cache-staleness bug, check the bootstrap case: the first
+fetch is the one guaranteed to be too early.
+
+**A show can be counted before its setlist is known, and then every figure is
+wrong.** `--calendar` builds the counting calendar from phish.net's show list,
+so it adds tonight's show the moment the API lists it — while `--catch-up`
+fetches the setlist separately and may fail. On 2026-07-29 that combination
+advanced `current.json` to `as_of: 2026-07-29`, `shows: 2108`, and moved all
+588 songs up by one, with none of the six actually played reset to zero. The
+root cause above is fixed, so the window is now one pass rather than a whole
+show — but the two steps are still independent, and a wrong figure is worse
+than a missing one. `docs/TODO.md` carries this as open.
+
 **Re-check the assumptions written here before designing against one.** The
 `--html` output was documented as needing to stay self-contained long after
 that stopped being a goal — and it was never self-contained anyway: it links
