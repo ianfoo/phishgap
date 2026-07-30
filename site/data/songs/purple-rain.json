@@ -55,6 +55,6 @@
   {"date": "1996-08-06", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 12, "set": "2", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
   {"date": "1999-07-25", "venue": "Deer Creek Music Center", "city": "Noblesville", "state": "IN", "gap": 210, "set": "2", "note": "Fish forgot the words and subsequently thanked the crowd for supporting his vacuum cleaner habit.", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
   {"date": "2012-07-04", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 316, "set": "1", "note": "Lyrics changed to \"tucking in the Purple Rain.\"", "out": ">", "nb": 1, "prev": "Hold Your Head Up", "in": ">", "next": "Hold Your Head Up"},
-  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 535, "set": "e", "next": "Tweezer Reprise", "nb": 1}
+  {"date": "2026-07-25", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 535, "set": "e", "nb": 1, "xprev": "The Squirming Coil", "next": "Tweezer Reprise"}
  ]
 }

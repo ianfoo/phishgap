@@ -7,13 +7,13 @@
  ],
  "performances": [
   {"date": "1986-10-15", "venue": "Hunt's", "city": "Burlington", "state": "VT", "gap": 48, "set": "2", "note": "First known Phish performance.", "nb": 1, "prev": "Shaggy Dog", "next": "Fluffhead"},
-  {"date": "1986-10-31", "venue": "Sculpture Room, Goddard College", "city": "Plainfield", "state": "VT", "gap": 1, "set": "1", "nb": 1, "next": "Camel Walk"},
+  {"date": "1986-10-31", "venue": "Sculpture Room, Goddard College", "city": "Plainfield", "state": "VT", "gap": 1, "set": "1", "nb": 1, "first": 1, "next": "Camel Walk"},
   {"date": "1987-08-10", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 25, "set": "2", "nb": 1, "prev": "I Know a Little", "next": "You Enjoy Myself"},
   {"date": "1987-08-29", "venue": "The Ranch", "city": "South Burlington", "state": "VT", "gap": 3, "set": "1", "nb": 1, "prev": "Suzy Greenberg", "next": "Ya Mar"},
   {"date": "1988-01-27", "venue": "Gallagher's", "city": "Waitsfield", "state": "VT", "gap": 24, "set": "1", "nb": 1, "prev": "Funky Bitch", "next": "AC/DC Bag"},
-  {"date": "1988-02-24", "venue": "Gallagher's", "city": "Waitsfield", "state": "VT", "gap": 6, "set": "2", "note": "John Carlton on drums.", "nb": 1, "next": "Sneakin' Sally Thru the Alley"},
+  {"date": "1988-02-24", "venue": "Gallagher's", "city": "Waitsfield", "state": "VT", "gap": 6, "set": "2", "note": "John Carlton on drums.", "nb": 1, "xprev": "David Bowie", "next": "Sneakin' Sally Thru the Alley"},
   {"date": "1988-06-21", "venue": "Nectar's", "city": "Burlington", "state": "VT", "gap": 37, "set": "1", "nb": 1, "prev": "Rocky Top", "next": "Suzy Greenberg"},
-  {"date": "1988-08-05", "venue": "The Roma", "city": "Telluride", "state": "CO", "gap": 16, "set": "3", "nb": 1, "next": "Corinna"},
+  {"date": "1988-08-05", "venue": "The Roma", "city": "Telluride", "state": "CO", "gap": 16, "set": "3", "nb": 1, "xprev": "The Lizards", "next": "Corinna"},
   {"date": "2009-06-14", "venue": "Bonnaroo Music & Arts Festival", "city": "Manchester", "state": "TN", "gap": 1280, "set": "1", "note": "Bruce Springsteen on guitar and vocals.", "nb": 1, "prev": "Run Like an Antelope", "next": "Bobby Jean"}
  ]
 }

@@ -7,9 +7,9 @@
  ],
  "performances": [
   {"date": "2009-08-16", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 1457, "set": "e", "note": "Debut.", "nb": 1, "prev": "Grind", "next": "Highway to Hell"},
-  {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 10, "set": "2", "nb": 1, "prev": "The Squirming Coil"},
-  {"date": "2010-10-16", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 45, "set": "e", "nb": 1, "next": "Quinn the Eskimo (The Mighty Quinn)"},
-  {"date": "2014-07-27", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 149, "set": "2", "nb": 1, "prev": "Hold Your Head Up"},
+  {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 10, "set": "2", "nb": 1, "prev": "The Squirming Coil", "xnext": "Fire"},
+  {"date": "2010-10-16", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 45, "set": "e", "nb": 1, "xprev": "You Enjoy Myself", "next": "Quinn the Eskimo (The Mighty Quinn)"},
+  {"date": "2014-07-27", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 149, "set": "2", "nb": 1, "prev": "Hold Your Head Up", "xnext": "Boogie On Reggae Woman"},
   {"date": "2017-08-06", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 119, "set": "1", "nb": 1, "prev": "Bug", "next": "Izabella"},
   {"date": "2018-11-01", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 40, "set": "1", "nb": 1, "prev": "Chalk Dust Torture", "next": "Joy"},
   {"date": "2019-12-06", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 41, "set": "1", "out": ">", "nb": 1, "prev": "Undermind", "next": "Divided Sky"},

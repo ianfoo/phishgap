@@ -17,7 +17,7 @@
   {"date": "1988-04-22", "venue": "University of Vermont", "city": "Burlington", "state": "VT", "gap": 18, "set": "1", "nb": 1, "prev": "Fee", "next": "Big Black Furry Creature from Mars"},
   {"date": "1988-05-15", "venue": "Beecher Hill Farm", "city": "Hinesburg", "state": "VT", "gap": 11, "set": "1", "nb": 1, "prev": "Fluffhead", "next": "The Lizards"},
   {"date": "1988-07-07", "venue": "The Front", "city": "Burlington", "state": "VT", "gap": 16, "set": "1", "nb": 1, "prev": "La Grange", "next": "Golgi Apparatus"},
-  {"date": "1988-09-12", "venue": "Sam's Tavern", "city": "Burlington", "state": "VT", "gap": 29, "set": "1", "nb": 1, "next": "Take the 'A' Train"},
+  {"date": "1988-09-12", "venue": "Sam's Tavern", "city": "Burlington", "state": "VT", "gap": 29, "set": "1", "nb": 1, "first": 1, "next": "Take the 'A' Train"},
   {"date": "1988-11-03", "venue": "Molly's Cafe", "city": "Boston", "state": "MA", "gap": 7, "set": "2", "nb": 1, "prev": "The Lizards", "next": "Whipping Post"},
   {"date": "1992-05-06", "venue": "St. Andrew's Hall", "city": "Detroit", "state": "MI", "gap": 452, "set": "2", "jamchart": true, "jam": "-&gt; in from &quot;YEM.&quot; Hysterical vocal version of &quot;Shaggy Dog&quot; is performed during the &quot;YEM&quot; vocal jam and includes great dog howling sounds.", "note": "A cappella.", "nb": 1, "prev": "You Enjoy Myself", "in": "->", "next": "All Things Reconsidered"},
   {"date": "1995-10-29", "venue": "Louisville Gardens", "city": "Louisville", "state": "KY", "gap": 361, "set": "2", "out": "->", "nb": 1, "prev": "It's Ice", "in": ">", "next": "Possum"},

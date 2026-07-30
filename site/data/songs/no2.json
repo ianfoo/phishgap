@@ -6,7 +6,7 @@
 
  ],
  "performances": [
-  {"date": "1994-06-25", "venue": "Nautica Stage", "city": "Cleveland", "state": "OH", "gap": 884, "set": "1", "note": "First known appearance.", "out": ">", "nb": 1, "next": "Rift"},
+  {"date": "1994-06-25", "venue": "Nautica Stage", "city": "Cleveland", "state": "OH", "gap": 884, "set": "1", "note": "First known appearance.", "out": ">", "nb": 1, "first": 1, "next": "Rift"},
   {"date": "1994-07-08", "venue": "Great Woods Center for the Performing Arts", "city": "Mansfield", "state": "MA", "gap": 9, "set": "1", "note": "Fish on vacuum.", "out": ">", "nb": 1, "prev": "Llama", "in": "->", "next": "The Lizards"},
   {"date": "1994-07-16", "venue": "Summerstage at Sugarbush North", "city": "Fayston", "state": "VT", "gap": 6, "set": "1", "note": "Fish on vacuum.", "out": ">", "nb": 1, "prev": "Down with Disease", "in": "->", "next": "Stash"},
   {"date": "1999-07-13", "venue": "Tweeter Center", "city": "Mansfield", "state": "MA", "gap": 357, "set": "1", "note": "For the first known time, NO2 included the instrumental ending originally included on The White Tape.", "nb": 1, "prev": "Roses Are Free", "in": "->", "next": "Lawn Boy"},

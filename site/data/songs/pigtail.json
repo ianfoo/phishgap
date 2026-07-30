@@ -7,8 +7,8 @@
  ],
  "performances": [
   {"date": "2010-12-28", "venue": "DCU Center", "city": "Worcester", "state": "MA", "gap": 1523, "set": "1", "note": "Debut.", "nb": 1, "prev": "Wolfman's Brother", "next": "Stash"},
-  {"date": "2016-06-22", "venue": "Xcel Energy Center", "city": "St. Paul", "state": "MN", "gap": 195, "set": "1", "nb": 1, "next": "Wolfman's Brother"},
-  {"date": "2016-07-09", "venue": "Xfinity Theatre", "city": "Hartford", "state": "CT", "gap": 11, "set": "1", "nb": 1, "next": "The Moma Dance"},
+  {"date": "2016-06-22", "venue": "Xcel Energy Center", "city": "St. Paul", "state": "MN", "gap": 195, "set": "1", "nb": 1, "first": 1, "next": "Wolfman's Brother"},
+  {"date": "2016-07-09", "venue": "Xfinity Theatre", "city": "Hartford", "state": "CT", "gap": 11, "set": "1", "nb": 1, "first": 1, "next": "The Moma Dance"},
   {"date": "2017-07-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 39, "set": "1", "nb": 1, "prev": "555", "next": "Halfway to the Moon"},
   {"date": "2018-07-24", "venue": "Bill Graham Civic Auditorium", "city": "San Francisco", "state": "CA", "gap": 25, "set": "1", "nb": 1, "prev": "McGrupp and the Watchful Hosemasters", "in": ">", "next": "Cities"}
  ]

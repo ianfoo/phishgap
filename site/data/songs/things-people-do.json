@@ -11,7 +11,7 @@
   {"date": "2016-10-15", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 17, "set": "1", "nb": 1, "prev": "Timber (Jerry the Mule)", "next": "Let Me Lie"},
   {"date": "2016-10-21", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 4, "set": "1", "nb": 1, "prev": "Sugar Shack", "next": "Birds of a Feather"},
   {"date": "2016-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 10, "set": "1", "nb": 1, "prev": "Bathtub Gin", "next": "My Friend, My Friend"},
-  {"date": "2017-07-19", "venue": "Petersen Events Center", "city": "Pittsburgh", "state": "PA", "gap": 9, "set": "e", "nb": 1, "next": "Bug"},
+  {"date": "2017-07-19", "venue": "Petersen Events Center", "city": "Pittsburgh", "state": "PA", "gap": 9, "set": "e", "nb": 1, "xprev": "Backwards Down the Number Line", "next": "Bug"},
   {"date": "2017-07-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "1", "nb": 1, "prev": "Divided Sky", "next": "Sand"},
   {"date": "2018-08-04", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 26, "set": "1", "nb": 1, "prev": "Wolfman's Brother", "next": "Lengthwise"},
   {"date": "2019-07-09", "venue": "Mohegan Sun Arena", "city": "Uncasville", "state": "CT", "gap": 49, "set": "1", "out": ">", "nb": 1, "prev": "Petrichor", "next": "Sample in a Jar"}
