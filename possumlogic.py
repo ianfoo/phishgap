@@ -1706,13 +1706,27 @@ tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
 .live b{display:block;font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:1.25rem;line-height:1.2;letter-spacing:0;text-transform:none;
    color:var(--ink)}
-.live span{display:block;margin-top:.15rem;font-size:.8125rem;color:var(--dim)}
+/* :not() rather than a bigger selector on .since-you. That chip is a span
+   inside .live, so this rule reached it and won on specificity -- 0-1-1 over
+   the chip's 0-1-0 -- handing it color:var(--dim) on a var(--hot) background:
+   1.12:1 in the light palette, 1.08:1 in the dark, which is text you cannot
+   read at all. It took display:block with it, so the bar also spanned the
+   column instead of hugging its own text. Beating it back with .live
+   .since-you would only move the race one round on; excluding the chip here
+   means the two rules cannot both apply. Same shape as the sticky-header hide
+   and .backtop before it: a modifier class losing to a descendant selector. */
+.live span:not(.since-you){display:block;margin-top:.15rem;font-size:.8125rem;
+   color:var(--dim)}
 .live span b.n{display:inline;font-family:'IBM Plex Mono',ui-monospace,monospace;
    font-weight:600;font-size:.9375rem;color:var(--ink)}
-/* Added since this reader last looked. */
+/* Added since this reader last looked. --hot-text, not --hot: paper on --hot
+   is 4.44:1, and this is 10px uppercase, so it wants the 4.5 floor. The
+   palette already carries the darker accent for exactly this ("anything small
+   takes the darker") and it lands at 5.78:1. In the dark palette the two are
+   the same colour, so this is a no-op there and stays at 6.63:1. */
 .since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
-   background:var(--hot);padding:.15rem .4rem}
+   background:var(--hot-text);padding:.15rem .4rem}
 tr.fresh td{background:var(--hover)}
 tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 /* Same shape as the still-coming-in notice: state in the bold half, detail in
