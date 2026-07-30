@@ -224,9 +224,27 @@
       "gap_low": 3.0,
       "gap_high": 10.0,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Waste",
+      "slug": "waste",
+      "gap": 13,
+      "jamchart": false,
+      "prev_date": "2026-07-08",
+      "prev_venue": "Kohl Center",
+      "prev_place": "Madison, WI",
+      "out": "",
+      "plays": 111,
+      "recent_plays": 34,
+      "gap_median": 7.0,
+      "gap_mean": 10.029411764705882,
+      "gap_low": 3.95,
+      "gap_high": 13.100000000000001,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-07-30T02:00:19+00:00",
+  "count_since": "2026-07-30T02:36:17+00:00",
   "encored": false,
   "provisional": true
 }

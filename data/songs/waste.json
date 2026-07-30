@@ -140,6 +140,7 @@
   {"date": "2025-09-19", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 6, "set": "2", "out": ">", "prev": "Tweezer", "in": ">", "next": "Rock and Roll", "nb": 1},
   {"date": "2025-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "1", "prev": "Stash", "next": "My Friend, My Friend", "nb": 1},
   {"date": "2026-04-18", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 6, "set": "2", "prev": "Tweezer", "next": "Twist", "nb": 1},
-  {"date": "2026-07-08", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 7, "set": "e", "next": "First Tube", "nb": 1}
+  {"date": "2026-07-08", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 7, "set": "e", "next": "First Tube", "nb": 1},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "2"}
  ]
 }
