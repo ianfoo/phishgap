@@ -1341,11 +1341,60 @@ two paragraphs gave a line break where a paragraph break was wanted.
 - The three **charts** in §2f are untouched and still want "classify as of a
   past date". The split makes them more interesting, not less: churn into and
   out of *dormancy* is now separable from songs the band merely tried once.
-- **A trap for whoever moves `FEW_PLAYS`.** It is spelled out in three strings —
-  the section title "One or two nights", the song-page badge "played twice", and
-  the method page's "once or twice" — and nothing will fail if you change the
-  constant and not them. A `FEW_PLAYS` of 3 leaves a three-play song reading
-  "played twice".
+Nothing. The `FEW_PLAYS` trap this section used to list as open was closed in a
+third round the same day — see below.
+
+### Third round — the words now come from the constant, or the build stops
+
+Ian, on the trap above: *"Let's build a dictionary that maps the number of plays
+to the badge text, and a constant that names the section title, clustered near
+the numeric constant. That way it should be noticed if ever it gets changed.
+It's not a guarantee, but it's stronger."*
+
+It is now a guarantee for every value the table covers, and a build failure for
+the one it does not.
+
+- **`FEW_NAMES`** sits directly under `FEW_PLAYS` and holds, per play count,
+  `(cardinal, how often, badge)` — `1: ("one", "once", "one-off")`,
+  `2: ("two", "twice", "played twice")`, and 3 and 4 for headroom.
+- **`FEW_TITLE` and `FEW_TIMES` are built from it**, not written out:
+  `"One or two nights"` and `"once or twice"`. The section heading, the due
+  page's tail, the method page and the FAQ all interpolate them, so none of
+  them can drift from the constant.
+- **A module-level guard raises** if `FEW_PLAYS` exceeds what `FEW_NAMES`
+  spells, naming the three places that would otherwise go quietly wrong.
+- **The numeric bounds are interpolated too** — the method page and FAQ now
+  print `8 or more` and `3 to 7` from `ROTATION_PLAYS` and `FEW_PLAYS`, so the
+  other tunable constant is covered by the same discipline.
+
+Proved by moving the constant rather than by reading the code. At 1, 2, 3 and 4
+every string tracked it (`One night` / `once`; `One, two or three nights` /
+`once, twice or three times`; badges following in step). At **5** the build
+fails with the guard's message instead of shipping wrong prose.
+
+**Two structural wins came with it.** `rotation_group()` is now the only place
+the thresholds meet a play count — `rotation_split()` groups with it and
+`rotation_word()` names from it, so a song cannot be filed under one heading and
+stamped with another word. And `SONG_JS` **stopped knowing the vocabulary**: the
+page ships `data-quiet` with the word already chosen and the browser only
+decides whether the gap makes it apply, which removed a second copy of both
+thresholds and all four words written in another language.
+
+**It found a live crash on the first build.** `rotation_word(0)` raised
+`KeyError: 0`. Nine of the 589 songs — Day Tripper, My Sharona, Watcher of the
+Skies and six more — exist in this archive *only as soundchecks*, and a
+soundcheck is not a night the band played, so their counted play count is zero.
+They now render an empty `data-quiet` and the box says nothing, which is this
+file's standing answer where the data will not support a claim.
+
+**Four of the nine were shipping a false word before this.** The old ternary
+read `plays<=1?'one-off':…` off a `data-plays` of `0`, so a zero-play song came
+out as a one-off — but only where the verdict branch fires at all, which needs
+`since >= BUSTOUT_GAP`. Liquid Time, No Reply at All, Sunshine Superman and
+Watcher of the Skies cleared it and were each labelled **one-off** on a song the
+band has never played at a show. The other five sit at 91 shows and showed
+nothing either way. Measured, not assumed: the first draft of this entry said
+all nine, which was wrong by five.
 
 ## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 

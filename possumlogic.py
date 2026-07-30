@@ -2283,6 +2283,56 @@ FEW_PLAYS = 2
 # apart and "1992-2021" for one played twice 1,308 apart. 13 of the 48 print a
 # single year. Nothing pointed a reader at that column; the blurbs now do.
 
+# Every English word that spells out FEW_PLAYS, in one table beside it. It was
+# three loose strings for about an hour -- a section title, a song-page badge,
+# and a phrase on the method page -- and none of them would have failed if the
+# constant above moved: a FEW_PLAYS of 3 left a three-play song reading "played
+# twice", quietly and on 174 pages. Ian's instinct, and it is the right one:
+# "That way it should be noticed if ever it gets changed."
+#
+# Noticed is the weaker half. The title and the phrase are *built* from this
+# table below, so they cannot fall out of step, and the guard under it turns
+# the one case the table cannot cover into a build failure rather than wrong
+# prose. Nothing here is a threshold -- move FEW_PLAYS, not these.
+#
+#   plays: (cardinal, how often, what one song's page calls itself)
+FEW_NAMES = {
+    1: ("one", "once", "one-off"),
+    2: ("two", "twice", "played twice"),
+    3: ("three", "three times", "played three times"),
+    4: ("four", "four times", "played four times"),
+}
+
+if FEW_PLAYS < 1 or FEW_PLAYS > max(FEW_NAMES):
+    raise ValueError(
+        "FEW_PLAYS is %d but FEW_NAMES only spells 1..%d. Add the words for "
+        "every count up to the new value -- the section title, the song-page "
+        "badge and the method page are all built from them, and none of the "
+        "three can say a number this table does not hold."
+        % (FEW_PLAYS, max(FEW_NAMES)))
+
+
+def _few_phrase(which):
+    """"one or two" / "once or twice", for the counts FEW_PLAYS covers.
+
+    `which` indexes FEW_NAMES' tuples: 0 for the cardinal, 1 for the frequency.
+    Built rather than written out so that the page, the badge and the method
+    page cannot disagree with the constant or with each other.
+    """
+    words = [FEW_NAMES[n][which] for n in range(1, FEW_PLAYS + 1)]
+    if len(words) == 1:
+        return words[0]
+    return "%s or %s" % (", ".join(words[:-1]), words[-1])
+
+
+#: "One or two nights" -- the section heading, and the only name that fits a
+#: group holding more than one play count. Singular at FEW_PLAYS of 1, which is
+#: the one value of it that would make the plural a lie.
+FEW_TITLE = "%s night%s" % (_few_phrase(0).capitalize(),
+                            "" if FEW_PLAYS == 1 else "s")
+#: "once or twice" -- the same fact inside a sentence, for running prose.
+FEW_TIMES = _few_phrase(1)
+
 
 def _quantile(vals, q):
     """Linear-interpolated quantile of an unsorted list."""
@@ -4415,29 +4465,20 @@ SONG_JS = """
       // at. Say that.
       else if(v){ v.textContent='due at '+Math.round(high); v.className='v quiet'; }
     }else if(n>=bust){
-      /* The same thresholds the out-of-rotation page splits on, from the same
-         count, because this box and that page are describing one song and must
-         not call it two things. "Dormant" on a song played once was the claim
-         that page was rebuilt to stop making, and it was being made here too --
-         the box outlives any one list, so fixing only the page would have left
-         the word loose on 174 song pages. See ROTATION_PLAYS and FEW_PLAYS.
+      /* The word arrives already chosen, in data-quiet, rather than being
+         worked out here from thresholds. "Dormant" on a song played once was
+         the claim the out-of-rotation page was rebuilt to stop making, and it
+         was being made here too -- this box outlives any one list, so fixing
+         only the page would have left the word loose on 174 song pages.
 
-         The first two say "one-off" and "played twice" where the page heads
-         both as "One or two nights". Not a disagreement: the section cannot
-         name a count it holds two of, and this box knows which one this song
-         is, so it says the sharper of the two true things.
-
-         Both those words spell out FEW_PLAYS = 2, as does the section title.
-         Moving that constant means rewriting three strings, and the compiler
-         will not tell you: a FEW_PLAYS of 3 would leave a three-play song
-         reading "played twice". Grep the title if you move it. */
-      var plays=parseFloat(box.getAttribute('data-plays'))||0,
-          rot=parseFloat(box.getAttribute('data-rotation'))||0,
-          few=parseFloat(box.getAttribute('data-few'))||0;
+         Deciding it here meant this file spelling out the same two thresholds
+         and the same four words the page uses, in a second language, where
+         nothing would have caught them drifting apart. rotation_word() names
+         it once in Python, from the constants and FEW_NAMES; the only thing
+         left to do at this end is wait for the gap to prove it applies. */
       box.classList.add('dormant');
-      if(v){ v.textContent=plays<=1?'one-off':plays<=few?'played twice':
-                           plays<rot?'rarity':'dormant';
-             v.className='v dim'; }
+      var quiet=box.getAttribute('data-quiet');
+      if(v&&quiet){ v.textContent=quiet; v.className='v dim'; }
     }
     box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
             ' shows that count toward a gap';
@@ -4725,14 +4766,17 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # where there is enough history for one, the bustout line where there is
     # not -- so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
-             "data-bustout='%d' data-mult='%s' data-plays='%d' "
-             "data-rotation='%d' data-few='%d'>"
+             "data-bustout='%d' data-mult='%s' data-quiet='%s'>"
              "<div class='lbl'>Current Gap<span class='v'></span></div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
-                BUSTOUT_GAP, DUE_MULTIPLE, len(countable), ROTATION_PLAYS,
-                FEW_PLAYS))
+                BUSTOUT_GAP, DUE_MULTIPLE,
+                # The word, not the numbers it is worked out from. Whether it
+                # is used at all depends on the current gap, which is not known
+                # until the page is open -- but which of the four words it
+                # would be depends only on the play count, which is known here.
+                html.escape(rotation_word(len(countable)), quote=True)))
 
     top = best[0] if best else ""
     if top:
@@ -5359,12 +5403,48 @@ def rotation_split(dormant):
     shared: a second copy is a second chance for the two to disagree about how
     many songs are dormant, and this site has already paid for that once.
     """
-    stopped, rare, few = [], [], []
+    parts = ([], [], [])
     for row in dormant:
-        n = len(row[2])
-        (few if n <= FEW_PLAYS
-         else rare if n < ROTATION_PLAYS else stopped).append(row)
-    return stopped, rare, few
+        parts[rotation_group(len(row[2]))].append(row)
+    return parts
+
+
+def rotation_group(plays):
+    """Which of the three ROTATION_SECTIONS a song belongs to, as an index.
+
+    The only place the two thresholds are ever compared against a count. The
+    page groups with it and a song page's badge is named from it, so a song
+    cannot be filed under one heading and stamped with another word -- which is
+    the failure this file keeps paying for in other shapes, and the reason
+    due_rows is one function rather than three.
+    """
+    if plays >= ROTATION_PLAYS:
+        return 0
+    return 2 if plays <= FEW_PLAYS else 1
+
+
+def rotation_word(plays):
+    """What a single song's own page calls itself once it has gone quiet.
+
+    Sharper than the section heading where it can be. "One or two nights" is
+    the only honest name for a group holding both, but a song page knows which
+    of the two this song is, so it says "one-off" or "played twice" -- not a
+    disagreement with the heading above it, a refinement of it. Every one of
+    those words comes from FEW_NAMES; none is written out here.
+
+    Empty for a song with no *counted* performances, which is nine of the 589:
+    Day Tripper, My Sharona, Watcher of the Skies and six others exist in this
+    archive only as soundchecks, and a soundcheck is not a night the band
+    played. They have no play count to be named by, and the box that would
+    carry the word simply says nothing -- the same answer this file gives
+    everywhere else it cannot support a claim. Found by a KeyError on the first
+    build after the words moved into a table: worth stating rather than
+    silently guarding, because it is the one input the table cannot spell.
+    """
+    if plays < 1:
+        return ""
+    badge = ROTATION_SECTIONS[rotation_group(plays)][2]
+    return badge or FEW_NAMES[plays][2]
 
 
 def _due_row(over, n, high, doc, last):
@@ -5495,10 +5575,10 @@ def render_due(docs, counting, since, card=None):
             "be late against at all. They are not due, they are the largest "
             "part of the catalogue, and they are not one thing: %d were in "
             "rotation and left it, %d were given a run that did not take, and "
-            "%d turned up on one or two nights in the band&rsquo;s whole life "
-            "and never again. That page keeps them apart."
-            % ("{:,}".format(len(dormant)), len(stopped), len(rare), len(few))
-            ) if dormant else ""
+            "%d turned up on %s in the band&rsquo;s whole life and never "
+            "again. That page keeps them apart."
+            % ("{:,}".format(len(dormant)), len(stopped), len(rare), len(few),
+               FEW_TITLE.lower())) if dormant else ""
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
@@ -5639,14 +5719,18 @@ def _dormant_row(gone, doc, played):
 #: about. Each is (anchor, title, blurb). The anchors are also what the hero
 #: cells above them link to, and what the due page's Dormant cell links to, so
 #: renaming one moves three things.
+#:
+#: The third field is what a single song's page stamps on itself -- see
+#: rotation_word. It is None for the last section because that one holds two
+#: play counts and the sharper word depends on which; FEW_NAMES has them.
 ROTATION_SECTIONS = (
-    ("dormant", "Dormant",
+    ("dormant", "Dormant", "dormant",
      "Played {floor} times or more, and then not at all. These had a rotation "
      "and left it, which is the only case where the word means what it says. "
      "They are also the likeliest to come back: of every long silence in this "
      "archive that began after {floor} or more performances, {rate}% has since "
      "been ended by another one."),
-    ("rarities", "Rarities",
+    ("rarities", "Rarities", "rarity",
      "More than {few} performances and fewer than {floor}. The band gave these "
      "a run and it did not take &mdash; enough of a habit to notice, never "
      "enough to break. Some are covers taken out for one tour; some are "
@@ -5655,7 +5739,7 @@ ROTATION_SECTIONS = (
      "changes the answer. Read the years at the right of each row: a song "
      "whose handful of performances sat close together came back {tight}% of "
      "the time, and one whose were strewn across decades only {loose}%."),
-    ("one-or-two", "One or two nights",
+    ("one-or-two", FEW_TITLE, None,
      "{n_once} played once, {n_twice} played twice &mdash; and then never "
      "again. These never had a rotation to fall out of, so <em>dormant</em> "
      "was never the word. A third of the single plays were a Halloween "
@@ -5724,7 +5808,7 @@ def render_dormant(docs, counting, since):
     n_twice = len(parts[2]) - n_once
 
     body = []
-    for (anchor, title, blurb), rows in zip(ROTATION_SECTIONS, parts):
+    for (anchor, title, _badge, blurb), rows in zip(ROTATION_SECTIONS, parts):
         if not rows:
             continue
         # The same furniture the due page puts above each of its lists -- the
@@ -6258,7 +6342,10 @@ rotation.</p>
 often the song was ever played: a gap counts shows, so a large one already
 proves the song has been in the catalogue a long while, and nothing newly
 written can reach the threshold.</p>"""),
-    ('rotation', 'Dormant, rarity, one or two nights', """
+    # The one section whose prose states the thresholds, so it is the one built
+    # from them rather than written out. `.format` and not `%`: this text is a
+    # quarter percent signs, and every one of them would have needed doubling.
+    ('rotation', 'Dormant, rarity, %s' % FEW_TITLE.lower(), """
 <p>Songs with no recent record that have been gone a hundred shows or more sit
 <a href="./dormant.html">on their own page</a>, because there is nothing left
 to rank them by. For a long time that page called all
@@ -6268,10 +6355,10 @@ otherwise. A song played once at a Halloween show, as part of a costume set,
 never had a rotation to fall out of &mdash; and a third of the songs played
 exactly once in this archive were played on a Halloween night.</p>
 <p>So the page splits on how many times the band ever played the song:
-<b>eight or more</b> and it was in rotation and left, which is
-<span class="verdict">dormant</span>; <b>three to seven</b> is a
-<b>rarity</b>, given a run that did not take; <b>once or twice</b> and it
-never got going at all.</p>
+<b class="num">{floor}</b> or more and it was in rotation and left, which is
+<span class="verdict">dormant</span>; <b class="num">{lo}</b> to
+<b class="num">{hi}</b> is a <b>rarity</b>, given a run that did not take;
+<b>{few_times}</b> and it never got going at all.</p>
 <p>The archive decides where that line goes rather than taste. Take every
 silence of a hundred shows or more it holds &mdash; <b class="num">774</b> of
 them &mdash; group them by how many times the song had been played when it fell
@@ -6290,7 +6377,7 @@ quiet, and ask how many were ever ended by another performance:</p>
 </tbody></table>
 <p>Collapsed to the three groups above that is <b class="num">84%</b>,
 <b class="num">65%</b> and <b class="num">30%</b>. A song that has been played
-once or twice is the only kind on that page likelier to stay gone than to come
+{few_times} is the only kind on that page likelier to stay gone than to come
 back.</p>
 <p><b>One and two are one group, and that is the second thing the table
 decides.</b> The obvious line is under the one-offs, and it is the wrong one:
@@ -6324,13 +6411,15 @@ lying around.</p>
 <p>A song called back for one night after years away does not get a fourth
 name. It is an event rather than a state, and the play count already carries
 it: the song moves up by one, and if that was its second performance it has not
-moved section, because one or two nights is still one or two nights. Whether it
+moved section, because {few_title} is still {few_title}. Whether it
 sticks is not knowable on the night, but it is not a coin toss either. Of
 returns from a silence of three hundred shows or more that have since had three
 hundred shows of chance, the ones that had been played <b>once</b> before went
 quiet again for good <b class="num">43%</b> of the time; those played two to
 seven times, <b class="num">27%</b>; those played eight or more,
-<b class="num">7%</b>.</p>"""),
+<b class="num">7%</b>.</p>""".format(
+        floor=ROTATION_PLAYS, lo=FEW_PLAYS + 1, hi=ROTATION_PLAYS - 1,
+        few_times=FEW_TIMES, few_title=FEW_TITLE.lower())),
     ('ratings-and-jam-charts', 'Ratings and jam charts', """
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
@@ -6543,12 +6632,12 @@ last heard rather than by a lateness they cannot have.</dd>
 other three lists put together. <em>Dormant</em> means a song used to be
 otherwise, and that is only true of the ones the band actually played: a song
 performed once at a Halloween show never had a rotation to fall out of. So the
-page splits on how many times the song was ever played &mdash; eight or more is
-<strong>dormant</strong>, three to seven is a <strong>rarity</strong>, once or
-twice is <strong>one or two nights</strong> &mdash; and the archive says the
+page splits on how many times the song was ever played &mdash; {floor} or more
+is <strong>dormant</strong>, {lo} to {hi} is a <strong>rarity</strong>,
+{few_times} is <strong>{few_title}</strong> &mdash; and the archive says the
 split is worth making. Of every silence of a hundred shows or more it holds,
 the share ever ended by another performance runs 84%, 65% and 30% down those
-three. A song played once or twice is the only kind here that is likelier to
+three. A song played {few_times} is the only kind here that is likelier to
 stay gone than to come back, which is the one thing the old single list could
 not say.</p>
 <p><em>Slipping</em>, not <em>overdue</em>, because a show page already uses
@@ -6568,7 +6657,9 @@ mean something different in each era.</p>
 <p>Within each list the order is how far past each song is as a multiple of its
 own usual gap &mdash; the figure on the right of every row &mdash; not how many
 shows it has been gone, since a hundred shows is nothing for one song and a
-decade for another.</p>"""),
+decade for another.</p>""".format(
+        floor=ROTATION_PLAYS, lo=FEW_PLAYS + 1, hi=ROTATION_PLAYS - 1,
+        few_times=FEW_TIMES, few_title=FEW_TITLE.lower())),
 
     ("eras", "What are the eras &mdash; 1.0, 2.0, 3.0 and 4.0?", """
 <p><em>Era</em> is the word this site uses for them, and the one on the chips
