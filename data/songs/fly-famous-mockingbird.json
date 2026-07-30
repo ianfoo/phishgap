@@ -160,6 +160,6 @@
   {"date": "2021-08-31", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 114, "set": "1", "nb": 1, "prev": "Colonel Forbin's Ascent", "in": ">", "next": "Wolfman's Brother"},
   {"date": "2023-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 113, "set": "3", "note": "Annie Golden on additional vocals. Off-stage backing chorus.", "out": ">", "nb": 1, "prev": "Colonel Forbin's Ascent", "in": ">", "next": "Auld Lang Syne"},
   {"date": "2026-04-18", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 95, "set": "1", "nb": 1, "prev": "Colonel Forbin's Ascent", "in": ">", "next": "Sigma Oasis"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 21, "set": "1", "prev": "Colonel Forbin's Ascent", "in": ">", "next": "Harpua"}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 21, "set": "1", "prev": "Colonel Forbin's Ascent", "in": ">", "next": "Harpua", "nb": 1}
  ]
 }

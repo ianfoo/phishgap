@@ -167,6 +167,6 @@
   {"date": "2024-07-27", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 29, "set": "e", "nb": 1, "xprev": "Golgi Apparatus", "next": "Character Zero"},
   {"date": "2025-09-20", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 68, "set": "1", "nb": 1, "prev": "Birds of a Feather", "next": "Funky Bitch"},
   {"date": "2026-04-23", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 12, "set": "1", "nb": 1, "prev": "Maze", "next": "Gumbo"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 20, "set": "1", "prev": "Axilla (Part II)", "in": ">", "next": "Guyute"}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 20, "set": "1", "prev": "Axilla (Part II)", "in": ">", "next": "Guyute", "nb": 1}
  ]
 }
