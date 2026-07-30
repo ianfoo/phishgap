@@ -234,24 +234,78 @@ either add it to the daily run, or have `--catch-up` record neighbours for the
 show it just fetched, since `build()` already holds that show's full setlist and
 needs no extra call.
 
-### Picked up next session — four things, all agreed with Ian
+### Same session, third round — the agreed neighbour work, and the poller
 
-Ian approved the first three outright. Nothing below is started.
+Everything here is pushed. Working tree clean.
 
-1. **Set / show opener–closer labels.** A blank Before / after cell currently
-   means three different things, and until this session it also meant "no data"
-   on 758 rows. phish.net prints `***` for a set boundary; naming it ("closed
-   set 1") is strictly better and removes the ambiguity. Only two of the four
-   states are true terminals — **show opener** (set 1, position 1) and **show
-   closer** (last song of the night). Set opener and set closer both have a real
-   song on the far side of a break.
-2. **Cross-boundary neighbours.** Show the song across a setbreak, with the
-   label primary and no mark ever, so the page cannot imply a segue. The
-   docstring's purity objection is to the *mark* — "a lie about a gap of twenty
-   minutes" — not to adjacency. "Chalk Dust Torture came next, after the break"
-   is simply true, and the current blank is the less honest rendering. Ian's
-   argument, which is the stronger one: an encore is chosen in response to how
-   set 2 ended, and the archive throws that away.
+| § | what | state |
+|---|---|---|
+| 0 | The migration landmine deleted outright | done |
+| next.1 | Set / show opener–closer labels | done — 3,821 terminals named |
+| next.2 | Cross-boundary neighbours | done — 6,927 cross-set adjacencies shown |
+| 0 | `--seed-setlists` walks `archive/setlist-order.json` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
+| 0 | `--catch-up` records a new show's neighbours as it fetches it | done — no more blank column on the night |
+| 0 | The live page polls instead of hoping; "last checked" reworded | done — all four paths driven in a browser |
+
+**The archive paid for itself on its first use.** Re-walking all 2,009 shows
+under new rules cost 44 API calls — the 43 dates the extract was missing, plus
+tonight's. That is what `archive/README.md` promised and it held.
+
+**But an extract is a cache with no expiry, and it had already gone stale in
+the one place that matters.** The harvest ran mid-show, so it holds 2026-07-29
+at the 12 songs it had at 19:53. Walking that back would have frozen the
+running order of the one show whose running order was still moving — the same
+shape as the six-hour cache that cost the first hour of that night, minus even
+the six hours. A show whose report is still provisional is now always
+re-fetched, and never written into the extract: its order is partial by
+definition, and the day it settles a partial record stops being skipped and
+starts being believed.
+
+**The invariant, proved rather than sampled.** Of 37,148 walked performances,
+every one carries exactly one before-state (`prev` / `xprev` / `first`) and
+exactly one after-state (`next` / `xnext` / `last`) — 37,148 and 37,148, zero
+violations. A blank cell now means one thing only: we have not walked that
+setlist. That was the whole point of items 1 and 2.
+
+**A seventh instance of the family, caught before it shipped.**
+`save_song_history` carries neighbour fields forward across an API rewrite
+through a hardcoded list of four key names. Adding four new fields elsewhere
+would have left every one of them dropped on the next `--previous` run, in a
+function nobody would think to open. The list is now one named constant,
+`NB_CARRY`, next to the walk that produces it.
+
+**Two typographic things, both found by looking rather than reasoning.** A
+terminal line dropped the arrow slot and so hung two characters left of its
+own sibling — visible on 3,821 rows; the arrow is now hidden rather than
+removed. And the cross-boundary lines truncated mid-preposition at every
+desktop width ("Opened set 3, af…" on 40 of Tweezer's 50), because the column
+is 162px wide however wide the window is. Those lines now wrap, which cost 14
+of that page's 418 rows a line and the page 0.7% of its height. Titles still
+truncate: half a title is readable, half a preposition is not. Measured at
+1280px across eight song pages — 610 edge labels, none truncated.
+
+**What is still manual.** The extract only grows when `--seed-setlists` runs,
+which the workflows do not call, so it falls behind by however many nights
+since the last hand run. That is deliberate: it is a 3.4 MB single file, and
+committing it nightly in CI would put a fresh 3.4 MB blob in git history every
+day. `--catch-up` keeps the *reader-visible* data current on its own, so the
+lag costs nothing until the neighbour rules change again — and then it costs
+one call per un-archived night. If it is ever worth having CI maintain it,
+shard it by year first (~160 KB a year) and add `archive` to the `git add` in
+both workflows.
+
+### Picked up next session — two left of the four agreed with Ian
+
+Items 1 and 2 are done — see the round above. 3 and 4 are not started, and 3
+still needs his call before anything is written.
+
+1. ~~**Set / show opener–closer labels.**~~ **DONE.** Rendered as "Opened the
+   show" / "Closed the show" for the two true terminals, which carry no song
+   because there is none, and "Opened set 2" / "Closed the encore" for the
+   rest, which do.
+2. ~~**Cross-boundary neighbours.**~~ **DONE.** "Opened set 2, after Harry
+   Hood" — label primary, in ink against the dim song, and no mark ever, so
+   the page cannot imply a segue across a setbreak.
 3. **Reprises.** 683 of 1,966 shows repeat a song; **972 performances are
    currently dropped**, because only the first occurrence per show is kept. Their
    neighbours differ from the first pass, so neighbour accuracy needs them.
@@ -268,38 +322,40 @@ Ian approved the first three outright. Nothing below is started.
    the site has no vocabulary for it. §2d and the "under 8 plays in ten years"
    note already half-know this.
 
-**No fetching required for 1–3.** `archive/setlist-order.json` holds the running
-order of all 1,966 dates — set, position, slug, song, trans_mark — which is
-everything those three need. See `archive/README.md`.
+**No fetching required for 3.** `archive/setlist-order.json` holds the running
+order of all 2,008 settled dates — set, position, slug, song, trans_mark — which
+is everything reprises need. See `archive/README.md`.
 
-### Also open: the live page does not auto-refresh, and says so misleadingly
+### ~~Also open: the live page does not auto-refresh~~ DONE 2026-07-30
 
-Two separate faults, found together on 2026-07-29.
+Two separate faults, found together on 2026-07-29, both fixed.
 
-**The label is misattributed, not wrong.** `checked = _utcnow()` is stamped at
+**The label was misattributed, not wrong.** `checked = _utcnow()` is stamped at
 *render* time and `AGO_JS` recounts it client-side every 20s, so a stale document
 faithfully reports **its own age** — it was the only honest thing on Ian's stale
-page. But the words "last checked" read as a claim about the server. Server-side
-the stamp is genuinely fresh every pass: because `checked` changes each render,
-the HTML always differs, so the page republishes every five minutes even when no
-song landed. Verified — the published page carried `datetime=02:46:36` under a
-publish at `02:46:42`. **Reword it to describe the document.**
+page. But "last checked" read as a claim about the server. It now says "this
+page was built <em>4 minutes ago</em> · it updates as songs land", which is what
+the stamp measures and what the page now does.
 
-**The refresh does not fire.** `<meta http-equiv="refresh" content="120">` is
-present, well-formed and correctly placed (line 5, `</head>` at 897). It still
-fails twice over: Pages sends `cache-control: max-age=600`, so a reload inside
-ten minutes can be satisfied from cache; and browsers throttle or defer meta
-refresh in background tabs, which is unbounded. Ian hit refresh by hand and the
-setlist **jumped five songs** — roughly 25 minutes of drift, past the cache
-window, so it was not firing at all.
+**The refresh did not fire.** `<meta http-equiv="refresh" content="120">` was
+present, well-formed and correctly placed. It failed twice over: Pages sends
+`cache-control: max-age=600`, so a reload inside ten minutes can be satisfied
+from cache; and browsers throttle or defer meta refresh in background tabs,
+unboundedly. Ian hit refresh by hand and the setlist **jumped five songs** —
+about 25 minutes of drift, past the cache window, so it was not firing at all.
 
-Fix: drop the meta refresh for a poller that fetches `data/shows/<date>.json`
-with a changing query string — part of the CDN cache key, so it defeats both
-caches — compares the song count, and reloads **only** on a real change, plus
-re-checks on `visibilitychange` so it updates the moment the tab is looked at.
-Note the shape: this is the same "**anything long-running must re-read its
+Replaced by `LIVE_JS`, which fetches `data/shows/<date>.json` with a changing
+query string — its own CDN cache key, which is what defeats both caches —
+and reloads **only** when the song count moves or the show settles. It does not
+poll while the tab is hidden; `visibilitychange` brings it up to date the moment
+the reader looks back, which is sooner than any interval. All four paths were
+driven in a browser against the real report file: no change → one fetch, no
+reload; a song added → one reload, `sessionStorage` marked; dispatched again
+against a document now genuinely stale → **no second reload**, which is the
+guard against a reload storm on a reader's phone; `provisional` flipped false →
+reload. Note the shape: the same "**anything long-running must re-read its
 inputs each pass**" lesson as the outages in `CLAUDE.md`, now on the client. The
-page is a long-running thing that reloads on a timer and hopes.
+page was a long-running thing that reloaded on a timer and hoped.
 
 ### The three biggest open things, in the order I would take them
 
