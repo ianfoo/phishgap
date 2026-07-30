@@ -8268,6 +8268,10 @@ def main():
         sys.exit("error: --html and --pdf point at the same file")
 
     reports, key, dates, recheck = [], None, list(args.showdate), set()
+    # What the archive already holds, which the fetch loop below consults to
+    # decide whether a setlist may come from the cache. Bound here rather than
+    # only under --catch-up because every path reaches that loop.
+    have = {}
     kw = {"cache_dir": args.cache_dir, "refresh": args.refresh}
     try:
         if args.catch_up:
@@ -8298,15 +8302,36 @@ def main():
                     log("%s is already in the site (--force to re-fetch)", date)
                     continue
             key = key or load_key(args.apikey)   # not needed for --rebuild
-            # A show being re-fetched is one that is still changing, so its
-            # setlist must not come from the cache. The cache holds a response
-            # for six hours and a watch job runs for five, so without this the
-            # first pass froze the setlist and every pass after it republished
-            # that same copy -- the watcher reporting 13 songs while phish.net
-            # had 16, unable to ever see another. Only this call bypasses it;
-            # song histories and the calendar stay cached, which is most of the
-            # traffic and none of the volatility.
-            live = dict(kw, refresh=True) if date in recheck else kw
+            # A show that is not settled is still changing, so its setlist must
+            # not come from the cache. The cache holds a response for six hours
+            # and a watch job runs for five, so without this the first pass
+            # froze the setlist and every pass after it republished that same
+            # copy -- the watcher reporting 13 songs while phish.net had 16,
+            # unable to ever see another.
+            #
+            # `recheck` covers a show archived while still provisional, and
+            # the settled ones --recheck asks after. What it cannot cover is a
+            # show with no report at all -- and that is the one that happens
+            # every night. A window opens at 23:00 UTC and the first song of
+            # an east coast show is posted around 23:30, so the watcher's
+            # first pass reliably asks for a setlist that does not exist yet,
+            # and the six-hour cache then serves that same emptiness back for
+            # the rest of the show. Nothing is archived, so the show never
+            # becomes provisional, so it never reaches `recheck`, so it never
+            # earns a refresh: the one show being watched was the one show
+            # that could never be seen.
+            #
+            # It cost the 2026-07-29 Madison Square Garden show, which sat
+            # unarchived while --calendar had already counted it -- so every
+            # song's figure moved up by one and the five actually played that
+            # night never reset to zero.
+            #
+            # Only this call bypasses the cache; song histories and the
+            # calendar stay cached, which is most of the traffic and none of
+            # the volatility.
+            unarchived = date not in have
+            live = (dict(kw, refresh=True) if date in recheck or unarchived
+                    else kw)
             try:
                 report = build(date, key, artist=args.artist, **live)
             except ApiError as exc:
