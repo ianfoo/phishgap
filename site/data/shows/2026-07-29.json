@@ -242,9 +242,27 @@
       "gap_low": 3.95,
       "gap_high": 13.100000000000001,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "I Didn't Know",
+      "slug": "i-didnt-know",
+      "gap": 16,
+      "jamchart": false,
+      "prev_date": "2026-05-01",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV",
+      "out": "",
+      "plays": 266,
+      "recent_plays": 13,
+      "gap_median": 26,
+      "gap_mean": 29.307692307692307,
+      "gap_low": 16.2,
+      "gap_high": 47.0,
+      "verdict": "premature"
     }
   ],
-  "count_since": "2026-07-30T02:36:17+00:00",
+  "count_since": "2026-07-30T02:41:27+00:00",
   "encored": false,
   "provisional": true
 }
