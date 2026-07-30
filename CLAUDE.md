@@ -73,6 +73,16 @@ note in the venue cell appeared to run past the "Before / after" label while
 never touching that column. Before believing a cell overflows, measure the
 header against the row.
 
+**Every API response is on disk for six hours — count the cache before quoting
+a cost.** `DEFAULT_CACHE` is `~/.cache/phishgap`, `CACHE_TTL` is 6h. A job that
+looks like a thousand calls is often zero. On 2026-07-29 a re-seed of 1,966
+setlists was quoted at "1,298 calls, ~13 minutes" twenty minutes after those
+exact responses had been fetched and cached — the real cost was nothing.
+The TTL also runs the other way: it is a **deadline on data already paid for**,
+so if a pending change will need something a run just fetched, copy it out of
+the cache before it expires rather than planning to re-fetch. Knowing the cache
+exists is not the same as remembering it while costing work.
+
 **`body` is IBM Plex Mono site-wide.** Literata is loaded and applied
 deliberately to running prose (`.jam`, `.note`, `.prose`). Mono prose anywhere
 else is usually an artifact of that default rather than a decision.
