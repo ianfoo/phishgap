@@ -6,7 +6,7 @@
   "state": "NY",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "<p>This show was Phish's 96th performance at Madison Square Garden. Trey wore the velour button-down from the Clifford Ball. Before the show, the light rig approximated the NY Knicks' logo. This show featured multiple bustouts: The Star Spangled Banner <span>(last played </span><a href=\"https://phish.net/setlists/phish-december-28-2016-madison-square-garden-new-york-ny-usa.html\"><span>December 28, 2016</span></a><span>, or 362 shows), Talk (last played </span><a href=\"https://phish.net/setlists/phish-october-13-2023-united-center-chicago-il-usa.html\"><span>October 13, 2023</span></a><span>, or 122 shows), and Harpua (last played </span><a href=\"https://phish.net/setlists/phish-december-31-2023-madison-square-garden-new-york-ny-usa.html\"><span>December 31, 2023</span></a><span>, or 116 shows). In Axilla (Part II) Trey began the lyrics to part I, said \"Wait we did that one already\", and recommenced part II. The Harpua narration freed Jimmy from his </span><a href=\"https://phish.net/faq/clifford-ball\"><span>30 year prison of vibration above Plattsburgh, NY</span></a><span> with the \"free Jimmy tone\".</span></p><p>&nbsp;</p><p>&nbsp;</p>",
+  "notes": "<p>This show was Phish's 96th performance at Madison Square Garden. Trey and Mike wore their Clifford Ball outfits. Before the show, the light rig approximated the NY Knicks' logo. This show featured multiple bustouts: The Star Spangled Banner <span>(last played </span><a href=\"https://phish.net/setlists/phish-december-28-2016-madison-square-garden-new-york-ny-usa.html\"><span>December 28, 2016</span></a><span>, or 362 shows), Talk (last played </span><a href=\"https://phish.net/setlists/phish-october-13-2023-united-center-chicago-il-usa.html\"><span>October 13, 2023</span></a><span>, or 122 shows), and Harpua (last played </span><a href=\"https://phish.net/setlists/phish-december-31-2023-madison-square-garden-new-york-ny-usa.html\"><span>December 31, 2023</span></a><span>, or 116 shows). In Axilla (Part II) Trey began the lyrics to part I, said \"Wait we did that one already\", and recommenced part II. The Harpua narration freed Jimmy from his </span><a href=\"https://phish.net/faq/clifford-ball\"><span>30 year prison of vibration above Plattsburgh, NY</span></a><span> with the \"free Jimmy tone\".</span></p><p>&nbsp;</p><p>&nbsp;</p>",
   "permalink": "https://phish.net/setlists/phish-july-29-2026-madison-square-garden-new-york-ny-usa.html",
   "songs": [
     {
@@ -206,9 +206,27 @@
       "gap_low": null,
       "gap_high": null,
       "verdict": "bustout"
+    },
+    {
+      "set": "SET 2",
+      "song": "You Enjoy Myself",
+      "slug": "you-enjoy-myself",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-18",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD",
+      "out": "",
+      "plays": 627,
+      "recent_plays": 49,
+      "gap_median": 6,
+      "gap_mean": 6.673469387755102,
+      "gap_low": 3.0,
+      "gap_high": 10.0,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-07-30T01:24:28+00:00",
+  "count_since": "2026-07-30T02:00:19+00:00",
   "encored": false,
   "provisional": true
 }

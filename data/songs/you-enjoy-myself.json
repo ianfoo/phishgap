@@ -657,6 +657,7 @@
   {"date": "2025-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "2", "prev": "What's Going Through Your Mind", "next": "It's Ice", "nb": 1},
   {"date": "2026-04-16", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 4, "set": "2", "out": ">", "prev": "Lifeboy", "next": "Also Sprach Zarathustra", "nb": 1},
   {"date": "2026-07-10", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 10, "set": "2", "out": ">", "prev": "Down with Disease", "in": ">", "next": "Backwards Down the Number Line", "nb": 1},
-  {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 5, "set": "1", "out": ">", "prev": "Contact", "next": "Axilla (Part II)", "nb": 1}
+  {"date": "2026-07-18", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 5, "set": "1", "out": ">", "prev": "Contact", "next": "Axilla (Part II)", "nb": 1},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "2"}
  ]
 }
