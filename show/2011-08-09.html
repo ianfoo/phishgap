@@ -857,11 +857,36 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   else start();
 })();
 </script><script>
-/* Which rows are new since this reader last looked. A reload of a growing
-   setlist otherwise gives a longer table and no clue what changed, so finding
-   the new part means re-reading the whole thing -- which is why the tab gets
-   closed. The count last seen is kept in this browser only; nothing is sent
-   anywhere and nothing is stored server-side. */
+/* Which rows arrived while this reader was away, so a setlist that grew does
+   not have to be re-read from the top. The count is kept in this browser
+   only; nothing is sent anywhere and nothing is stored server-side.
+
+   The claim used to outlive the fact. The count was banked at page *load*,
+   the tag was built once from it and then never touched again -- so "since
+   you last looked" really meant "since this browser last loaded a document
+   for this show", and the tag was a snapshot frozen at load time. Scrolling
+   down to the new songs and back up left it still sitting there insisting
+   they were new, because nothing re-evaluated it. Ian caught it doing exactly
+   that, and asked the right question: how can it know when I last looked.
+
+   It could not, and it was nearly invisible before, because the meta refresh
+   it relied on never fired and the page therefore almost never reloaded.
+   Making the reloads real made the false claim frequent.
+
+   One rule makes the words true: **the stored count only ever advances to
+   rows that have actually been in view.** So "since you last looked" means
+   what it says -- since these rows were last in front of you -- and the tag
+   retires itself the moment that becomes true, instead of asserting it for
+   the life of the document.
+
+   A first attempt also banked the count when the page was hidden or
+   unloaded, to stop an unread page accumulating a claim. That was wrong in
+   both directions and the first test caught it. A reload fires pagehide, so
+   the count was banked from the document being torn down and the rows in the
+   *next* one that the reader had still never seen were recorded as seen: two
+   songs landing without a scroll in between reported "1 new", not 2.
+   Accumulation is not the bug -- if you never look at the new songs they are
+   still new, and saying so is the whole point. */
 (function(){
   function start(){
     var live=document.querySelector('.live');
@@ -877,15 +902,36 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     if(!show) return;
     var key='pl-seen-'+show;
     var seen=parseInt(localStorage.getItem(key)||'0',10);
-    if(seen>0&&rows.length>seen){
-      rows.slice(seen).forEach(function(r){ r.classList.add('fresh'); });
-      var n=rows.length-seen;
-      var tag=document.createElement('span');
-      tag.className='since-you';
-      tag.textContent=n+' new since you last looked';
-      live.appendChild(tag);
-    }
-    try{ localStorage.setItem(key,String(rows.length)); }catch(e){}
+    function bank(){ try{ localStorage.setItem(key,String(rows.length)); }catch(e){} }
+    /* Banked here only when there is nothing new to show, where it is a
+       no-op or a correction for a setlist that shrank. With something new it
+       waits for the rows to be seen: writing the count at load is precisely
+       what made the old claim false. */
+    if(!(seen>0&&rows.length>seen)){ bank(); return; }
+    var fresh=rows.slice(seen);
+    fresh.forEach(function(r){ r.classList.add('fresh'); });
+    var tag=document.createElement('span');
+    tag.className='since-you';
+    tag.textContent=(rows.length-seen)+' new since you last looked';
+    live.appendChild(tag);
+    if(!window.IntersectionObserver){ bank(); return; }
+    /* Retired once the last of those rows has held still in view for a
+       second. One frame would retire it during a flick past the table, which
+       is not looking at it; a second is long enough to mean a deliberate look
+       and short enough that any real one counts. */
+    var timer=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          if(!timer) timer=setTimeout(function(){
+            io.disconnect();
+            if(tag.parentNode) tag.parentNode.removeChild(tag);
+            bank();
+          },1000);
+        } else if(timer){ clearTimeout(timer); timer=null; }
+      });
+    });
+    io.observe(fresh[fresh.length-1]);
   }
   /* Same trap as the relative stamp beside it: this ships in the head, so it
      ran before .live or a single row existed and returned every time. */
