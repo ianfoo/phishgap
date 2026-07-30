@@ -6,11 +6,11 @@
 
  ],
  "performances": [
-  {"date": "2009-06-19", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 1439, "set": "1", "note": "Debut."},
-  {"date": "2009-12-29", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 32, "set": "1"},
-  {"date": "2010-06-29", "venue": "CMAC Performing Arts Center", "city": "Canandaigua", "state": "NY", "gap": 16, "set": "1"},
-  {"date": "2015-07-29", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 200, "set": "e"},
-  {"date": "2019-12-07", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 171, "set": "2"},
-  {"date": "2024-07-21", "venue": "Xfinity Center", "city": "Mansfield", "state": "MA", "gap": 150, "set": "1"}
+  {"date": "2009-06-19", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 1439, "set": "1", "note": "Debut.", "nb": 1, "prev": "Stealing Time From the Faulty Plan", "next": "Ocelot"},
+  {"date": "2009-12-29", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 32, "set": "1", "nb": 1, "prev": "Driver", "next": "Wolfman's Brother"},
+  {"date": "2010-06-29", "venue": "CMAC Performing Arts Center", "city": "Canandaigua", "state": "NY", "gap": 16, "set": "1", "nb": 1, "next": "Down with Disease"},
+  {"date": "2015-07-29", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 200, "set": "e", "nb": 1, "next": "First Tube"},
+  {"date": "2019-12-07", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 171, "set": "2", "nb": 1, "next": "Mr. Completely"},
+  {"date": "2024-07-21", "venue": "Xfinity Center", "city": "Mansfield", "state": "MA", "gap": 150, "set": "1", "nb": 1, "prev": "Wilson", "next": "Thread"}
  ]
 }

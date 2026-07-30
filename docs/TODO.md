@@ -153,6 +153,87 @@ override); and `recent_shows` filters on the UTC date, so a show is "already
 played" from 00:00 UTC — fine today because the watch window gates it, but it
 would mislead anything that called it without that gate.
 
+### Same session, second round — two bugs off one screenshot
+
+Ian sent a crop of the Fly Famous Mockingbird page and asked two things: why
+the note text runs into the Before / after column, and why no before/after
+songs are listed. They turned out to be unrelated, and the first one was not
+what it looked like.
+
+| § | what | state |
+|---|---|---|
+| 0 | `.stuck .in` was `max-width:960px` where `.wrap` is `60rem` | done — the note never overflowed; the *header* was 60px off its own columns |
+| 0 | `nb=1` recorded "asked" for songs the fetched setlist never mentioned, so blank was permanent | done — extractor now reports every song it saw, empty entry included |
+| 0 | 758 poisoned flags cleared and re-seeded | done — see the note below on what the re-seed exposed |
+
+**The note never left its column.** Measured at nine widths from 830 to
+1920px: the note fills the venue cell exactly and stops 20px short of `.nb`,
+which is the column gap. What was wrong is that `.wrap` was converted from
+`960px` to `60rem` so the measure would travel with the type scale — and
+`.stuck .in`, which carries the sticky column labels, was left at the literal
+`960px`. Content grew to 1080px, the bar held at 960, and every label landed
+60px off the column it names. A long note then appeared to cross the
+"Before / after" label while never touching that column. **The lesson is the
+diagnosis, not the fix: the complaint was about the note and the bug was in the
+header.** Measure the header against the row before believing a cell overflows.
+
+**The re-seed exposed something bigger than the 758, and it is not what it
+first looked like.** `--seed-setlists` builds its work list from every
+performance lacking `nb`, and that came to **1966 dates** rather than the 601 I
+had poisoned. I read that as "seeding was never finished" and said so; that was
+wrong, and Ian caught it by asking the obvious question — how did we ever have
+*any* neighbours if the setlists were not being fetched. Measured against the
+pre-repair archive:
+
+| performances | count |
+|---|---|
+| carry `prev`/`next` | 28,264 |
+| carry the `nb` flag | 18,292 |
+| **have the data but no flag** | **10,730** — 10,718 of them on dates the old index recorded as walked |
+| have neither, on a walked date | 8,058 — genuinely "walked, no neighbour", flag lost |
+| on a date never walked | ~78 |
+
+So the setlists *had* been fetched, for 1,975 of about 2,100 dates. What was
+lost was the record of it, and the loss has a precise cause. `nb` replaced an
+older central index, `site/data/neighbours.json`, which listed walked dates and
+was deleted by `acd87fb91` on 2026-07-26 when the migration ran. That migration
+(possumlogic.py, the `if os.path.isfile(index)` block) sets `nb` **in memory**,
+calls `os.remove(index)` immediately, and then writes files only through
+`flush()` — which writes only the slugs the fetch loop put in `pending`. Every
+song that run did not happen to re-fetch never had its migrated flag written to
+disk, and the index was already gone. Had `todo` come out empty it would have
+returned before writing anything at all. **It deleted the source of truth before
+durably writing the replacement** — the same family as the rest, but the worst
+instance, because the record was destroyed rather than merely stale. The
+migration guard also skips any song with no neighbours anywhere, which is 395
+songs, so none of those were ever flagged either.
+
+The consequence is only wasted work, not wrong data: the re-seed re-asks ~1,966
+dates that were mostly already answered and writes back the same values. After
+it lands, `nb` is a true record of all 37,146 performances for the first time.
+The migration block is now unreachable (no `neighbours.json` exists to trigger
+it) but is still present and still carries the landmine — **worth deleting
+outright, or at minimum writing every song before removing the index.**
+
+**The new `absent` counter earned itself on its first run, with exactly one
+hit.** Of 37,146 performances, one is not in the setlist phish.net returns for
+its own date: `the-curtain` on 2026-07-27. That date's showdate response lists
+only `the-curtain-with` ("The Curtain With") — but phish.net's *song-history*
+endpoint for `the-curtain` returns that night too, so the archive has the same
+performance filed under both slugs, and `the-curtain` carries a 2026-07-27 row
+with a gap of 185 that is arguably not its own. Two phish.net endpoints
+disagreeing about one performance. **Left alone deliberately** — deciding which
+of their endpoints to believe is the same call as the `custom` slug in §0, and
+it is Ian's. It stays unmarked, so every run re-asks and the counter keeps
+reporting it, which is the behaviour I want from it.
+
+Separately: `--seed-setlists` is a manual command and the daily workflow does
+not pass it, so a newly archived show gets neighbours only when someone runs it
+by hand — tonight's 2026-07-29 rows had none until this run. **Worth fixing** —
+either add it to the daily run, or have `--catch-up` record neighbours for the
+show it just fetched, since `build()` already holds that show's full setlist and
+needs no extra call.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's

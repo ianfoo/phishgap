@@ -6,17 +6,17 @@
 
  ],
  "performances": [
-  {"date": "1998-10-31", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 1223, "set": "2", "note": "Phish debut."},
-  {"date": "2000-09-24", "venue": "Target Center", "city": "Minneapolis", "state": "MN", "gap": 132, "set": "2", "out": "->"},
-  {"date": "2003-07-29", "venue": "Post-Gazette Pavilion at Star Lake", "city": "Burgettstown", "state": "PA", "gap": 42, "set": "1"},
-  {"date": "2009-11-28", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 71, "set": "2", "out": ">"},
-  {"date": "2010-12-27", "venue": "DCU Center", "city": "Worcester", "state": "MA", "gap": 54, "set": "1"},
-  {"date": "2012-06-28", "venue": "Klipsch Music Center", "city": "Noblesville", "state": "IN", "gap": 54, "set": "1", "out": ">"},
-  {"date": "2012-08-15", "venue": "Long Beach Arena", "city": "Long Beach", "state": "CA", "gap": 9, "set": "1"},
-  {"date": "2018-10-23", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 229, "set": "1"},
-  {"date": "2019-12-01", "venue": "Nassau Veterans Memorial Coliseum", "city": "Uniondale", "state": "NY", "gap": 44, "set": "1", "out": ">"},
-  {"date": "2021-09-04", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 34, "set": "1", "out": ">"},
-  {"date": "2022-06-01", "venue": "Credit One Stadium", "city": "Charleston", "state": "SC", "gap": 28, "set": "1"},
-  {"date": "2023-04-19", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 42, "set": "2", "out": ">"}
+  {"date": "1998-10-31", "venue": "Thomas & Mack Center", "city": "Las Vegas", "state": "NV", "gap": 1223, "set": "2", "note": "Phish debut.", "nb": 1, "prev": "Rock and Roll", "next": "New Age"},
+  {"date": "2000-09-24", "venue": "Target Center", "city": "Minneapolis", "state": "MN", "gap": 132, "set": "2", "out": "->", "nb": 1, "prev": "Hold Your Head Up", "next": "David Bowie"},
+  {"date": "2003-07-29", "venue": "Post-Gazette Pavilion at Star Lake", "city": "Burgettstown", "state": "PA", "gap": 42, "set": "1", "nb": 1, "prev": "Gotta Jibboo", "next": "Scent of a Mule"},
+  {"date": "2009-11-28", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 71, "set": "2", "out": ">", "nb": 1, "prev": "Ghost", "next": "Gotta Jibboo"},
+  {"date": "2010-12-27", "venue": "DCU Center", "city": "Worcester", "state": "MA", "gap": 54, "set": "1", "nb": 1, "prev": "Funky Bitch", "next": "Roggae"},
+  {"date": "2012-06-28", "venue": "Klipsch Music Center", "city": "Noblesville", "state": "IN", "gap": 54, "set": "1", "out": ">", "nb": 1, "prev": "Wolfman's Brother", "next": "Tweezer"},
+  {"date": "2012-08-15", "venue": "Long Beach Arena", "city": "Long Beach", "state": "CA", "gap": 9, "set": "1", "nb": 1, "prev": "Guelah Papyrus", "next": "Rift"},
+  {"date": "2018-10-23", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 229, "set": "1", "nb": 1, "prev": "Lawn Boy", "next": "Theme from the Bottom"},
+  {"date": "2019-12-01", "venue": "Nassau Veterans Memorial Coliseum", "city": "Uniondale", "state": "NY", "gap": 44, "set": "1", "out": ">", "nb": 1, "prev": "Timber (Jerry the Mule)", "in": ">", "next": "Roggae"},
+  {"date": "2021-09-04", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 34, "set": "1", "out": ">", "nb": 1, "prev": "Blaze On", "next": "Ghost"},
+  {"date": "2022-06-01", "venue": "Credit One Stadium", "city": "Charleston", "state": "SC", "gap": 28, "set": "1", "nb": 1, "next": "Foam"},
+  {"date": "2023-04-19", "venue": "William Randolph Hearst Greek Theatre, University of California, Berkeley ", "city": "Berkeley", "state": "CA", "gap": 42, "set": "2", "out": ">", "nb": 1, "prev": "Weekapaug Groove", "in": ">", "next": "Set Your Soul Free"}
  ]
 }

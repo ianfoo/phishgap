@@ -115,6 +115,6 @@
   {"date": "2021-09-01", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 32, "set": "1", "out": ">", "prev": "The Man Who Stepped Into Yesterday", "in": ">", "next": "Weekapaug Groove", "nb": 1},
   {"date": "2022-04-21", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 23, "set": "1", "out": ">", "prev": "The Man Who Stepped Into Yesterday", "in": ">", "next": "The Man Who Stepped Into Yesterday", "nb": 1},
   {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 190, "set": "1", "prev": "The Man Who Stepped Into Yesterday", "in": ">", "next": "Weekapaug Groove", "nb": 1},
-  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "1"}
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 13, "set": "1", "nb": 1, "prev": "The Man Who Stepped Into Yesterday", "in": ">", "next": "NICU"}
  ]
 }

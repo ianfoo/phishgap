@@ -3991,7 +3991,15 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   transform:translateY(-101%);transition:transform .22s ease;
   padding:.5rem clamp(1rem,5vw,3rem)}
 .stuck.on{transform:none}
-.stuck .in{max-width:960px;margin:0 auto;display:flex;align-items:baseline;
+/* 60rem, not 960px -- the same measure as .wrap and for the same reason given
+   there. This was the one place the px-to-rem conversion was missed, so when
+   the scale went up a step the content grew to 1080px and this bar held still
+   at 960. It carries .cols, the column labels whose whole job is to sit over
+   the columns they name, so the miss did not read as a narrow bar: it put
+   every label 60px off its own column, and a long note in the venue cell then
+   ran visibly past the "Before / after" label without ever touching that
+   column. The header was wrong, not the note. */
+.stuck .in{max-width:60rem;margin:0 auto;display:flex;align-items:baseline;
   gap:.7rem}
 .stuck .name{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -7276,6 +7284,13 @@ def setlist_neighbours(rows, artist=None):
     The mark between two songs belongs to the earlier of them -- phish.net
     stores it as the trailing punctuation -- so the way *into* a song is the
     previous row's mark, not its own.
+
+    Every song found in `rows` gets an entry, even an empty one. That is the
+    difference between "this setlist says the song opened its set" and "this
+    setlist did not mention the song at all", and the caller needs it: it used
+    to record both as asked-and-answered, so a show fetched while it was still
+    being typed up locked in an answer of "no neighbours" that no later run
+    would revisit.
     """
     rows = [r for r in rows
             if r.get("song") and (not artist or r.get("artist_name") == artist)]
@@ -7296,8 +7311,7 @@ def setlist_neighbours(rows, artist=None):
                 nb["in"] = mark
         if same(i + 1):
             nb["next"] = rows[i + 1].get("song") or ""
-        if nb:
-            out[slug] = nb
+        out[slug] = nb
     return out
 
 
@@ -7349,7 +7363,7 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
 
     log("neighbours: %d show%s to fetch",
         len(todo), "" if len(todo) == 1 else "s")
-    pending, fetched, missed = {}, 0, []
+    pending, fetched, missed, absent = {}, 0, [], 0
 
     def flush():
         for slug in sorted(pending):
@@ -7370,10 +7384,25 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
             for p in doc["performances"]:
                 if p["date"] != date:
                     continue
-                # Marked whether or not there was anything to say, so a set
-                # opener is not asked about again on every future run.
+                # Marked when this setlist actually mentioned the song, whether
+                # or not it had a neighbour to report: a set opener genuinely
+                # has nothing before it and must not be asked again every run.
+                #
+                # Not marked when the setlist never mentioned it. That reading
+                # is not an answer, and recording it as one is what emptied the
+                # Before / after column on songs that have never once been
+                # played without a neighbour. Colonel Forbin's Ascent > Fly
+                # Famous Mockingbird is the same pair every time it is played,
+                # and 75 of the Mockingbird's 131 performances showed nothing,
+                # because those shows were read at a moment the song was not in
+                # the setlist yet -- and nb=1 meant no later run would look
+                # again. Leaving it unmarked costs one call per such date per
+                # run and repairs itself the first time the answer is there.
+                if slug not in nb:
+                    absent += 1
+                    continue
                 p["nb"] = 1
-                p.update(nb.get(slug) or {})
+                p.update(nb[slug])
                 pending[slug] = True
         fetched += 1
         if i % NEIGHBOUR_FLUSH == 0:
@@ -7383,6 +7412,14 @@ def seed_setlists(site_dir, apikey, artist="Phish", force=False, **kw):
     if missed:
         log("warning: no setlist for %d show%s: %s",
             len(missed), "" if len(missed) == 1 else "s", "; ".join(missed[:5]))
+    # Said out loud rather than left in the data: these are the performances
+    # left deliberately unmarked, so they are asked again next run. A number
+    # that does not fall over successive runs means the archive and phish.net
+    # genuinely disagree about who played what, which is worth knowing.
+    if absent:
+        log("neighbours: %d performance%s not in the setlist fetched for its "
+            "own date; left unmarked to ask again", absent,
+            "" if absent == 1 else "s")
     log("neighbours: %d show%s fetched", fetched, "" if fetched == 1 else "s")
     return fetched
 

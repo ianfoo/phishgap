@@ -6,7 +6,7 @@
 
  ],
  "performances": [
-  {"date": "2016-07-01", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 1716, "set": "1", "note": "Debut."},
-  {"date": "2016-10-21", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 24, "set": "1"}
+  {"date": "2016-07-01", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 1716, "set": "1", "note": "Debut.", "nb": 1, "prev": "Halfway to the Moon", "next": "Waiting All Night"},
+  {"date": "2016-10-21", "venue": "Verizon Wireless Amphitheatre at Encore Park", "city": "Alpharetta", "state": "GA", "gap": 24, "set": "1", "nb": 1, "prev": "Mercury", "next": "Alaska"}
  ]
 }

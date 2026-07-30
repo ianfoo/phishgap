@@ -37,6 +37,42 @@ claiming everything is current, and draws nothing. The markup updates and the
 images do not. **This is the fourth instance of the shape below** — a record
 that outlives the work it records. Check the published PNG, not the log line.
 
+**And the fifth: `nb` on a performance meant "we asked", not "we know".**
+`setlist_neighbours` returned an entry only for songs that *had* a neighbour,
+and the caller then stamped `nb=1` on every song of that date. So "the setlist
+we fetched did not mention this song" was written down identically to "this
+song genuinely opened its set" — and `nb` is what keeps a date from being
+asked again, so the guess became permanent. It emptied the Before / after
+column on 758 performances across 601 dates, concentrated in songs that have
+almost never been played without a neighbour: the Sloth 107 of 177, Colonel
+Forbin's Ascent 75 of 130, Fly Famous Mockingbird 74 of 131 — a song whose
+every performance follows Colonel Forbin's, showing nothing. Fixed by having
+the extractor report every song it *saw*, empty entry included. **When a flag
+means "handled", check what it does when the answer was unavailable rather
+than absent.**
+
+**And the sixth, in the same flag: the migration that created it deleted the
+record it replaced before writing its own.** `nb` took over from a central
+`site/data/neighbours.json` listing walked dates. The migration block sets `nb`
+in memory, calls `os.remove(index)` immediately, then writes files only via
+`flush()` — which writes only the slugs the *fetch loop* queued. Every song that
+run did not re-fetch lost its record permanently; an empty `todo` would have
+returned before writing anything. Measured cost: 28,264 performances carry
+neighbour data but only 18,292 carry the flag, and 10,718 of the difference sit
+on dates the deleted index had recorded as walked. Only ~78 performances in the
+archive were genuinely never asked. **Do not delete the old record until the new
+one is on disk** — and the block is still there, unreachable but loaded, so
+`docs/TODO.md` §0 argues for removing it.
+
+**Measures are in `rem`, and one place was missed for a year.** `.wrap` is
+`max-width:60rem` precisely so it travels with the type scale, and the comment
+there says so. `.stuck .in` kept the literal `960px`, so when the scale went up
+a step the content grew to 1080px and the sticky bar held still — putting every
+column label 60px off the column it names. It read as a *content* bug: a long
+note in the venue cell appeared to run past the "Before / after" label while
+never touching that column. Before believing a cell overflows, measure the
+header against the row.
+
 **`body` is IBM Plex Mono site-wide.** Literata is loaded and applied
 deliberately to running prose (`.jam`, `.note`, `.prose`). Mono prose anywhere
 else is usually an artifact of that default rather than a decision.

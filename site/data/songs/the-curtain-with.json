@@ -76,6 +76,6 @@
   {"date": "2025-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 18, "set": "1", "out": ">", "prev": "Quadrophonic Toppling", "next": "Bathtub Gin", "nb": 1},
   {"date": "2026-04-23", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 9, "set": "2", "next": "Fuego", "nb": 1},
   {"date": "2026-07-14", "venue": "Enmarket Arena", "city": "Savannah", "state": "GA", "gap": 10, "set": "1", "out": ">", "prev": "Steam", "next": "Horn", "nb": 1},
-  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 8, "set": "2", "out": ">"}
+  {"date": "2026-07-27", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 8, "set": "2", "out": ">", "nb": 1, "next": "Prince Caspian"}
  ]
 }

@@ -6,7 +6,7 @@
 
  ],
  "performances": [
-  {"date": "2016-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1755, "set": "2", "note": "Phish debut; With Sylvia D'Avanzo, Alisa Horn, Todd Low, Antoine Silverman, Alissa Smith, and Hiroko Taguchi on strings; Trey on acoustic."},
-  {"date": "2021-10-28", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 148, "set": "2", "out": ">"}
+  {"date": "2016-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1755, "set": "2", "note": "Phish debut; With Sylvia D'Avanzo, Alisa Horn, Todd Low, Antoine Silverman, Alissa Smith, and Hiroko Taguchi on strings; Trey on acoustic.", "nb": 1, "next": "Soul Love"},
+  {"date": "2021-10-28", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 148, "set": "2", "out": ">", "nb": 1, "prev": "If 6 Was 9", "in": ">", "next": "Two Versions of Me"}
  ]
 }

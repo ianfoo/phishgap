@@ -6,9 +6,9 @@
 
  ],
  "performances": [
-  {"date": "2018-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1811, "set": "2", "note": "Debut."},
-  {"date": "2019-06-19", "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "gap": 16, "set": "1"},
-  {"date": "2019-12-08", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 28, "set": "1"},
-  {"date": "2023-10-15", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 134, "set": "1", "out": ">"}
+  {"date": "2018-10-31", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 1811, "set": "2", "note": "Debut.", "nb": 1, "prev": "Stray Dog", "next": "We Are Come to Outlive Our Brains"},
+  {"date": "2019-06-19", "venue": "Blossom Music Center", "city": "Cuyahoga Falls", "state": "OH", "gap": 16, "set": "1", "nb": 1, "prev": "Back on the Train", "next": "About to Run"},
+  {"date": "2019-12-08", "venue": "North Charleston Coliseum", "city": "North Charleston", "state": "SC", "gap": 28, "set": "1", "nb": 1, "prev": "My Sweet One", "in": ">", "next": "The Curtain"},
+  {"date": "2023-10-15", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 134, "set": "1", "out": ">", "nb": 1, "next": "Timber (Jerry the Mule)"}
  ]
 }

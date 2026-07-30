@@ -6,12 +6,12 @@
 
  ],
  "performances": [
-  {"date": "2003-01-02", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 1366, "set": "2", "note": "Phish debut.", "out": ">"},
-  {"date": "2003-02-18", "venue": "Pepsi Center", "city": "Denver", "state": "CO", "gap": 6, "set": "2"},
-  {"date": "2003-02-25", "venue": "First Union Spectrum", "city": "Philadelphia", "state": "PA", "gap": 5, "set": "2", "out": ">"},
-  {"date": "2003-07-23", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 16, "set": "2", "out": ">"},
-  {"date": "2003-07-29", "venue": "Post-Gazette Pavilion at Star Lake", "city": "Burgettstown", "state": "PA", "gap": 4, "set": "2"},
-  {"date": "2003-12-01", "venue": "Pepsi Arena", "city": "Albany", "state": "NY", "gap": 7, "set": "1", "out": ">"},
-  {"date": "2022-09-03", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 543, "set": "2", "out": ">"}
+  {"date": "2003-01-02", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 1366, "set": "2", "note": "Phish debut.", "out": ">", "nb": 1, "prev": "Limb By Limb", "next": "Run Like an Antelope"},
+  {"date": "2003-02-18", "venue": "Pepsi Center", "city": "Denver", "state": "CO", "gap": 6, "set": "2", "nb": 1, "prev": "Limb By Limb", "next": "Divided Sky"},
+  {"date": "2003-02-25", "venue": "First Union Spectrum", "city": "Philadelphia", "state": "PA", "gap": 5, "set": "2", "out": ">", "nb": 1, "prev": "Runaway Jim", "in": ">", "next": "Sparkle"},
+  {"date": "2003-07-23", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 16, "set": "2", "out": ">", "nb": 1, "prev": "Run Like an Antelope", "next": "Slave to the Traffic Light"},
+  {"date": "2003-07-29", "venue": "Post-Gazette Pavilion at Star Lake", "city": "Burgettstown", "state": "PA", "gap": 4, "set": "2", "nb": 1, "prev": "Crosseyed and Painless", "in": "->", "next": "Brother"},
+  {"date": "2003-12-01", "venue": "Pepsi Arena", "city": "Albany", "state": "NY", "gap": 7, "set": "1", "out": ">", "nb": 1, "prev": "Guyute", "next": "Sparkle"},
+  {"date": "2022-09-03", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 543, "set": "2", "out": ">", "nb": 1, "prev": "Sigma Oasis", "in": ">", "next": "The Moma Dance"}
  ]
 }

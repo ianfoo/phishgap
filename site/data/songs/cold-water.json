@@ -6,6 +6,6 @@
 
  ],
  "performances": [
-  {"date": "2010-06-15", "venue": "nTelos Pavilion", "city": "Portsmouth", "state": "VA", "gap": 1473, "set": "1", "note": "Phish debut."}
+  {"date": "2010-06-15", "venue": "nTelos Pavilion", "city": "Portsmouth", "state": "VA", "gap": 1473, "set": "1", "note": "Phish debut.", "nb": 1, "prev": "My Friend, My Friend", "next": "Bathtub Gin"}
  ]
 }

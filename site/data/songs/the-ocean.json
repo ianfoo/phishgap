@@ -6,6 +6,6 @@
 
  ],
  "performances": [
-  {"date": "2016-01-17", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 1709, "set": "e", "note": "Phish debut."}
+  {"date": "2016-01-17", "venue": "Barcel\u00f3 Maya Beach", "city": "Riviera Maya", "state": "Quintana Roo", "gap": 1709, "set": "e", "note": "Phish debut.", "nb": 1}
  ]
 }

@@ -6,12 +6,12 @@
 
  ],
  "performances": [
-  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 0, "set": "2", "note": "Debut."},
-  {"date": "2016-07-06", "venue": "Cross Insurance Arena", "city": "Portland", "state": "ME", "gap": 4, "set": "2", "out": ">"},
-  {"date": "2016-07-15", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 4, "set": "1"},
-  {"date": "2016-10-18", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 14, "set": "1"},
-  {"date": "2016-10-25", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 5, "set": "2", "out": ">"},
-  {"date": "2016-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 8, "set": "3", "note": "James Casey on saxophone, Natalie Cressman on trombone, Jennifer Hartswick on trumpet, and Andres Forero on percussion."},
-  {"date": "2018-07-28", "venue": "The Forum", "city": "Inglewood", "state": "CA", "gap": 37, "set": "1"}
+  {"date": "2016-06-29", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 0, "set": "2", "note": "Debut.", "nb": 1, "prev": "The Line", "next": "Backwards Down the Number Line"},
+  {"date": "2016-07-06", "venue": "Cross Insurance Arena", "city": "Portland", "state": "ME", "gap": 4, "set": "2", "out": ">", "nb": 1, "prev": "Mike's Song", "in": ">", "next": "Devotion to a Dream"},
+  {"date": "2016-07-15", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 4, "set": "1", "nb": 1, "prev": "The Line", "next": "Rift"},
+  {"date": "2016-10-18", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 14, "set": "1", "nb": 1, "prev": "Sand", "next": "46 Days"},
+  {"date": "2016-10-25", "venue": "Verizon Theatre at Grand Prairie", "city": "Grand Prairie", "state": "TX", "gap": 5, "set": "2", "out": ">", "nb": 1, "prev": "The Line", "next": "Taste"},
+  {"date": "2016-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 8, "set": "3", "note": "James Casey on saxophone, Natalie Cressman on trombone, Jennifer Hartswick on trumpet, and Andres Forero on percussion.", "nb": 1, "prev": "Breath and Burning", "next": "555"},
+  {"date": "2018-07-28", "venue": "The Forum", "city": "Inglewood", "state": "CA", "gap": 37, "set": "1", "nb": 1, "prev": "Your Pet Cat", "next": "No Men In No Man's Land"}
  ]
 }

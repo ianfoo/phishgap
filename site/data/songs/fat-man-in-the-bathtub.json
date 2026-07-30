@@ -6,8 +6,8 @@
 
  ],
  "performances": [
-  {"date": "2010-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 1521, "set": "2", "note": "Phish debut; Giovanni Hidalgo on percussion."},
-  {"date": "2010-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1"},
-  {"date": "2022-02-27", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 387, "set": "1"}
+  {"date": "2010-10-31", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 1521, "set": "2", "note": "Phish debut; Giovanni Hidalgo on percussion.", "nb": 1, "next": "All That You Dream"},
+  {"date": "2010-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1", "nb": 1, "prev": "Bathtub Gin", "next": "Timber (Jerry the Mule)"},
+  {"date": "2022-02-27", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 387, "set": "1", "nb": 1, "next": "Mike's Song"}
  ]
 }
