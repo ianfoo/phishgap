@@ -115,6 +115,6 @@
   {"date": "2021-09-04", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 65, "set": "e", "nb": 1, "xprev": "You Enjoy Myself", "last": 1},
   {"date": "2024-12-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 149, "set": "e", "nb": 1, "xprev": "Crosseyed and Painless", "last": 1},
   {"date": "2025-06-21", "venue": "SNHU Arena", "city": "Manchester", "state": "NH", "gap": 16, "set": "e", "out": ">", "nb": 1, "xprev": "Possum", "next": "David Bowie"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 61, "set": "1", "prev": "If I Could", "next": "Colonel Forbin's Ascent"}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 61, "set": "1", "prev": "If I Could", "next": "Colonel Forbin's Ascent", "nb": 1}
  ]
 }
