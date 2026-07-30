@@ -21,6 +21,7 @@
   {"date": "1998-08-06", "venue": "Lakewood Amphitheatre", "city": "Atlanta", "state": "GA", "gap": 84, "set": "2"},
   {"date": "2003-02-25", "venue": "First Union Spectrum", "city": "Philadelphia", "state": "PA", "gap": 169, "set": "1"},
   {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 83, "set": "e", "note": "Acoustic."},
-  {"date": "2023-10-13", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 536, "set": "2", "jamchart": true, "jam": "Beautifully emerges -> from \"Hood's\"  jam and -> back to \"Hood\". Quite a way to make its first appearance in 14 years.", "out": "->"}
+  {"date": "2023-10-13", "venue": "United Center", "city": "Chicago", "state": "IL", "gap": 536, "set": "2", "jamchart": true, "jam": "Beautifully emerges -> from \"Hood's\"  jam and -> back to \"Hood\". Quite a way to make its first appearance in 14 years.", "out": "->"},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 122, "set": "1", "note": "Trey on acoustic."}
  ]
 }

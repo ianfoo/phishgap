@@ -32,6 +32,7 @@
   {"date": "2012-07-04", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 34, "set": "1"},
   {"date": "2014-07-04", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 66, "set": "1"},
   {"date": "2014-11-01", "venue": "MGM Grand Garden Arena", "city": "Las Vegas", "state": "NV", "gap": 33, "set": "e"},
-  {"date": "2016-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 76, "set": "1"}
+  {"date": "2016-12-28", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 76, "set": "1"},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 362, "set": "1"}
  ]
 }
