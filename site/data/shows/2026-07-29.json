@@ -360,13 +360,14 @@
       "prev_date": "2026-07-19",
       "prev_venue": "Merriweather Post Pavilion",
       "prev_place": "Columbia, MD",
-      "plays": null,
-      "recent_plays": 0,
-      "gap_median": null,
-      "gap_mean": null,
-      "gap_low": null,
-      "gap_high": null,
-      "verdict": null
+      "out": "",
+      "plays": 151,
+      "recent_plays": 53,
+      "gap_median": 6,
+      "gap_mean": 6.09433962264151,
+      "gap_low": 3.0,
+      "gap_high": 9.199999999999996,
+      "verdict": "expected"
     }
   ],
   "count_since": "2026-07-30T03:37:57+00:00",
