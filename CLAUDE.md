@@ -19,14 +19,21 @@ there, which makes local verification lie.
 **There are still three base stylesheets, but what they share is now named.**
 `CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and
 `FAQ_CSS` extend `INDEX_CSS`. The rules that were identical in all three live
-in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS` and
-`FOOTER_LINK_CSS` — edit those once. **Everything else is still copied**:
-32–46 rules repeat pairwise, and the near-misses `.crumb{…}` (four
-occurrences, all four different) and `.hero{…}` (flex in one sheet, grid in
-another) differ by real amounts. **`footer{…}` no longer does** — measured
-2026-07-30, its three layout copies are identical once whitespace is
-normalised, so it is a pure triplicate that could join the named blocks
-above; the entry here said otherwise for long enough to be worth correcting.
+in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS`,
+`FOOTER_BOX_CSS`, `FOOTER_LINK_CSS` and `CARD_LINK_CSS` — edit those once.
+(`DEK_CSS` is the same idea across two of the three, not all three.)
+`CARD_LINK_CSS` was named on 2026-07-30 the moment a third sheet wanted a
+linked hero card, rather than after: it holds the three rules that do not
+depend on where the card goes, and deliberately leaves out the fourth, which
+carries the arrow — the index points right because the card leaves the page,
+the show and song sheets point down because it lands further down this one.
+**Everything else is still copied**: 32–46 rules repeat pairwise, and the
+near-misses `.crumb{…}` (four occurrences, all four different) and `.hero{…}`
+(flex in one sheet, grid in another) differ by real amounts. `footer{…}` was
+listed with them and had stopped differing: measured 2026-07-30 its three
+copies were identical once whitespace was normalised, so it was hoisted into
+`FOOTER_BOX_CSS`. **The stale note is the lesson** — it told several sessions
+to leave a pure triplicate alone, and a wrong constraint in a doc gets obeyed.
 So a plain string replace on any rule
 outside a named block will still hit two or three sheets, or — worse — one.
 Anchor on a neighbouring line that differs and assert the match count. Four
@@ -41,6 +48,20 @@ file that ships, and CI then restores the *published* PNGs, sees an index
 claiming everything is current, and draws nothing. The markup updates and the
 images do not. **This is the fourth instance of the shape below** — a record
 that outlives the work it records. Check the published PNG, not the log line.
+If you must draw locally to see a change, `git checkout HEAD -- site/data/cards.json`
+before committing: an index that says "stale" is true of the published images
+and makes CI redraw, where a fresh one silently freezes them.
+
+**And the card index was keyed on only part of what draws a card.**
+`card_print` hashed markup + `CARD_CSS` but not `CARDS_SHELL`, so the three
+days when `{sheet}` was printed literally across the top of every batch's first
+card — 14 published PNGs, `index.png` and `due.png` among them — never
+invalidated anything: all 1,301 recorded hashes matched the code that was
+producing the broken images. The same omission had every card drawn in Georgia
+and system mono, because the shell is where the font links live. `CARDS_SHELL`
+is hashed now, and `CARD_REVISION` is a hand-bumped integer for what no hash of
+the inputs can see. **A cache key must cover the whole pipeline; when you fix a
+renderer, ask what invalidates the render.** `docs/TODO.md` §8i.
 
 **And the fifth: `nb` on a performance meant "we asked", not "we know".**
 `setlist_neighbours` returned an entry only for songs that *had* a neighbour,

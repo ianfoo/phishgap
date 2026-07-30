@@ -23,8 +23,9 @@
       "recent_plays": 43,
       "gap_median": 8,
       "gap_mean": 8.720930232558139,
-      "gap_low": 5.0,
-      "gap_high": 13.399999999999991,
+      "gap_low": 4.861952831350465,
+      "gap_high": 12.619910529645816,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -41,8 +42,9 @@
       "recent_plays": 25,
       "gap_median": 10,
       "gap_mean": 14.08,
-      "gap_low": 6.0,
-      "gap_high": 24.599999999999994,
+      "gap_low": 5.357148336877635,
+      "gap_high": 23.33791812514736,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -61,6 +63,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": "bustout"
     },
     {
@@ -77,8 +80,9 @@
       "recent_plays": 8,
       "gap_median": 32.5,
       "gap_mean": 35.5,
-      "gap_low": 18.35,
-      "gap_high": 46.8,
+      "gap_low": 17.157315332369052,
+      "gap_high": 55.899603412309375,
+      "gap_away": null,
       "verdict": "overdue"
     },
     {
@@ -95,8 +99,9 @@
       "recent_plays": 56,
       "gap_median": 5.0,
       "gap_mean": 5.660714285714286,
-      "gap_low": 2.25,
-      "gap_high": 7.75,
+      "gap_low": 2.3778304542576087,
+      "gap_high": 8.817316007458345,
+      "gap_away": null,
       "verdict": "overdue"
     },
     {
@@ -113,8 +118,9 @@
       "recent_plays": 40,
       "gap_median": 7.0,
       "gap_mean": 9.375,
-      "gap_low": 4.85,
-      "gap_high": 15.299999999999997,
+      "gap_low": 4.512084997357293,
+      "gap_high": 14.371873973788313,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -133,6 +139,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": null
     },
     {
@@ -151,6 +158,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": null
     },
     {
@@ -167,8 +175,9 @@
       "recent_plays": 31,
       "gap_median": 10,
       "gap_mean": 12.483870967741936,
-      "gap_low": 7.0,
-      "gap_high": 19.5,
+      "gap_low": 5.423246594003161,
+      "gap_high": 19.874315257999726,
+      "gap_away": null,
       "verdict": "premature"
     },
     {
@@ -185,8 +194,9 @@
       "recent_plays": 38,
       "gap_median": 6.0,
       "gap_mean": 9.526315789473685,
-      "gap_low": 4.0,
-      "gap_high": 15.45,
+      "gap_low": 3.500985647334222,
+      "gap_high": 15.528092665942385,
+      "gap_away": null,
       "verdict": "overdue"
     },
     {
@@ -203,8 +213,9 @@
       "recent_plays": 27,
       "gap_median": 9,
       "gap_mean": 14.185185185185185,
-      "gap_low": 6.0,
-      "gap_high": 25.099999999999998,
+      "gap_low": 4.875432110416664,
+      "gap_high": 23.346038518611326,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -221,8 +232,9 @@
       "recent_plays": 13,
       "gap_median": 17,
       "gap_mean": 28.615384615384617,
-      "gap_low": 11.6,
-      "gap_high": 45.39999999999999,
+      "gap_low": 9.516555014879359,
+      "gap_high": 45.49797805798902,
+      "gap_away": null,
       "verdict": "premature"
     },
     {
@@ -239,8 +251,9 @@
       "recent_plays": 46,
       "gap_median": 6.0,
       "gap_mean": 7.217391304347826,
-      "gap_low": 3.0,
-      "gap_high": 12.25,
+      "gap_low": 2.944721349946361,
+      "gap_high": 11.659121291886438,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -259,6 +272,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": "bustout"
     },
     {
@@ -275,8 +289,9 @@
       "recent_plays": 8,
       "gap_median": 41.5,
       "gap_mean": 46.5,
-      "gap_low": 13.100000000000001,
-      "gap_high": 56.95,
+      "gap_low": 7.116070736136352,
+      "gap_high": 111.95501340844392,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -293,9 +308,10 @@
       "recent_plays": 21,
       "gap_median": 13,
       "gap_mean": 17.904761904761905,
-      "gap_low": 9.0,
-      "gap_high": 25.0,
-      "verdict": "premature"
+      "gap_low": 7.857630337113493,
+      "gap_high": 28.11888404163552,
+      "gap_away": null,
+      "verdict": "expected"
     },
     {
       "set": "SET 2",
@@ -313,6 +329,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": "bustout"
     },
     {
@@ -329,8 +346,9 @@
       "recent_plays": 76,
       "gap_median": 5.0,
       "gap_mean": 4.934210526315789,
-      "gap_low": 3.0,
-      "gap_high": 7.0,
+      "gap_low": 2.670428043377198,
+      "gap_high": 7.293123087727018,
+      "gap_away": null,
       "verdict": "expected"
     },
     {
@@ -349,6 +367,7 @@
       "gap_mean": null,
       "gap_low": null,
       "gap_high": null,
+      "gap_away": null,
       "verdict": null
     },
     {
@@ -365,8 +384,9 @@
       "recent_plays": 30,
       "gap_median": 10.5,
       "gap_mean": 11.3,
-      "gap_low": 5.35,
-      "gap_high": 16.65,
+      "gap_low": 4.7773008766311795,
+      "gap_high": 18.509282863565456,
+      "gap_away": null,
       "verdict": "expected"
     }
   ],

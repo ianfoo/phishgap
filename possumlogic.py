@@ -39,6 +39,7 @@ import os
 import random
 import re
 import shutil
+import statistics
 import subprocess
 import sys
 import tempfile
@@ -742,7 +743,8 @@ def remeasure(site_dir, artist="Phish"):
                 # event that is not a show is wrong whatever the history says,
                 # so that much can still be withdrawn.
                 if not counts:
-                    for k in ("verdict", "gap_median", "gap_low", "gap_high"):
+                    for k in ("verdict", "gap_median", "gap_low", "gap_high",
+                              "gap_away"):
                         s.pop(k, None)
                     s["verdict"] = None
                 skipped += 1
@@ -751,7 +753,7 @@ def remeasure(site_dir, artist="Phish"):
             # no longer carry one loses it rather than keeping a stale value.
             for k in ("gap", "verdict", "debut", "prev_date", "prev_venue",
                       "prev_place", "gap_median", "gap_mean", "gap_low",
-                      "gap_high", "plays", "recent_plays", "out"):
+                      "gap_high", "gap_away", "plays", "recent_plays", "out"):
                 s.pop(k, None)
             _finish_song(s, hist, report["date"], counting)
         after = json.dumps(report, sort_keys=True)
@@ -825,7 +827,7 @@ def _finish_song(s, hist, date, counting=None):
                            plays=None if idx is None else idx + 1))
     else:
         for k in ("verdict", "gap_median", "gap_mean", "gap_low", "gap_high",
-                  "plays", "recent_plays"):
+                  "gap_away", "plays", "recent_plays"):
             s.pop(k, None)
         s["verdict"] = None
     prior = hist[idx - 1] if idx else (hist[-1] if idx is None and hist else None)
@@ -1512,6 +1514,22 @@ FIGURE_CSS = """.num.hot{color:var(--hot)}
    color:var(--dim);margin-bottom:.35rem}
 """
 
+#: A hero card that is also a link, in the three of these rules that do not
+#: depend on where it goes. Named the moment a third sheet wanted it: the song
+#: page's new Debuted card would have been an exact third copy of the show
+#: page's block, which is the shape every stylesheet bug in this file has had.
+#:
+#: The fourth rule is deliberately *not* here. It carries the arrow, and the
+#: arrow is the one thing that genuinely differs: the index points right,
+#: because the card leaves for another page; the show and song pages point
+#: down, because the card lands further down the page you are on. Kept at each
+#: point of use so the glyph is readable beside the sheet it belongs to, rather
+#: than parameterised into a token nobody can picture.
+CARD_LINK_CSS = """a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+"""
+
 #: The standfirst. Two sheets stated this identically, which is how it comes to
 #: be one block; and it is the one size that does not simply ride the root lift
 #: above. A dek introduces the page's body text, so setting it *smaller* than
@@ -1532,6 +1550,21 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
 """
 
 #: Footer links, drawn the way every other link on the site is drawn.
+# The footer's own box, and it sits immediately before FOOTER_LINK_CSS at all
+# three call sites, so the two are always emitted together.
+#
+# Named late. CLAUDE.md listed footer{} for a long time as a near-miss that
+# "differs by real amounts" and told sessions to leave it alone; measured on
+# 2026-07-30 the three copies were identical once whitespace is normalised, so
+# the note was protecting nothing. `.crumb` (four occurrences, four different)
+# and `.hero` (flex in one sheet, grid in another) do still differ and stay
+# where they are.
+FOOTER_BOX_CSS = """footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);display:flex;justify-content:space-between;
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+"""
+
 FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -1834,10 +1867,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    card that leads to a row of this one, which is why the mark is a down arrow
    rather than the index's right one. A right arrow inside a setlist is a claim
    about the music -- see the note on td.last's label. */
-a.card{text-decoration:none;color:inherit}
-a.card:hover{background:var(--hover)}
-a.card .lbl::after{content:" \\2193";color:var(--dim);white-space:nowrap}
-a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+""" + CARD_LINK_CSS + """a.card .lbl::after{content:" \\2193";color:var(--dim);white-space:nowrap}
 /* Where you landed. A jump into the middle of a forty-row setlist puts the
    reader somewhere with nothing to say they arrived, and the row they wanted
    looks exactly like the thirty-nine around it. The way back from here is the
@@ -1927,11 +1957,7 @@ td.song a:hover{color:var(--hot)}
        font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
        font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:68ch}
 .notes a{color:var(--hot)}
-footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
-       color:var(--dim);display:flex;justify-content:space-between;
-       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-""" + FOOTER_LINK_CSS + """@media screen{
+""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
   tr:hover td{background:var(--hover)}
@@ -2168,6 +2194,25 @@ def _show_links(date, on_phishin=None):
 # gets numbers but no verdict. A song played four times cannot be overdue.
 MIN_HISTORY = 8
 
+# At or below this many countable performances a song page stops being a list
+# and becomes a statement, and the apparatus for reading a list is dropped:
+# search, sort, era chips and the "n of n" counter. 134 of 589 songs are played
+# exactly once, and on those the tools bar and three "n/a" cards were 367px of
+# chrome on a phone in front of a single 257px row -- a search field over one
+# searchable thing, a four-way sort that cannot reorder anything, and one era
+# chip anchoring to the row directly beneath it.
+#
+# A constant rather than a literal because the line is Ian's to move; raising
+# it is this one number. Every branch below tests `sparse`, never a count.
+#
+# Moved to 2 on 2026-07-30, on his call. It holds up on its own terms: a
+# two-performance song has one interval, so the three gap cards printed the
+# same figure three times -- Baby Lemonade read 1,312 / 1,312 / 1,312 across
+# "median, last 10 years", "median, all-time" and "longest gap" -- and a
+# four-way sort over two rows reorders nothing a reader cannot already see.
+# 193 songs of 589.
+SPARSE_HISTORY = 2
+
 # The "typical" gap is measured over this many years before the show, never
 # over all of history. Forty years of a working band is several different bands:
 # the 1990s dominate any all-time figure, when they played far more shows a year
@@ -2188,6 +2233,39 @@ RECENT_YEARS = 10
 # recent performances -- which is the honest answer for a bustout.
 BAND = (.15, .85)
 
+# ...and the middle 70% is *measured* on a log scale, which is the whole of what
+# `gap_band` does differently from reading two percentiles off the list. The band
+# has to be earned rather than nominal: it says "usually", so it should contain
+# the next gap about 70% of the time. Replaying all 32,605 rateable performances
+# from the archive -- band built from prior gaps only, then checked against the
+# gap that actually followed -- showed the percentile band did not, and missed in
+# a pattern:
+#
+#   median gap    0-4    4-7   7-11  11-20  20-40    40+
+#   percentiles   76%    70%    67%    63%    53%    44%
+#   log scale     70%    69%    68%    67%    61%    49%
+#
+# Rare songs were the badly served ones, and note the direction: their bands
+# were too *narrow*, landing inside barely half the time. Ian's read of a wild
+# Esther row was right about the row and inverted about the cause -- the wide
+# band belongs to songs whose spread is large relative to their own median,
+# which is nearly independent of how rare they are. Scaling the width by rarity
+# would have tightened the group already missing most often.
+#
+# Percentiles are not wrong here so much as the wrong shape. Two gaps and a
+# straight line between them treats 5-to-8 and 68-to-71 as the same distance,
+# and for a quantity that can be 5 or 112 but never negative, they are not: the
+# honest unit is a ratio. Ordinary mean +/- SD is worse than either -- it covers
+# 78% where it aims for 68% and puts the low end at or below zero on 38% of
+# rows (Esther's is -0.5). A median-and-IQR version in log space resists
+# outliers but undercovers at 62%, so it is not that either.
+#
+# K is the z-score matching BAND[1], so "the middle 70%" stays literally what is
+# being computed rather than a leftover phrase. Overdue lands at 21.7% against
+# the percentile band's 21.4%, which is what keeps the tuning note above intact;
+# premature rises from 6.5% to 9.3%, nearer the 15% it always claimed.
+BAND_K = statistics.NormalDist().inv_cdf(BAND[1])
+
 # Ian, reading the live list: "the songs we *expect* to hear, but that haven't
 # been played in a bit longer than we expect… I'm expecting due songs. I'm not
 # expecting overdue songs." Two conditions come out of that, and measuring
@@ -2201,11 +2279,14 @@ BAND = (.15, .85)
 DUE_CADENCE = 20
 #
 # TWO: it has to be late, but not wildly so. Measured against the song's own
-# *median* rather than its 85th percentile, which is what made the earlier
-# version wrong: Mr. Completely is 1.8x its 85th percentile and looked mildly
-# late, while being gone 98 shows against a typical gap of 15 -- 6.5x. The
-# 85th percentile is skewed by a song's few worst gaps and is the right gate
-# for "is it late at all"; it is the wrong scale for "how late".
+# *median* rather than the top of its usual range, which is what made the earlier
+# version wrong: Mr. Completely sat 1.8x above that edge and looked mildly late,
+# while being gone 98 shows against a typical gap of 15 -- 6.5x. The upper edge
+# is pulled out by a song's few worst gaps and is the right gate for "is it late
+# at all"; it is the wrong scale for "how late". (The 1.8x was measured when the
+# edge was the 85th percentile of the gap list; `gap_band` computes it
+# differently now, and the reasoning is about which figure to use, not which
+# estimator produced it.)
 #
 # Every song Ian named lands between 1.8x and 3.2x its median: Golden Age 1.8,
 # Hey Stranger 2.0, Kill Devil Falls 2.2, A Life Beyond The Dream 2.2, Martian
@@ -2358,17 +2439,77 @@ FEW_TITLE = few_phrase().capitalize()
 FEW_TIMES = few_phrase()
 
 
-def _quantile(vals, q):
-    """Linear-interpolated quantile of an unsorted list."""
-    if not vals:
-        return None
-    ordered = sorted(vals)
-    if len(ordered) == 1:
-        return float(ordered[0])
-    pos = (len(ordered) - 1) * q
-    low = int(pos)
-    high = min(low + 1, len(ordered) - 1)
-    return ordered[low] + (ordered[high] - ordered[low]) * (pos - low)
+def gap_band(recent):
+    """Where this song's gaps usually land -- the one definition of "usually".
+
+    -> (low, high), or (None, None) with too little history to say.
+
+    Measured multiplicatively: the spread of log gaps, back-exponentiated, so
+    the band is a ratio around the song's typical gap rather than a fixed number
+    of shows either side of it. See the note on BAND_K for why, and for what the
+    percentile version got wrong. The +1 is so a gap of 0 has a logarithm -- You
+    Enjoy Myself has one, two shows in a row at Dick's.
+
+    Shared by all four callers on purpose. The report row, the song page figure,
+    that page's `data-high` and the due page each read two percentiles off the
+    list themselves, which is four chances to disagree about what "usually"
+    means -- and this file has already shipped that bug twice, once when the
+    song page and its preview card computed longest-gap differently, and once
+    when a card index and the published images disagreed about being current.
+    """
+    if len(recent) < MIN_HISTORY:
+        return None, None
+    logs = [math.log(g + 1) for g in recent]
+    mid = statistics.mean(logs)
+    spread = statistics.stdev(logs) if len(logs) > 1 else 0.0
+    return (math.exp(mid - BAND_K * spread) - 1,
+            math.exp(mid + BAND_K * spread) - 1)
+
+
+# A break this size, above the median, is taken to separate two behaviours
+# rather than to mark one long gap: the song's rotation, and the stretches it
+# spent off the list entirely. Esther's recent gaps are 5 8 12 13 14 16 19 20 26
+# 29 68 76 112 -- nine of one thing and three of another, and 29 -> 68 is the
+# 2.3x that says so.
+AWAY_JUMP = 2.0
+
+
+def layoff_break(recent):
+    """The gaps that are an absence rather than a longer wait, if any.
+
+    -> the sorted layoff gaps, or [] where the record is one behaviour.
+
+    A band is a single range and cannot say "either a fortnight or two years",
+    which is exactly what a song like Esther does. Rather than average the two
+    into a range describing neither, the band keeps measuring the whole record
+    and the row says the second thing in words.
+
+    Four conditions, and each one is turning something down. A break of at least
+    AWAY_JUMP, or there is only one behaviour here. At least two gaps beyond it,
+    because one is an outlier and naming it as a habit overstates it -- Mr.
+    Completely's single 380 is its longest gap, which its own page already says.
+    No more than a third of the record, or the "absences" are the behaviour. And
+    the break has to sit at twice the median at least, so this is a song that
+    goes away rather than one that is merely uneven.
+
+    Fires on 10.8% of rateable performances and 9 of the 214 songs rateable
+    today, all nine of them visibly two clusters: Axilla 3-36 then 81 and 82,
+    Contact 4-41 then 95 and 95, The Sloth 10-45 then 97 and 98.
+    """
+    if len(recent) < MIN_HISTORY:
+        return []
+    mid = _median(recent)
+    ordered = sorted(recent)
+    best = ()
+    for i in range(len(ordered) - 1):
+        if ordered[i] >= mid and ordered[i] > 0:
+            best = max(best, (ordered[i + 1] / ordered[i], i + 1))
+    if not best or best[0] < AWAY_JUMP:
+        return []
+    away = ordered[best[1]:]
+    if len(away) < 2 or len(away) > len(recent) / 3 or not mid:
+        return []
+    return away if away[0] >= 2 * mid else []
 
 
 def _years_before(iso, years):
@@ -2429,12 +2570,20 @@ def _classify(gap, prior, on_date, plays=None):
               and str(h.get("gap")).lstrip("-").isdigit()]
     stats = {"plays": plays, "recent_plays": len(recent), "gap_median": None,
              "gap_mean": None, "gap_low": None, "gap_high": None,
-             "verdict": None}
+             "gap_away": None, "verdict": None}
     if len(recent) >= MIN_HISTORY:
         stats["gap_median"] = _median(recent)
         stats["gap_mean"] = sum(recent) / len(recent)
-        stats["gap_low"] = _quantile(recent, BAND[0])
-        stats["gap_high"] = _quantile(recent, BAND[1])
+        stats["gap_low"], stats["gap_high"] = gap_band(recent)
+        # Carried on the row because the renderer sees the row and not the
+        # history it came from -- as [how many, from what], the two numbers the
+        # sentence needs. Null rather than absent on the rows with nothing to
+        # say, like gap_low and gap_mean beside it: the renderers read these by
+        # subscript because the report shape has always guaranteed them, which
+        # is the reason prev_date is assigned unconditionally further down.
+        away = layoff_break(recent)
+        if away:
+            stats["gap_away"] = [len(away), away[0]]
         if gap is not None:
             stats["verdict"] = (
                 "premature" if gap < stats["gap_low"] else
@@ -2646,6 +2795,16 @@ def render_html(report, bar_scale="linear", index_href=None,
             tip = ("%s show%s; usually %s to %s"
                    % (_stat(g), "" if g == 1 else "s",
                       _stat(round(s["gap_low"])), _stat(round(s["gap_high"]))))
+            # A band is one range, and some songs do two things -- see
+            # layoff_break. Where they do, the range alone reads as though the
+            # song merely waits a long time, and "but" is doing the work: the
+            # sentence has stopped describing one behaviour and started naming
+            # the second. Esther is the case that prompted it, and her range
+            # tops out at 55 against three absences of 68, 76 and 112.
+            if s.get("gap_away") and s.get("recent_plays"):
+                tip += (", but %d of its last %d gaps ran %s or longer"
+                        % (s["gap_away"][0], s["recent_plays"],
+                           _stat(s["gap_away"][1])))
         elif g is not None and s.get("recent_plays") is not None:
             # No band, so no bar -- and an empty column is the most confusing
             # thing on the row unless it says why it is empty. This is not a
@@ -2673,9 +2832,9 @@ def render_html(report, bar_scale="linear", index_href=None,
         typical = ""
         if s.get("gap_median") is not None:
             # The median alone. The mean sits within 20% of it for two thirds
-            # of songs, so it earned its space rarely, and the percentile band
-            # that actually decides the verdict read as jargon on the page --
-            # its ends are interpolated values that appear nowhere in the
+            # of songs, so it earned its space rarely, and the band that
+            # actually decides the verdict read as jargon on the page --
+            # its ends are computed values that appear nowhere in the
             # song's real gaps. Both are still archived in the JSON.
             typical = "<span class='typ'>med %s</span>" % _stat(s["gap_median"])
         elif s.get("recent_plays") is not None:
@@ -3033,15 +3192,13 @@ h1 em{font-style:normal;color:var(--hot)}
 h1 a{color:inherit;text-decoration:none}
 h1 a:hover em{color:var(--ink)}
 /* A hero card that is also a way in. Only some of them are. */
-a.card{text-decoration:none;color:inherit}
-a.card:hover{background:var(--hover)}
-/* Some of the cards are links and some are not, so the ones that are need to
+""" + CARD_LINK_CSS + """/* Some of the cards are links and some are not, so the ones that are need to
    say so -- but a rule under a letterspaced label reads as a stray underline
    rather than an affordance, and it was the one line in the hero not doing
    structural work. An arrow after the label carries the same message and
-   disappears into the type. */
+   disappears into the type. Right, not down: this card leaves for another
+   page, where the show and song sheets' cards land further down their own. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
-a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
@@ -3339,11 +3496,7 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
-footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
-       color:var(--dim);display:flex;justify-content:space-between;
-       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-""" + FOOTER_LINK_CSS + """@media screen{
+""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
    the rules still run the full width and nothing has to be hidden. */
@@ -4001,6 +4154,17 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
    letter-spacing:0;margin-top:auto}
+/* The debut card goes to the debut's own row. SONG_CSS had no `a.card` rules
+   at all -- this is the one sheet where a card had never been a link -- and
+   writing them out here would have made an exact third copy of the show
+   sheet's block, so they were named instead. Down-arrow, not the index's
+   right: the destination is on this page. */
+""" + CARD_LINK_CSS + """a.card .lbl::after{content:" \\2193";color:var(--dim);white-space:nowrap}
+/* A date rather than a count: ten characters where every other figure on this
+   row is one to five, so it is set down a step. Only reachable on a
+   one-performance page, where the hero is two cards and there is half the
+   measure to spend on it -- five across it would wrap at 900, 1024 and 375. */
+.num.when{font-size:1.75rem}
 """ + FIGURE_CSS + """.lbl .abbr{display:none}
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
@@ -4389,11 +4553,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
 .totop:hover{color:var(--hot);border-color:var(--hot)}
-footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-""" + FOOTER_LINK_CSS + """@media screen{
+""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -4427,6 +4587,9 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .card:nth-child(odd){border-left:0;padding-left:0}
   .card:nth-child(n+3){border-top:1px solid var(--rule)}
   .num{font-size:1.5rem}
+  /* Two columns here, so the date has a 45% card rather than half the row:
+     1.5rem wants 162px against about 151px of it at 375. */
+  .num.when{font-size:1.25rem}
   .lbl{font-size:.625rem;letter-spacing:.14em}
   /* "Median gap, last 10 years" is the clear label and the default one; the
      column is simply not wide enough for it here. */
@@ -4435,6 +4598,18 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
   .show{font-size:.75rem;letter-spacing:0}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
+}
+/* A one-performance hero is two cards and one of them is a ten-character date,
+   which is a different problem from the five-card row: two cards share the
+   width, so each gets about 124px at 320px and the date wants 135. Measured
+   rather than guessed -- it is fine at 330 and wraps at 320, so the pair stack
+   below 360 rather than at the edge of fitting, where a fallback face a little
+   wider than IBM Plex Mono would put it back. Five cards already stack on a
+   phone; these two just do it one breakpoint later. */
+@media screen and (max-width:360px){
+  .hero.sparse .card{flex:1 1 100%;border-left:0;padding-left:0}
+  .hero.sparse .card+.card{border-top:1px solid var(--rule)}
+  .hero.sparse .num.when{font-size:1.5rem}
 }
 """)
 # After the sheet is composed, not inside its last segment: the placeholders sit
@@ -4463,7 +4638,7 @@ SONG_JS = """
     if(typeof n!=='number') return;
     box.querySelector('.num').textContent=n.toLocaleString();
     /* The same two thresholds the report pages apply, in the same order: the
-       85th percentile of recent gaps where the song has enough history to have
+       upper edge of the song's usual range where it has enough history to have
        one, and the bustout line where it does not. Ours against ours -- this
        is not a claim about phish.net's gap, which is not reproducible from a
        show calendar. */
@@ -4578,22 +4753,30 @@ SONG_JS = """
   }
   var clear=document.getElementById('clear');
   function setQuery(v){ q.value=v; apply(); }
-  q.addEventListener('input', apply);
-  sort.addEventListener('change', order);
-  // Clicking a venue asks the question you were about to type.
-  list.addEventListener('click', function(e){
-    var v=e.target.closest && e.target.closest('.r-venue');
-    if(!v) return;
-    setQuery(v.textContent.trim());
-    q.scrollIntoView({block:'nearest'});
-  });
-  if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
-  document.addEventListener('keydown', function(e){
-    if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
-    if(e.key==='Escape' && q.value){ setQuery(''); q.blur(); }
-  });
-  q.disabled=false; sort.disabled=false;
-  apply();
+  /* A one-performance page ships no tools bar at all, so every handler below
+     is wired only where there is something to wire it to. Guarded here rather
+     than by returning early: the sticky header and the deep-link landing at the
+     foot of this function belong to every song page, and an early return took
+     them out on the 134 pages that have one row -- which are exactly the pages
+     a report links *into* by date. */
+  if(q&&sort){
+    q.addEventListener('input', apply);
+    sort.addEventListener('change', order);
+    // Clicking a venue asks the question you were about to type.
+    list.addEventListener('click', function(e){
+      var v=e.target.closest && e.target.closest('.r-venue');
+      if(!v) return;
+      setQuery(v.textContent.trim());
+      q.scrollIntoView({block:'nearest'});
+    });
+    if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+      if(e.key==='Escape' && q.value){ setQuery(''); q.blur(); }
+    });
+    q.disabled=false; sort.disabled=false;
+    apply();
+  }
 
   // The condensed header appears once the real one is off screen, and the
   // real one is the thing to watch rather than a scroll offset -- no
@@ -4634,7 +4817,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="{skip}">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
@@ -4644,11 +4827,28 @@ SONG_SHELL = """<!DOCTYPE html>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
 {pairs}{caveat}</header>
-<section class="hero">{hero}</section>
+<section class="hero{herocls}">{hero}</section>
 <div class="rule2"></div>
 {best}
 <p class="links">{links}</p>
-<div class="tools" id="main" tabindex="-1">
+{tools}
+{head}
+<ol class="perfs" id="list"{listattrs}>
+{rows}
+</ol>
+<p class="empty" id="empty" hidden>No performances match that search.</p>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
+<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div><script>{js}</script></body></html>
+"""
+
+# Lifted out of SONG_SHELL so that a page with nothing to search, sort or
+# filter can leave it out entirely rather than ship it disabled. See
+# SPARSE_HISTORY. Braces are the shell's own .format() vocabulary, so this stays
+# a plain block with two fields and no CSS or script in it.
+SONG_TOOLS = """<div class="tools" id="main" tabindex="-1">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
 <button id="clear" class="clear" type="button" hidden>Clear</button>
@@ -4659,18 +4859,7 @@ SONG_SHELL = """<!DOCTYPE html>
 <option value="rating">Highest rated</option><option value="gap">Longest gap</option>
 </select></label>
 <span class="count"><b id="shown">{count}</b> of {count} shows</span>
-</div>
-{head}
-<ol class="perfs" id="list">
-{rows}
-</ol>
-<p class="empty" id="empty" hidden>No performances match that search.</p>
-<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
-<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
-{analytics}
-</div><script>{js}</script></body></html>
-"""
+</div>"""
 
 SONG_LINKS = (
     ("phish.net", "https://phish.net/song/%s", ICON_PNET, False),
@@ -4744,6 +4933,62 @@ def countable_gaps(doc, counting=None):
     return countable, debut_date, gaps
 
 
+def _debut_card(debut_date, sparse=False):
+    """The hero card for when a song started, or nothing if it never counted.
+
+    It takes the slot "Times Played" had, which was the same integer the page
+    already printed three more times -- in the subtitle a dozen pixels above the
+    card, in the "n of n shows" counter, and in the sticky bar -- while the
+    debut was one small-caps phrase in that subtitle and its row was at the foot
+    of a list up to 629 rows long. Every gap figure here is "n/a" on a quarter
+    to a third of songs; the debut is missing on 9 of 589, which makes it the
+    most widely available thing the hero was not showing.
+
+    The figure is the **year**, and that is a measurement rather than a taste:
+    five cards across leaves 117-160px inside each one between 900 and 1280px,
+    and "1986-02-03" wants 243px at the .num size and still 162px shrunk to
+    1.5rem. It wrapped to two lines at 900, 1024 and 375. Widening the card to
+    fit starves the other four below 1024. So the exact date goes where there is
+    room for it: the card is a link to the debut's own row, which is the sort
+    reversal this card exists to save, and the row states the full date, the
+    venue and the note.
+
+    A one-performance page has two cards and half the row each, so there the
+    full date fits and is printed -- and there is nothing to link to that is not
+    already the only thing on the page.
+    """
+    if not debut_date:
+        return ""
+    if sparse:
+        return ("<div class='card dbt'><div class='lbl'>Debuted</div>"
+                "<div class='num when'>%s</div></div>" % debut_date)
+    return ("<a class='card dbt' href='#%s' title='Debuted %s'>"
+            "<div class='lbl'>Debuted</div>"
+            "<div class='num'>%s</div></a>" % (debut_date, debut_date,
+                                               debut_date[:4]))
+
+
+def _sparse_gap_card(gaps):
+    """The one gap figure a nearly-unplayed song actually has.
+
+    At two performances there is exactly one interval, and it is the most
+    interesting number on the page -- Baby Lemonade's two are 1,312 shows
+    apart. The full hero said it three times, as "median, last 10 years",
+    "median, all-time" and "longest gap", because with a single sample all
+    three reduce to the same value. Said once, and named for what it is.
+
+    Written to survive SPARSE_HISTORY being raised again: with more than one
+    interval "shows between" would be a false description of a median, so the
+    label changes with the arithmetic rather than assuming the threshold.
+    """
+    if not gaps:
+        return ""
+    val, lbl = ((gaps[0], "Shows Between") if len(gaps) == 1
+                else (max(gaps), "Longest Gap"))
+    return ("<div class='card'><div class='lbl'>%s</div>"
+            "<div class='num hot'>%s</div></div>" % (lbl, _stat(val)))
+
+
 def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     """One song's whole performance history, newest first.
 
@@ -4774,27 +5019,34 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
               and p["date"] != debut_date]
     lbl10 = ("Median Gap, <span class='full'>Last %d Years</span>"
              "<span class='abbr'>%d Yr</span>" % (RECENT_YEARS, RECENT_YEARS))
-    hero = "".join(
-        "<div class='card'><div class='lbl'>%s</div>"
-        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-        for val, lbl, cls in (
-            (len(countable), "Times Played", ""),
-            (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
-            (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
-            (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
-        ))
+    # A song played once has one figure worth a card and it is not a gap: three
+    # of the four below read "n/a", and the fourth restates the subtitle. What
+    # it has instead is a date and a distance from now, so that is what it gets.
+    sparse = len(countable) <= SPARSE_HISTORY
+    hero = _debut_card(debut_date, sparse)
+    if sparse:
+        hero += _sparse_gap_card(gaps)
+    else:
+        hero += "".join(
+            "<div class='card'><div class='lbl'>%s</div>"
+            "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
+            for val, lbl, cls in (
+                (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
+                (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
+                (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
+            ))
     # Filled in the browser from data/current.json; see SONG_JS. It carries the
     # thresholds rather than the verdict, because the count it has to be judged
     # against is the thing that is not known until the page is open. They are
-    # the same two the report pages use -- the 85th percentile of recent gaps
-    # where there is enough history for one, the bustout line where there is
-    # not -- so a song called overdue here is overdue by the site's one rule.
+    # the same two the report pages use -- the upper edge of `gap_band` where
+    # there is enough history for one, the bustout line where there is not --
+    # so a song called overdue here is overdue by the site's one rule.
     hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
              "data-bustout='%d' data-mult='%s' data-quiet='%s'>"
              "<div class='lbl'>Current Gap<span class='v'></span></div>"
              "<div class='num'></div></div>"
              % (html.escape(doc.get("slug") or ""),
-                _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else "",
+                gap_band(recent)[1] if len(recent) >= MIN_HISTORY else "",
                 BUSTOUT_GAP, DUE_MULTIPLE,
                 # The word, not the numbers it is worked out from. Whether it
                 # is used at all depends on the current gap, which is not known
@@ -4835,8 +5087,13 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     # One band for the whole page: this is a single song, so "usually" is a
     # single answer rather than a per-row one.
-    low = _quantile(recent, BAND[0]) if len(recent) >= MIN_HISTORY else None
-    high = _quantile(recent, BAND[1]) if len(recent) >= MIN_HISTORY else None
+    #
+    # No layoff sentence here, though `layoff_break` would answer for this song
+    # too. This page draws the band and never states it in words, so there is no
+    # sentence to add the clause to -- only a new paragraph on all 588 pages, to
+    # reach the nine it would say anything about. That is the mistake the marks
+    # link below was moved to stop making.
+    low, high = gap_band(recent)
     rows, seen_era = [], None
     for i, p in enumerate(perfs):
         date, g = p["date"], p["gap"]
@@ -4853,7 +5110,10 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         if not counted:
             g = None
         this = era(date)
-        if this != seen_era:
+        # A heading over one row says "3.0 - 1 show - 2010-2010", which is the
+        # year that is in the row beneath it and the count that is in the
+        # subtitle above it. There is nothing for it to divide.
+        if this != seen_era and not sparse:
             seen_era = this
             lo, hi = span[this]
             rows.append(
@@ -5036,6 +5296,22 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         % (e.replace(".", "-"), e, tally[e])
         for e in seen_order)
 
+    # The whole tools bar goes on a sparse page: a search field over one row, a
+    # sort with four options that all produce the same page, a chip anchoring to
+    # the row below it, and "1 of 1 shows". The bar carried `id="main"`, which
+    # is what "Skip to content" skips *to*, so the skip link is re-pointed at
+    # the list rather than left aiming at an element that is no longer rendered.
+    # It aims at the id the list already has: a second `id` on the same <ol>
+    # parses as a duplicate, only the first survives, and `#main` silently
+    # resolved to nothing -- which is precisely the failure the skip link exists
+    # to prevent, and it is invisible unless you tab into the page.
+    tools = "" if sparse else SONG_TOOLS.format(eras=chips, count=len(countable))
+    listattrs = ' tabindex="-1"' if sparse else ""
+    skip = "#list" if sparse else "#main"
+    # Named on the section because the pair of cards below wants a rule the
+    # five-card row must not get: see `.hero.sparse` in SONG_CSS.
+    herocls = " sparse" if sparse else ""
+
     # The labels alone, so the sticky bar can carry a second copy without
     # dragging the median's <style> block into a div with it.
     #
@@ -5087,8 +5363,11 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     caveat = NOT_A_SONG.get(doc.get("slug") or "")
     caveat = "<p class='caveat'>%s</p>" % html.escape(caveat) if caveat else ""
+    # No "Debut" clause: the hero card is that date, in figure type, a dozen
+    # pixels below. Printing it here as well is the duplication the swap was
+    # made to end, only pointing the other way. What is left is the pair the
+    # hero does *not* carry.
     subtitle = " &middot; ".join(x for x in (
-        "Debut %s" % first if first else "",
         "Last played %s" % last if last and last != first else "",
         "%d performance%s" % (n, "" if n == 1 else "s"),
     ) if x)
@@ -5106,6 +5385,16 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         % (url % doc["slug"], "flip" if flip else "", icon, label)
         for label, url, icon, flip in SONG_LINKS)
 
+    # `countable`, not `perfs`. The sticky bar counted every archived row where
+    # the hero, the subtitle and the counter all count only the rows that count
+    # toward a gap, so on 136 of 589 pages the bar contradicted the page it was
+    # a condensed copy of: You Enjoy Myself read "629 shows" stuck to the top of
+    # a page whose every other figure said 627. Same source as the rest now, and
+    # pluralised, because a song played once was told it had "1 shows".
+    stuckstat = ("<b>%d</b> show%s &middot; median gap <b>%s</b>"
+                 % (n, "" if n == 1 else "s",
+                    _stat(_median(gaps)) if gaps else "&mdash;"))
+
     return SONG_SHELL.format(
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
@@ -5113,12 +5402,12 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../fonts.css"),
         cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
-        hero=hero, best=top, links=links, count=len(countable), eras=chips,
+        hero=hero, best=top, links=links, tools=tools, listattrs=listattrs,
+        skip=skip, herocls=herocls,
         share=share_meta(html.escape(typographic(song)),
                          html.escape(blurb, quote=True),
                          "song/%s.html" % doc["slug"], card=card),
-        stuckstat="<b>%d</b> shows &middot; median gap <b>%s</b>"
-                  % (len(perfs), _stat(_median(gaps)) if gaps else "&mdash;"),
+        stuckstat=stuckstat,
         head=head,          # already carries medmark; see where it is built
         rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
         # Dated by the data rather than by the clock. A build stamp changed
@@ -5362,10 +5651,10 @@ def due_rows(docs, counting, since):
                 # what span, which are the only figures it has left.
                 dormant.append((gone, doc, played))
             continue
-        high = _quantile(recent, BAND[1])
-        if high <= 0 or n <= high:
+        high = gap_band(recent)[1]
+        if high is None or high <= 0 or n <= high:
             continue
-        # The 85th percentile above is the gate -- past it, the song is later
+        # The band's upper edge above is the gate -- past it, the song is later
         # than it usually is. The median below is the scale everything is then
         # measured and ranked on, because it is the gap a reader would call
         # this song's usual, and it is the one printed on the row.
@@ -5487,10 +5776,10 @@ def _due_row(over, n, high, doc, last):
 
     The figure printed is the song's median recent gap, which is the one a
     reader would call its usual, and the one the multiple beside it is computed
-    against. It used to be the 85th percentile -- the gate for "is it late at
-    all" -- and that was both harder to read and misleading as a scale: Show of
-    Life's 85th percentile is 53.8 against a median of 29.5, and Mr. Completely
-    looked mildly late at 1.8x its 85th percentile while being gone 98 shows
+    against. It used to be the top of the song's usual range -- the gate for "is
+    it late at all" -- and that was both harder to read and misleading as a
+    scale: Show of Life's upper edge was 53.8 against a median of 29.5, and Mr.
+    Completely looked mildly late at 1.8x that edge while being gone 98 shows
     against a typical gap of 15.
     """
     place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
@@ -5810,7 +6099,7 @@ def _rotation_years(rows, anchor):
     for year, group in sorted(years.items(), reverse=True):
         # Inside a year, most-played first: that is the order of "would I
         # remember this?", and there is no other order available -- none of
-        # these songs has a percentile to be sorted on.
+        # these songs has a usual range to be sorted on.
         group.sort(key=lambda r: (-len(r[2]), typographic(r[1]["song"])))
         body.append(
             "<li class='yr' id='%s-%s'><h2>%s</h2>"
@@ -6286,12 +6575,29 @@ average over that would call almost anything ordinary.</p>"""),
 <p>A gap outside the middle 70% of that ten-year window gets called. Below it,
 <span class="verdict premature">premature</span>; above it,
 <span class="verdict overdue">overdue</span>; inside, nothing is said, which is
-most songs. The band's ends are interpolated values that appear nowhere in the
+most songs. The band's ends are computed values that appear nowhere in the
 song's actual gaps, which is why they are not printed as numbers.</p>
+<p>That middle 70% is measured as a <b>ratio</b> around the song's typical gap
+rather than as a fixed number of shows either side of it. A gap can be 5 or 112
+but never less than nothing, so a step from 5 to 8 and a step from 68 to 71 are
+not the same distance, and reading two percentiles off the list treats them as
+though they were. Checked against what actually happened next &mdash; band built
+from a song's earlier gaps, then compared with the gap that followed, over
+<span class="num">32,605</span> performances &mdash; percentiles held the next
+gap <span class="num">76%</span> of the time for the staples and
+<span class="num">44%</span> for the rarest songs, so the word
+&ldquo;usually&rdquo; meant two different things depending on the row. On a
+ratio scale it runs <span class="num">70%</span> to
+<span class="num">49%</span>.</p>
 <p>The band is wide enough that a verdict stays worth reading: roughly
-<span class="num">13%</span> of performances come out premature,
-<span class="num">67%</span> expected and <span class="num">20%</span>
-overdue.</p>"""),
+<span class="num">9%</span> of performances come out premature,
+<span class="num">69%</span> expected and <span class="num">22%</span>
+overdue.</p>
+<p>Some songs do two things rather than one &mdash; a fortnight's rotation, and
+then a year away &mdash; and a single range describes neither. Where the record
+breaks cleanly in two, the hover says so instead of averaging them: Esther's
+range tops out under sixty shows, but three of her recent gaps ran
+<span class="num">68</span> or longer.</p>"""),
     ('the-bar', 'The bar', """
 <p>The bar is a <b>position, not a length</b>. Its shaded middle is the band
 above &mdash; where this song usually lands &mdash; the hairline through it is
@@ -6802,6 +7108,17 @@ def save_card_prints(site_dir, prints):
         json.dump(prints, fh, indent=1, sort_keys=True)
 
 
+# Bumped by hand when the way a card is drawn changes somewhere the hash below
+# cannot see -- the shooter's flags, the fonts it is pointed at, the substitution
+# `shoot_cards` performs on the shell. Without it a fix to the drawing pipeline
+# leaves every card in the index recorded as current, and nothing is ever
+# redrawn: on 2026-07-30 all 1,301 recorded hashes matched the then-current code
+# while 14 of the published images had "{sheet}" printed across the top of them.
+# A version field is the only thing that can express "same input, different
+# output" -- see docs/TODO.md 8i.
+CARD_REVISION = 2
+
+
 def card_print(markup):
     """What a card would look like, as a hash.
 
@@ -6810,9 +7127,16 @@ def card_print(markup):
     stylesheet, so changing the display face would have redrawn none of the
     711 cards and left every one of them set in the old type with no way to
     notice. A card is markup plus the rules that draw it.
+
+    And the shell it is drawn in, for the same reason one step out: CARDS_SHELL
+    carries the font links, so an edit there changes every card's type and used
+    to change no card's hash. That is how the "{sheet}" leak survived three days
+    and would have survived indefinitely -- the index was not wrong about the
+    markup, it was answering a narrower question than the one being asked.
     """
     return hashlib.sha256(
-        (markup + CARD_CSS).encode("utf-8")).hexdigest()[:16]
+        ("%d\n%s%s%s" % (CARD_REVISION, markup, CARD_CSS, CARDS_SHELL)
+         ).encode("utf-8")).hexdigest()[:16]
 
 
 def chrome_exe():
@@ -6825,9 +7149,16 @@ def chrome_exe():
 CARD_CSS = """
 *{box-sizing:border-box;margin:0}
 body{background:#e9e3d6;font-family:'IBM Plex Mono',ui-monospace,monospace}
+/* The bottom padding is the wordmark's strip, reserved. The wordmark is
+   positioned absolutely and the content is centred in the box, so a title that
+   took three lines pushed the figures down onto it -- "The Inner Reaches of
+   Outer" printed POSSUMLOGIC hard against TIMES PLAYED. Centring inside a box
+   that stops short of the wordmark cannot collide with it at any title length,
+   where stepping the type size down again only moves the length where it
+   happens. */
 .card{width:%(w)dpx;height:%(h)dpx;background:#f2ece0;color:#17150f;
   display:flex;flex-direction:column;justify-content:center;
-  padding:0 84px;position:relative;overflow:hidden}
+  padding:0 84px 84px;position:relative;overflow:hidden}
 .kind{font-size:25px;letter-spacing:.14em;text-transform:uppercase;color:#877e6e}
 /* Kept clear of the mark, which starts around x=870: without a ceiling a
    middling title like "You Enjoy Myself" ran under it and the last word went
@@ -6888,8 +7219,27 @@ def shoot_cards(exe, jobs, site_dir):
     written = 0
     for start in range(0, len(jobs), CARDS_PER_SHOT):
         batch = jobs[start:start + CARDS_PER_SHOT]
-        # replace, not format: the stylesheet above is full of braces
-        page = CARDS_SHELL.replace("__CARDS__", "".join(m for _, m in batch))
+        # replace, not format: the stylesheet above is full of braces. Which
+        # is exactly why `{fonts}` and `{sheet}` have to be replaced by hand --
+        # they are .format() fields in a template nothing ever calls .format()
+        # on, so both stood as literal text. `{fonts}` sat inside an href and
+        # merely 404ed; `{sheet}` had been inside one too until it was unwrapped
+        # on 2026-07-27, and bare text in <head> is moved into <body> by the
+        # parser, painted at the top of the page and captured in the first card
+        # of every 24-card batch. 14 published cards carry a visible "{sheet}",
+        # among them index.png and due.png -- the two a shared link is most
+        # likely to unfurl. Neither face was loading either, so every card has
+        # been drawn in fallbacks.
+        #
+        # The sheet is addressed absolutely: the markup is written to a temp
+        # directory, so a relative "fonts.css" resolves next to the temp file
+        # and never to the built site.
+        page = (CARDS_SHELL
+                .replace("{fonts}", WEB_FONTS)
+                .replace("{sheet}", sheet_links(
+                    "file://" + urllib.parse.quote(
+                        os.path.abspath(os.path.join(site_dir, "fonts.css")))))
+                .replace("__CARDS__", "".join(m for _, m in batch)))
         with tempfile.TemporaryDirectory() as tmp:
             src = os.path.join(tmp, "cards.html")
             shot = os.path.join(tmp, "cards.png")
@@ -6971,17 +7321,34 @@ def song_card(doc, counting=None):
     makes, because this card is the picture of that page and the two used to
     be worked out separately -- see that function for what they disagreed on.
     """
-    countable, _, gaps = countable_gaps(doc, counting)
+    countable, debut, gaps = countable_gaps(doc, counting)
     best = (doc.get("best") or [None])[0]
     # Newest first, so the span runs from the last row to the first.
     span = ("%s &ndash; %s" % (countable[-1]["date"][:4], countable[0]["date"][:4])
             if countable else "")
     title = html.escape(typographic(doc["song"]))
+    # The same threshold the page uses, so a shared link and the page it opens
+    # tell the same story. This card is the picture of that page: when the page
+    # stopped printing three "n/a"s the card had to stop too, or the preview
+    # would advertise a page that no longer exists. 143 of them read
+    # "1 / N/A / N/A" -- three slots, one fact.
+    if len(countable) <= SPARSE_HISTORY:
+        stats = [(debut or "&mdash;", "Debuted", "")]
+        if gaps:
+            stats.append(((_stat(gaps[0]) if len(gaps) == 1 else _stat(max(gaps))),
+                          "Shows between" if len(gaps) == 1 else "Longest gap",
+                          "hot"))
+        # A one-year span is not a span, it is the same year printed twice --
+        # and where the song was played is a fact the card had nowhere else to
+        # put. The show cards already read "VENUE, CITY, ST" on this line.
+        if len(countable) == 1:
+            p = countable[0]
+            where = ", ".join(x for x in (p["venue"], p["city"], p["state"]) if x)
+            span = html.escape(where.upper()) or span
+        return card_markup("Every performance", title, span, tuple(stats),
+                           size=_card_size(doc["song"]), data=True)
     return card_markup(
         "Every performance", title, span,
-        # "n/a" rather than an em-dash for an absent figure, because that is
-        # the word the hero on the song page uses and this is a picture of it.
-        # A song played once has no gap to any other performance of itself.
         (("%d" % len(countable), "Times played", ""),
          (_stat(_median(gaps)) if gaps else "n/a", "Median gap", ""),
          # The third slot is the best version's score where there is one and
@@ -8679,6 +9046,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         log("re-rendered %d unchanged-content page(s) after a template change",
             rebuilt)
     write_redirects(site_dir)
+    # Before the cards are shot, and it has to stay that way: `shoot_cards`
+    # points the card renderer at this exact file, so a build that drew cards
+    # first would set every one of them in whatever face the machine happened
+    # to have -- silently, since a fallback is not an error. That is the bug
+    # the "{sheet}" fix was half of.
     write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
     write_grain(site_dir)
     # Regenerated every publish, because every publish would otherwise remove

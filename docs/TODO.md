@@ -362,6 +362,25 @@ instead by resolving the fragment directly: scroll 0 → 2273, target at
 `top:47` and in view, `document.activeElement` the row itself, no ring on it,
 and the target confirmed to be the first `tr.fresh`.
 
+### `footer{}` hoisted into `FOOTER_BOX_CSS`
+
+Measured while checking whether hiding the Keys button would strand a footer
+separator: the three `footer{…}` layout copies had become identical, though
+`CLAUDE.md` had been telling sessions for a long time that they "differ by
+real amounts". They now live in one named block beside `FOOTER_LINK_CSS`,
+which they precede at all three call sites.
+
+Proved a no-op rather than assumed. The built stylesheet of all nine page
+types is identical to the pre-hoist build once whitespace is normalised, and
+the raw diff of the whole site is **three continuation lines re-indented from
+seven spaces to three**, in the two sheets that used seven — `song/*.html` is
+byte-for-byte unchanged because its sheet already used three. No card was
+redrawn and `cards.json` never moved.
+
+That leaves `.crumb` (four occurrences, four genuinely different) and `.hero`
+(flex against grid) as the real near-misses, plus the 32–46 rules that still
+repeat pairwise. §8e.
+
 ### Three things Ian raised after the tag shipped
 
 **A song slug is not necessarily a unique id.** He is right in principle, and
@@ -520,6 +539,70 @@ guard against a reload storm on a reader's phone; `provisional` flipped false �
 reload. Note the shape: the same "**anything long-running must re-read its
 inputs each pass**" lesson as the outages in `CLAUDE.md`, now on the client. The
 page was a long-running thing that reloaded on a timer and hoped.
+
+### Same session, fourth round — the band is measured on a log scale now
+
+Ian, from the 2026-07-29 show page: "This median range is WILD… it gives a song
+a really wide berth to being considered *expected*. Perhaps we should use some
+sort of scaling math to shrink the range as the rarity of a song goes up." He
+also guessed standard deviation was involved somewhere. Both instincts pointed
+at something real; neither was the mechanism.
+
+**The test that settled it, and the one to reuse.** Replay every rateable
+performance in the archive, build the band from that song's *earlier* gaps only,
+then check it against the gap that actually followed. A band that says "usually"
+should contain the next gap about 70% of the time; where it holds more than
+that it is too generous, and where it holds less it is claiming more than it can.
+32,605 performances, no API calls.
+
+**Scaling by rarity would have been backwards.** Coverage *fell* as songs got
+rarer — 76% for staples down to 44% for the rarest — so the rare bands were
+already too narrow, and the wide bands he was looking at belong to songs whose
+spread is large relative to their own median, which is nearly independent of
+rarity. Ordinary mean ± SD is worse than the percentiles: 78% coverage against a
+nominal 68%, and a low end at or below zero on 38% of rows.
+
+**What shipped**: the band is the spread of *log* gaps, exponentiated — a ratio
+around the song's typical gap rather than a fixed number of shows either side.
+`gap_band()` is now the single definition, replacing four independent
+`_quantile(recent, BAND[…])` call sites (report row, song page figure, that
+page's `data-high`, due page gate); `_quantile` is gone with them. `BAND` still
+means "the middle 70%" and `BAND_K` is the matching z-score, so the phrase stays
+literally what is computed.
+
+| | staples → rarest | premature / expected / overdue |
+|---|---|---|
+| percentiles | 76% → 44% | 6.5 / 72.2 / 21.4 |
+| log scale | 70% → 49% | 9.3 / 69.1 / 21.7 |
+
+Overdue barely moved, which is what keeps §2d's tuning note intact.
+
+**Second half, for clarity rather than data**: some songs do two things, and one
+range describes neither. `layoff_break()` finds a clean break above the median
+and the row says the second thing in words — Esther reads "usually 8 to 58, but
+3 of its last 12 gaps ran 68 or longer". Fires on 10.8% of performances, 9 of
+214 songs today, carried on the row as `gap_away` because the renderer sees the
+row and not the history. Not added to song pages: they draw the band and never
+state it in words, so it would have meant a new paragraph on all 588 pages to
+reach nine.
+
+**Verified**: 712 show pages replayed against their data with 0 tooltip
+mismatches; all 11,938 archived bands and 370 clauses recomputed from song
+histories with 0 disagreements; real hover in light and dark; no horizontal
+overflow at 375 or 1280. Due page moved 43 → 39 rows (11 → 10 due, 27 → 24
+slipping), and all six moves were checked by hand.
+
+**Stale wording elsewhere in this file.** §2, §2b and §2d describe the gate as
+"the 85th percentile", which was true when they were written and is not now —
+the figure is the same gate, computed differently. Left as history rather than
+rewritten, but do not design against the phrase; CLAUDE.md's warning about a
+stale constraint being more expensive than a missing one applies to this file.
+
+**Also, and unrelated to the change**: `.claude/launch.json` hardcoded port 8769
+with no `autoPort`, so a second worktree could not serve the site at all — and
+the server already running on 8769 belonged to another worktree and served the
+*old* build. Verifying against it would have shown this change as missing.
+Now `autoPort: true` with the port taken from `$PORT`.
 
 ### The three biggest open things, in the order I would take them
 
@@ -2594,6 +2677,165 @@ studio and TV/radio sessions — the entries phish.net does not count.
   text of varying length ("session" against "soundcheck"), so the details
   column starts wherever the word ended. A grid with a `max-content` column
   fixes the second — the same fix §3c just used on the pairings block.
+
+## 8h. Sparse song pages, and a Debuted hero — Ian, 2026-07-30. DONE
+
+He opened on <https://possumlogic.com/song/lit-o-bit.html>: a one-performance
+history does not need a search/sort/filter, "basically none of the heroes even
+make sense", and such a page "can almost have an entirely different layout
+because it's such a different story". Then, separately: a `debuted on` hero is
+worth having on a song with lots of plays — "just a quick sort reversal away,
+but it's useful data about the song" — and there is probably a weaker hero it
+could replace.
+
+### What the measurement said
+
+- **134 of 589 songs are played exactly once**, 193 twice or fewer. On a
+  one-play page three of the four static cards read `n/a` and the fourth
+  restated the subtitle; at 375px the hero and tools bar were **367px of
+  chrome in front of a single 257px row**.
+- **n/a rate per hero**, over all 589: Times played 2%, *Debut 2%*, median
+  10-year 33%, median all-time 24%, longest gap 24%. The debut is the most
+  widely available figure the hero was not showing.
+- **The two medians earn their two cards.** They differ as printed on **275 of
+  the 392** songs that have both — the standing defence in `render_song` holds,
+  so neither is the one to drop. Longest gap equals the all-time median on only
+  52 of 446.
+- **Times played was the weak one, and not because it is uninteresting.** The
+  same integer was already printed three more times on the page: the subtitle a
+  dozen pixels above the card, the `n of n shows` counter, and the sticky bar.
+  It moved nowhere — it is still in the subtitle.
+
+### What shipped
+
+`SPARSE_HISTORY = 1`. At or below it a song page drops the tools bar whole
+(search, clear, era chips, sort, counter), drops the era heading over its one
+row, and takes a two-card hero: the date, and the current gap with its verdict.
+Above it, every page gains a **Debuted** card in the slot Times played held,
+linking to the debut's own row — the sort reversal, as one click — and the
+subtitle drops its `Debut` clause so the date is stated once.
+
+**The figure is the year, and that is measurement not taste.** Five cards
+across leave 117–160px inside each between 900 and 1280px; `1986-02-03` wants
+243px at `.num` size and still 162px shrunk to 1.5rem, and it wrapped at 900,
+1024 and 375. Widening the card starves the other four below 1024. The full
+date goes where there is room: the sparse page's two-card hero, and the row the
+card links to. Swept 5 pages × 15 widths from 300 to 1440: **0 wrapped figures,
+0 sideways scroll.**
+
+### Two bugs found on the way
+
+1. **The sticky bar counted rows the rest of the page does not.** It used
+   `len(perfs)` where the hero, subtitle and counter all use `len(countable)`,
+   so on **136 of 589 pages** the condensed header contradicted the page it
+   condenses — You Enjoy Myself read `629 shows` stuck above a page whose every
+   other figure said 627. It also told a one-play song it had "1 shows". Both
+   fixed; an invariant now asserts sticky == counter == countable on all 589.
+2. **`id="main"` was very nearly duplicated.** The first cut moved the skip
+   target onto the `<ol>`, which already had `id="list"` — two `id` attributes
+   on one element, only the first honoured, and `#main` silently resolving to
+   nothing. Invisible unless you tab into the page. The skip link is now
+   re-pointed at `#list` instead, and the sweep asserts every page's skip href
+   resolves to exactly one element.
+
+### Both open items closed the same day, on Ian's call
+
+`SPARSE_HISTORY` is **2**, and the preview card follows the page. See §8i.
+
+## 8i. The preview cards were worse than anyone thought — 2026-07-30. DONE
+
+Ian bumped `SPARSE_HISTORY` to 2, asked for the preview card to follow the new
+page design, and mentioned in passing that he had **shared a card the night
+before that still carried the "Gap Report" wordmark**. The last of those turned
+out to be the thread worth pulling.
+
+### On the wordmark he saw
+
+**No published card carries it.** "Gap Report" was the `kind` line on show cards
+and the title on the index and songs cards until `5d59cbdbf` (2026-07-27
+03:25). Every one of the 1,304 published PNGs was grouped by its wordmark strip
+— four distinct groups, all four checked by eye, all four reading POSSUMLOGIC.
+So the most likely explanation is a **platform-cached unfurl**: Slack, Discord,
+iMessage and the rest cache OG images for weeks and will re-serve a copy
+fetched before the rename. Worth re-sharing the link to a channel that has
+never seen it before concluding anything about the site.
+
+That said, he was right that something was wrong with the cards. Three things
+were, and none of them would ever have fixed themselves.
+
+### 1. Fourteen published cards had `{sheet}` printed across the top
+
+`CARDS_SHELL` is a `.format()`-style template that nothing calls `.format()`
+on — `shoot_cards` uses `.replace("__CARDS__", …)`, deliberately, because
+CARD_CSS is full of braces. So `{fonts}` and `{sheet}` stood as literal text.
+`{fonts}` sat inside an `href` and merely 404ed. `{sheet}` was inside one too
+until `b8244026b` (2026-07-27 23:40) unwrapped it, and **bare text in `<head>`
+is relocated into `<body>` by the parser** — painted at the top of the page,
+and captured in the first card of every 24-card batch.
+
+Measured over all 1,304 published PNGs by sampling the top-left strip: **14
+defaced**, among them `index.png` and `due.png` — the two a shared link is most
+likely to unfurl.
+
+### 2. Every card has been drawn in fallback faces
+
+Same root cause: neither font link resolved, so the renderer never loaded
+Bagnard, IBM Plex Mono or Literata. The cards looked plausible because Chrome
+fell through to Georgia and whatever mono was to hand. Side by side, the
+published `index.png` sets "Possum Logic" in Georgia; the redrawn one sets it in
+Bagnard. The sheet is now addressed absolutely (`file://…/site/fonts.css`),
+because the card markup is written to a temp directory and a relative path
+resolves beside *that*.
+
+### 3. And CI would have fixed neither, ever
+
+This is the part worth remembering. `card_print` hashed **markup + CARD_CSS**.
+The shell was not in it. So a change to the way a card is drawn — the fonts,
+the shell, the shooter's flags — produced identical hashes, the index went on
+saying every card was current, and CI redrew nothing. Checked directly:
+**all 1,301 recorded hashes matched the then-current code** while 14 of the
+images were visibly broken.
+
+`CARD_INDEX` is a cache keyed on a hash of *some* of its inputs, which is the
+same shape as §8g one level deeper — and the docstring on `card_print` already
+tells the story of CARD_CSS being added for exactly this reason. It stopped one
+input short. Fixed twice over: `CARDS_SHELL` is now hashed, and `CARD_REVISION`
+is a hand-bumped integer for the changes no hash of the inputs can see, because
+"same input, different output" has no other expression.
+
+**A cache key must cover the whole pipeline, not the part that is convenient to
+hash. When you fix a renderer, ask what invalidates the render.**
+
+### 4. A three-line title collided with the wordmark
+
+`.card` centres its content in a fixed 630px box and the wordmark is positioned
+absolutely, so a title that took three lines pushed the figures onto it — "The
+Inner Reaches of Outer" printed POSSUMLOGIC hard against TIMES PLAYED, 1 card of
+1,304. The box now stops short of the wordmark's strip, which cannot collide at
+any title length; stepping `_card_size` down again would only move the length at
+which it happens.
+
+### What the cards say now
+
+Sparse songs get the sparse page's story: `DEBUTED 2010-06-22` over
+`COMCAST CENTER, MANSFIELD, MA` where the card used to read `1 / N/A / N/A`
+across three slots, and a two-performance song adds its one real interval
+(`1,312 SHOWS BETWEEN`). The one-year span was replaced by the venue on
+one-play cards because "2010 — 2010" is the same year printed twice.
+
+### The one thing to watch on the next CI run
+
+**`site/data/cards.json` is deliberately committed stale.** All 1,304 entries
+now disagree with the current code, so the next build redraws every card. That
+is the point — it is the only way the 14 defaced ones and the fallback faces
+reach the published tree. Drawing them locally and committing the fresh index
+would have been §8g exactly: CI restores the *published* PNGs, reads an index
+claiming they are current, and draws nothing.
+
+Cost: the full redraw took **4m25s locally** (1,304 cards, 24 per browser
+launch). Expect the next scheduled run to be several minutes longer than usual,
+once. After that the index is current again and the incremental behaviour is
+unchanged.
 
 ## 9. Known and deliberately not fixed
 
