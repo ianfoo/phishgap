@@ -61,7 +61,7 @@ dormant page and objected that 126 of its 281 rows had been played exactly
 once, which is not what "dormant" means. Measured against the archive's own
 774 long silences, he is right and the effect is large: a song that fell quiet
 after one play came back 28% of the time, after 8+ plays 84%. The page is now
-three sections — **54 dormant, 53 rarities, 174 one or two nights** — titled
+three sections — **54 dormant, 53 rarities, 174 once or twice** — titled
 *Out of rotation*, at the same URL.
 
 Two things a fresh session should know:
@@ -775,7 +775,7 @@ its section (dormant excepted — see §2f).
 
 **The fourth row is out of date and is left as written.** It is a record of
 what the page said on 2026-07-28. As of 2026-07-30 that 283 is 281 and is no
-longer one category: 54 dormant, 53 rarities, 174 one-or-two, and the due page's
+longer one category: 54 dormant, 53 rarities, 174 once-or-twice, and the due page's
 hero cell counts only the 54. See §2j.
 
 **One boundary case to put to Ian.** He named **The Howling** as due at 36
@@ -1281,7 +1281,7 @@ rows to hide it. Both fixed by giving each section its own wrapper.
 ### Verified
 
 - 54 + 101 + 126 = 281, and **every row's printed play count satisfies its own
-  section's rule** — dormant min 8, rarities 3–7, one-or-two 1 or 2, zero
+  section's rule** — dormant min 8, rarities 3–7, once-or-twice 1 or 2, zero
   violations. Not three examples: all 281.
 - **All 281 song pages agree with the section their song is in**, and all 589
   carry `data-plays`. `sanity` → dormant, `the-connection` → rarity,
@@ -1344,7 +1344,21 @@ two paragraphs gave a line break where a paragraph break was wanted.
 Nothing. The `FEW_PLAYS` trap this section used to list as open was closed in a
 third round the same day — see below.
 
-### Third round — the words now come from the constant, or the build stops
+### Third round — the words come from the constant, or the build stops
+
+**The heading is "Once or twice", not "One or two nights".** Ian, on the first
+attempt: *"I'm not sure where you picked up the 'nights' lexicon. While it's
+true that most shows are at night, this seems over-specific."* He is right, and
+it was vocabulary this site does not otherwise use about its own subject — the
+unit is a **show**, counted as one everywhere from `BUSTOUT_GAP` to
+`shows_since`, and a matinee or a festival afternoon is no less one. The right
+register was already on the page: the column these rows are counted in is
+headed **Times played**. So the heading says how many times and nothing about
+when, the anchor is `#once-or-twice`, and the hero cell now carries the heading
+verbatim rather than an abbreviation of it — "ONCE OR TWICE" fits on one line
+where "ONE OR TWO NIGHTS" wrapped. `tools/check_few_plays.py` asserts the word
+"night" cannot come back into any derived string.
+
 
 Ian, on the trap above: *"Let's build a dictionary that maps the number of plays
 to the badge text, and a constant that names the section title, clustered near
@@ -1355,22 +1369,43 @@ It is now a guarantee for every value the table covers, and a build failure for
 the one it does not.
 
 - **`FEW_NAMES`** sits directly under `FEW_PLAYS` and holds, per play count,
-  `(cardinal, how often, badge)` — `1: ("one", "once", "one-off")`,
-  `2: ("two", "twice", "played twice")`, and 3 and 4 for headroom.
+  `(times, badge)` as a **namedtuple** — `1: ("once", "one-off")`,
+  `2: ("twice", "played twice")`, and 3 and 4 for headroom. Named and not
+  positional because the first cut was a three-tuple, and dropping the unused
+  cardinal left `FEW_NAMES[plays][2]` reading off the end of a two-tuple; the
+  build caught it, but `.badge` cannot rot that way at all.
 - **`FEW_TITLE` and `FEW_TIMES` are built from it**, not written out:
-  `"One or two nights"` and `"once or twice"`. The section heading, the due
-  page's tail, the method page and the FAQ all interpolate them, so none of
-  them can drift from the constant.
+  `"Once or twice"` and `"once or twice"`, which differ only by a capital. The
+  section heading, its hero cell, the due page's tail, the method page and the
+  FAQ all interpolate them, so none can drift from the constant. The tally under
+  the heading — "126 played once and 48 played twice" — is generated the same
+  way, one clause per play count.
 - **A module-level guard raises** if `FEW_PLAYS` exceeds what `FEW_NAMES`
   spells, naming the three places that would otherwise go quietly wrong.
 - **The numeric bounds are interpolated too** — the method page and FAQ now
   print `8 or more` and `3 to 7` from `ROTATION_PLAYS` and `FEW_PLAYS`, so the
   other tunable constant is covered by the same discipline.
 
-Proved by moving the constant rather than by reading the code. At 1, 2, 3 and 4
-every string tracked it (`One night` / `once`; `One, two or three nights` /
-`once, twice or three times`; badges following in step). At **5** the build
-fails with the guard's message instead of shipping wrong prose.
+Proved by moving the constant rather than by reading the code, and the proof is
+checked in: **`tools/check_few_plays.py`**. It writes possumlogic to a fresh
+temp directory per value with a unique module name and bytecode off, and asserts
+rather than prints — 1 through 4 must carry every derived string, 5 and 9 must
+refuse to import, and no derived string may contain the word "night".
+
+```
+python3 tools/check_few_plays.py
+```
+
+**The check was verified to fail**, which is the only thing that makes a passing
+run mean anything. Hardcoding `FEW_TITLE` makes it report three wrong titles;
+deleting the guard makes `FEW_PLAYS = 5` die on a bare `KeyError` deep inside
+`rotation_word` instead of at import — which is exactly the value the guard
+adds, and is now demonstrated rather than asserted.
+
+An earlier throwaway version of this probe was worthless and looked fine: it
+reused one module name across four runs, so Python served the first run's
+`__pycache__` back three times and it printed identical output for four
+different constants. That is why this one gets a directory per run.
 
 **Two structural wins came with it.** `rotation_group()` is now the only place
 the thresholds meet a play count — `rotation_split()` groups with it and

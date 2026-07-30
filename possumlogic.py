@@ -2295,12 +2295,16 @@ FEW_PLAYS = 2
 # the one case the table cannot cover into a build failure rather than wrong
 # prose. Nothing here is a threshold -- move FEW_PLAYS, not these.
 #
-#   plays: (cardinal, how often, what one song's page calls itself)
+# Named rather than positional, because it was a three-tuple for one revision
+# and dropping the unused field left `FEW_NAMES[plays][2]` reading off the end
+# of a two-tuple. `.badge` cannot rot that way, and it says at every call site
+# which of the two words is wanted.
+FewName = collections.namedtuple("FewName", "times badge")
 FEW_NAMES = {
-    1: ("one", "once", "one-off"),
-    2: ("two", "twice", "played twice"),
-    3: ("three", "three times", "played three times"),
-    4: ("four", "four times", "played four times"),
+    1: FewName("once", "one-off"),
+    2: FewName("twice", "played twice"),
+    3: FewName("three times", "played three times"),
+    4: FewName("four times", "played four times"),
 }
 
 if FEW_PLAYS < 1 or FEW_PLAYS > max(FEW_NAMES):
@@ -2312,26 +2316,46 @@ if FEW_PLAYS < 1 or FEW_PLAYS > max(FEW_NAMES):
         % (FEW_PLAYS, max(FEW_NAMES)))
 
 
-def _few_phrase(which):
-    """"one or two" / "once or twice", for the counts FEW_PLAYS covers.
+def _join_clauses(parts, conj):
+    """a / a <conj> b / a, b <conj> c -- one comma-list, written once.
 
-    `which` indexes FEW_NAMES' tuples: 0 for the cardinal, 1 for the frequency.
-    Built rather than written out so that the page, the badge and the method
-    page cannot disagree with the constant or with each other.
+    Two callers want this and they differ only in the conjunction: the heading
+    is "once or twice", the tally under it is "126 played once and 48 played
+    twice". Both grow a clause if FEW_PLAYS does, and neither should be the
+    place that forgets to.
     """
-    words = [FEW_NAMES[n][which] for n in range(1, FEW_PLAYS + 1)]
-    if len(words) == 1:
-        return words[0]
-    return "%s or %s" % (", ".join(words[:-1]), words[-1])
+    if not parts:
+        return ""
+    if len(parts) == 1:
+        return parts[0]
+    return "%s %s %s" % (", ".join(parts[:-1]), conj, parts[-1])
 
 
-#: "One or two nights" -- the section heading, and the only name that fits a
-#: group holding more than one play count. Singular at FEW_PLAYS of 1, which is
-#: the one value of it that would make the plural a lie.
-FEW_TITLE = "%s night%s" % (_few_phrase(0).capitalize(),
-                            "" if FEW_PLAYS == 1 else "s")
-#: "once or twice" -- the same fact inside a sentence, for running prose.
-FEW_TIMES = _few_phrase(1)
+def few_phrase():
+    """"once or twice" -- how often, for every count FEW_PLAYS covers.
+
+    Built rather than written out so the heading, the badge and the two prose
+    pages cannot disagree with the constant or with each other.
+    """
+    return _join_clauses([FEW_NAMES[n].times for n in range(1, FEW_PLAYS + 1)],
+                         "or")
+
+
+#: "Once or twice" -- the section heading, and the only name that fits a group
+#: holding more than one play count.
+#:
+#: It read "One or two nights" first, which Ian caught: "I'm not sure where you
+#: picked up the 'nights' lexicon. While it's true that most shows are at night,
+#: this seems over-specific." He is right, and it was a word this site does not
+#: otherwise use about its own subject -- the unit here is a *show*, counted as
+#: such everywhere from BUSTOUT_GAP to shows_since, and a matinee or a festival
+#: afternoon is no less one. The register was already sitting on the page: the
+#: column these rows are counted in is headed "Times played". So the heading
+#: says how many times, and nothing about when.
+FEW_TITLE = few_phrase().capitalize()
+#: The same fact inside a sentence, for running prose. One string, two cases:
+#: the heading only differs by its capital.
+FEW_TIMES = few_phrase()
 
 
 def _quantile(vals, q):
@@ -5426,9 +5450,9 @@ def rotation_group(plays):
 def rotation_word(plays):
     """What a single song's own page calls itself once it has gone quiet.
 
-    Sharper than the section heading where it can be. "One or two nights" is
-    the only honest name for a group holding both, but a song page knows which
-    of the two this song is, so it says "one-off" or "played twice" -- not a
+    Sharper than the section heading where it can be. "Once or twice" is the
+    only honest name for a group holding both, but a song page knows which of
+    the two this song is, so it says "one-off" or "played twice" -- not a
     disagreement with the heading above it, a refinement of it. Every one of
     those words comes from FEW_NAMES; none is written out here.
 
@@ -5444,7 +5468,7 @@ def rotation_word(plays):
     if plays < 1:
         return ""
     badge = ROTATION_SECTIONS[rotation_group(plays)][2]
-    return badge or FEW_NAMES[plays][2]
+    return badge or FEW_NAMES[plays].badge
 
 
 def _due_row(over, n, high, doc, last):
@@ -5739,8 +5763,8 @@ ROTATION_SECTIONS = (
      "changes the answer. Read the years at the right of each row: a song "
      "whose handful of performances sat close together came back {tight}% of "
      "the time, and one whose were strewn across decades only {loose}%."),
-    ("one-or-two", FEW_TITLE, None,
-     "{n_once} played once, {n_twice} played twice &mdash; and then never "
+    ("once-or-twice", FEW_TITLE, None,
+     "{tally} &mdash; and then never "
      "again. These never had a rotation to fall out of, so <em>dormant</em> "
      "was never the word. A third of the single plays were a Halloween "
      "costume set, which is a song performed once by design. {rate}% ever "
@@ -5761,11 +5785,11 @@ ROTATION_SECTIONS = (
 #: does not predict: it is a statement about the archive at a moment, and a
 #: figure that drifts by a point every show reads as a forecast. See
 #: ROTATION_PLAYS, and docs/TODO.md §2j for the scripts that produced it.
-ROTATION_RETURN = {"dormant": 84, "rarities": 65, "one-or-two": 30}
+ROTATION_RETURN = {"dormant": 84, "rarities": 65, "once-or-twice": 30}
 
 #: Within the rarities, the same figure split by how tightly the song's few
 #: performances sat: at most 200 counting shows per play against more than
-#: that. 70% and 38%, n=132 and n=21. The equivalent split on the one-or-two
+#: that. 70% and 38%, n=132 and n=21. The equivalent split on the once-or-twice
 #: group is 36% against 27% -- close enough to be worth saying it does not
 #: matter there, which is what that blurb says.
 RARITY_TIGHT, RARITY_LOOSE = 70, 38
@@ -5804,8 +5828,14 @@ def render_dormant(docs, counting, since):
     # Two of the blurbs quote the shape of their own section back at the
     # reader, so the figures come from the rows rather than from prose that
     # would go quietly stale the first time a song moved between sections.
-    n_once = sum(1 for r in parts[2] if len(r[2]) == 1)
-    n_twice = len(parts[2]) - n_once
+    # "126 played once, 48 played twice", one clause per play count the last
+    # section holds. Counted off the rows and worded from FEW_NAMES, because
+    # written out it was a third place spelling FEW_PLAYS = 2 by hand -- the
+    # same trap as the heading, in the sentence directly under it.
+    counts = collections.Counter(len(r[2]) for r in parts[2])
+    tally = _join_clauses(
+        ["{:,} played {}".format(counts[n], FEW_NAMES[n].times)
+         for n in range(1, FEW_PLAYS + 1) if counts[n]], "and")
 
     body = []
     for (anchor, title, _badge, blurb), rows in zip(ROTATION_SECTIONS, parts):
@@ -5835,8 +5865,7 @@ def render_dormant(docs, counting, since):
                blurb.format(floor=ROTATION_PLAYS, few=FEW_PLAYS,
                             rate=ROTATION_RETURN[anchor],
                             tight=RARITY_TIGHT, loose=RARITY_LOOSE,
-                            n_once="{:,}".format(n_once),
-                            n_twice="{:,}".format(n_twice)),
+                            tally=tally),
                _rotation_years(rows, anchor)))
 
     # Three counts and a row. The counts are the page's argument -- that these
@@ -5846,17 +5875,18 @@ def render_dormant(docs, counting, since):
     # cell that found the Windora Bug anchoring bug. "Most played" gave up its
     # place: it is now the first row of the first section, three lines below.
     #
-    # The third cell is labelled "One or two" and not by the section's full
-    # name. A hero label is a caption on a figure, set at .625rem in caps, and
-    # "ONE OR TWO NIGHTS" wraps to two lines in that cell at every width the
-    # site supports while the other three labels hold one. The heading it links
-    # to says the whole thing a screen away.
+    # The third cell carries the section heading verbatim, which it could not
+    # when that heading was three words long: a hero label is a caption set at
+    # .625rem in caps, and the old "ONE OR TWO NIGHTS" wrapped to two lines at
+    # every width the site supports while its three neighbours held one.
+    # "ONCE OR TWICE" fits, so the cell and the heading it links to are now
+    # one string rather than an abbreviation and its original.
     stopped, rare, few = parts
     dormant = stopped + rare + few
     longest = max(dormant, key=lambda r: r[0]) if dormant else None
     cards = [(len(stopped), "Dormant", "", "#dormant"),
              (len(rare), "Rarities", "", "#rarities"),
-             (len(few), "One or two", "", "#one-or-two"),
+             (len(few), FEW_TITLE, "", "#" + ROTATION_SECTIONS[2][0]),
              ("{:,}".format(longest[0]) if longest else "n/a", "Longest gone",
               " hot", "#%s" % longest[1]["slug"] if longest else "")]
     hero = "".join(
@@ -6391,7 +6421,7 @@ is named for the nights rather than for a count.</p>
 Take how many shows passed per performance, and split at two hundred. A rarity
 whose handful of plays sat close together came back <b class="num">70%</b> of
 the time against <b class="num">38%</b> for one whose plays were strewn across
-decades. Do the same to the one-or-two group and it is <b class="num">36%</b>
+decades. Do the same to the {few_times} group and it is <b class="num">36%</b>
 against <b class="num">27%</b> &mdash; those songs are not coming back whether
 the pair was three shows apart or thirteen hundred, which is the other reason
 they belong together.</p>
@@ -6410,8 +6440,8 @@ is answered by how many times the band played it, not by how long they had it
 lying around.</p>
 <p>A song called back for one night after years away does not get a fourth
 name. It is an event rather than a state, and the play count already carries
-it: the song moves up by one, and if that was its second performance it has not
-moved section, because {few_title} is still {few_title}. Whether it
+it: the song moves up by one, and a second performance has not moved it out of
+the section it was already in. Whether it
 sticks is not knowable on the night, but it is not a coin toss either. Of
 returns from a silence of three hundred shows or more that have since had three
 hundred shows of chance, the ones that had been played <b>once</b> before went
@@ -6633,8 +6663,9 @@ other three lists put together. <em>Dormant</em> means a song used to be
 otherwise, and that is only true of the ones the band actually played: a song
 performed once at a Halloween show never had a rotation to fall out of. So the
 page splits on how many times the song was ever played &mdash; {floor} or more
-is <strong>dormant</strong>, {lo} to {hi} is a <strong>rarity</strong>,
-{few_times} is <strong>{few_title}</strong> &mdash; and the archive says the
+is <strong>dormant</strong>, {lo} to {hi} is a <strong>rarity</strong>, and a
+song played <strong>{few_times}</strong> is filed under exactly that &mdash;
+and the archive says the
 split is worth making. Of every silence of a hundred shows or more it holds,
 the share ever ended by another performance runs 84%, 65% and 30% down those
 three. A song played {few_times} is the only kind here that is likelier to
