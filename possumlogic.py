@@ -1550,6 +1550,21 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
 """
 
 #: Footer links, drawn the way every other link on the site is drawn.
+# The footer's own box, and it sits immediately before FOOTER_LINK_CSS at all
+# three call sites, so the two are always emitted together.
+#
+# Named late. CLAUDE.md listed footer{} for a long time as a near-miss that
+# "differs by real amounts" and told sessions to leave it alone; measured on
+# 2026-07-30 the three copies were identical once whitespace is normalised, so
+# the note was protecting nothing. `.crumb` (four occurrences, four different)
+# and `.hero` (flex in one sheet, grid in another) do still differ and stay
+# where they are.
+FOOTER_BOX_CSS = """footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);display:flex;justify-content:space-between;
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+"""
+
 FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
@@ -1942,11 +1957,7 @@ td.song a:hover{color:var(--hot)}
        font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
        font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:68ch}
 .notes a{color:var(--hot)}
-footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
-       color:var(--dim);display:flex;justify-content:space-between;
-       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-""" + FOOTER_LINK_CSS + """@media screen{
+""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
   tr:hover td{background:var(--hover)}
@@ -3333,11 +3344,7 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
-footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-       font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
-       color:var(--dim);display:flex;justify-content:space-between;
-       flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-""" + FOOTER_LINK_CSS + """@media screen{
+""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
    the rules still run the full width and nothing has to be hidden. */
@@ -4394,11 +4401,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
 .totop:hover{color:var(--hot);border-color:var(--hot)}
-footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
-   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
-""" + FOOTER_LINK_CSS + """@media screen{
+""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620

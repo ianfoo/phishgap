@@ -338,6 +338,25 @@ instead by resolving the fragment directly: scroll 0 → 2273, target at
 `top:47` and in view, `document.activeElement` the row itself, no ring on it,
 and the target confirmed to be the first `tr.fresh`.
 
+### `footer{}` hoisted into `FOOTER_BOX_CSS`
+
+Measured while checking whether hiding the Keys button would strand a footer
+separator: the three `footer{…}` layout copies had become identical, though
+`CLAUDE.md` had been telling sessions for a long time that they "differ by
+real amounts". They now live in one named block beside `FOOTER_LINK_CSS`,
+which they precede at all three call sites.
+
+Proved a no-op rather than assumed. The built stylesheet of all nine page
+types is identical to the pre-hoist build once whitespace is normalised, and
+the raw diff of the whole site is **three continuation lines re-indented from
+seven spaces to three**, in the two sheets that used seven — `song/*.html` is
+byte-for-byte unchanged because its sheet already used three. No card was
+redrawn and `cards.json` never moved.
+
+That leaves `.crumb` (four occurrences, four genuinely different) and `.hero`
+(flex against grid) as the real near-misses, plus the 32–46 rules that still
+repeat pairwise. §8e.
+
 ### Three things Ian raised after the tag shipped
 
 **A song slug is not necessarily a unique id.** He is right in principle, and
