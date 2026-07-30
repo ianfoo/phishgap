@@ -294,6 +294,7 @@
   {"date": "2026-01-28", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 3, "set": "2", "prev": "Backwards Down the Number Line", "in": ">", "nb": 1},
   {"date": "2026-05-02", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 11, "set": "2", "prev": "A Life Beyond The Dream", "nb": 1},
   {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 0, "set": "1", "prev": "A Wave of Hope", "in": ">", "nb": 1},
-  {"date": "2026-07-17", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 6, "set": "1", "prev": "Buried Alive", "in": ">", "next": "Llama", "nb": 1}
+  {"date": "2026-07-17", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 6, "set": "1", "prev": "Buried Alive", "in": ">", "next": "Llama", "nb": 1},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "2"}
  ]
 }

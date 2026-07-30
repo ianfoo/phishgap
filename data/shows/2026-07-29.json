@@ -314,9 +314,27 @@
       "gap_low": 6.0,
       "gap_high": 19.05,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Character Zero",
+      "slug": "character-zero",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-17",
+      "prev_venue": "Coastal Credit Union Music Park at Walnut Creek",
+      "prev_place": "Raleigh, NC",
+      "out": "",
+      "plays": 266,
+      "recent_plays": 73,
+      "gap_median": 5,
+      "gap_mean": 5.109589041095891,
+      "gap_low": 3.0,
+      "gap_high": 8.0,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-07-30T02:51:45+00:00",
+  "count_since": "2026-07-30T03:22:31+00:00",
   "encored": false,
   "provisional": true
 }
