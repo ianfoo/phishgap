@@ -296,6 +296,6 @@
   {"date": "2024-08-03", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 47, "set": "1", "note": "Lyrics changed to reference Mike.", "nb": 1, "prev": "Maze", "next": "Reba"},
   {"date": "2025-07-15", "venue": "TD Pavilion at the Mann", "city": "Philadelphia", "state": "PA", "gap": 47, "set": "e", "note": "With alternate lyrics.", "nb": 1, "prev": "Shade", "next": "Wilson"},
   {"date": "2026-05-01", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 32, "set": "e", "nb": 1, "xprev": "Sand", "next": "Saw It Again"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 16, "set": "2", "prev": "Waste", "next": "Suspicious Minds", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 16, "set": "2", "nb": 1, "prev": "Waste", "next": "Suspicious Minds"}
  ]
 }

@@ -159,6 +159,6 @@
   {"date": "2021-08-31", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 114, "set": "1", "out": ">", "nb": 1, "prev": "Glide", "next": "Fly Famous Mockingbird"},
   {"date": "2023-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 113, "set": "3", "note": "Off-stage backing chorus. Lyrics changed to \"weary body.\"", "out": ">", "nb": 1, "prev": "McGrupp and the Watchful Hosemasters", "in": ">", "next": "Fly Famous Mockingbird"},
   {"date": "2026-04-18", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 95, "set": "1", "out": ">", "nb": 1, "prev": "Reba", "next": "Fly Famous Mockingbird"},
-  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 21, "set": "1", "prev": "Bold As Love", "next": "Fly Famous Mockingbird", "nb": 1}
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 21, "set": "1", "nb": 1, "prev": "Bold As Love", "next": "Fly Famous Mockingbird"}
  ]
 }
