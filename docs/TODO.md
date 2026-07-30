@@ -338,6 +338,42 @@ instead by resolving the fragment directly: scroll 0 → 2273, target at
 `top:47` and in view, `document.activeElement` the row itself, no ring on it,
 and the target confirmed to be the first `tr.fresh`.
 
+### Three things Ian raised after the tag shipped
+
+**A song slug is not necessarily a unique id.** He is right in principle, and
+the show page already defends it: `render_html` numbers repeats, so a second
+Character Zero in a night is `#character-zero-2` (possumlogic.py, the
+`row_ids` / `seen_slugs` loop, with a comment saying exactly what he said).
+The jump link uses `target.id` verbatim, so it inherits that. Measured across
+all 712 show pages: **zero duplicate ids of any kind**, and no song slug
+collides with the one static id a show page carries (`main`). It is currently
+dormant — `build()` still drops repeats — which means **item 3 (reprises) is
+what will first exercise it.** Check it lands correctly when that work starts.
+
+**The Keys button showed on touch devices.** It is a discovery aid for keys a
+phone does not have, offering "[ and ] to step between shows" to a reader who
+cannot press either. Hidden under `@media (hover:none) and (pointer:coarse)`,
+in `BASE_CSS` so it is said once for all eight page types. The `?` handler
+stays bound, so an iPad with a keyboard attached still reaches the list.
+**Not verified on a real touch device**: the browser pane reports
+`pointer: fine` however narrow the viewport, so width is not the signal and
+resizing proves nothing. What was verified is that the query parses (it
+normalises rather than collapsing to `not all`), that the selector and
+declaration do hide the button, and that the footer — a flex row with `gap`
+and no separator characters — closes up with a 0px trailing gap. The iOS
+simulator was the way to close this and Xcode is not selected on this machine.
+
+**The jump could not be demonstrated end to end, and that is the harness.**
+See the note in the tag section: a synthetic click does not perform fragment
+navigation in the pane, and neither does a real `Enter` on the focused link,
+and neither does clicking the *pre-existing* `#suspicious-minds` link. Real
+Chrome was the other route and the extension is not connected. So what stands
+proven is the target (`href` equals the first `tr.fresh` id, confirmed
+identical), the resolution (setting the hash scrolls 0 → 2273, lands the row
+at `top:47` clear of the sticky header, focuses it, no ring), and the link's
+own semantics from the accessibility tree. The activation step itself is
+unexercised. **The next live show is the real test.**
+
 ### Ian's idea: a `/live` endpoint, not a rebuilt page
 
 Raised in the same message and explicitly parked by him — *"I know we'd have

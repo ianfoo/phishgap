@@ -1411,6 +1411,17 @@ body{font-variant-numeric:tabular-nums}
    border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
    cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
 .keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* Not on a touch device. It is a discovery aid for keys, and a phone has
+   none -- so it sat in the footer of every page offering "[ and ] to step
+   between shows" to a reader with no way to press either, and "Keys ?" is
+   doubly meaningless when there is no ? to press. The footer is a flex row
+   with gap and no separator characters, so this leaves nothing stranded
+   behind it.
+
+   The `?` handler stays bound either way: this hides a button, it does not
+   remove the feature, so an iPad with a keyboard attached -- whose *primary*
+   pointer is still coarse -- can open the same list. */
+@media (hover:none) and (pointer:coarse){.keyhint{display:none}}
 dialog.keys{border:1px solid var(--ink);background:var(--paper);
    color:var(--ink);padding:1.2rem 1.4rem 1rem;max-width:24rem;width:calc(100% - 2rem)}
 dialog.keys::backdrop{background:rgba(0,0,0,.5)}

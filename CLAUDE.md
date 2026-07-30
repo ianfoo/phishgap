@@ -21,8 +21,13 @@ there, which makes local verification lie.
 `FAQ_CSS` extend `INDEX_CSS`. The rules that were identical in all three live
 in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS` and
 `FOOTER_LINK_CSS` — edit those once. **Everything else is still copied**:
-32–46 rules repeat pairwise, and the near-misses (`footer{…}`, `.crumb{…}`,
-`.hero{…}`) differ by real amounts. So a plain string replace on any rule
+32–46 rules repeat pairwise, and the near-misses `.crumb{…}` (four
+occurrences, all four different) and `.hero{…}` (flex in one sheet, grid in
+another) differ by real amounts. **`footer{…}` no longer does** — measured
+2026-07-30, its three layout copies are identical once whitespace is
+normalised, so it is a pure triplicate that could join the named blocks
+above; the entry here said otherwise for long enough to be worth correcting.
+So a plain string replace on any rule
 outside a named block will still hit two or three sheets, or — worse — one.
 Anchor on a neighbouring line that differs and assert the match count. Four
 bugs have come out of the copies: a nav that could not wrap, a footer link in
