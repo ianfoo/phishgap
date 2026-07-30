@@ -1,0 +1,24 @@
+{
+ "song": "Suspicious Minds",
+ "slug": "suspicious-minds",
+ "artist": "Phish",
+ "best": [
+
+ ],
+ "performances": [
+  {"date": "1995-09-30", "venue": "Shoreline Amphitheatre", "city": "Mountain View", "state": "CA", "gap": 971, "set": "2", "note": "Phish debut.", "out": ">"},
+  {"date": "1995-10-06", "venue": "The Orpheum Theatre", "city": "Vancouver", "state": "British Columbia", "gap": 4, "set": "2", "out": ">"},
+  {"date": "1995-10-08", "venue": "Adams Fieldhouse, University of Montana", "city": "Missoula", "state": "MT", "gap": 2, "set": "2", "out": ">"},
+  {"date": "1995-10-15", "venue": "Austin Music Hall", "city": "Austin", "state": "TX", "gap": 4, "set": "2", "out": ">"},
+  {"date": "1995-10-19", "venue": "Municipal Auditorium", "city": "Kansas City", "state": "MO", "gap": 2, "set": "2", "out": ">"},
+  {"date": "1995-10-27", "venue": "Wing's Stadium", "city": "Kalamazoo", "state": "MI", "gap": 6, "set": "1", "out": ">"},
+  {"date": "1995-11-11", "venue": "The Fox Theatre", "city": "Atlanta", "state": "GA", "gap": 6, "set": "2", "out": ">"},
+  {"date": "1995-11-21", "venue": "Lawrence Joel Veterans Memorial Coliseum", "city": "Winston-Salem", "state": "NC", "gap": 7, "set": "2", "out": ">"},
+  {"date": "1995-12-01", "venue": "Hersheypark Arena", "city": "Hershey", "state": "PA", "gap": 7, "set": "2", "out": ">"},
+  {"date": "1995-12-11", "venue": "Cumberland County Civic Center", "city": "Portland", "state": "ME", "gap": 7, "set": "2", "out": ">"},
+  {"date": "1995-12-15", "venue": "CoreStates Spectrum", "city": "Philadelphia", "state": "PA", "gap": 3, "set": "1", "out": ">"},
+  {"date": "1996-10-29", "venue": "Leon County Civic Center", "city": "Tallahassee", "state": "FL", "gap": 47, "set": "2", "note": "Karl Perazzo on percussion.", "out": ">"},
+  {"date": "1996-12-06", "venue": "The Aladdin Theatre", "city": "Las Vegas", "state": "NV", "gap": 24, "set": "e", "note": "Four Elvis impersonators.", "out": "->"},
+  {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 1021, "set": "2"}
+ ]
+}
