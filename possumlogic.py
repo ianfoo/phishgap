@@ -2191,10 +2191,16 @@ MIN_HISTORY = 8
 # searchable thing, a four-way sort that cannot reorder anything, and one era
 # chip anchoring to the row directly beneath it.
 #
-# A constant rather than a literal 1 because the same argument is nearly as
-# strong at two or three rows and the line is Ian's to move; raising it is this
-# one number. Every branch below tests `sparse`, never a count.
-SPARSE_HISTORY = 1
+# A constant rather than a literal because the line is Ian's to move; raising
+# it is this one number. Every branch below tests `sparse`, never a count.
+#
+# Moved to 2 on 2026-07-30, on his call. It holds up on its own terms: a
+# two-performance song has one interval, so the three gap cards printed the
+# same figure three times -- Baby Lemonade read 1,312 / 1,312 / 1,312 across
+# "median, last 10 years", "median, all-time" and "longest gap" -- and a
+# four-way sort over two rows reorders nothing a reader cannot already see.
+# 193 songs of 589.
+SPARSE_HISTORY = 2
 
 # The "typical" gap is measured over this many years before the show, never
 # over all of history. Forty years of a working band is several different bands:
@@ -4787,12 +4793,33 @@ def _debut_card(debut_date, sparse=False):
     if not debut_date:
         return ""
     if sparse:
-        return ("<div class='card dbt'><div class='lbl'>Played</div>"
+        return ("<div class='card dbt'><div class='lbl'>Debuted</div>"
                 "<div class='num when'>%s</div></div>" % debut_date)
     return ("<a class='card dbt' href='#%s' title='Debuted %s'>"
             "<div class='lbl'>Debuted</div>"
             "<div class='num'>%s</div></a>" % (debut_date, debut_date,
                                                debut_date[:4]))
+
+
+def _sparse_gap_card(gaps):
+    """The one gap figure a nearly-unplayed song actually has.
+
+    At two performances there is exactly one interval, and it is the most
+    interesting number on the page -- Baby Lemonade's two are 1,312 shows
+    apart. The full hero said it three times, as "median, last 10 years",
+    "median, all-time" and "longest gap", because with a single sample all
+    three reduce to the same value. Said once, and named for what it is.
+
+    Written to survive SPARSE_HISTORY being raised again: with more than one
+    interval "shows between" would be a false description of a median, so the
+    label changes with the arithmetic rather than assuming the threshold.
+    """
+    if not gaps:
+        return ""
+    val, lbl = ((gaps[0], "Shows Between") if len(gaps) == 1
+                else (max(gaps), "Longest Gap"))
+    return ("<div class='card'><div class='lbl'>%s</div>"
+            "<div class='num hot'>%s</div></div>" % (lbl, _stat(val)))
 
 
 def render_song(doc, archived=(), stamp=None, card=None, counting=None):
@@ -4830,7 +4857,9 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # it has instead is a date and a distance from now, so that is what it gets.
     sparse = len(countable) <= SPARSE_HISTORY
     hero = _debut_card(debut_date, sparse)
-    if not sparse:
+    if sparse:
+        hero += _sparse_gap_card(gaps)
+    else:
         hero += "".join(
             "<div class='card'><div class='lbl'>%s</div>"
             "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
@@ -6600,6 +6629,17 @@ def save_card_prints(site_dir, prints):
         json.dump(prints, fh, indent=1, sort_keys=True)
 
 
+# Bumped by hand when the way a card is drawn changes somewhere the hash below
+# cannot see -- the shooter's flags, the fonts it is pointed at, the substitution
+# `shoot_cards` performs on the shell. Without it a fix to the drawing pipeline
+# leaves every card in the index recorded as current, and nothing is ever
+# redrawn: on 2026-07-30 all 1,301 recorded hashes matched the then-current code
+# while 14 of the published images had "{sheet}" printed across the top of them.
+# A version field is the only thing that can express "same input, different
+# output" -- see docs/TODO.md 8i.
+CARD_REVISION = 2
+
+
 def card_print(markup):
     """What a card would look like, as a hash.
 
@@ -6608,9 +6648,16 @@ def card_print(markup):
     stylesheet, so changing the display face would have redrawn none of the
     711 cards and left every one of them set in the old type with no way to
     notice. A card is markup plus the rules that draw it.
+
+    And the shell it is drawn in, for the same reason one step out: CARDS_SHELL
+    carries the font links, so an edit there changes every card's type and used
+    to change no card's hash. That is how the "{sheet}" leak survived three days
+    and would have survived indefinitely -- the index was not wrong about the
+    markup, it was answering a narrower question than the one being asked.
     """
     return hashlib.sha256(
-        (markup + CARD_CSS).encode("utf-8")).hexdigest()[:16]
+        ("%d\n%s%s%s" % (CARD_REVISION, markup, CARD_CSS, CARDS_SHELL)
+         ).encode("utf-8")).hexdigest()[:16]
 
 
 def chrome_exe():
@@ -6623,9 +6670,16 @@ def chrome_exe():
 CARD_CSS = """
 *{box-sizing:border-box;margin:0}
 body{background:#e9e3d6;font-family:'IBM Plex Mono',ui-monospace,monospace}
+/* The bottom padding is the wordmark's strip, reserved. The wordmark is
+   positioned absolutely and the content is centred in the box, so a title that
+   took three lines pushed the figures down onto it -- "The Inner Reaches of
+   Outer" printed POSSUMLOGIC hard against TIMES PLAYED. Centring inside a box
+   that stops short of the wordmark cannot collide with it at any title length,
+   where stepping the type size down again only moves the length where it
+   happens. */
 .card{width:%(w)dpx;height:%(h)dpx;background:#f2ece0;color:#17150f;
   display:flex;flex-direction:column;justify-content:center;
-  padding:0 84px;position:relative;overflow:hidden}
+  padding:0 84px 84px;position:relative;overflow:hidden}
 .kind{font-size:25px;letter-spacing:.14em;text-transform:uppercase;color:#877e6e}
 /* Kept clear of the mark, which starts around x=870: without a ceiling a
    middling title like "You Enjoy Myself" ran under it and the last word went
@@ -6686,8 +6740,27 @@ def shoot_cards(exe, jobs, site_dir):
     written = 0
     for start in range(0, len(jobs), CARDS_PER_SHOT):
         batch = jobs[start:start + CARDS_PER_SHOT]
-        # replace, not format: the stylesheet above is full of braces
-        page = CARDS_SHELL.replace("__CARDS__", "".join(m for _, m in batch))
+        # replace, not format: the stylesheet above is full of braces. Which
+        # is exactly why `{fonts}` and `{sheet}` have to be replaced by hand --
+        # they are .format() fields in a template nothing ever calls .format()
+        # on, so both stood as literal text. `{fonts}` sat inside an href and
+        # merely 404ed; `{sheet}` had been inside one too until it was unwrapped
+        # on 2026-07-27, and bare text in <head> is moved into <body> by the
+        # parser, painted at the top of the page and captured in the first card
+        # of every 24-card batch. 14 published cards carry a visible "{sheet}",
+        # among them index.png and due.png -- the two a shared link is most
+        # likely to unfurl. Neither face was loading either, so every card has
+        # been drawn in fallbacks.
+        #
+        # The sheet is addressed absolutely: the markup is written to a temp
+        # directory, so a relative "fonts.css" resolves next to the temp file
+        # and never to the built site.
+        page = (CARDS_SHELL
+                .replace("{fonts}", WEB_FONTS)
+                .replace("{sheet}", sheet_links(
+                    "file://" + urllib.parse.quote(
+                        os.path.abspath(os.path.join(site_dir, "fonts.css")))))
+                .replace("__CARDS__", "".join(m for _, m in batch)))
         with tempfile.TemporaryDirectory() as tmp:
             src = os.path.join(tmp, "cards.html")
             shot = os.path.join(tmp, "cards.png")
@@ -6769,17 +6842,34 @@ def song_card(doc, counting=None):
     makes, because this card is the picture of that page and the two used to
     be worked out separately -- see that function for what they disagreed on.
     """
-    countable, _, gaps = countable_gaps(doc, counting)
+    countable, debut, gaps = countable_gaps(doc, counting)
     best = (doc.get("best") or [None])[0]
     # Newest first, so the span runs from the last row to the first.
     span = ("%s &ndash; %s" % (countable[-1]["date"][:4], countable[0]["date"][:4])
             if countable else "")
     title = html.escape(typographic(doc["song"]))
+    # The same threshold the page uses, so a shared link and the page it opens
+    # tell the same story. This card is the picture of that page: when the page
+    # stopped printing three "n/a"s the card had to stop too, or the preview
+    # would advertise a page that no longer exists. 143 of them read
+    # "1 / N/A / N/A" -- three slots, one fact.
+    if len(countable) <= SPARSE_HISTORY:
+        stats = [(debut or "&mdash;", "Debuted", "")]
+        if gaps:
+            stats.append(((_stat(gaps[0]) if len(gaps) == 1 else _stat(max(gaps))),
+                          "Shows between" if len(gaps) == 1 else "Longest gap",
+                          "hot"))
+        # A one-year span is not a span, it is the same year printed twice --
+        # and where the song was played is a fact the card had nowhere else to
+        # put. The show cards already read "VENUE, CITY, ST" on this line.
+        if len(countable) == 1:
+            p = countable[0]
+            where = ", ".join(x for x in (p["venue"], p["city"], p["state"]) if x)
+            span = html.escape(where.upper()) or span
+        return card_markup("Every performance", title, span, tuple(stats),
+                           size=_card_size(doc["song"]), data=True)
     return card_markup(
         "Every performance", title, span,
-        # "n/a" rather than an em-dash for an absent figure, because that is
-        # the word the hero on the song page uses and this is a picture of it.
-        # A song played once has no gap to any other performance of itself.
         (("%d" % len(countable), "Times played", ""),
          (_stat(_median(gaps)) if gaps else "n/a", "Median gap", ""),
          # The third slot is the best version's score where there is one and
@@ -8477,6 +8567,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         log("re-rendered %d unchanged-content page(s) after a template change",
             rebuilt)
     write_redirects(site_dir)
+    # Before the cards are shot, and it has to stay that way: `shoot_cards`
+    # points the card renderer at this exact file, so a build that drew cards
+    # first would set every one of them in whatever face the machine happened
+    # to have -- silently, since a fallback is not an error. That is the bug
+    # the "{sheet}" fix was half of.
     write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
     write_grain(site_dir)
     # Regenerated every publish, because every publish would otherwise remove

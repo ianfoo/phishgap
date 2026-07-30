@@ -47,6 +47,20 @@ file that ships, and CI then restores the *published* PNGs, sees an index
 claiming everything is current, and draws nothing. The markup updates and the
 images do not. **This is the fourth instance of the shape below** — a record
 that outlives the work it records. Check the published PNG, not the log line.
+If you must draw locally to see a change, `git checkout HEAD -- site/data/cards.json`
+before committing: an index that says "stale" is true of the published images
+and makes CI redraw, where a fresh one silently freezes them.
+
+**And the card index was keyed on only part of what draws a card.**
+`card_print` hashed markup + `CARD_CSS` but not `CARDS_SHELL`, so the three
+days when `{sheet}` was printed literally across the top of every batch's first
+card — 14 published PNGs, `index.png` and `due.png` among them — never
+invalidated anything: all 1,301 recorded hashes matched the code that was
+producing the broken images. The same omission had every card drawn in Georgia
+and system mono, because the shell is where the font links live. `CARDS_SHELL`
+is hashed now, and `CARD_REVISION` is a hand-bumped integer for what no hash of
+the inputs can see. **A cache key must cover the whole pipeline; when you fix a
+renderer, ask what invalidates the render.** `docs/TODO.md` §8i.
 
 **And the fifth: `nb` on a performance meant "we asked", not "we know".**
 `setlist_neighbours` returned an entry only for songs that *had* a neighbour,

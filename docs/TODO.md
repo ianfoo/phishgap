@@ -2436,18 +2436,104 @@ card links to. Swept 5 pages × 15 widths from 300 to 1440: **0 wrapped figures,
    re-pointed at `#list` instead, and the sweep asserts every page's skip href
    resolves to exactly one element.
 
-### Open, for Ian
+### Both open items closed the same day, on Ian's call
 
-- **Is the line at one, or higher?** The same argument is nearly as strong at
-  two or three: `baby-lemonade` still ships a search box, a four-way sort and
-  two era chips over **two** rows. 193 songs have ≤2, 239 have ≤5. Raising
-  `SPARSE_HISTORY` is a one-number change — every branch tests `sparse`, never
-  a count.
-- **The preview card now says less than the page it pictures.** `song_card`
-  still prints Times played / Median gap / Longest gap, so a shared one-play
-  song previews as `1 / n/a / n/a` while the page shows a date and a distance.
-  Deliberately not touched: redrawing cards locally is the §8g trap, so this
-  wants to be a CI-side change. `cards.json` is untouched by this work.
+`SPARSE_HISTORY` is **2**, and the preview card follows the page. See §8i.
+
+## 8i. The preview cards were worse than anyone thought — 2026-07-30. DONE
+
+Ian bumped `SPARSE_HISTORY` to 2, asked for the preview card to follow the new
+page design, and mentioned in passing that he had **shared a card the night
+before that still carried the "Gap Report" wordmark**. The last of those turned
+out to be the thread worth pulling.
+
+### On the wordmark he saw
+
+**No published card carries it.** "Gap Report" was the `kind` line on show cards
+and the title on the index and songs cards until `5d59cbdbf` (2026-07-27
+03:25). Every one of the 1,304 published PNGs was grouped by its wordmark strip
+— four distinct groups, all four checked by eye, all four reading POSSUMLOGIC.
+So the most likely explanation is a **platform-cached unfurl**: Slack, Discord,
+iMessage and the rest cache OG images for weeks and will re-serve a copy
+fetched before the rename. Worth re-sharing the link to a channel that has
+never seen it before concluding anything about the site.
+
+That said, he was right that something was wrong with the cards. Three things
+were, and none of them would ever have fixed themselves.
+
+### 1. Fourteen published cards had `{sheet}` printed across the top
+
+`CARDS_SHELL` is a `.format()`-style template that nothing calls `.format()`
+on — `shoot_cards` uses `.replace("__CARDS__", …)`, deliberately, because
+CARD_CSS is full of braces. So `{fonts}` and `{sheet}` stood as literal text.
+`{fonts}` sat inside an `href` and merely 404ed. `{sheet}` was inside one too
+until `b8244026b` (2026-07-27 23:40) unwrapped it, and **bare text in `<head>`
+is relocated into `<body>` by the parser** — painted at the top of the page,
+and captured in the first card of every 24-card batch.
+
+Measured over all 1,304 published PNGs by sampling the top-left strip: **14
+defaced**, among them `index.png` and `due.png` — the two a shared link is most
+likely to unfurl.
+
+### 2. Every card has been drawn in fallback faces
+
+Same root cause: neither font link resolved, so the renderer never loaded
+Bagnard, IBM Plex Mono or Literata. The cards looked plausible because Chrome
+fell through to Georgia and whatever mono was to hand. Side by side, the
+published `index.png` sets "Possum Logic" in Georgia; the redrawn one sets it in
+Bagnard. The sheet is now addressed absolutely (`file://…/site/fonts.css`),
+because the card markup is written to a temp directory and a relative path
+resolves beside *that*.
+
+### 3. And CI would have fixed neither, ever
+
+This is the part worth remembering. `card_print` hashed **markup + CARD_CSS**.
+The shell was not in it. So a change to the way a card is drawn — the fonts,
+the shell, the shooter's flags — produced identical hashes, the index went on
+saying every card was current, and CI redrew nothing. Checked directly:
+**all 1,301 recorded hashes matched the then-current code** while 14 of the
+images were visibly broken.
+
+`CARD_INDEX` is a cache keyed on a hash of *some* of its inputs, which is the
+same shape as §8g one level deeper — and the docstring on `card_print` already
+tells the story of CARD_CSS being added for exactly this reason. It stopped one
+input short. Fixed twice over: `CARDS_SHELL` is now hashed, and `CARD_REVISION`
+is a hand-bumped integer for the changes no hash of the inputs can see, because
+"same input, different output" has no other expression.
+
+**A cache key must cover the whole pipeline, not the part that is convenient to
+hash. When you fix a renderer, ask what invalidates the render.**
+
+### 4. A three-line title collided with the wordmark
+
+`.card` centres its content in a fixed 630px box and the wordmark is positioned
+absolutely, so a title that took three lines pushed the figures onto it — "The
+Inner Reaches of Outer" printed POSSUMLOGIC hard against TIMES PLAYED, 1 card of
+1,304. The box now stops short of the wordmark's strip, which cannot collide at
+any title length; stepping `_card_size` down again would only move the length at
+which it happens.
+
+### What the cards say now
+
+Sparse songs get the sparse page's story: `DEBUTED 2010-06-22` over
+`COMCAST CENTER, MANSFIELD, MA` where the card used to read `1 / N/A / N/A`
+across three slots, and a two-performance song adds its one real interval
+(`1,312 SHOWS BETWEEN`). The one-year span was replaced by the venue on
+one-play cards because "2010 — 2010" is the same year printed twice.
+
+### The one thing to watch on the next CI run
+
+**`site/data/cards.json` is deliberately committed stale.** All 1,304 entries
+now disagree with the current code, so the next build redraws every card. That
+is the point — it is the only way the 14 defaced ones and the fallback faces
+reach the published tree. Drawing them locally and committing the fresh index
+would have been §8g exactly: CI restores the *published* PNGs, reads an index
+claiming they are current, and draws nothing.
+
+Cost: the full redraw took **4m25s locally** (1,304 cards, 24 per browser
+launch). Expect the next scheduled run to be several minutes longer than usual,
+once. After that the index is current again and the incremental behaviour is
+unchanged.
 
 ## 9. Known and deliberately not fixed
 
