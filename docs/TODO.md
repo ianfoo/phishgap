@@ -234,6 +234,73 @@ either add it to the daily run, or have `--catch-up` record neighbours for the
 show it just fetched, since `build()` already holds that show's full setlist and
 needs no extra call.
 
+### Picked up next session — four things, all agreed with Ian
+
+Ian approved the first three outright. Nothing below is started.
+
+1. **Set / show opener–closer labels.** A blank Before / after cell currently
+   means three different things, and until this session it also meant "no data"
+   on 758 rows. phish.net prints `***` for a set boundary; naming it ("closed
+   set 1") is strictly better and removes the ambiguity. Only two of the four
+   states are true terminals — **show opener** (set 1, position 1) and **show
+   closer** (last song of the night). Set opener and set closer both have a real
+   song on the far side of a break.
+2. **Cross-boundary neighbours.** Show the song across a setbreak, with the
+   label primary and no mark ever, so the page cannot imply a segue. The
+   docstring's purity objection is to the *mark* — "a lie about a gap of twenty
+   minutes" — not to adjacency. "Chalk Dust Torture came next, after the break"
+   is simply true, and the current blank is the less honest rendering. Ian's
+   argument, which is the stronger one: an encore is chosen in response to how
+   set 2 ended, and the archive throws that away.
+3. **Reprises.** 683 of 1,966 shows repeat a song; **972 performances are
+   currently dropped**, because only the first occurrence per show is kept. Their
+   neighbours differ from the first pass, so neighbour accuracy needs them.
+   **Bring the cardinality question back to Ian before acting**: our 131 for Fly
+   Famous Mockingbird matches phish.net's own "played 131 time(s)" headline while
+   their table lists 143 rows, so adding rows diverges from their count and
+   touches gap and "shows since". Treat *neighbour accuracy* as separable from
+   *what counts as a performance*.
+4. **Scarcity, as distinct from recency.** Ian's observation: Colonel Forbin's
+   Ascent and Fly Famous Mockingbird are each **5 plays in ten years** yet
+   correctly not bustouts, because both were played at the Sphere in April. 252
+   of 588 songs have 1–8 plays in the last ten years and **40 of those were
+   played in the last 90 days**. Bustout measures recency; this is scarcity, and
+   the site has no vocabulary for it. §2d and the "under 8 plays in ten years"
+   note already half-know this.
+
+**No fetching required for 1–3.** `archive/setlist-order.json` holds the running
+order of all 1,966 dates — set, position, slug, song, trans_mark — which is
+everything those three need. See `archive/README.md`.
+
+### Also open: the live page does not auto-refresh, and says so misleadingly
+
+Two separate faults, found together on 2026-07-29.
+
+**The label is misattributed, not wrong.** `checked = _utcnow()` is stamped at
+*render* time and `AGO_JS` recounts it client-side every 20s, so a stale document
+faithfully reports **its own age** — it was the only honest thing on Ian's stale
+page. But the words "last checked" read as a claim about the server. Server-side
+the stamp is genuinely fresh every pass: because `checked` changes each render,
+the HTML always differs, so the page republishes every five minutes even when no
+song landed. Verified — the published page carried `datetime=02:46:36` under a
+publish at `02:46:42`. **Reword it to describe the document.**
+
+**The refresh does not fire.** `<meta http-equiv="refresh" content="120">` is
+present, well-formed and correctly placed (line 5, `</head>` at 897). It still
+fails twice over: Pages sends `cache-control: max-age=600`, so a reload inside
+ten minutes can be satisfied from cache; and browsers throttle or defer meta
+refresh in background tabs, which is unbounded. Ian hit refresh by hand and the
+setlist **jumped five songs** — roughly 25 minutes of drift, past the cache
+window, so it was not firing at all.
+
+Fix: drop the meta refresh for a poller that fetches `data/shows/<date>.json`
+with a changing query string — part of the CDN cache key, so it defeats both
+caches — compares the song count, and reloads **only** on a real change, plus
+re-checks on `visibilitychange` so it updates the moment the tab is looked at.
+Note the shape: this is the same "**anything long-running must re-read its
+inputs each pass**" lesson as the outages in `CLAUDE.md`, now on the client. The
+page is a long-running thing that reloads on a timer and hopes.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
