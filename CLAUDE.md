@@ -211,6 +211,51 @@ exists is not the same as remembering it while costing work.
 deliberately to running prose (`.jam`, `.note`, `.prose`). Mono prose anywhere
 else is usually an artifact of that default rather than a decision.
 
+**Actions runtime: measure jobs, not runs — `created_at` to `updated_at` counts
+time a run spent queued.** The two workflows serialize through concurrency
+groups, so a cron firing mid-show sits *pending* and is superseded rather than
+executed. Those runs report a `conclusion` of `cancelled` and a multi-hour span
+that is entirely queue. Measured from run metadata, the watcher looked like
+17.2 hours over five days; measured from `actions/runs/<id>/jobs`, which gives
+real `started_at`/`completed_at`, it is **12.9 hours**, and one show night is
+5.4–7.4 hours rather than the 11.6 the run spans implied. `run_duration_ms`
+from the timing endpoint does *not* fix this — it agrees with the wrong number.
+Ian caught this by disbelieving the total: 25 runs against three shows.
+**The repo is public, so Actions is free and unlimited** — but if it ever goes
+private, the Free tier is 2,000 minutes a month and the watcher alone is about
+45 hours for seven shows, which is the whole allowance twice over.
+
+**The same measurement showed the handoff already works.** On 2026-07-29 the
+second shift started **three seconds** after the first exited, because the
+queued run was standing by. Mid-show succession was never the fragile part;
+*initial start* is, and the watcher's cron fires 13% of the time it is
+scheduled to. Hence the sentinel in `possumlogic.yml`, which dispatches
+`watch.yml` when a show is on and no watcher is up — `workflow_dispatch` is not
+a scheduled event and is not throttled.
+
+**A watcher that only watches the window runs long after the show ends — but
+the page's "settled" is not the watcher's "safe to leave".** The loop's exit
+test was `watching()`, which asks about the 7h30m window, so a show that ended
+at midnight held a runner until half past two. The obvious fix is to exit on
+`provisional`, and it is wrong: `settle()` releases the page **half an hour**
+after an encore is recorded, which is right for a label the next pass can take
+back and wrong for the watcher, because the watcher leaving is what stops the
+next pass. Ian, who has been to them: six and seven song encores exist and run
+close to an hour. Songs arriving keep resetting `count_since`, so a long encore
+does not trip it by itself — but phish.net posting the first encore song and
+then straggling past thirty minutes is ordinary, and that is enough. So
+`released()` measures stillness directly against the full `QUIET_HOURS` and
+ignores the encore shortcut, costing about an hour of runner time and still
+exiting hours before the window closes. **When you make a display heuristic
+load-bearing for control flow, re-derive its safety margin** — 30 minutes was
+tuned for how long a reader should see "still coming in", not for how long a
+show can surprise you. `--watching` prints `released=` now. Adding that second line nearly
+broke the gate: all three callers parsed the output with a bare `cut -d= -f2`,
+which turns two lines into `"false\nfalse"` — never equal to `"true"`, so the
+gate would have failed closed and the watcher would silently never run again.
+**When a command's stdout is a machine contract, adding a line is a breaking
+change**; the callers `grep '^watching='` first.
+
 **Anything long-running must re-read its inputs each pass.** Three separate
 outages have had one shape — a job that publishes from something it read once:
 a swallowed rebase conflict published a site missing the show it was watching;

@@ -9534,14 +9534,61 @@ def next_show(site_dir, now=None):
     return next((s for s in shows if s.get("date", "") >= now), None)
 
 
-def watching(site_dir, now=None):
+def released(site_dir, live, quiet=None):
+    """True when the watcher may stop polling every show in `live`.
+
+    Deliberately *not* `provisional`, and this distinction is the whole point.
+    `settle()` releases the page half an hour after an encore is recorded,
+    because an encore is the band saying the show is over and holding the page
+    at "still coming in" for two more hours is wrong for most of that time.
+    That shortcut is safe for a label, which the next pass can take back. It is
+    not safe for the watcher, because the watcher leaving is what stops the
+    next pass happening.
+
+    Ian, who has been to them: encores of six or seven songs exist. They are
+    exceedingly rare and they run close to an hour. Songs arriving keep
+    resetting `count_since`, so a long encore does not trip this on its own --
+    but phish.net posting the first encore song and then straggling for over
+    half an hour would, and that is ordinary. So the watcher holds for the full
+    QUIET_HOURS of stillness whether or not an encore is on the record, and
+    ignores the shortcut that exists for the reader's benefit.
+
+    Costs about an hour of runner time against releasing on `provisional`, and
+    still exits hours before the 7h30m window closes.
+
+    A show with no report, or no `count_since` to measure from, is not
+    released. That is the whole first hour of every night.
+    """
+    if not live:
+        return False
+    quiet = quiet or datetime.timedelta(hours=QUIET_HOURS)
+    now = _utcnow()
+    for s in live:
+        rep = archived(site_dir, s["date"])
+        if not rep:
+            return False
+        since = _ts(rep.get("count_since"))
+        if not since or now - since < quiet:
+            return False
+    return True
+
+
+def watching(site_dir, now=None, lead=0):
     """Scheduled shows whose watch window contains `now`. Usually empty.
 
     This is the whole gate: a run that finds nothing here has done no API call
     and can stop. Reading a file the repo already holds is the cheapest
     possible answer to "is anything happening", and on most days it is no.
+
+    `lead` opens each window early, in minutes. The watcher's cron fires about
+    13% of the time it is scheduled to, and the window opens only half an hour
+    before the first song is usually posted -- so on the three show nights
+    measured it started 6, 10 and 14 minutes late, which was luck rather than
+    margin. Starting early costs runner time and buys the show's opening.
     """
     now = now or _utcnow()
+    if lead:
+        now = now + datetime.timedelta(minutes=lead)
     path = os.path.join(site_dir, *SCHEDULE)
     if not os.path.isfile(path):
         return []
@@ -11093,7 +11140,17 @@ def main():
     ap.add_argument("--watching", action="store_true",
                     help="with --site, print watching=true when a scheduled "
                          "show is inside its watch window and watching=false "
-                         "otherwise, then exit (no API calls)")
+                         "otherwise, then exit (no API calls). Also prints "
+                         "released=, which is true once every show in the "
+                         "window has been still for QUIET_HOURS -- the "
+                         "watcher's stop signal, held longer than the page's "
+                         "because leaving is what stops corrections arriving")
+    ap.add_argument("--lead", type=int, default=0, metavar="MINUTES",
+                    help="with --watching, treat a window as open this many "
+                         "minutes early. The watcher uses it to be already "
+                         "running when the first song is posted, because its "
+                         "cron fires about 13%% of the time and a show only "
+                         "gives it half an hour of slack")
     ap.add_argument("--phishin", action="store_true",
                     help="with --site, refresh the list of shows phish.in has "
                          "audio for, so links to them are only shown when they "
@@ -11162,7 +11219,7 @@ def main():
     if args.watching:
         if not args.site:
             sys.exit("error: --watching needs --site DIR")
-        live = watching(args.site)
+        live = watching(args.site, lead=args.lead)
         for s in live:
             w = watch_window(s)
             log("show in progress: %s %s (%s) -- window %s to %s UTC",
@@ -11172,11 +11229,22 @@ def main():
             nxt = next_show(args.site)
             log("nothing playing%s", " -- next is %s %s" % (nxt["date"], nxt["venue"])
                 if nxt else "")
-        # stdout stays machine-readable: a workflow reads this one line. Named
-        # for what it actually reports -- whether a scheduled show is inside
-        # its watch window right now -- and not for what a caller might do
-        # about it, which is the caller's question and has other answers.
+        done = released(args.site, live)
+        if live:
+            log("released: %s", "yes -- safe to stop polling"
+                if done else "no -- still watching")
+        # stdout stays machine-readable: a workflow reads these lines. Named
+        # for what they actually report -- whether a scheduled show is inside
+        # its watch window right now, and whether every such show has stopped
+        # changing -- and not for what a caller might do about it, which is
+        # the caller's question and has other answers.
+        #
+        # Two lines rather than one because they answer different questions
+        # and the callers differ: the gate wants `watching`, the watcher's loop
+        # wants `settled` to stop early. Both are parsed with `cut -d= -f2`
+        # after a `grep`, so adding a line cannot break a reader of the other.
         print("watching=%s" % ("true" if live else "false"))
+        print("released=%s" % ("true" if done else "false"))
         return
     if args.recheck and not args.catch_up:
         sys.exit("error: --recheck only means something with --catch-up")
