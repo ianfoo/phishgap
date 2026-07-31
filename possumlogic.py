@@ -3696,6 +3696,16 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
 .ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+/* phish.net's note, on its own line under the row. flex-basis:100% rather than
+   a grid cell because the row above it is a wrapping flex line of four
+   variable-width parts, and the note is the one thing that always wants the
+   whole measure. Set in the reading face: it is the only prose in this list,
+   and at 12px mono a 778-character note is a wall. */
+.ax-note{flex-basis:100%;margin:.15rem 0 .1rem;max-width:74ch;
+   font-family:'Literata',Georgia,serif;font-size:.8125rem;line-height:1.5;
+   font-variation-settings:'opsz' 13;color:var(--ink-soft)}
+.ax-note a{color:var(--ink-soft);border-bottom:1px solid var(--rule)}
+.ax-note a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .axlist .for{color:var(--dim)}
 .axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
@@ -6702,11 +6712,22 @@ played.</p></header>
 
 
 def not_a_show_rows(aside, page_href):
-    """The soundchecks and the sessions, each as a row that goes somewhere."""
+    """The soundchecks and the sessions, each as a row that goes somewhere.
+
+    With phish.net's note, which on these entries is the whole point and not
+    decoration. All twenty carry one, they run 53 to 778 characters with a
+    median of 253, and they are where the interesting thing about a soundcheck
+    is recorded: that Magnaball's was a single 46-minute jam, that Festival 8's
+    was two soundchecks in a day, and that the Bethel Woods tech rehearsal
+    produced the Waves that got released on From the Archives. A rated-versions
+    list cannot show any of that, because fouldomain scores almost none of
+    these performances -- the Bethel Waves included.
+    """
     out = {"soundcheck": [], "session": []}
     for a in sorted(aside, key=lambda a: a["report"]["date"], reverse=True):
         r, kind = a["report"], a["kind"]
         n = len(r.get("songs") or [])
+        note = re.sub(r"<[^>]+>", "", html.unescape(str(r.get("notes") or ""))).strip()
         # A soundcheck exists because of the show after it, so it says which.
         # A session does not -- it is its own occasion, and pointing it at the
         # next concert on the calendar would invent a relationship.
@@ -6716,10 +6737,12 @@ def not_a_show_rows(aside, page_href):
         out[kind].append(
             "<li><a class='ax-row' href='%s'><span class='ax-date'>%s</span>"
             "<span class='ax-venue'>%s</span>"
-            "<span class='ax-n'>%d song%s</span></a>%s</li>"
+            "<span class='ax-n'>%d song%s</span></a>%s%s</li>"
             % (page_href % r["date"], r["date"],
                html.escape(r.get("venue") or ""), n, "" if n == 1 else "s",
-               link))
+               link,
+               "<span class='ax-note'>%s</span>" % linkify(html.escape(note))
+               if note else ""))
     return out
 
 
@@ -6840,12 +6863,14 @@ def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
             "that song&rsquo;s own rated versions, which is the only honest "
             "way to read a score that is fouldomain&rsquo;s rather than this "
             "site&rsquo;s."
-            "</p><p class='dek'>What is <em>not</em> here is the point as much "
-            "as what is. phish.net logs almost none of these setlists: the "
-            "whole IT soundcheck is two songs in this archive, so the versions "
-            "people actually argue about from that afternoon cannot be reached "
-            "from here at all. Fourteen rows is what the record supports, not "
-            "what circulates."
+            "</p><p class='dek'>A score is not the only evidence that one of "
+            "these got out, and on the strength of the notes above it is not "
+            "the best. The Waves from the 2011 Bethel Woods tech rehearsal was "
+            "released on Kevin Shapiro&rsquo;s <em>From the Archives</em> and "
+            "phish.net calls it stunning &mdash; and fouldomain has no score "
+            "for it, so it is not in this list. Read the notes for the ones "
+            "that circulated; this list is only the ones that were also "
+            "rated."
             % (len(rated), claim),
             "<ol class='axlist'>%s</ol>" % "".join(
                 "<li><a class='ax-row' href='./song/%s.html#%s'>"

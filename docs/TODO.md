@@ -3166,14 +3166,32 @@ whole archive and no other way.
    denominator with the rank so nothing downstream can restate it, and the
    page's sentence is computed from the rows rather than written down.
 
-**And the lore does not survive the data, which the page says out loud.** Ian
-first cited the IT soundcheck Waves, then corrected himself to 46 Days.
-Neither is reachable: phish.net logs almost none of these setlists, and the
-whole IT soundcheck is **two songs** in this archive — Jam and Skin It Back.
-What the archive does have is both songs at IT proper, and fouldomain rates
-them highly: 46 Days on 2003-08-03 is its no. 2 of 159, Waves on 2003-08-02
-its no. 4. Fourteen rows is what the record supports, not what circulates, and
-the section says so rather than implying the list is the phenomenon.
+**The lore was right and I looked in the wrong place.** Ian cited the IT
+soundcheck Waves, corrected himself to 46 Days, then said "I must be
+completely wrong… I think there is a Waves in a soundcheck somewhere that is
+very highly regarded." He was not wrong. It is **2011-05-26, Bethel Woods**,
+and phish.net's own note on it reads: *"This performance was from the tech
+rehearsal for Phish's 2011 Bethel Woods run. This stunning version of Waves
+(with A Love Supreme themes) was first revealed on Kevin Shapiro's 'From the
+Archives' #15."* The entry's only song is that Waves.
+
+IT is genuinely not reachable — the whole IT soundcheck is **two songs** in
+this archive, Jam and Skin It Back — though both songs at IT proper are here
+and rate well: 46 Days on 2003-08-03 is its no. 2 of 159, Waves on 2003-08-02
+its no. 4.
+
+**The finding that matters is that I built the section on the wrong evidence.**
+Ratings were the wrong key: fouldomain has no score for the Bethel Waves, so
+the single best instance of the phenomenon Ian described was the one row the
+"rated" list could not contain. **All twenty entries carry a note**, 53 to 778
+characters, median 253, and the notes are where the story is — Magnaball's
+soundcheck was one 46-minute jam, Festival 8 had two soundchecks in a day, the
+Super Ball IX one has Fish being re-taught the end of Sleep Again. The notes
+are on the page now, and the rated section says plainly that it holds only the
+ones that were *also* scored. The first version of that paragraph said
+"fourteen rows is what the record supports, not what circulates", which was
+wrong in the other direction: the record supports far more than fourteen, just
+not as a number.
 
 Two stale figures fixed in passing, both the same shape as the ones §2k found:
 `show_kind`'s docstring said "nine of the archive's entries are not concerts"
