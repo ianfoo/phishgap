@@ -63,6 +63,27 @@ history drawn against its own longest. The archive for those lives in
 fetches each song's complete history to find its previous performance, then
 threw the rest away.
 
+### Years
+
+`site/years.html` is the one page built from the order the songs came in rather
+than from the gaps between them. A block a year, 1983 to now: how many songs a
+night, how old the material was, what the year sounded like as distinct from
+what it played most, the songs heard in that year and no other, and the pair of
+songs that most belonged to it.
+
+It also carries the one figure on the site that had to be normalised to be
+publishable. "Moves that recur" is the share of a year's song-to-song moves
+that turn up on more than one night — which climbs with the number of shows
+whether or not the band repeated itself, so it is stated over a fixed twenty
+nights for every year. Over the same twenty nights 1993 reads 32% and 2017
+reads 1%; over their own lengths, 124 nights against 28, the same two years
+read 64% and 1% and the comparison is mostly arithmetic.
+
+The page reads `archive/setlist-order.json`, so it needs no API key and adds
+nothing to a build. Where that file has no running order — 158 of the counting
+calendar's shows, almost all before 1992 — the year says so under its figures
+rather than presenting a part as a whole.
+
 Three passes fill in what a single show's fetch cannot know. Each is skippable,
 resumable, and only asks for what it does not already hold:
 
@@ -122,6 +143,24 @@ nothing and touches no API:
 ./possumlogic.py --site site --rebuild
 ```
 
+Two checks answer questions about the built site that are otherwise settled by
+reading it, which has been wrong both ways — a working link reported broken, and
+a broken one reported fine:
+
+```sh
+python3 tools/check_links.py
+```
+
+Walks all 1,310 built pages and fails on a link to a missing file, a fragment no
+element carries, or an id repeated within a page.
+
+```sh
+python3 tools/check_few_plays.py
+```
+
+Fails if the words on the out-of-rotation page stop tracking `FEW_PLAYS`, the
+constant that decides how few performances counts as never having got going.
+
 ### Single files
 
 ```sh
@@ -132,9 +171,15 @@ nothing and touches no API:
 and falls back to the `weasyprint` CLI, then to headless Chrome. `--single-page`
 emits one continuous page instead of paginating for letter paper.
 
-Pages inline everything they can — CSS, favicons, the lot — so a file handed to
-someone in a chat still renders offline. Web fonts are the exception: they need
-the network, and fall back to Georgia and the system monospace without it.
+The file is one document — CSS, scripts, the favicon and the three source
+badges are inlined. It is not self-contained: three references to Google's font
+hosts fetch IBM Plex Mono and Literata. Since `body` is Plex Mono site-wide,
+essentially every word depends on the network; offline the page falls back to
+the system monospace and Georgia. The display face is inlined as a 13 KB
+`data:font/otf` only for a show still being played, which is the one page here
+with a rule that asks for it — a settled show is 17 KB lighter for it. There is
+no paper grain either: the grain lives in `fonts.css`, and this path emits the
+inline face instead of the sheet.
 
 ## Publishing
 

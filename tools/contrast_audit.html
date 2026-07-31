@@ -59,6 +59,12 @@ const BASE = new URLSearchParams(location.search).get('base') || '';
 const PAGES = [
   '/index.html', '/songs.html', '/due.html', '/dormant.html', '/venues.html',
   '/method.html', '/faq.html',
+  // Added 2026-07-31 with the pages themselves. A page type missing from this
+  // list is a page type nothing checks: the years, not-a-show and
+  // out-of-rotation pages arrived on main carrying nine fresh instances of the
+  // --hot-on-small-text problem, and the sweep that had just cleared the site
+  // would have reported a clean pass without them.
+  '/years.html', '/not-a-show.html', '/out-of-rotation.html',
   '/show/2026-05-01.html',   // a report carrying jam-chart chips
   '/show/2026-07-29.html',   // a report carrying a bustout stamp and notes
   '/song/tweezer.html',      // a song page with ratings, jam prose and eras
@@ -328,8 +334,36 @@ function report(res) {
 }
 
 window._res = []; window._done = false;
+
+// This page cannot cache-bust its own URL, and python -m http.server sends no
+// Cache-Control -- so a reload after editing PAGES happily runs the *previous*
+// list and prints "Pass" for a set of pages that no longer matches the file on
+// disk. That happened: three pages were added, the browser served the old
+// document, and the report cleared 13 states while claiming to be current.
+// Re-fetch this file uncached and check the list length against what is
+// actually running.
+async function assertFresh() {
+  try {
+    const src = await (await fetch(location.pathname, {cache: 'no-store'})).text();
+    const m = src.match(/const PAGES = \[([\s\S]*?)\n\];/);
+    if (!m) return;
+    // Every entry carries exactly one '/-prefixed path, whether it is a bare
+    // string or a [path, synth] pair; entries share lines, so count paths.
+    const onDisk = (m[1].match(/'\//g) || []).length;
+    if (onDisk !== PAGES.length) {
+      const b = document.createElement('p');
+      b.style.cssText = 'background:#c00;color:#fff;padding:.6rem;font-weight:700';
+      b.textContent = `STALE DOCUMENT — running ${PAGES.length} pages, the file `
+        + `on disk lists ${onDisk}. Hard-reload (or add ?v=N) before believing `
+        + `this report.`;
+      document.body.prepend(b);
+    }
+  } catch (e) { /* offline or blocked: not worth failing the run over */ }
+}
+
 (async () => {
   const at = document.getElementById('at');
+  await assertFresh();
   for (const spec of PAGES) {
     const [url, synth] = Array.isArray(spec) ? spec : [spec, null];
     for (const theme of ['light', 'dark'])

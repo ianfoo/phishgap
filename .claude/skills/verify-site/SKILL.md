@@ -23,6 +23,36 @@ Rebuild (`--rebuild`, ~2s), serve via the `site` entry in
   reported "no focus ring at all", which was false. Press the real key.
 - The browser pane sometimes reports `innerWidth: 0` and returns blank
   screenshots. Resize it and retake rather than trusting the measurement.
+- **Prove the state you are claiming, not its opposite.** A control that hides
+  itself needs its *hidden* state measured; the floating back-to-top button was
+  permanently visible for two days because `hidden` loses to an author
+  `display`, and every screenshot of it showed it working.
+
+## The browser pane cannot test IntersectionObserver
+
+Its top-level document reports `innerWidth`/`innerHeight` of 0, so IO has no
+root, and it never fires — not even the mandatory initial callback. This is
+silent: no error, the observer just never runs. The site's own sticky header
+does not activate there either, which is the quick way to tell the pane apart
+from your change. That covers `.stuck`, `.totop`, and anything else keyed to
+the header leaving the viewport.
+
+Headless Chrome does fire it. Put the page in an iframe on a harness page under
+`site/` (same origin, so you can script it), drive it, and read the result out
+with `--dump-dom`:
+
+```bash
+"$(python3 -c 'import possumlogic;print(possumlogic.chrome_exe())')" --headless \
+  --disable-gpu --hide-scrollbars --window-size=1400,900 \
+  --virtual-time-budget=40000 --dump-dom "http://localhost:8769/_probe.html?p=/due.html"
+```
+
+Two things that will bite. **Poll to a settled state rather than sleeping** —
+an intersection callback lands on the rendering lifecycle, and a fixed wait had
+the same page reporting both answers on consecutive runs; loop on
+`requestAnimationFrame` until the value is what you are waiting for, with a
+frame cap. And **delete the harness and rebuild before committing**, or it
+ships and lands in `sitemap.xml`.
 
 ## A colour is not one colour — check it in every state
 

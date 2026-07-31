@@ -17,29 +17,88 @@ there, which makes local verification lie.
 ## Gotchas
 
 **There are still three base stylesheets, but what they share is now named.**
-`CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and
-`FAQ_CSS` extend `INDEX_CSS`. The rules that were identical in all three live
-in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`, `RULE2_CSS`, `FIGURE_CSS`,
-`FOOTER_BOX_CSS`, `FOOTER_LINK_CSS` and `CARD_LINK_CSS` — edit those once.
-(`DEK_CSS` is the same idea across two of the three, not all three.)
-`CARD_LINK_CSS` was named on 2026-07-30 the moment a third sheet wanted a
-linked hero card, rather than after: it holds the three rules that do not
-depend on where the card goes, and deliberately leaves out the fourth, which
-carries the arrow — the index points right because the card leaves the page,
-the show and song sheets point down because it lands further down this one.
+`CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS`,
+`FAQ_CSS`, `DORMANT_CSS` and `YEARS_CSS` extend `INDEX_CSS`. The rules that
+were identical in all three live in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_CSS`,
+`RULE2_CSS`, `FIGURE_CSS`, `FOOTER_BOX_CSS`, `FOOTER_LINK_CSS`, `TOTOP_CSS`
+and `CARD_LINK_CSS` — edit those once. (`DEK_CSS` is the same idea across two
+of the three, not all three.) `CARD_LINK_CSS` was named on 2026-07-30 the
+moment a third sheet wanted a linked hero card, rather than after: it holds
+the three rules that do not depend on where the card goes, and deliberately
+leaves out the fourth, which carries the arrow — the index points right
+because the card leaves the page, the show and song sheets point down because
+it lands further down this one. `YEAR_STRIP_CSS` is the year strip; it was
+named when a second page wanted it and is back to one caller, because the
+dormant page was regrouped into three sections and dropped its strip.
+`NAV_CSS` is the whole nav strip and replaced `NAV_HIT_CSS`: the four
+near-identical `.crumb{…}` rules are gone, and the show sheet keeps only what
+is genuinely its own — the pager row and a margin. **The markup is one
+function too**, `nav_strip()`, after ten hand-written copies left every show
+and song page — 1,302 of 1,310 — marking no current location at all while the
+other eight marked themselves. A nav in ten copies is ten chances to be
+inconsistent about the one thing a nav must be right about, and the tenth
+arrived on `main` while the ninth was being removed on a branch.
 **Everything else is still copied**: 32–46 rules repeat pairwise, and the
-near-misses `.crumb{…}` (four occurrences, all four different) and `.hero{…}`
-(flex in one sheet, grid in another) differ by real amounts. `footer{…}` was
-listed with them and had stopped differing: measured 2026-07-30 its three
-copies were identical once whitespace was normalised, so it was hoisted into
-`FOOTER_BOX_CSS`. **The stale note is the lesson** — it told several sessions
-to leave a pure triplicate alone, and a wrong constraint in a doc gets obeyed.
+near-miss `.hero{…}` (flex in one sheet, grid in another) differs by a real
+amount. `footer{…}` was listed with them and had stopped differing: measured
+2026-07-30 its three copies were identical once whitespace was normalised, so
+it was hoisted into `FOOTER_BOX_CSS`. **The stale note is the lesson** — it
+told several sessions to leave a pure triplicate alone, and a wrong constraint
+in a doc gets obeyed.
 So a plain string replace on any rule
 outside a named block will still hit two or three sheets, or — worse — one.
-Anchor on a neighbouring line that differs and assert the match count. Four
+Anchor on a neighbouring line that differs and assert the match count. Five
 bugs have come out of the copies: a nav that could not wrap, a footer link in
 the browser's default blue, a sticky-header hide out-specified by a modifier
-class, and tabular figures on show pages only. `docs/TODO.md` §8e.
+class, tabular figures on show pages only, and — 2026-07-30, caught by
+measurement before it shipped — a `.crumb{gap:.35rem}` in the show sheet's
+narrow media query, written when both nav strips wanted the same geometry,
+which out-specified the shared row gap the moment the strip got 44px tap
+targets and left four overlapping targets on show pages and nowhere else.
+**The check that found it is the one to reuse**: walk every page type at every
+breakpoint and assert no two tap targets overlap, rather than looking at one
+page and calling it done. `docs/TODO.md` §8e.
+`TOTOP_CSS` was named when the floating back-to-top control went from one
+sheet to all of them. **The markup had the same problem**: five functions
+built the hero cards from five copies of the same two lines, three escaping
+the href and two not. `hero_html` is the one copy now, and `hero_cols` beside
+it is the pattern — the builder *states* what the CSS needs to know (how many
+columns, which card carries a name) rather than the CSS inferring it, because
+an inference like `:has(.of)` fails silent.
+
+**A debut carries a "gap" that is not a gap, and skipping row 0 does not
+always skip it.** phish.net gives a song's first counted performance a gap
+equal to every show the band had played before it — 2,022 for What's Going
+Through Your Mind. That is the band's history length, not a silence. The site
+drops it by ignoring each song's first row, which is right for 473 of the 518
+debuts and wrong for the other 45: those songs first appeared at a date
+phish.net does not count toward gaps (Festival 8's 2009-10-29, 1997-06-06,
+1999-06-24, 1995-05-14 and a dozen more), the archive keeps that appearance as
+row 0, and the debut gap lands on row 1 where "skip the first row" cannot
+reach it. **Filter to counted performances first, then drop the first** —
+`due_rows` and `render_song` have always done it in that order; `render_songs`
+and `songs_card` did not, and published 42 wrong longest gaps. Fixed, and the
+whole songs index counts shows now: 127 songs had a "shows" figure that
+included soundchecks, so the index and the song page one click away disagreed
+about 127 songs. **A page that summarises other pages must count the way they
+do** — the check that found it was reading both. `docs/TODO.md` §2k.
+
+**And phish.net's gaps themselves are sound — do not go looking for that bug.**
+Measured counted-performance to counted-performance, 0 of 36,378 exceed the
+shows actually between them. A first pass at the above found "95 impossible
+gaps" by comparing each gap with the previous row *in this archive's list*,
+which includes the performances phish.net deliberately does not count; every
+one of the 95 had an uncounted row before it, and 50 of them were the
+measurement being wrong rather than the data.
+
+**A `hidden` attribute loses to any author `display`.** The browser hides
+`[hidden]` with a *user-agent* rule, and a user-agent rule loses to an author
+declaration outright — specificity does not enter into it. `.totop` declared
+`display:flex`, so `hidden` did nothing, and the back-to-top button sat on
+every song page permanently, pinned over the header it exists to replace, from
+the day it shipped. The script had been setting `.hidden` correctly the whole
+time. **Prove the state you are claiming, not its opposite**: every screenshot
+of that button showed it working. `docs/TODO.md` §2k.
 
 **A stamp that reverses on hover can lose its text to a plainer rule, and you
 cannot see it in the source.** The Jam chart chip hovered to `var(--hot)` on a
@@ -77,6 +136,16 @@ Watch for the other half of this: `--dim` is 4.98:1 on bare paper and fails on
 anything tinted — `.toc a::before` sat on the index panel's `--rule-soft` wash
 at 4.13:1 light and 4.49:1 dark. **A token that passes on paper has not been
 checked until it is checked on the thing it actually sits on.**
+
+**And a clean sweep is true of the tree it ran on and nothing else.** Merging
+`main` into a branch that had just cleared the whole site brought nine fresh
+`color:var(--hot)` sites on small text — `.show a`, `.crumb a.sect`,
+`details.how > summary`, `.aside a`, `.ax-note a`, `.years a`, `.yh .up`,
+`.chips a` — plus two page types the audit had never opened. None of it
+conflicted; git had no reason to flag any of it. **Re-run the audit after a
+merge, not just after your own edits**, and when you add a page, add it to
+`PAGES` in `tools/contrast_audit.html` in the same change — a page type missing
+from that list is a page type nothing checks, and the report still says "Pass."
 
 **A filled red stamp of reversed 10px caps is the bustout's costume, and only
 the bustout's.** It is the headline of a show, struck twice and set two degrees

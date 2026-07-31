@@ -54,7 +54,52 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### Newest first: the 2026-07-30 session — "a one-off is not dormant"
+### Newest first: the 2026-07-30 review of songs, home, due and dormant
+
+Ian read four pages and sent nine notes. All nine are done and pushed; the
+detail is in §2k. Three things a fresh session should carry:
+
+- **`ROTATION_PAGE` is the filename of the out-of-rotation page**, and
+  `dormant.html` is a forwarding stub in `MOVED_PAGES`. The page had been
+  titled *Out of rotation* for a week while still being served from
+  `dormant.html` — Ian: "the artifact name did not update with the conceptual
+  shift." Renaming a published URL is a thing to do once, so it is a constant
+  now rather than a string in seven places.
+- **The floating back-to-top control had never been visible-when-wanted, and
+  never hidden when not.** `hidden` hides an element through the browser's own
+  `[hidden]{display:none}`, which any *author* `display` declaration beats
+  regardless of specificity — and `.totop` declares `display:flex`. So the
+  button has been on screen permanently on every song page since it shipped.
+  `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
+  and prose pages as well, which is what Ian asked for.
+- **Open, and small: the IT remark is off the site and Ian has not ruled.**
+  The not-a-show page used to say the whole IT soundcheck is two songs in this
+  archive, so the versions people argue about from that afternoon cannot be
+  reached. That paragraph was replaced wholesale by the Bethel Woods one when
+  the real example turned up, and the IT fact is now nowhere on the site. It
+  is a fair caveat about phish.net's soundcheck coverage in general; it was
+  written about a wrong example. Put it back as a remark or leave it out.
+- **`show_kind` returns five kinds, not two** — soundcheck, tech rehearsal,
+  television, radio, ceremony, with `session` as an honest fallback nothing
+  currently reaches. It called the Bethel Woods tech rehearsal a soundcheck
+  and the Rock and Roll Hall of Fame ceremony a session. §2m.
+- **`not-a-show.html` holds the twenty soundchecks and sessions**, the nine
+  songs that exist only at them, and the fourteen rated versions that got out.
+  The index's "Also on file" tail is one line under its hero now. §2l.
+- **The songs index counts shows now, like the rest of the site.** It was the
+  one page counting raw archive rows, so it disagreed with the song pages it
+  links to — My Sharona's page said 0 performances, its row said 1 — and it
+  published 42 debut gaps as longest gaps. Filter to counted performances
+  *first*, then drop the first of those; `due_rows` and `render_song` always
+  did. §2k. An earlier note here claimed 95 bad gaps in the archive and blamed
+  phish.net: that was a measurement error, and §2k says why.
+- **The Browser pane cannot verify anything that uses IntersectionObserver.**
+  Its top-level document reports `innerWidth`/`innerHeight` of 0, so IO has no
+  root and never fires — not even the initial callback. The site's own sticky
+  header does not activate there either. Use headless Chrome; the recipe is in
+  the `verify-site` skill.
+
+### The 2026-07-30 session — "a one-off is not dormant"
 
 **§2j is the whole of it, and it supersedes parts of §2f.** Ian read the
 dormant page and objected that 126 of its 281 rows had been played exactly
@@ -603,6 +648,178 @@ with no `autoPort`, so a second worktree could not serve the site at all — and
 the server already running on 8769 belonged to another worktree and served the
 *old* build. Verifying against it would have shown this change as missing.
 Now `autoPort: true` with the port taken from `$PORT`.
+
+### The 2026-07-30 session — `years.html`, and one figure that needed fixing
+before it could be published
+
+Ian, after the MSG run of five shows each modelled on a year (1992 through
+1996, down to Trey's mini drum kit and Fish's original mumu): "It could be
+interesting to be able to explore the mood of the years." He asked for the
+measurement first and the page second, and the measurement is what decided the
+shape — see the ruling in §4, which this does not break.
+
+**Everything below is pushed.** The page is built from
+`archive/setlist-order.json` at render time, so it costs no API calls and adds
+~30 ms to a rebuild.
+
+| what | state |
+|---|---|
+| `years.html` — a block a year, 1983–2026, from the running order | done, 39 years, 1,950 of 2,108 counting nights read |
+| `Years` in the nav on all nine page types | done — checked from every depth, 0 dangling links across 1,312 pages |
+| `YEAR_STRIP_CSS` named rather than copied into a fourth sheet | done — `DORMANT_CSS` byte-identical after, sha1 unchanged |
+
+**The figure that had to be normalised, and why it is worth knowing.** "Moves
+that recur" — the share of a year's song-to-song moves that turn up on more
+than one night — is the most interesting number the archive has about this
+band, and the raw version of it is nearly a fraud. It reads 68% for 1991 and
+1.4% for 2017, which sounds like a finding and is mostly a count of shows: 124
+nights give a pair 124 chances to coincide, 28 nights give it 28. Cut every
+year to the same 29 nights and 1991 falls to 39% while 2017 does not move.
+The signal survives, but the published number could not be the raw one.
+
+So the page states it over a fixed 20 nights for every year, computed exactly
+rather than sampled — a move appears on X of a random 20, X hypergeometric,
+and reads as a repeat when X ≥ 2, so E[repeats] = Σ E[X] − P(X = 1). Checked
+against 150 random draws per year: worst disagreement 0.74 points, and that
+includes rounding to a whole percent. **This is the shape to reuse for any
+per-year figure added later** — almost all of them will have the same
+confound, because the band played 124 shows in 1991 and 28 in 2017.
+
+**Two editorial calls made from what the data returned, both cheap to undo:**
+
+- **"Ran together" is not the most repeated move.** Ranked on the raw count,
+  28 of 39 years answer with The Horse → Silent in the Morning or Mike's Song
+  → I Am Hydrogen — one piece of music filed as two rows, and a sequence fixed
+  since 1988. True, and not about a year. Weighed against how often the pair
+  ever happened, 1992 answers Cold as Ice → Cracklin' Rosie, 20 nights of the
+  20 it has ever happened. A move must be ≥ 25% of its own career to appear at
+  all, so 11 years say nothing here rather than something meaningless.
+- **"Sounded like" excludes songs played only that year**, because the line
+  directly under it makes the stronger claim about exactly those songs. 1995
+  was printing Acoustic Army, Taste That Surrounds and Keyboard Army in both
+  rows; without them it says Strange Design, A Day in the Life and I'm Blue,
+  I'm Lonesome, which is what 1995 sounded like rather than what only it had.
+
+**What the page cannot say, and says so on its face.** phish.net has no
+running order for 158 of the counting calendar's shows — 1985 is 11 of 22,
+1988 is 52 of 95, and everything from 1992 is complete. Those years carry a
+line under their figures naming what they were computed from. It also limits
+"only in 1994": it means only in the nights read. 163 such claims are on the
+page, 66 of them are checkable against a full song history (a song has one
+only if a saved report names it, and the reports start in 2009), and **0 of
+the 66 are contradicted**. The other 97 rest on the extract alone.
+
+**Still open from the measurement, and deliberately not built:**
+
+- **Segue density per year** — the share of moves marked `>` or `->` runs 23%
+  in 1988 to 50% in 2012, which would be the second-best number on the page if
+  it is real. It may instead be phish.net's transcription conventions drifting
+  as old tapes were catalogued decades later. Left off until someone can tell
+  those apart; a figure this suggestive is exactly the kind this archive should
+  not publish on a guess.
+- **The MSG tribute scoring.** 111 of the 114 songs across the five nights
+  were in the modelled year's rotation, no song on any night postdated its
+  year bar the closing Backwards Down the Number Line, and the deepest cut was
+  AC/DC Bag on the 1992 night — played once in all of 1992. It belongs on the
+  five show pages rather than here, and it is the obvious next thing.
+- **Per-year pages.** Not built, and the ruling in §4 explains why one page
+  came first. If the blocks earn their own pages, `years.html` is the index.
+
+### Same session — the nav, after Ian looked at it on a phone
+
+Ian: "the navigation links on mobile are a poor experience. This is not
+typically how mobile sites structure their navigation… There's also a real
+mixture of types of targets: shows, songs, years, venues, even due link to
+tabular data. FAQ and How This Works are a different sort of target." Plus:
+Years should come before Venues, and dormant had no door but the due page.
+
+All of it is done and pushed. The strip is now two groups in the markup —
+`<span class="lists">` and `<span class="meta">` — on all nine page types.
+
+| what | before | after |
+|---|---|---|
+| Order | Shows Songs Due Venues Years | Shows Songs Due **Out of rotation** Years Venues |
+| Out of rotation's nearest door | a hero card 1,126px down the due page | in the nav, 78px down |
+| Nav type size | 11.25px, everything | 13.5px for the six lists, 11.25px for the two meta links |
+| Tap targets | 24px (WCAG AA) | 44px on the lists at phone widths (AAA, Apple, Material all agree), 24px on meta |
+| The two explainers | fifth and sixth in one flat row | own group, dim, pushed right on desktop, own row on a phone |
+| Rest state | a hairline under all seven items | none; the page you are on is the one with a rule under it |
+
+**Years sits with Venues, and Songs comes before both** — Ian's call in the
+round after this one, which supersedes the ordering reasoning that was here.
+
+**The mobile fix was a measurement, not a preference.** At the desktop size
+(.75rem/.14em) the six labels are 310px of ink in the 336px a 390px phone
+leaves, so Venues wrapped alone and the strip came to **184px — 22% of the
+screen to say six words**. Measured across five settings, .6875rem at .1em is
+269px and fits one row — measured while the fourth item was called Dormant.
+It is **Out of rotation** since the merge with `main`, which is 55px wider, so
+the phone strip is two rows again and 124px on the index at 390px rather than
+the 73px this entry first recorded. Correct rather than tight: the label the
+nav uses is the name the page gives itself, and the alternative was a nav that
+called the page something the page does not. Nothing overlaps at any width.
+
+**No hamburger, deliberately.** Hiding six destinations behind a tap costs
+discoverability, needs JavaScript, and does not print — and this site's whole
+posture is that its pages degrade to a document. Eight items is under the
+threshold where hiding starts to pay.
+
+**One bug caught before it shipped, and it is the fifth of a known kind.**
+`.crumb{gap:.35rem}` in the show sheet's narrow media query out-specified the
+shared row gap, so show pages — and only show pages — had four overlapping
+44px targets at 390px. It is now `.crumb.pager`, which is what the comment
+above it always said it was for. Found by walking 10 page types × 8
+breakpoints and asserting no two targets overlap; that check is worth keeping.
+
+### Same session, second round on the nav — one function, three states
+
+Ian settled the order and then named the thing that mattered more: "we need to
+be consistent about showing where we are across the *entire site*. Every page.
+Considering 'show' part of 'shows' makes sense, but if we highlight it, then it
+makes it look like we're already there, and that definitely violates some sort
+of guideline."
+
+It does, and the guideline is `aria-current`. Marking Shows the way the current
+page is marked would assert that the index is the document being read, and the
+`here` treatment also drops the `href` — so a show page would have lost its one
+route back to the list to say something untrue.
+
+**Order, as he set it:** Shows · Songs · Due · Dormant · Years · Venues. Songs
+before Years, Years with Venues, Due with Dormant.
+
+**Three states now, not two:**
+
+| state | ink | rule | link? | `aria-current` |
+|---|---|---|---|---|
+| elsewhere | `--ink-soft` | transparent | yes | none |
+| the section you are in | `--ink` | `--edge` (3.08:1 on paper, over the 3:1 floor) | **yes** | `true` |
+| the page you are on | `--ink` | `--ink` | no | `page` |
+
+**And the nine copies are one function.** `nav_strip(here, section, root,
+mark)` — because the drift he spotted was structural, not cosmetic: eight
+pages marked themselves and **the 1,301 pages most likely to be read, every
+show and every song, marked nothing at all**, and no copy had ever carried
+`aria-current`. Venues and Years were also missing the wordmark the other
+page-titled pages carry, which is the same drift in another column; they have
+it now.
+
+Measured after the merge with `main`: 1,310 pages, 8 marked as the current
+page, 1,302 by section, 0 wrong. **The merge is what proved the function was
+worth building.** `main` had meanwhile added a tenth page type, Not a show,
+with a tenth hand-written strip in the old order marking nothing — it was
+converted to `nav_strip()` in one line and inherited all three states. `main`
+had also renamed `dormant.html` to `out-of-rotation.html`, leaving a
+forwarding page behind, and the nav went on pointing at the forwarder under
+the old label: the exact failure the constant `ROTATION_PAGE` exists to
+prevent, and Ian's own words about it — "the artifact name did not update with
+the conceptual shift" — were already in the comment above that constant. The
+nav was the eighth place still saying Dormant. `check_links.py` passed
+throughout, because a forwarding page is a file that exists. **A link check
+cannot see this class of bug**; the check that did was asserting that no nav
+href resolves to a page under 1 KB, which is now part of the sweep. The check asserts label order, exactly one marker per page,
+that a current page is *not* a link and a section marker *is*, and that show
+pages mark Shows and song pages mark Songs. Worth re-running after any nav
+change.
 
 ### The three biggest open things, in the order I would take them
 
@@ -1507,6 +1724,228 @@ band has never played at a show. The other five sit at 91 shows and showed
 nothing either way. Measured, not assumed: the first draft of this entry said
 all nine, which was wrong by five.
 
+### Fourth round — a link claim that was wrong, and the check that settles them
+
+`1280be25a` repointed the out-of-rotation page's "how this works shows the
+measurement" link from `#rotation` to `#songs-with-no-verdict`, on an agent's
+report that `method.html` had no such id. **It did.** `<h2 id="rotation">Dormant,
+rarity, once or twice</h2>` was in the very build that shipped that commit, and
+still is. Reverted.
+
+The target matters: `#rotation` holds the 774-silence table and the
+`ROTATION_PLAYS` reasoning that page splits on, while `#songs-with-no-verdict`
+explains **`MIN_HISTORY`** — eight performances *inside the ten-year window*,
+the verdict gate. Those are the two eights this file keeps apart on purpose, and
+the link had been moved from one to the other.
+
+**`tools/check_links.py`** exists so this is settled by running something.
+
+```
+python3 tools/check_links.py
+```
+
+It walks every built page — all 1,310, not the 9 root ones a scratch script
+checked — and reports missing files, same-page fragments with no id, cross-page
+fragments with no id, and ids repeated within a page. Query strings are stripped
+first, because the 153 `index.html?q=…` venue links are not broken. Verified
+against a fixture that trips each class.
+
+**It found 13 real broken links on its first run**, none of them the one that was
+reported:
+
+- **Twelve "Best version" links.** Scores come from fouldomain and rows from
+  phish.net's song history, and on twelve songs the two disagree about what
+  exists — Joy's best version is dated 1995-12-09, a night the band played but
+  not one this archive holds a Joy performance for; likewise Rift, Axilla, Free,
+  Sleep, Waves and six more. The date is now plain text when there is no row to
+  point at, which is this file's rule everywhere else.
+- **One show→song anchor.** The 2020-08-11 Tonight Show report lists I Never
+  Needed You Like This Before as a debut; that song's own history begins in
+  2021. One of 14,126. `write_site` now passes `{slug: dates}` rather than a set
+  of slugs so a report only anchors a row that exists — measured at 0.15s
+  against a 2.4s rebuild.
+
+**The lesson is the shape, not the link.** "I looked and did not see it" is not a
+measurement, and it cost a correct link. Neither is "I checked the links" when
+the checker only saw 9 of 1,310 pages — that was mine, and it is why the check
+is in `tools/` now instead of a scratch file.
+
+## 2k. Ian's review of songs, home, due and dormant — 2026-07-30. DONE
+
+Nine notes across four pages. All nine are done. Two bugs fell out of them
+that he had not asked about, and one of those had been shipping for two days.
+
+| # | his note | what happened |
+|---|---|---|
+| 1 | "589 songs, played 37,169 times" reads as one song played 37,169 times | now "589 songs · 37,169 performances between them"; the share blurb too, where there is no page around it to disambiguate |
+| 2 | the songs heroes advertise figures with no way to follow them | Longest Gap names its holder and links to that song page. The index has done this since it was built, and its comment says why |
+| 3 | "best rated version" is a strange thing to headline on a page about all 589 | card removed. The score is fouldomain's, and a hero is where a site states what *it* thinks. The fact is not lost: every row carries its own best score and "Highest rated" is one of the five sorts |
+| 4 | five-column hero on the home page, "and it's ugly anyway" | dropped to four — see below for which card went and why |
+| 5 | the home heroes duplicate the nav | **measured, not acted on.** He said "I don't necessarily want to remove that". Of the four cards left, three point at pages in the nav and one (Longest Gap) at a show page that is reachable no other way |
+| 6 | the due page's dormant note is bolted to the bottom with no heading | promoted to a fourth section with the same furniture as Slipping and On the shelf, and the hero's fourth cell now opens it rather than leaving the page |
+| 7 | "That page"; "a run that did not take" everywhere it appears | rewritten in all three places. "Did not take" casts every performance as a trial aimed at sticking and files the outcome as a failure at something nobody said was being attempted |
+| 8 | no way back to the navigation without a long scroll, on any page | the floating control is on all seven list and prose pages. It had never worked anywhere — see below |
+| 9 | "in three kinds" is awkward; and the page is `dormant.html` while its headline is *Out of rotation* | "in three groups"; and the page is `out-of-rotation.html` with a forwarding stub left behind |
+
+**Which home card went, and it was not the obvious one.** The cheapest way to
+four is to drop the card that repeats the subtitle, which is Reports. What went
+instead is **Song Performances**, because it was wrong. It summed every song
+slot across the 692 reports *that page lists* — 14,062 — carried the same label
+as the songs index, and linked straight to it. That page says **37,169**,
+because it counts every performance in every song's history across all 2,108
+counted shows. One label, two populations, 2.6× apart, and a link from the
+smaller to the larger. This is the "Songs Logged" bug from §3 again: that one
+was fixed by renaming the label, which left the two figures still disagreeing.
+The nav already carries a door to the songs index, so nothing was lost.
+
+**The back-to-top control had never once worked, on any page.** `hidden` hides
+an element through the UA rule `[hidden]{display:none}`. Any author `display`
+declaration beats a UA rule outright, whatever the specificity — and `.totop`
+declares `display:flex` two lines above. So the attribute has been inert since
+the control shipped, the script has been setting `.hidden` correctly the whole
+time, and every song page has carried a permanent floating arrow pinned over a
+header it was written to appear only in the *absence* of. Verified against the
+published sheet, not the local one. `.totop[hidden]{display:none}` is the fix,
+and the rules now live in one `TOTOP_CSS` block rather than in one sheet of
+three. **A control that hides itself needs its hidden state proved, not its
+visible one** — a screenshot of it working is a screenshot of the bug.
+
+**And the longest gap is a tie, which a `max()` would have hidden.** Two songs
+have come back after 1,468 shows: Cold as Ice on 2026-07-22 and Gone on
+2009-12-30. Naming one of them under the words LONGEST GAP is a claim of
+uniqueness the archive does not support, and this site's rule is that a wrong
+figure is worse than a missing one. The card names the most recent holder,
+links to it, and says how many others there are. **The index's version of the
+same card was safe only by accident**: across the 692 archived reports,
+2026-07-22 holds 1,468 alone, because Gone's night is outside them. Ian asked
+for it to be fixed before it fires, so it is — same treatment, same two
+helpers, and the card now says which night it is about to take you to instead
+of pointing somewhere without saying where.
+
+**Five copies of the hero builder became one caller each.** `hero_html` in
+§8e's sense: the same two lines lived in `render_show`, `render_index`,
+`render_due`, `render_dormant` and `render_songs`, and they had already
+drifted — three escaped the href and two did not, on pages whose hrefs are
+built from song slugs and venue names. The show page's copy was the fifth
+because it wrote `href='#%s'` into the format string; it passes the `#` now.
+Proved by diffing every hero card in the built site against the published one:
+all 19 identical except the two that were meant to change.
+
+The `.of` sub-label and its arrow moved from `SONGS_CSS` up to `INDEX_CSS`
+half an hour after being written, which is the shortest a rule has taken to
+want a second home in this file. Which card gets the arrow moved onto its
+name is stated by `hero_html` as a `named` class rather than inferred in CSS
+with `:has(.of)` — an unsupported selector is dropped in silence, and here
+that would leave the old arrow in place *and* add a second one under it.
+
+### The tie fix found a data bug on its first day — OPEN, needs Ian
+
+Naming the tied song is what exposed it. **Gone's 1,468 is not a gap.** Its
+two performances are 2009-10-29 and 2009-12-30 with **19 counted shows**
+between them, and this archive's own report for 2009-12-30 records Gone with
+no gap at all — so the two phish.net endpoints disagree about that
+performance, the same shape as `the-curtain` in §0.
+
+**First measurement of this was wrong and is corrected here, because a wrong
+figure in this file gets obeyed.** It reported "95 recorded gaps exceed the
+shows actually between their two dates" and blamed phish.net. The comparison
+was the bug: it measured each gap against the previous row *in this archive's
+list*, which includes performances phish.net deliberately does not count, so a
+correct gap measured from the last *counted* performance looked inflated
+against an uncounted neighbour. All 95 had an uncounted row before them, and
+50 were nothing but that error. **Measured properly — counted performance to
+counted performance — 0 of 36,378 gaps exceed the shows between them.**
+phish.net's gaps are sound.
+
+**What is actually wrong is a debut gap landing on row 1.** phish.net gives a
+song's first counted performance a gap equal to every show the band had played
+before it: 2,022 for What's Going Through Your Mind, 1,967 for The Well. That
+is the band's history length, not a silence, and there are **518** of them.
+The site drops them by ignoring each song's first row, which is right **473**
+times. The other **45** are songs that first appeared at a date phish.net does
+not count toward gaps — Festival 8's 2009-10-29, the 1997-06-06 European date,
+1999-06-24, 1995-05-14, a dozen more. The archive keeps that appearance as row
+0, so the debut gap sits on row 1, where "skip the first row" cannot reach it.
+
+**42 songs publish a longest gap that is really their debut gap**, and they
+land at the top of the songs page's Longest-gap sort because a debut gap is
+about as large as a number here gets:
+
+| published | actual longest | song |
+|---|---|---|
+| 1,468 | 49 | Gone |
+| 1,460 | 224 | Sleep Again |
+| 1,452 | *none — one counted play* | Invisible |
+| 1,378 | 109 | Scents and Subtle Sounds |
+| 1,363 | 16 | 46 Days |
+| 1,244 | 26 | Bug |
+| 1,181 | 15 | The Moma Dance |
+| 1,115 | 21 | Piper |
+
+Cold as Ice's 1,468 is real — 1,465 counted shows between 1992-05-18 and
+2026-07-22 — so the hero figure itself survives; what goes is the "tied with
+Gone" beside it.
+
+**This was never a which-endpoint-to-believe call like `custom` and
+`the-curtain`.** It was one function not doing what two others already did.
+`due_rows` and `render_song` filter to counted performances *first* and drop
+the first of those — which is why the due page, every verdict, and Gone's own
+page (which reads "Debuted 2009-12-30, shows between 49") were all correct
+throughout. `render_songs` and `songs_card` dropped the first row of the raw
+list instead.
+
+### DONE, and Ian widened it — the whole page counts shows now
+
+He took the judgement call the other way, and he is right: "The songs summary
+data should not lie, so we need to be clear about what our counts are… If we
+are marking things as 'not a show' and not counting it in some contexts, we
+should be consistent." So `shows` and `last played` are counted the same way
+as the gaps, not just the gaps.
+
+The strongest argument for it turned up while measuring: **the index already
+disagreed with the pages it links to.** My Sharona's own page says
+"0 performances"; the index row said it had been played once. One click apart.
+
+| what moved | |
+|---|---|
+| longest gap | 42 songs — Gone 1,468 → 49, 46 Days 1,363 → 16, The Moma Dance 1,181 → 15 |
+| shows | 127 songs — Jam 93 → 74, The Star-Spangled Banner 28 → 22, My Soul 101 → 96 |
+| last played | 5 songs |
+| the totals | 37,169 → **36,958** performances; 211 uncounted rows across the archive |
+| the hero | "Cold as Ice, tied with Gone" → **Cold as Ice** alone, the tie having been an artefact of the bug that named it |
+| the Longest-gap sort | top is now Cold as Ice 1,468, Skin It Back 1,424, Fuck Your Face 1,424, Baby Lemonade 1,312 — real 20-to-34-year bustouts, each within 4 of this site's own count |
+
+**Nine songs have never been played at a show** — five of them at one
+soundcheck at The Woodlands on 2024-08-14, plus Liquid Time at the Festival 8
+soundcheck, Sunshine Superman at Moon Palace, and No Reply At All and Watcher
+of the Skies at the Waldorf Astoria. **They keep their rows.** Dropping them
+would have the page say the band has never touched Day Tripper, which is worse
+than saying it has played it at no shows, and their pages exist and say the
+same thing. The row reads `never at a show` and `0 shows`; `data-last` stays
+empty, which sinks them to the bottom of Recently played rather than the top.
+
+Verified by checking **all 589 index rows against the song page each one links
+to** — performance count and last-played date, both directions. Zero
+disagreements, where before there were 127.
+
+**And Ian's guess about Cold as Ice was right: 1,465 against 1,468 is our
+calendar against phish.net's.** Measured across all 36,378 counted-to-counted
+pairs, 27,416 agree exactly and 8,275 differ by one — but the surplus grows
+with the span, from a mean of +0.2 on gaps under 100 to +3.3 on gaps over
+1,400. That is the signature of a handful of shows they count and this
+calendar does not, accumulating over the span, rather than an off-by-one:
+roughly one missing show per 400. Not chased; `shows_since` exists precisely
+because this site does not try to reproduce their figure.
+
+**Two smaller things repaired in passing, both left by the same rename.** When
+`FEW_TITLE` went from "One or two nights" to "Once or twice" at Ian's request,
+two sentences built on it were left behind: the due page published "174 turned
+up **on** once or twice in the band's whole life", and the method page still
+explained that the section "is named for the nights rather than for a count",
+which is now exactly backwards. Interpolating a phrase whose grammar the
+sentence depends on has this failure mode — the constant changes, every
+sentence built on it compiles, and one of them stops being English.
+
 ## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 
 His words: the directory "is cluttered. shows should probably go under a
@@ -1643,6 +2082,16 @@ Bagnard is not bad — the reviewer measured the method page as the best-typeset
 page on the site and Bagnard sets its headings. The open question is only
 whether something with more personality would serve the wordmark better.
 
+**Still open. A specimen was built on 2026-07-31 and it was not this one.**
+Ian ruled on the live banner — Bagnard stays, "Literata is a bit too soft,
+mono is just wrong here, Georgia is not a face that's anywhere in the site" —
+after seeing all four rendered at `.live b`'s own 1.25rem. That settles one
+20px line on show pages. It compared the faces the site already loads, asking
+whether the banner needs a display face at all; it did not compare Fraunces,
+Instrument Serif or Redaction, and it did not test the wordmark, song titles
+or method headings at 28–57px, which is the whole of the ask above. Do not
+read the ruling as closing this.
+
 ### Video enrichment — filed, not started
 
 GitHub issues #1 (show pages) and #2 (song pages). Official Phish YouTube and
@@ -1706,6 +2155,39 @@ preference predates the review — his call, not the reviewer's.
   constraint on how the hosted site loads CSS. **The general lesson Ian drew is
   the more useful one: periodically re-check the assumptions written down here.
   This one shaped a design decision hours after it had stopped being true.**
+
+  **The README said it too, and now says what the file actually is** (2026-07-30).
+  It claimed pages "inline everything they can … so a file handed to someone in
+  a chat still renders offline", with web fonts as a minor exception. Re-measured
+  against a fresh `--html` before rewriting: still three Google font-host
+  references, still one 13 KB inlined face, still no `grain.png`. The exception
+  was never minor — it is nearly all the text.
+
+  **And "only the wordmark survives offline", above, is itself wrong** — I wrote
+  it into the README before measuring and had to take it back. Nothing survives.
+  `inline_font_css()` has one caller, `render_html(..., sheet=None)`, which
+  serves `--html` and `--pdf` alike, and the show sheet `CSS` references Bagnard
+  in exactly **one** rule, `.live b` — the banner on a show still being played.
+  A settled show's single-file output has no `.live` element, no wordmark, and
+  an `h1` deliberately set in Plex Mono (`/* The date, not the wordmark */`).
+  So the 17,372 bytes of inlined face — **19.0% of a 91,288-byte file** — paint
+  zero glyphs in the case the feature exists for.
+
+  **Fixed 2026-07-30, and Ian caught the obvious cure being the wrong one.**
+  I proposed deleting `inline_font_css()` outright; he asked why that should
+  introduce Georgia to the live banner. It should not — `.live b` is the one
+  rule that escaped the site's generic voice on purpose, and dropping it to a
+  browser default serif that no loaded page uses anywhere else is a worse
+  outcome than the 17 KB. The face is now emitted only when
+  `report["provisional"]`, so the settled case pays nothing and the live case
+  is unchanged. Verified rendered, not grepped: the live banner measures
+  383.2px, identical to forced Bagnard and 29px off forced Georgia; a sweep of
+  every element whose stack can reach Georgia returns **zero** on both pages;
+  the settled page's `FontFaceSet` has no Bagnard entry at all. The hosted
+  show page is byte-identical at 74,045 bytes, and the single-file diff is
+  exactly the `@font-face` block and nothing else. **`document.fonts.check()`
+  is not evidence** — it returned `true` for Bagnard on the page that has no
+  such face, because it counts fallback. Compare rendered widths instead.
 
 ## 3c. Song page front matter — Ian's live review, 2026-07-28. DONE
 
@@ -2091,6 +2573,17 @@ rather than looking for a scrollbar.
 - **[ruling]** Do *not* build `/venue/` and `/year/` page trees. URL-addressable
   search gets the same result with no new build output and nothing to fall out
   of sync. Build real venue pages only for per-venue *statistics*.
+
+  **Held, and `years.html` is the second half of it rather than an exception.**
+  Ian asked on 2026-07-30 for a year profile after the MSG run of shows modelled
+  on 1992–96, and the test the ruling implies is the right one: can search
+  produce this? It cannot. Nothing on this site could tell you that 1991 opened
+  with Chalk Dust Torture 16 times, that Acoustic Army was played 27 times and
+  every one of them in 1995, or that Cold as Ice ran into Cracklin' Rosie on 20
+  nights and all 20 were 1992. That is per-year *statistics*, which is exactly
+  what the ruling reserves a real page for. What was not built is the tree: one
+  page, 39 blocks, no `/year/1993.html`. If the blocks ever earn pages of their
+  own, that is a second decision and this page is its index.
 
 ## 5. DOM growth before the 1983 backfill
 
@@ -2830,6 +3323,148 @@ launch). Expect the next scheduled run to be several minutes longer than usual,
 once. After that the index is current again and the incremental behaviour is
 unchanged.
 
+## 2l. Not a show — Ian, 2026-07-31. DONE
+
+Off the back of §2k. Ian, on the nine songs that turned up there: "it makes me
+think how we could show another interesting set of songs: only ever
+soundchecked." And: "in rare cases, they get circulated and gain favor… If
+there's a way to expose something like this to make it discoverable, that'd be
+cool." Then, on where it should live: "move the 'also on file' listings to a
+higher prominence home, or at least something that's not tacked onto the end of
+the show list."
+
+**`not-a-show.html`**, named for what unites the two kinds rather than the
+larger one — thirteen soundchecks, seven sessions, so calling it Soundchecks
+would be `dormant.html` again. It is also already the site's phrase for it: a
+song page prints "Not a show" in the gap column of one of these rows, and the
+songs index prints "never at a show" for a song that has only ever been played
+at one. Four sections, each a hero cell: Soundchecks, Sessions, Never at a
+show, Rated away from the stage.
+
+The index's "Also on file" list is now one line under the hero, before the
+search box. It was twenty rows at the foot of 692 — reachable by scrolling the
+whole archive and no other way.
+
+**Two of my own claims to Ian were wrong and both are corrected on the page.**
+
+1. "Nothing on the song page says it was a soundcheck." It said "Not a show" in
+   the gap column, and had all along. I read a 400-character extract of a
+   1,167-character row and concluded from the part I could see. The row names
+   the kind now — "Soundcheck", "Session" — for the twenty dates the archive
+   holds a report for; the other thirty-nine non-calendar dates are pre-2009,
+   have no report to read a kind out of, and keep the general word.
+2. "My Soul's highest-rated version is a soundcheck." It is its **second** of
+   twenty-five. I enumerated from zero and reported the ranks one too low, and
+   an off-by-one in an index became a claim about the whole archive. **None of
+   the fourteen is its song's best version.** `rated_off_stage` now carries the
+   denominator with the rank so nothing downstream can restate it, and the
+   page's sentence is computed from the rows rather than written down.
+
+**The lore was right and I looked in the wrong place.** Ian cited the IT
+soundcheck Waves, corrected himself to 46 Days, then said "I must be
+completely wrong… I think there is a Waves in a soundcheck somewhere that is
+very highly regarded." He was not wrong. It is **2011-05-26, Bethel Woods**,
+and phish.net's own note on it reads: *"This performance was from the tech
+rehearsal for Phish's 2011 Bethel Woods run. This stunning version of Waves
+(with A Love Supreme themes) was first revealed on Kevin Shapiro's 'From the
+Archives' #15."* The entry's only song is that Waves.
+
+IT is genuinely not reachable — the whole IT soundcheck is **two songs** in
+this archive, Jam and Skin It Back — though both songs at IT proper are here
+and rate well: 46 Days on 2003-08-03 is its no. 2 of 159, Waves on 2003-08-02
+its no. 4.
+
+**The finding that matters is that I built the section on the wrong evidence.**
+Ratings were the wrong key: fouldomain has no score for the Bethel Waves, so
+the single best instance of the phenomenon Ian described was the one row the
+"rated" list could not contain. **All twenty entries carry a note**, 53 to 778
+characters, median 253, and the notes are where the story is — Magnaball's
+soundcheck was one 46-minute jam, Festival 8 had two soundchecks in a day, the
+Super Ball IX one has Fish being re-taught the end of Sleep Again. The notes
+are on the page now, and the rated section says plainly that it holds only the
+ones that were *also* scored. The first version of that paragraph said
+"fourteen rows is what the record supports, not what circulates", which was
+wrong in the other direction: the record supports far more than fourteen, just
+not as a number.
+
+Two stale figures fixed in passing, both the same shape as the ones §2k found:
+`show_kind`'s docstring said "nine of the archive's entries are not concerts"
+and named them individually — it is twenty — and the comment beside
+`split_archive` in `write_site` said nine too. **A count in a comment is a
+figure like any other.**
+
+## 2m. A tech rehearsal is not a soundcheck — Ian, 2026-07-31. DONE
+
+Off the back of §2l. Ian: "a tech rehearsal is not really a soundcheck. You
+could put them in the same bucket … but they're not the same thing. I don't
+know if there's adequate resolution to classify them properly, but if there
+is, it would make sense to be accurate."
+
+There is. `show_kind` returned two values and both were wrong at the edges. It
+called anything whose note said *soundcheck* **or** *rehearsal* a soundcheck —
+one regex covering both words — so 2011-05-26 at Bethel Woods, which phish.net
+describes as the tech rehearsal for a whole run, was filed as the soundcheck
+for a night. And `session` held five television appearances, one NPR taping,
+and the 2010 Rock and Roll Hall of Fame ceremony where Phish inducted Genesis,
+which is not a session by any reading.
+
+phish.net's notes are formulaic enough to carry the distinction — "This was
+the soundcheck for X", "were the musical guests on X" — so `KIND_PATTERNS` is
+an ordered list of five and `session` stays as an honest fallback rather than
+a sixth pattern pretending to know. All twenty classify without reaching it:
+
+| kind | n |
+|---|---|
+| soundcheck | 12 |
+| television | 5 |
+| tech rehearsal | 1 |
+| radio | 1 |
+| ceremony | 1 |
+
+Two traps the ordering exists for, both recorded beside it: **rehearsal is
+tested before soundcheck**, because a future note may well say "the rehearsal,
+in place of a soundcheck"; and **"broadcast" is deliberately not a television
+signal**, because two soundcheck notes say the soundcheck was broadcast on The
+Bunny.
+
+The page is now built on the distinction that survives new kinds — whether the
+entry happened *because of a show*. **Before a show** holds the soundchecks and
+the rehearsal, each naming the concert it preceded; **Occasions of their own**
+holds the rest. Every row carries its exact kind, and so does the gap column of
+a song page.
+
+Two things broke on the way and both were caught by looking at the page:
+**"5 televisions"** in the subtitle, because the label naming a medium was
+being pluralised as if it counted occasions — hence `KIND_COUNTED`, which
+writes the singular and plural out for all six; and the index pointer
+publishing **"0 television or radio sessions"**, because it was counting a
+bucket that had just been emptied into three others. It names the kinds now
+instead of counting them, so a new one cannot make it lie.
+
+## 10. Reach — Ian, 2026-07-31. FILED, NOT STARTED
+
+His words: "No one has complained because I am pretty much the only user of
+this site. We'll need to get to SEO or however people make their sites more
+popular in due course." Filed rather than started; noting what is already
+there so nobody rebuilds it.
+
+Already done, and it is more than half of the mechanical part: `sitemap.xml`
+generated from the built directory and excluding the forwarding pages;
+`robots.txt` pointing at it; `<meta name="description">`, the full Open Graph
+set and a drawn preview card on every page; one canonical hostname with a
+`CNAME`; server-rendered HTML with no client fetch, so there is nothing for a
+crawler to fail to run.
+
+Not done, cheapest first: **no `<link rel="canonical">` on any page**, which
+matters because `/` and `/index.html` are both reachable and the sitemap
+already takes a side; **no `application/ld+json`** — `MusicComposition` per
+song and `Event` per show are the obvious fits and this archive has better
+structured data than most sites that publish it; and **no `<title>`
+differentiation strategy** beyond "Song — Possum Logic". The honest question
+before any of it is what someone would be searching for that this site answers
+better than phish.net, since the answer is probably a *phrase* ("how long has
+it been since Phish played X") rather than a song name.
+
 ## 8j. Hovering the Jam chart stamp made it vanish — Ian, 2026-07-30. DONE
 
 He sent a screenshot of a setlist row where the chip beside "Mercury >" was a
@@ -2976,6 +3611,52 @@ again the only filled red thing on a report. Ink was already the site's way of
 saying "this is a state, not a claim" — `.yr h2 .tab` and the tooltip both
 reverse to it. Red says something about the music; ink says the pointer is
 under your pointer.
+
+### The bustout itself: specimened, and left alone — [ruling, Ian's]
+
+He asked to see the bustout in the configurations under discussion before
+deciding, which was the right instinct: the arithmetic and the picture said
+different things.
+
+| | fill | size | ratio | floor | |
+|---|---|---|---|---|---|
+| **A** shipping | `--hot-text` | 11.25px/600 | 5.78 light, 6.63 dark | 4.5 | passes |
+| **B** brighter | `--hot` | 11.25px/600 | 4.44 light | 4.5 | fails |
+| **C** brighter, bigger | `--hot` | 19px/700 | 4.44 | 3 | passes |
+| **D1** heavier strike | `--hot-text` | 11.25px/600 | unchanged | 4.5 | passes |
+
+**A stays.** Three things the specimen showed that the numbers did not. In the
+dark palette **A and B are the same image** — the two tokens are one colour
+there — so the whole vividness question is light-only. In light, A and B differ
+by less than the failing ratio is worth. And **C breaks the row**: at 19px the
+stamp no longer fits beside the title in `td.song`, wraps to a second line, and
+makes every bustout row taller than its neighbours. It is a layout change, not
+a size bump.
+
+The fourth lever, if presence is ever wanted without touching colour or size:
+thicken the double-strike. Measured clearance from the ring to the song title —
+**A 5.7px, D1 (2px/4.5px) 4.2px, D2 (2.5px/6px) 2.7px**. D1 is a real gain for
+one line and no reflow; at D2 the ring starts reading as the title's spacing.
+Not applied.
+
+### Landing it found nine more, which is the argument for the tool
+
+`main` had moved 27 commits while this branch was out, including a nav
+rewritten into `NAV_CSS`, a `TOTOP_CSS` extraction, and three new page types
+(`years.html`, `not-a-show.html`, `out-of-rotation.html`). The merge conflicted
+in exactly the three places this branch had swapped the token, which is the
+benign case — resolved by taking main's structure and re-applying the swap.
+
+The part worth recording is what did **not** conflict. Main's new code carried
+**nine fresh `color:var(--hot)` sites on small text** — `.show a`,
+`.crumb a.sect`, `details.how > summary`, `.aside a`, `.ax-note a`, `.years a`,
+`.yh .up`, `.chips a`, `.chips a:hover b` — none of which git had any reason to
+flag. Two of the new pages had never been audited at all. **A clean sweep is
+true of the tree it ran on and nothing else**, and the audit's own page list is
+a thing that goes stale: it now names the three new pages, with a comment
+saying why. Both checked-in guards pass on the merged tree
+(`check_links.py`: 1,313 pages, 108,207 links, 0 problems; `check_few_plays.py`
+ok).
 
 ## 9. Known and deliberately not fixed
 

@@ -102,6 +102,11 @@ SET_LABEL = {"1": "SET 1", "2": "SET 2", "3": "SET 3", "4": "SET 4",
 SET_PHRASE = {"1": "set 1", "2": "set 2", "3": "set 3", "4": "set 4",
               "e": "the encore", "e2": "the second encore",
               "e3": "the third encore"}
+# Back the other way. A saved report stores the column label ("SET 1") where
+# the running-order extract stores the key ("1"), and the years page reads
+# both -- the extract for the career, a report for whichever show is too new
+# to be in it. Derived rather than typed out, so the two cannot drift.
+SET_SLUG = {v: k for k, v in SET_LABEL.items()}
 
 # Everything a setlist walk decides about one performance. Cleared before the
 # walk's answer is written rather than merged over the old one: `p.update(nb)`
@@ -1372,6 +1377,18 @@ BASE_CSS = PALETTE_CSS + THEME_CSS + """
 a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
 summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
   outline:2px solid var(--hot);outline-offset:2px}
+/* The identity line under every h1, and any link inside it. It carried no link
+   at all until the song page's debut date moved up into it on 2026-07-30, and
+   there was no rule to catch it: it rendered #9E9EFF and underlined on all 589
+   song pages, measured, while the best-version link two lines below it was
+   site ink with no underline.
+   **The fifth time a link here has shipped in the browser's default blue**,
+   and the reason it is written into BASE_CSS rather than SONG_CSS is that
+   `.show` is on every page type. Putting it in the one sheet that needs it
+   today is precisely how the other four happened. */
+.show a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.show a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The skip link's landing spot takes focus so the next Tab continues from
    the content rather than from the top of the page again -- but it is a
    place, not a control, so it does not wear the control's ring. */
@@ -1480,22 +1497,162 @@ BODY_BOX_CSS = """body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,
 html,body{overflow-x:clip}
 """
 
-#: The navigation's hover and its 24x24 hit area (WCAG 2.5.8). The three sheets
-#: lay .crumb out differently -- show pages carry a pager row the others do not
-#: -- but the target and the hover are the same everywhere.
-NAV_HIT_CSS = """.crumb a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+#: The whole navigation strip. It used to be four near-identical `.crumb`
+#: rules in four sheets plus a shared hit-area block, which is the arrangement
+#: that has produced four bugs in this file -- a nav that could not wrap among
+#: them. Show pages still lay theirs out differently, because they carry a
+#: pager row the others do not, but everything about the strip itself is here.
+#:
+#: Two groups, not one list. Ian, 2026-07-30: "There's also a real mixture of
+#: types of targets: shows, songs, years, venues, even due link to tabular
+#: data. FAQ and How This Works are a different sort of target." They are: six
+#: of them are the archive, two are about the archive. `.lists` is set one step
+#: up and in reading ink, `.meta` stays at the old size in the dim, and on a
+#: wide screen an auto margin pushes it to the far end of the row. No
+#: separator glyph anywhere in it -- a middot between two groups stranded at
+#: the end of a line the moment the strip wrapped, which it does at every
+#: phone width.
+NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem;margin-bottom:1.1rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb .lists,.crumb .meta{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem}
+.crumb .lists{font-size:.75rem}
+.crumb .meta{font-size:.625rem;margin-left:auto}
+/* Transparent rather than absent, so the strip does not move by a pixel when
+   an item is hovered or when it is the page you are on. The hairline under
+   every item went with it: seven of them under seven words set at 11px read
+   as a row of fine print rather than as the way around the site, and in a nav
+   landmark the underline is not carrying any meaning a body-text link needs
+   it for. What tells you where you are is now the one item drawn in full ink
+   with a rule under it. */
+.crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+   padding-bottom:.15rem;border-bottom:2px solid transparent}
+.crumb .meta a{color:var(--dim)}
+/* --hot-text, not --hot: these are 12px and 10px, so they want the 4.5 floor
+   and --hot is 4.44 on paper. See the palette note. */
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
+   area grows -- a pseudo-element centred on the label, and never narrower
+   than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+/* On a phone the strip is the whole of the navigation and 24px is the floor,
+   not the target: Apple asks 44pt, Material 48dp, and WCAG's own AAA level
+   agrees at 44. So the six destinations get 44px targets here.
+
+   Which costs a row unless the labels are made to fit one, and they were not:
+   at .75rem and .14em the six of them are 310px of ink in the 336px a 390px
+   phone leaves, so "Venues" wrapped alone onto a second row and the strip came
+   to 184px -- 22% of the screen, to say six words. Measured across the
+   settings, .6875rem at .1em is 269px and fits, and it is still a size and a
+   half up on the 11.25px this strip used to be set at. Under about 340px it
+   goes back to two rows, which is why the row gap is what it is: 44px targets
+   need 44px between their centres, and the gap is the only thing providing it.
+
+   The meta pair keeps 24px, the AA floor. They are the two least-used links on
+   the site and buying them 44px each costs another 20px of every phone screen.
+   They also drop the auto margin and take a row of their own, rather than
+   being pushed to a right edge a few characters away. */
+@media (max-width:620px){
+  .crumb{row-gap:1.5rem}
+  .crumb .lists{font-size:.6875rem;letter-spacing:.1em;gap:1.5rem .7rem}
+  .crumb .meta{margin-left:0;flex-basis:100%}
+  .crumb .lists a::before{min-width:44px;height:44px}
+}
+/* The section a page sits in, which is not the page it is. A show page
+   belongs under Shows and a song page under Songs, but neither *is* that
+   page. Ian, 2026-07-30: "Considering 'show' part of 'shows' makes sense, but
+   if we highlight it, then it makes it look like we're already there, and
+   that definitely violates some sort of guideline." It does, and the
+   guideline is aria-current: "page" is a claim that this is the document you
+   are reading, and a show page saying it about the index is simply false --
+   it would also take away the link, stranding the one route back to the list.
+
+   So there are three states and not two: nothing, the section you are in
+   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   page you are on (not a link, full ink, full rule). The markup says the same
+   thing to a screen reader -- aria-current="page" for the page, plain "true"
+   for the item in the set that contains it. */
+.crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
+@media print{.crumb .meta{display:none}}
 """
+
+
+#: The filename of the page holding all three groups.
+#:
+#: It was `dormant.html` for the three days between that page shipping and the
+#: night the split landed, and it stayed `dormant.html` for four more -- so the
+#: page was titled *Out of rotation*, headed *Out of rotation*, linked as *out
+#: of rotation*, and served from a URL naming one of the three things it keeps
+#: apart. Ian: "the artifact name did not update with the conceptual shift."
+#: Renaming a published URL is a thing to do once, so the name is a constant
+#: this time rather than a string in seven places; `dormant.html` stays behind
+#: as a forwarding page, since it is in the sitemap and on a preview card.
+ROTATION_PAGE = "out-of-rotation.html"
+
+#: The page for everything the band played that was not a show.
+#:
+#: Named for what unites the two kinds rather than for the larger one. Thirteen
+#: of the twenty are soundchecks and seven are television or radio sessions, so
+#: calling the page Soundchecks would be `dormant.html` again -- a filename
+#: naming one of the things it holds. "Not a show" is also already this site's
+#: phrase for it: it is what a song page prints in the gap column of one of
+#: these rows, and what the songs index prints for a song that has only ever
+#: been played at one.
+NOT_A_SHOW_PAGE = "not-a-show.html"
+
+#: The six lists that are the archive, then the two pages about it. Ian,
+#: 2026-07-30, on the order: "songs should come before years. I feel like
+#: Years and Venues go together. Due and Dormant go together as well."
+NAV_LISTS = (("Shows", "index.html"), ("Songs", "songs.html"),
+             ("Due", "due.html"), ("Out of rotation", ROTATION_PAGE),
+             ("Years", "years.html"), ("Venues", "venues.html"))
+NAV_META = (("FAQ", "faq.html"), ("How this works", "method.html"))
+
+
+def nav_strip(here=None, section=None, root="./", mark=False):
+    """The navigation strip. Every page on this site gets it from here.
+
+    It was nine copies of the same markup in nine shells, which is how the
+    site came to be inconsistent about the one thing a nav has to be right
+    about: eight pages marked themselves and the two biggest page types --
+    every show and every song, 1,301 of the 1,309 pages -- marked nothing at
+    all. No copy carried aria-current either. A reader could not tell where
+    they were on the pages they were most likely to be on.
+
+    `here` is the page you are on and `section` is the list it belongs to;
+    passing both would be a contradiction and the first one wins, because a
+    page cannot be inside itself.
+
+    `mark` puts the wordmark in the strip. It belongs on pages whose <h1> is a
+    page title rather than the site's name -- a show, a song, Due, Dormant,
+    Years, Venues -- and not on the four whose <h1> already says Possum Logic.
+    Venues and Years were missing it before this was one function, which is
+    the same drift in a different column.
+    """
+    def item(label, page):
+        if label == here:
+            return '<a class="here" aria-current="page">%s</a>' % label
+        mod = ' class="sect" aria-current="true"' if label == section else ''
+        return '<a href="%s%s"%s>%s</a>' % (root, page, mod, label)
+    return ('<nav class="crumb%s" aria-label="Sections">%s'
+            '<span class="lists">%s</span><span class="meta">%s</span></nav>'
+            % (" sections" if mark else "",
+               '<span class="mark">Possum Logic</span>' if mark else "",
+               "".join(item(*x) for x in NAV_LISTS),
+               "".join(item(*x) for x in NAV_META)))
 
 #: The two horizontal rules: the letterpress double, and the tear line.
 RULE2_CSS = """
@@ -1559,6 +1716,43 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
 # the note was protecting nothing. `.crumb` (four occurrences, four different)
 # and `.hero` (flex in one sheet, grid in another) do still differ and stay
 # where they are.
+# The sort control, which is a native <select> and looked it: the one widget
+# on the site drawn by the operating system rather than by this stylesheet,
+# sitting beside era chips and a search field that are both drawn here. Ian
+# spotted it on the song page and correctly said it was not that page's fault.
+#
+# `appearance:none` is what native styling turns on, and it is safe on a
+# pre-rendered site -- no script and no framework involved. The caret is two
+# 45-degree gradients rather than an SVG data URI, because gradients can use
+# `currentColor` and so follow the theme; a data URI would have needed one copy
+# per palette and would have been the next thing to drift.
+#
+# What this cannot do, and it is worth writing down before someone tries: the
+# open dropdown is an OS menu, not part of the page, and no stylesheet reaches
+# it. The `option` colours below help on Windows and Linux and are ignored on
+# macOS. Chrome 135 has `appearance:base-select` for the popup as well, which
+# is one browser and too new to build on.
+#
+# Named rather than copied because it was already in two sheets, identical, and
+# it is about to be four times longer -- which is how the pairwise copies here
+# start disagreeing with each other.
+SELECT_CSS = """.sort{appearance:none;-webkit-appearance:none;
+   font:inherit;font-size:.75rem;padding:.4rem 1.5rem .4rem .5rem;
+   background-color:transparent;color:var(--ink);cursor:pointer;
+   border:1px solid var(--edge);border-radius:0;
+   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+      linear-gradient(135deg,currentColor 50%,transparent 50%);
+   background-position:calc(100% - .78rem) calc(50% + .05rem),
+      calc(100% - .52rem) calc(50% + .05rem);
+   background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
+/* Matching the era chips beside it, which is the whole point of the exercise. */
+.sort:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* It ships disabled and is enabled by script; without this the UA greys out
+   text the reader can see for the split second before that happens. */
+.sort:disabled{opacity:1;color:var(--ink)}
+.sort option{background:var(--paper);color:var(--ink)}
+"""
+
 FOOTER_BOX_CSS = """footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
@@ -1570,31 +1764,91 @@ FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 """
 
+#: The way back to the navigation, for pages long enough to strand a reader.
+#:
+#: This was built for the song pages and stayed there for two days, which Ian
+#: found from the other end -- reading the due page: "there's no way to get
+#: back to the header without a long scroll to the top. We've talked about this
+#: before, and it was agreed we'd have some functionality to warp a user back
+#: to a navigation-dense area, but either it was applied to only one page, or
+#: not at all." It was the first, and the page that had it is not the one that
+#: needed it most: a song page runs to 629 rows at the outside, while the index
+#: is 692, the song index 589 and out of rotation 281 as a matter of course.
+#:
+#: One block and one script rather than a copy per shell. Seven shells want it,
+#: and the first paragraph of CLAUDE.md is about what a rule copied into three
+#: sheets has cost this file.
+#:
+#: The nav is the top of every one of these pages, so #top is the address of
+#: the navigation-dense area rather than merely of the beginning.
+TOTOP_CSS = """.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+/* --hot-text: this is 18px, under the 24px the display accent is cleared for,
+   and --hot is 4.44:1 on paper. See the palette note. */
+.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
+"""
+
+#: Hidden in the markup, so a reader with no JavaScript is never offered a
+#: control that would take them nowhere they are not already -- and never shown
+#: one pinned over the header it points at.
+TOTOP_HTML = ('<a class="totop" id="totop" href="#top" hidden'
+              ' aria-label="Back to the top">&uarr;</a>')
+
+#: Watch the header rather than a scroll offset: no magic number, and it stays
+#: right when the header wraps to more lines or a page grows a standfirst. The
+#: song pages do this inline because the same observer also drives their
+#: condensed header; these pages have nothing else to hang it on.
+#:
+#: The braces below are JavaScript's, and this string is passed to a shell's
+#: .format() as an argument rather than concatenated into it -- a replacement
+#: value is not re-scanned, so they need no doubling. Concatenating it would
+#: have made `{rootMargin:...}` a format field and raised KeyError at import.
+TOTOP_JS = TOTOP_HTML + """<script>
+(function(){
+  var b=document.getElementById('totop'), h=document.querySelector('header');
+  if(!b||!h||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){ b.hidden=e[0].isIntersecting; },
+    {rootMargin:'-8px 0px 0px 0px'}).observe(h);
+})();
+</script>"""
+
 CSS = BASE_CSS + """h1,h2,.title{text-wrap:balance}
 """ + BODY_BOX_CSS + """/* The header is a grid so the tour, which lives in the show line where there
    is room for it, can be lifted out to ride the breadcrumb row where there is
    not -- see the max-width block. One element either way. */
 header{padding-bottom:.9rem}
-/* Three fixed columns rather than space-between, so the index link stays put
-   when a show is missing one of its neighbours. */
-.crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   margin:0 0 .5rem}
-.crumb.sections{display:flex;flex-wrap:wrap;align-items:baseline;
-   gap:.55rem .9rem}
-/* The site's name, not a link. It used to go where "Shows" goes, so the strip
-   offered the same destination twice under two labels. As a label it also stops
-   inheriting the link underline that made it sit differently from its
-   neighbours on the song pages. */
-.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
+""" + NAV_CSS + """.crumb{margin:0 0 .5rem}
 /* Two cells, not three. The middle one held an "All reports" link that the
    section row above already provides, and once that came out it was an empty
-   grid cell on every page in the archive. */
+   grid cell on every page in the archive.
+
+   The pager is its own strip and keeps the old size and the old hairline: it
+   is two dates, not a set of destinations, and it is the one place where an
+   underline is doing work -- the labels are bare dates, which do not read as
+   links on their own the way a word like "Venues" does. */
 .crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
-         border-bottom:1px solid var(--rule)}
-""" + NAV_HIT_CSS + """.crumb .prev{grid-column:1;justify-self:start}
+.crumb.pager a{color:var(--dim);border-bottom:1px solid var(--rule)}
+.crumb.pager a:hover{border-bottom-color:var(--hot-text)}
+.crumb .prev{grid-column:1;justify-self:start}
 .crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
@@ -2090,10 +2344,20 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
      even at 320px, and the masthead closes up so it reads as one block rather
      than a stack of separate announcements. */
   header{padding-bottom:.55rem}
-  /* Two full dates and the index link have to share one line here, and at
-     320px they only just do, so the pager gives up some tracking rather than
-     risk pushing the page sideways. */
-  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
+  /* Two full dates have to share one line here, and at 320px they only just
+     do, so the pager gives up some tracking rather than risk pushing the page
+     sideways.
+
+     `.crumb.pager`, not `.crumb`. It was written as the latter, which was
+     harmless while both strips wanted the same geometry and stopped being so
+     the moment the sections strip got 44px targets on a phone: `gap:.35rem`
+     out-specified the shared block's row gap, the targets in the two rows
+     overlapped, and it showed up on show pages only -- four overlapping pairs
+     at 390px, none anywhere else on the site. The eighth instance of one sheet
+     of several quietly answering for a rule that belongs to all of them. */
+  .crumb.pager{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;
+     letter-spacing:.14em}
+  .crumb.sections{margin-bottom:.7rem}
   h1{margin-bottom:.45rem}
   /* At this width the whole thing fits on one line, so it reads better joined
      -- and a middot cannot be orphaned the way a comma was, because it only
@@ -2375,6 +2639,7 @@ BUSTOUT_GAP = 100
 # a song was ever in rotation is answered by how many times they played it, not
 # by how long they had it lying around.
 ROTATION_PLAYS = 8
+
 
 # And below this many, the song never got going at all. Ian, on the first cut:
 # "We can't call two a 'one shot' ... but for most intents and purposes, they
@@ -2778,13 +3043,15 @@ def render_html(report, bar_scale="linear", index_href=None,
         longest_id = next(rid for rid, s in zip(row_ids, report["songs"])
                           if s["gap"] == biggest)
 
-    hero = "".join(
-        ("<a class='card' href='#%s'>" % href if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in (
+    hero = hero_html([
+        c for c in (
             (len(report["songs"]), "Songs Played", "", None),
-            (longest, "Longest Gap", " hot", longest_id),
+            # The one href on this page that is an anchor rather than a URL.
+            # It was written as "#%s" inside the copy of the builder that used
+            # to live here, which is exactly the difference that made this a
+            # fifth copy rather than a fifth caller.
+            (longest, "Longest Gap", " hot",
+             "#%s" % longest_id if longest_id else None),
             (med, "Median Gap", "", None),
             # Not the mean. A gap distribution with one 1,947 in it has a mean
             # that describes no song in the setlist -- across this archive it
@@ -2792,7 +3059,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             # The count of bustouts is the thing the mean was standing near.
             (sum(1 for s in report["songs"]
                  if (s["gap"] or 0) >= BUSTOUT_GAP), "Bustouts", "", None),
-        ) if counts or lbl != "Bustouts")
+        ) if counts or c[1] != "Bustouts"])
 
     sections, rows, current = [], [], None
 
@@ -2960,9 +3227,19 @@ def render_html(report, bar_scale="linear", index_href=None,
             # Anchored at this very performance, so the link answers "where
             # does tonight's version sit against all the others" rather than
             # dropping you at the top of a six-hundred-row page to go looking.
-            href = "../song/%s.html#%s" % (
-                html.escape(s["slug"], quote=True),
-                html.escape(report["date"], quote=True))
+            #
+            # Only where that row exists. `songs` maps each slug to the dates
+            # its page actually carries, because a show report and a song
+            # history are two phish.net endpoints and they disagree once: the
+            # 2020-08-11 Tonight Show lists I Never Needed You Like This
+            # Before as a debut, and that song's own history begins in 2021.
+            # One anchor of 14,126, and it landed at the top of the page --
+            # which is what the anchor exists to avoid.
+            rows_on = songs.get(s["slug"]) if hasattr(songs, "get") else None
+            frag = ("#" + html.escape(report["date"], quote=True)
+                    if rows_on is None or report["date"] in rows_on else "")
+            href = "../song/%s.html%s" % (
+                html.escape(s["slug"], quote=True), frag)
             title = "<a href='%s'>%s</a>" % (href, title)
         # phish.net wrote something about this one. The prose itself lives on
         # the song page, so this says so and points there rather than repeating
@@ -3039,23 +3316,20 @@ def render_html(report, bar_scale="linear", index_href=None,
         # other page type, and the pager sits under them. Appending them to a
         # three-column pager grid left them wrapping into cells meant for
         # something else.
-        crumb = ("<nav class='crumb sections'>"
-                 "<span class='mark'>Possum Logic</span>"
-                 "<a href='../index.html'>Shows</a>"
-                 "<a href='../songs.html'>Songs</a>"
-                 "<a href='../due.html'>Due</a>"
-                 "<a href='../venues.html'>Venues</a>"
-                 "<a href='../faq.html'>FAQ</a>"
-                 "<a href='../method.html'>How this works</a></nav>"
-                 # No "All reports" in the middle: the row above already has
-                 # Shows, pointing at the same page under the name the rest of
-                 # the site uses for it. The pager is for the two neighbours.
-                 "<nav class='crumb pager'>%s%s"
-                 "</nav>") % (
+        # No "All reports" in the middle: the row above already has Shows,
+        # pointing at the same page under the name the rest of the site uses
+        # for it. The pager is for the two neighbours.
+        #
+        # The pager is built first and the strip concatenated after, rather
+        # than interpolating both at once: nav_strip's output is markup this
+        # function did not write, and running % over it would make any literal
+        # percent sign in a future label a formatting error at render time.
+        pager = ("<nav class='crumb pager'>%s%s</nav>" % (
             step % ("prev", "prev", prev_date, "Previous", prev_date,
                     "&larr; " + prev_date) if prev_date else "",
             step % ("next", "next", next_date, "Next", next_date,
-                    next_date + " &rarr;") if next_date else "")
+                    next_date + " &rarr;") if next_date else ""))
+        crumb = nav_strip(section="Shows", root="../", mark=True) + pager
 
     # What a chat client shows when someone drops the link in a thread. Plain
     # text, entities and all, because html.escape has the last word on it.
@@ -3172,6 +3446,17 @@ def render_html(report, bar_scale="linear", index_href=None,
                    html.escape(checked, quote=True), _clock(checked)))
         poll = LIVE_JS
 
+    # The inlined display face, for output with no stylesheet beside it -- but
+    # only when the page has a use for it. This sheet names Bagnard in exactly
+    # one rule, `.live b` above, so a settled show's single-file output was
+    # carrying 17 KB of font to paint nothing: 19% of a 91 KB file, measured
+    # 2026-07-30. Deleting it outright is the obvious cure and the wrong one --
+    # it drops that banner to Georgia, which no loaded page uses anywhere else
+    # and which is precisely the generic voice `.live b` was written to escape.
+    # Tying it to the one rule that asks for it costs the settled case nothing
+    # and leaves the live case exactly as designed.
+    face = inline_font_css() if report.get("provisional") else ""
+
     rating = ""
     if report.get("pnet_rating") is not None:
         rating = ("<p class='rating'>Phish.net rating <b>%.2f</b>"
@@ -3192,7 +3477,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         venue=_venue_lines(report), hero=hero, rating=rating,
         links=_show_links(report["date"], on_phishin), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
-        sheet=(sheet_links(sheet) if sheet else inline_font_css()),
+        sheet=(sheet_links(sheet) if sheet else face),
         row_js=ROW_JS,
         share=share_meta("%s%s &mdash; Possum Logic"
                          % ("Live: " if report.get("provisional") else "",
@@ -3220,14 +3505,7 @@ INDEX_CSS = BASE_CSS + BODY_BOX_CSS + """/* Which of the two lists you are looki
    sideways for one nav item. Breaking between labels rather than inside them
    is what the song pages have always done; the two sheets disagreed only
    because nothing had ever pushed this one. */
-.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
-   margin-bottom:1.1rem;
-   font-size:.625rem;
-   letter-spacing:.14em;text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
-   white-space:nowrap;border-bottom:1px solid var(--rule)}
-""" + NAV_HIT_CSS + """.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
-h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+""" + NAV_CSS + """h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(1.7778rem,7vw,3.5556rem);line-height:1.06;margin:0 0 .7rem;
    letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
@@ -3242,6 +3520,25 @@ h1 a:hover em{color:var(--ink)}
    disappears into the type. Right, not down: this card leaves for another
    page, where the show and song sheets' cards land further down their own. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+/* Which song, or which night, the figure belongs to -- under the label and in
+   the label's own small type, so the card still reads as one object. */
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
+   text-transform:none;font-size:.75rem}
+/* And on those cards the arrow moves down onto the name. The rule above
+   appends to the end of the label, and the last thing in a label carrying a
+   name is that display:block name -- so the arrow opened a line of its own and
+   sat alone under it. On the name it is also the more honest target: the card
+   goes to that song or that night, not to a page about longest gaps.
+
+   `.named` is written by hero_html rather than inferred here with `:has(.of)`,
+   because an unsupported selector is dropped in silence -- which would leave
+   the arrow where it was *and* add a second one below it, on exactly the
+   browsers nobody is testing. `.of` states its own colour, so it does not
+   inherit the label's hover and has to be named again. */
+a.card.named .lbl::after{content:none}
+a.card.named .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card.named:hover .lbl .of,
+a.card.named:hover .lbl .of::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
@@ -3310,9 +3607,7 @@ header{padding-bottom:.9rem}
 .chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    letter-spacing:0;color:var(--dim);margin-left:.3rem}
 .chip.on .chip-n{color:var(--paper)}
-.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-      color:var(--ink);border:1px solid var(--edge);border-radius:0}
-.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+""" + SELECT_CSS + """.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);margin-left:auto}
 .count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
          font-size:1rem;color:var(--ink)}
@@ -3349,7 +3644,13 @@ header{padding-bottom:.9rem}
    underneath it. Stated once for every id on these pages rather than per
    anchor, so a new one cannot be the thing that finds this out. */
 [id]{scroll-margin-top:2.6rem}
-.row:hover{background:var(--hover)}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
 /* Data in a column, so the mono: tabular by construction, which is what makes
@@ -3418,7 +3719,13 @@ header{padding-bottom:.9rem}
 .due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
    column-gap:1.1rem;align-items:baseline}
 .due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
-.due .row:hover{background:var(--hover)}
+.due /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
 .due .row:hover .d-song{color:var(--hot-text)}
 .d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
@@ -3434,7 +3741,44 @@ header{padding-bottom:.9rem}
    venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
    while the identical class on a song page was 12px and dim. One class, two
    appearances, by accident. */
-""" + DEK_CSS + """.dek.foot{margin-top:1.4rem;max-width:64ch}
+""" + DEK_CSS + """
+/* The measurement detail, folded away. Three paragraphs used to stand open
+   here: 835px of a 1,147px front matter on a phone, 73% of it, before the
+   first due song. And the FAQ already carries 2,930 characters on the same
+   subject against their 1,189 -- so this page was not explaining itself, it
+   was holding a shorter second copy of an answer that lives elsewhere, above
+   its own content.
+   What stays open is the one thing a reader cannot read the third column
+   without: what 2x means. The rest is one click, and the click does not leave
+   the page, which is the objection to sending it to the FAQ outright.
+   Nothing is remembered per reader. A flag that says "you have read this"
+   fails asymmetrically -- set wrongly it shows a first-time reader an
+   unlabelled table of multipliers, unset wrongly it costs one line -- and a
+   reference archive should not serve two different pages at one URL. The
+   site's own precedent argues the same way: the last per-reader flag here
+   shipped broken and stayed invisible for weeks.
+   Same <details> idiom the show pages use for long notes: no JavaScript and
+   keyboard-operable. It stays closed when printed, like every other one on
+   the site -- forcing it open needs more than hiding the summary, and a
+   half-done version that only removed the control would print a folded
+   section with no sign it folds. */
+details.how{margin:.7rem 0 0}
+/* display:block, which is the shape details.jam and details.note already use
+   on the song pages -- one idiom for disclosure on this site rather than two.
+   width:max-content keeps the rule under the words instead of across the
+   column.
+   A caution for whoever measures this next: the accessibility inspector
+   reports this summary as a plain "generic" node, and the site's existing
+   shipped details reports exactly the same way, so that reading is the tool
+   and not the markup. It was nearly written down here as a real defect. */
+details.how > summary{display:block;width:max-content;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule);cursor:pointer;
+   padding:0 0 .1rem;list-style:none}
+details.how > summary::-webkit-details-marker{display:none}
+details.how > summary::after{content:" \\2193"}
+details.how[open] > summary::after{content:" \\2191"}
+details.how > summary:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* A section heading, under the due list. At 1.5rem it was barely larger than
    the 1rem song titles it headed, which made a new section read as another
    row. 2.125rem sits clearly between the page title and the data. */
@@ -3470,7 +3814,13 @@ header{padding-bottom:.9rem}
 .vn .row,.lhead.vn-h{display:grid;grid-template-columns:1fr 12rem 7rem;
    column-gap:1.1rem;align-items:baseline}
 .vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
-.vn .row:hover{background:var(--hover)}
+.vn /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 .vn-venue{font-size:1rem;font-weight:500}
 .vn .row:hover .vn-venue{color:var(--hot-text)}
 .vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
@@ -3521,12 +3871,20 @@ header{padding-bottom:.9rem}
   .d-n{grid-area:n}
   .d-n > b{font-size:1.25rem}
 }
-.aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
-.aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--dim);margin:0 0 .3rem;font-weight:400}
-.aside>p{margin:0 0 .7rem;font-size:.75rem;color:var(--dim);max-width:68ch}
-.aside ol{list-style:none;margin:0;padding:0}
-.aside li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+/* The pointer to the not-a-show page, where a list of twenty used to sit at
+   the foot of 692 rows. Ian: "move the 'also on file' listings to a higher
+   prominence home, or at least something that's not tacked onto the end of
+   the show list." Under the hero, where a reader lands. */
+.aside{margin:1.1rem 0 0;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside b{color:var(--ink);font-weight:400}
+.aside a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.aside a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* The list itself, which moved to a page of its own. Named rather than
+   scoped to `.aside`, because it now has two homes and the version in this
+   file has been the wrong shape twice for want of one name. */
+.axlist{list-style:none;margin:0;padding:0}
+.axlist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
    padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
 .ax-row{display:contents;color:inherit;text-decoration:none}
 .ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
@@ -3535,8 +3893,19 @@ a.ax-row:hover .ax-date{color:var(--hot-text);border-bottom-color:var(--hot-text
 .ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
-.aside .for{color:var(--dim)}
-.aside .for a{color:inherit}
+.ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+/* phish.net's note, on its own line under the row. flex-basis:100% rather than
+   a grid cell because the row above it is a wrapping flex line of four
+   variable-width parts, and the note is the one thing that always wants the
+   whole measure. Set in the reading face: it is the only prose in this list,
+   and at 12px mono a 778-character note is a wall. */
+.ax-note{flex-basis:100%;margin:.15rem 0 .1rem;max-width:74ch;
+   font-family:'Literata',Georgia,serif;font-size:.8125rem;line-height:1.5;
+   font-variation-settings:'opsz' 13;color:var(--ink-soft)}
+.ax-note a{color:var(--ink-soft);border-bottom:1px solid var(--rule)}
+.ax-note a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+.axlist .for{color:var(--dim)}
+.axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
    of the numbers beside it. */
@@ -3616,7 +3985,7 @@ a.ax-row:hover .ax-date{color:var(--hot-text);border-bottom-color:var(--hot-text
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
-"""
+""" + TOTOP_CSS
 
 # Filtering is progressive enhancement: the rows are in the HTML, so the page
 # is a complete list with JavaScript off. The haystack lives in a data
@@ -3797,17 +4166,15 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
 {onstage}
 <section class="hero {hero_cls}">{hero}</section>
+{aside}
 <div class="rule2"></div>
 <div class="tools" id="main" tabindex="-1">
 <div class="tools-main">
@@ -3829,7 +4196,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
-{aside}
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -4030,8 +4397,58 @@ def hero_cols(n):
 
     Four across is the widest that keeps a five-figure number on one line at
     the page's measure, so anything past four goes to three and wraps.
+
+    Three cards ask for three columns, not four. The old test only looked
+    upward -- anything not past four got the four-column grid -- which was
+    right for every hero that existed when it was written and wrong the moment
+    one lost a card: three cards in a four-track grid leave a quarter of the
+    row empty with the hero's bottom rule running on under nothing.
     """
-    return "hero-c3" if n > 4 else "hero-c4"
+    return "hero-c4" if n == 4 else "hero-c3"
+
+
+def tied_with(rest):
+    """The tail of a card's sub-label when a superlative is shared.
+
+    "", ", tied with Gone", ", tied with 3 others". One function because two
+    heroes need it and the whole point of stating a tie is that both pages
+    state it the same way.
+    """
+    if not rest:
+        return ""
+    if len(rest) == 1:
+        return ", tied with %s" % rest[0]
+    return ", tied with %d others" % len(rest)
+
+
+def hero_html(cards):
+    """One hero, from (value, label, class, href[, sub-label]) per card.
+
+    Five functions built this string from five copies of the same two lines,
+    and they had already drifted: three escaped the href and two did not, on
+    pages whose hrefs come from song slugs and venue names. One copy now.
+
+    The fifth field is the name under the label -- which song, or which night,
+    a superlative belongs to. It is passed rather than written into the label
+    because a card that carries one has to say so in its markup: that is what
+    moves the arrow off the end of the label and onto the name, where the link
+    actually goes. Doing it in CSS instead would mean `:has(.of)`, and a
+    selector a browser does not understand is dropped in silence -- leaving the
+    old arrow where it was and adding a second one under it.
+    """
+    out = []
+    for card in cards:
+        val, lbl, cls, href = card[:4]
+        of = card[4] if len(card) > 4 else ""
+        klass = "card named" if of else "card"
+        out.append(
+            ("<a class='%s' href='%s'>" % (klass, html.escape(href, quote=True))
+             if href else "<div class='%s'>" % klass)
+            + "<div class='lbl'>%s%s</div><div class='num%s'>%s</div>"
+            % (lbl, "<span class='of'>%s</span>" % html.escape(of) if of else "",
+               cls, val)
+            + ("</a>" if href else "</div>"))
+    return "".join(out)
 
 
 def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
@@ -4092,8 +4509,24 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # page that does not exist. The show holding the longest gap is a page the
     # site already builds, so the number points at it rather than just sitting
     # there being large.
-    peak = max((e for e in entries if e["longest"]),
-               key=lambda e: e["longest"], default=None)
+    #
+    # Every night holding it, not just one. This card was correct only by
+    # accident: `max()` returns whichever tied entry it met first and states it
+    # as the answer, and today exactly one of the 692 reports holds 1,468 --
+    # Gone's 1,468 on 2009-12-30 is a song history rather than an archived
+    # report, so it never reached this list. The songs index *is* tied, which
+    # is how the shape was found there first; as the backfill runs, the same
+    # tie arrives here. Fixed before it fires rather than after: the card names
+    # the most recent night, links to it, and says how many others there are.
+    #
+    # Naming the night is also the answer to a second thing wrong with the
+    # card, which is that it said "1,468" and pointed somewhere without saying
+    # where. Most recent first among equals, because the ordering has to come
+    # from the data and a date is the one thing every tied show differs on.
+    top_gap = max((e["longest"] for e in entries if e["longest"]), default=None)
+    holders = sorted((e for e in entries if e["longest"] == top_gap),
+                     key=lambda e: e["date"], reverse=True) if top_gap else []
+    peak = holders[0] if holders else None
     # The fullest night is deliberately *not* a hero card. It was one, and it
     # is the wrong thing for that slot: once the backfill reaches 1999-12-31 it
     # becomes Big Cypress and never moves again, so a permanently fixed number
@@ -4101,17 +4534,27 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # bad headline. It is reachable instead by sorting the archive on it, along
     # with the rating -- which answers the same kind of question and could not
     # be asked here at all before.
-    # The songs card doubles as the way to the song index, since a reader who
-    # has just noticed how many songs are logged is the reader who wants it.
+    #
+    # There was a fifth card here, "Song Performances", and it went for two
+    # reasons at once. The first is Ian's: five cards is a three-and-two hero,
+    # which is the ugliest shape the grid makes, and this was the card the
+    # page could most afford to lose. The second is worse and is why this one
+    # went rather than another. It summed every song slot across the reports
+    # *this page lists* -- 14,062 of them -- carried the same label as the
+    # songs index and linked straight to it, and that page says 37,169,
+    # because it counts every performance in every song's history across all
+    # 2,108 counted shows rather than the 692 written up here. One label, two
+    # populations, 2.6x apart, and a link from the smaller to the larger. It
+    # is the "Songs Logged" bug from a year ago exactly: that one was fixed by
+    # renaming the label, which left the two figures still disagreeing. A
+    # number that contradicts the page it points at is worse than no number,
+    # and the nav already carries a door to the songs index.
     cards = [
         (len(entries), "Reports", "", ""),
         (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
-         page_href % peak["date"] if peak else ""),
-        # Performances, not songs: this sums every song slot across every
-        # report. Labelled "Songs Logged" it read 4,593 and linked to a
-        # page saying 379, which is the same word counting two things.
-        ("{:,}".format(sum(e["songs"] for e in entries)),
-         "Song Performances", "", "./songs.html"),
+         page_href % peak["date"] if peak else "",
+         (peak["date"] + tied_with([e["date"] for e in holders[1:]]))
+         if peak else ""),
         (len({e["venue"] for e in entries if e["venue"]}), "Venues", "",
          "./venues.html"),
     ]
@@ -4120,37 +4563,33 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # and a link to a page that is not there is worse than no card.
     if n_due is not None:
         cards.append((n_due, "Songs Due", " hot", "./due.html"))
-    hero = "".join(
-        ("<a class='card' href='%s'>" % html.escape(href, quote=True)
-         if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in cards)
+    hero = hero_html(cards)
 
     # Not concerts, and kept off the list above rather than out of the site:
     # the pages exist, the gap figures on them do not describe a show, and a
     # soundcheck's whole reason for existing is the concert it precedes.
+    #
+    # It was a twenty-row list at the foot of 692, which is where a reader who
+    # has scrolled the entire archive finds it and nowhere else. Ian: "move the
+    # 'also on file' listings to a higher prominence home, or at least
+    # something that's not tacked onto the end of the show list." So the list
+    # is a page now and this is one line under the hero, before the search box
+    # rather than after everything -- and the page can say the things a tail
+    # block could not, which is what it is for.
     aside_html = ""
     if aside:
-        items = []
-        for a in sorted(aside, key=lambda a: a["report"]["date"], reverse=True):
-            r, kind = a["report"], a["kind"]
-            link = ""
-            if kind == "soundcheck" and a["before"]:
-                link = ("<span class='for'>for <a href='%s'>%s</a></span>"
-                        % (page_href % a["before"], a["before"]))
-            items.append(
-                "<li><a class='ax-row' href='%s'><span class='ax-date'>%s</span>"
-                "<span class='ax-kind'>%s</span>"
-                "<span class='ax-venue'>%s</span></a>%s</li>"
-                % (page_href % r["date"], r["date"], kind,
-                   html.escape(r.get("venue") or ""), link))
+        # The count, and the kinds named rather than counted. Counting them
+        # here meant restating a breakdown that changes when phish.net files
+        # something new -- and it published "0 television or radio sessions"
+        # the first time the kinds were split, because it was reading a bucket
+        # that had been emptied into three others.
         aside_html = (
-            "<section class='aside'><h2>Also on file</h2>"
-            "<p>Soundchecks, and television and radio sessions. phish.net lists"
-            " these but does not count them toward a gap, so neither do we"
-            " &mdash; the figures on their pages describe the entry, not a"
-            " show the band played.</p><ol>%s</ol></section>" % "".join(items))
+            "<p class='aside'>Also on file: <b>%d</b> performances that were "
+            "not shows &mdash; soundchecks, a tech rehearsal, television and "
+            "radio tapings, one ceremony &mdash; which phish.net lists and "
+            "does not count toward a gap, so neither does this site. "
+            "<a href='./%s'>What was played at them</a>.</p>"
+            % (len(aside), NOT_A_SHOW_PAGE))
 
     # A show being played is the reason to be here tonight, and a "so far"
     # tag on one row among 690 is not a way of saying so. The whole block is
@@ -4179,10 +4618,11 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         subtitle, blurb = "No reports yet", "Per-song gaps for Phish shows."
 
     return INDEX_SHELL.format(
+        crumb=nav_strip(here="Shows"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
+        css=INDEX_CSS, js=INDEX_JS, totop=TOTOP_JS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         hero=hero, hero_cls=hero_cols(len(cards)), years=chips,
         count=len(entries), rows="\n".join(rows) or "",
@@ -4201,25 +4641,38 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
 # song title; the gap figures and the hero numbers stay in the slab.
 SONG_FONTS = WEB_FONTS
 
-SONG_CSS = (BASE_CSS + BODY_BOX_CSS + """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
-   margin-bottom:1.1rem;
-   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-""" + NAV_HIT_CSS + """/* One of the three slots the display face is allowed: the wordmark, a show's
+SONG_CSS = (BASE_CSS + BODY_BOX_CSS + NAV_CSS + """/* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(1.7778rem,6.5vw,3.0222rem);line-height:1.14;margin:0 0 .5rem;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
-""" + RULE2_CSS + """.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
-   border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
-   display:flex;flex-direction:column}
+/* Two equal columns, not flex. Flex sized each card by its content, so the
+   rule that strips the first card's left padding made that card 21px narrower
+   than its siblings at every width -- correct under a grid, where the column
+   stays 1fr and only the content moves flush left, and wrong here, where it
+   moved the box. Measured 254 against 275 at 1280px, 174 against 195 at 860.
+   Two columns also have no bad arrangement: the five cards this replaced went
+   3+2 on the index's grid and onto one crammed line here. */
+""" + RULE2_CSS + """.hero{display:grid;grid-template-columns:repeat(2,1fr);
+   margin:.7rem 0 .3rem;border-bottom:1px solid var(--ink)}
+/* A one- or two-performance song still gets the old pair of narrow cards. */
+.hero.sparse{grid-template-columns:repeat(2,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column;min-width:0}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
    letter-spacing:0;margin-top:auto}
+/* The second half of each pair. It is the reason two cards can carry what five
+   did: the medians are one statistic over two windows and the gaps are one
+   distance at two moments, so the older reading belongs under the newer one
+   rather than in a card of its own. Also what fills the measure a bare number
+   left empty, which is what made two cards read as a hero and not as three
+   missing ones. */
+.card .sub{margin-top:.3rem;font-size:.6875rem;letter-spacing:.04em;
+   color:var(--dim);text-transform:none;line-height:1.35}
+.card .sub b{font-weight:600;color:var(--ink-soft)}
 /* The debut card goes to the debut's own row. SONG_CSS had no `a.card` rules
    at all -- this is the one sheet where a card had never been a link -- and
    writing them out here would have made an exact third copy of the show
@@ -4243,20 +4696,36 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:.875rem}
 .best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
-.best .field{display:flex;flex-direction:column;gap:.3rem}
+/* One flowing line rather than a row of stacked label/value columns. .field
+   is gone with the three captions that justified it; .v wraps as prose so a
+   narrow screen breaks it between middots instead of stacking four boxes. */
+.best .v{display:inline}
 .best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 .best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot-text);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
 .best a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
-.links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+/* Up under the title, and captioned. These are links about the *song*, and
+   they used to sit directly beneath the best-version block -- so Ian read them
+   as being about that one performance and could not tell without clicking.
+   Two things were wrong and both are fixed here: they were adjacent to the
+   wrong thing, and they named no referent. Moving them alone would have cured
+   only the instance. */
+.links{margin:.55rem 0 0;display:flex;flex-wrap:wrap;align-items:center;
+   gap:.4rem .55rem}
+.links .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* Below the best version now, beside the list it summarises: "most often out
+   of / into" is a reading of the Before / after column, so it belongs next to
+   that column rather than between the title and the figures. */
+.pairs{margin:1.4rem 0 0}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
    margin:1.9rem 0 .9rem}
 .search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
@@ -4265,9 +4734,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
    outline-offset:1px}
-.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-   color:var(--ink);border:1px solid var(--edge);border-radius:0}
-.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+""" + SELECT_CSS + """.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
    scripting off and survive a reload. */
@@ -4350,7 +4817,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    Fixed width, sized for the longest of them. */
 .row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
    column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
-.row:hover{background:var(--hover)}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 /* The row's identifier, in the display face, same as the show index. It is
    the one thing in the row that is not the song. */
 .r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
@@ -4614,12 +5087,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
 .perfs>li.landed{animation:landed 3.4s ease-out both}
 @media (prefers-reduced-motion:reduce){
   .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
-.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
-  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
-  justify-content:center;background:var(--paper);border:1px solid var(--edge);
-  color:var(--ink-soft);text-decoration:none;font-size:1rem}
-.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
-""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
+""" + TOTOP_CSS + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -4689,9 +5157,15 @@ SONG_JS = """
 /* How long this song has been waiting, read from one small file rather than
    rendered into the page. It is the only figure here that moves when some
    *other* song is played, so baking it in would rewrite every song page after
-   every show -- 48 MB pushed to publish one number that fits in 7 KB. The card
-   ships hidden and stays hidden if the fetch fails, so nothing on the page is
-   ever a placeholder waiting for a network that is not coming. */
+   every show -- 48 MB pushed to publish one number that fits in 7 KB.
+
+   The card no longer ships hidden. Hiding it meant a reader without
+   JavaScript got a hero one card short with no sign the figure existed, and
+   the label a reader saw depended on whether this file ran. It now carries
+   its label and its longest-gap line from the start, and the big slot holds
+   the same em-dash the bars use for a figure that is not available -- so a
+   failed fetch leaves a card short of one number rather than no card, and
+   only the number ever waits. */
 (function(){
   var box=document.querySelector('.card.since');
   if(!box||!window.fetch) return;
@@ -4747,7 +5221,10 @@ SONG_JS = """
     }
     box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
             ' shows that count toward a gap';
-    box.hidden=false;
+    /* Nothing to reveal any more. Setting .num's textContent above already
+       replaced the em-dash that stood in for the number, and a song missing
+       from current.json returns before that and keeps the dash, which is the
+       honest reading rather than a card that vanishes. */
   }).catch(function(){});
 })();
 (function(){
@@ -4884,7 +5361,7 @@ SONG_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="{skip}">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
+{crumb}
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -4892,11 +5369,11 @@ SONG_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
-{pairs}{caveat}</header>
+<p class="links"><span class="cap">This song on</span>{links}</p>
+{caveat}</header>
 <section class="hero{herocls}">{hero}</section>
-<div class="rule2"></div>
 {best}
-<p class="links">{links}</p>
+{pairs}
 {tools}
 {head}
 <ol class="perfs" id="list"{listattrs}>
@@ -5055,7 +5532,8 @@ def _sparse_gap_card(gaps):
             "<div class='num hot'>%s</div></div>" % (lbl, _stat(val)))
 
 
-def render_song(doc, archived=(), stamp=None, card=None, counting=None):
+def render_song(doc, archived=(), stamp=None, card=None, counting=None,
+                kinds=None):
     """One song's whole performance history, newest first.
 
     The archive stores phish.net verbatim, so the corrections happen here.
@@ -5089,28 +5567,62 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # of the four below read "n/a", and the fourth restates the subtitle. What
     # it has instead is a date and a distance from now, so that is what it gets.
     sparse = len(countable) <= SPARSE_HISTORY
-    hero = _debut_card(debut_date, sparse)
+    # The debut card only survives where the hero would otherwise be thin: a
+    # song with one or two performances has no median and no longest to pair,
+    # so its date is the figure it has. Everywhere else the date has gone up
+    # into the identity line, full rather than truncated to a year.
+    hero = _debut_card(debut_date, sparse) if sparse else ""
     if sparse:
         hero += _sparse_gap_card(gaps)
     else:
-        hero += "".join(
-            "<div class='card'><div class='lbl'>%s</div>"
-            "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-            for val, lbl, cls in (
-                (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
-                (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
-                (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
-            ))
+        # Five cards were one date and one measure read at four moments, and
+        # five across is the count that has no tidy arrangement: the grid lays
+        # them 3+2 and the flex row crammed them onto one line at unequal
+        # widths. They pair. The two medians are the same statistic over two
+        # windows; the two gaps are the same distance at two moments. One card
+        # each, the timelier reading in the big slot and the historical one
+        # under it -- which is the same rule twice, not a per-card taste.
+        #
+        # The sub-line is also what fills the measure a bare number left empty,
+        # so two cards read as a hero rather than as three missing ones.
+        if recent:
+            median_num, median_sub = (
+                _stat(_median(recent)),
+                "last %d years &middot; <b>%s</b> all-time"
+                % (RECENT_YEARS, _stat(_median(gaps)) if gaps else "n/a"))
+        else:
+            # 51 songs have nothing in the window. Promoting the all-time
+            # figure into the big slot retires an "n/a" card and says why.
+            median_num, median_sub = (
+                _stat(_median(gaps)) if gaps else "n/a",
+                "all-time &middot; not played in the last %d years" % RECENT_YEARS)
+        hero += ("<div class='card'><div class='lbl'>Median gap</div>"
+                 "<div class='num'>%s</div><div class='sub'>%s</div></div>"
+                 % (median_num, median_sub))
     # Filled in the browser from data/current.json; see SONG_JS. It carries the
     # thresholds rather than the verdict, because the count it has to be judged
     # against is the thing that is not known until the page is open. They are
     # the same two the report pages use -- the upper edge of `gap_band` where
     # there is enough history for one, the bustout line where there is not --
     # so a song called overdue here is overdue by the site's one rule.
-    hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
+    # Not `hidden`, and the label does not move. The card used to ship hidden
+    # and be revealed by script, so a reader without JavaScript got a hero one
+    # card short and never knew a figure existed. It now ships with the same
+    # label it will always carry and the em-dash the bars already use for a
+    # figure that is not available -- the mark that exists so an empty slot
+    # reads as "never possible" rather than "failed".
+    #
+    # Ian asked why the label should differ between the two readers at all,
+    # and the answer was that it should not: only the *number* is unknown
+    # until the page is open, so only the number waits. The longest gap is
+    # known at build time and sits under it, which also means this card says
+    # something true before the fetch and something truer after.
+    hero += ("<div class='card since' data-slug='%s' data-high='%s' "
              "data-bustout='%d' data-mult='%s' data-quiet='%s'>"
-             "<div class='lbl'>Current Gap<span class='v'></span></div>"
-             "<div class='num'></div></div>"
+             "<div class='lbl'>Current gap<span class='v'></span></div>"
+             "<div class='num'><span class='no-range' aria-hidden='true'>"
+             "&mdash;</span></div>"
+             "<div class='sub'>longest <b>%s</b></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 gap_band(recent)[1] if len(recent) >= MIN_HISTORY else "",
                 BUSTOUT_GAP, DUE_MULTIPLE,
@@ -5118,7 +5630,8 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
                 # is used at all depends on the current gap, which is not known
                 # until the page is open -- but which of the four words it
                 # would be depends only on the play count, which is known here.
-                html.escape(rotation_word(len(countable)), quote=True)))
+                html.escape(rotation_word(len(countable)), quote=True),
+                _stat(biggest) if gaps else "n/a"))
 
     top = best[0] if best else ""
     if top:
@@ -5126,16 +5639,32 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         # The date is a link to its own row. Without it the only way to read
         # that version's notes was to remember the date, tap an era chip and
         # scroll for it.
-        top = ("<p class='best'>"
-               "<span class='field'><span class='cap'>Best version</span>"
-               "<a class='when' href='#%s'>%s</a></span>"
-               "<span class='field'><span class='cap'>Venue</span>"
-               "<span class='where'>%s</span></span>"
-               "<span class='field'><span class='cap'>Score</span>"
-               "<span class='score'>%s</span></span>"
-               "<span class='field'><span class='cap'>Hear it</span>"
-               "<span class='cap'>%s &middot; %s</span></span></p>"
-               % (top["date"], top["date"], html.escape(where), top["score"],
+        #
+        # Unless there is no such row. The scores come from fouldomain and the
+        # rows from phish.net's song history, and on twelve songs the two do
+        # not agree about what exists: Joy's best version is dated 1995-12-09,
+        # which is a night the band played but not one this archive holds a Joy
+        # performance for -- likewise Rift, Axilla, Free, Sleep, Waves and six
+        # more. The link went to a fragment no element carried, so it landed at
+        # the top of the page: the exact behaviour the comment above says it
+        # was added to fix. Plain text when we cannot point at the row, which
+        # is this file's rule everywhere else -- say less rather than say wrong.
+        anchored = any(p["date"] == top["date"] for p in perfs)
+        when = ("<a class='when' href='#%s'>%s</a>" % (top["date"], top["date"])
+                if anchored else "<span class='when'>%s</span>" % top["date"])
+        # One line, not four stacked label/value pairs. Three of those four
+        # captions were naming a thing the reader can already identify: every
+        # row below puts a venue in the same slot without labelling it, and
+        # "Rated 83" is the phrasing the rows themselves use for a score. Only
+        # "Best version" says something the values do not, so only it survives
+        # as a caption. 170px of front matter on a phone for four words of
+        # scaffolding.
+        top = ("<p class='best'><span class='cap'>Best version</span>"
+               "<span class='v'>%s"
+               " &middot; <span class='where'>%s</span>"
+               " &middot; Rated <span class='score'>%s</span>"
+               " &middot; %s &middot; %s</span></p>"
+               % (when, html.escape(where), top["score"],
                   _ext("https://phish.in/%s" % top["date"], "Listen", "i-pin"),
                   _ext(top["link"] or "https://fouldomain.com/", "Details", "i-foul")))
 
@@ -5328,7 +5857,12 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
                html.escape(p["venue"]), html.escape(place), mark, jam, nb, bar,
                " none" if (g is None or debut) else (" big" if big else ""),
                "Debut" if debut else
-               ("Not a show" if not counted else
+               # Which kind of not-a-show, where the archive knows. It knows
+               # for the twenty entries it holds a report for; the other
+               # thirty-nine non-calendar dates are pre-2009 and have no report
+               # to read a kind out of, so they keep the general word.
+               (KIND_LABEL.get((kinds or {}).get(date), "Not a show")
+                if not counted else
                 "{:,}".format(g) if g is not None else "&mdash;"), times))
 
     # Every bar on this page is the same song against the same scale, so the
@@ -5429,11 +5963,17 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     caveat = NOT_A_SONG.get(doc.get("slug") or "")
     caveat = "<p class='caveat'>%s</p>" % html.escape(caveat) if caveat else ""
-    # No "Debut" clause: the hero card is that date, in figure type, a dozen
-    # pixels below. Printing it here as well is the duplication the swap was
-    # made to end, only pointing the other way. What is left is the pair the
-    # hero does *not* carry.
+    # The debut is back, and it is here rather than in the hero because this
+    # is where it fits. _debut_card had to print the *year* alone: five cards
+    # across leaves 117-160px each, and "1986-02-03" wants 243px and wrapped
+    # at 900, 1024 and 375. In a line of running text the full date fits, and
+    # it keeps the link to its own row that was the card's real purpose -- the
+    # sort-reversal a reader would otherwise have to do by hand. So this is
+    # not the duplication that removed the clause before: the card is gone,
+    # and what is here says more than the card could.
     subtitle = " &middot; ".join(x for x in (
+        "Debuted <a href='#%s'>%s</a>" % (debut_date, debut_date)
+        if debut_date else "",
         "Last played %s" % last if last and last != first else "",
         "%d performance%s" % (n, "" if n == 1 else "s"),
     ) if x)
@@ -5462,6 +6002,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
                     _stat(_median(gaps)) if gaps else "&mdash;"))
 
     return SONG_SHELL.format(
+        crumb=nav_strip(section="Songs", root="../", mark=True),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
@@ -5500,9 +6041,10 @@ SONGS_CSS = INDEX_CSS + """
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
 .r-stats .score{color:var(--hot-text)}
-/* The song the top score belongs to, under its label. */
-.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
-   text-transform:none;font-size:.75rem}
+/* `.lbl .of` and the arrow that rides it are on the sheet this one extends.
+   They were here for half an hour, until the index wanted the same treatment
+   for the same reason -- which is the shortest a rule has ever taken to want
+   a second home in this file. */
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr}
   .r-when{white-space:normal}
@@ -5518,12 +6060,9 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
@@ -5546,6 +6085,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -5606,11 +6146,7 @@ DUE_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span>
-<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a class="here">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
 <p class="show">{subtitle}</p>
@@ -5620,19 +6156,23 @@ song&rsquo;s own recent gaps rather than one number for the whole catalogue
 &mdash; a staple is late at eight shows and a rarity is not late at eighty.
 The figure on the right is how far past: 2&times; means it has now been twice
 this song&rsquo;s usual gap, which is printed under it.</p>
+<details class="how"><summary>How these lists are measured</summary>
 <p class="dek">Being late is not the same as being expected, and more late is
 not more expected. A song at six times its usual gap is not one anybody is
 waiting on &mdash; it is drifting out of rotation. So past {mult}&times; a song
 is <a href="#slipping">slipping</a> rather than due, past {cap} shows it is
 <a href="#shelf">on the shelf</a>, and with no recent habit at all it is
-<a href="./dormant.html">dormant</a>. The first three are below; the dormant
-have a page of their own, because there are more of them than of everything
-else here put together.</p>
+<a href="#rotation">out of rotation</a>. All four are below, though the fourth
+is a count and a door rather than a list: there are more songs in it than in
+the other three put together, so they have a page to themselves.</p>
 <p class="dek">None of this knows what the band has planned. A themed night
 overrides every figure here &mdash; the 2021 Halloween runs built around
 numbers and animals, the elements nights of the first Sphere run, a run played
 entirely out of one decade &mdash; and the theme is usually not public before
-the show. On a night like that the list below is the wrong question.</p></header>
+the show. On a night like that the list below is the wrong question.</p>
+<p class="dek"><a href="./faq.html#due">The FAQ answers this at more
+length</a>, including why a song gone for years is not on the list.</p>
+</details></header>
 <section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
 <section class="rot">
@@ -5643,7 +6183,8 @@ the show. On a night like that the list below is the wrong question.</p></header
 </ol>
 </section>
 {shelf}
-<p class="dek foot">{dormant}</p>
+{dormant}
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -5903,17 +6444,18 @@ def render_due(docs, counting, since, card=None):
 
     shelf = section(
         "slipping", "Slipping",
+        # Trimmed to the two sentences that define the boundary a reader has
+        # just crossed. What went is the naming rationale -- why "slipping"
+        # and not "overdue" -- which is a question about the site's vocabulary
+        # rather than about these songs, and which faq.html#due already
+        # answers in full. A section blurb earns its space by saying what the
+        # section is; it does not have to defend its own title.
         "Well past their usual gap rather than a little past it. These could "
         "turn up, and they could equally be on their way out of rotation "
         "&mdash; either way they are not what anybody is expecting tonight. "
         "The usual gap beside each one is measured over the last ten years of "
         "its performances, so for a song this far past it, read it as the "
-        "schedule the song <em>was</em> on. "
-        "Called slipping rather than overdue because a show page already uses "
-        "<em>overdue</em> for something narrower and different: one "
-        "performance that came back later than that song usually does. Every "
-        "song on this page, in both lists, would be stamped overdue if it "
-        "turned up tonight.",
+        "schedule the song <em>was</em> on.",
         overdue)
     shelf += section(
         "shelf", "On the shelf",
@@ -5925,43 +6467,79 @@ def render_due(docs, counting, since, card=None):
         shelved)
 
     # The same hero vocabulary the index uses, counting the four categories and
-    # linking to all four. Dormant is the odd one -- it is a page rather than a
-    # section, because 281 rows is more than the other two lists put together --
-    # and until that page existed this cell stated a figure and led nowhere,
-    # which made it the only dead card on the site.
+    # linking to all four. All four land on this page now, which is the point:
+    # three of these cells took a reader to a section and the fourth left the
+    # site's longest page for another one, so the hero was three doors and an
+    # exit dressed the same.
     #
-    # It counts the songs that were in rotation and left it, not everything on
-    # that page: 281 was two other populations wearing the word, and the cell
-    # is the one place on this site the word appears without its page around it
-    # to qualify it. Straight to the section rather than the page top, so the
-    # figure and what it lands on are the same set.
+    # The fourth cell used to read "Dormant 54", and that was the figure being
+    # careful while the label was not. It counted only the songs that were in
+    # rotation and left it -- correct for the word, but it sat above a
+    # paragraph about 281 songs and beside a link to a page titled *Out of
+    # rotation*, so the one number on screen was the one nothing else on the
+    # page was talking about. Under the umbrella term the count is the
+    # umbrella's: 281, matching the section it now opens, which then hands off
+    # to the page that separates the three.
     stopped, rare, few = rotation_split(dormant)
     cards = [(len(due), "Due", " hot", "#main"),
              (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
-             (len(stopped), "Dormant", "", "./dormant.html#dormant")]
-    hero = "".join(
-        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in cards)
+             (len(dormant), "Out of rotation", "", "#rotation")]
+    hero = hero_html(cards)
 
     n_due = len(due)
     subtitle = ("%d song%s you might reasonably expect tonight"
                 % (n_due, "" if n_due == 1 else "s"))
-    tail = ("A further %s are <a href=\"./dormant.html\">out of rotation</a> "
-            "&mdash; gone long enough to be bustouts, with no recent habit to "
-            "be late against at all. They are not due, they are the largest "
-            "part of the catalogue, and they are not one thing: %d were in "
-            "rotation and left it, %d were given a run that did not take, and "
-            "%d turned up on %s in the band&rsquo;s whole life and never "
-            "again. That page keeps them apart."
-            % ("{:,}".format(len(dormant)), len(stopped), len(rare), len(few),
-               FEW_TITLE.lower())) if dormant else ""
+    # The fourth group, promoted out of the trailing paragraph it had been
+    # bolted to. It was the only one of this page's four with no heading, no
+    # rule above it and no place in the hero -- so a reader who had scrolled
+    # 38 rows of Slipping and On the shelf met the largest group on the page as
+    # an unannounced sentence after the last list, or, far more likely, never
+    # scrolled that far and never met it. Ian: "a reader would have to scroll
+    # all the way down to the end to happen upon them. And then there's not
+    # even a section heading to call out what they're about to read." Same
+    # furniture as the two sections above it, so it reads as the fourth thing
+    # rather than as a footnote about the third.
+    #
+    # Two copy repairs while it moved, both of them Ian's:
+    #
+    # "That page keeps them apart" -- a demonstrative with two candidate
+    # referents and a stiff one at that, in the last sentence of the page. The
+    # link now says where it goes and what is there, which is what the sentence
+    # was reaching for.
+    #
+    # "%d turned up on %s" was grammatical when FEW_TITLE read "one or two
+    # nights". It has read "once or twice" since Ian objected to the nights
+    # lexicon, and the preposition was left behind: the published page says
+    # "174 turned up on once or twice in the band's whole life". This is the
+    # cost of interpolating a phrase whose grammar the sentence depends on --
+    # the constant changed, every sentence built on it compiled fine, and one
+    # of them stopped being English. It reads "were played once or twice" now,
+    # which survives the phrase growing a third clause.
+    tail = ""
+    if dormant:
+        tail = (
+            "<section class='rot'>"
+            "<h2 class='shelf-h' id='rotation'>Out of rotation</h2>"
+            "<p class='dek'>Gone long enough that a return would be a "
+            "bustout, and with no recent record left to be late against "
+            "&mdash; so there is no lateness here to rank, and none of it is "
+            "due. There are more of these than in the three lists above put "
+            "together, and they are not one population: %d were in rotation "
+            "and left it, %d were played a few times across the "
+            "band&rsquo;s whole life and never became a habit, and %d were "
+            "played %s and never again.</p>"
+            "<p class='dek'><a href='./%s'>All %s, grouped by the year each "
+            "was last heard</a></p>"
+            "<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
+            "</section>"
+            % (len(stopped), len(rare), len(few), FEW_TIMES,
+               ROTATION_PAGE, "{:,}".format(len(dormant))))
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
+        crumb=nav_strip(here="Due", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         mult=_stat(DUE_MULTIPLE), hero=hero, hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, rows="\n".join(out), shelf=shelf, dormant=tail,
@@ -5977,6 +6555,28 @@ DUE_SHELL_END = None
 #: .d-last, .d-n and .typ, including how they stack on a phone -- so the only
 #: rules here are the ones the due page has no use for: the year a song was
 #: last heard, and the strip of years at the top.
+# A strip of years across the top of a page, each carrying its own count,
+# built from the same grouping the headings below it come from so it cannot
+# offer a year the body does not hold.
+#
+# It was named on 2026-07-30 because two pages drew one, and by the time the
+# branch merged it had one caller again: the dormant page was regrouped into
+# three sections and dropped its strip, which eighteen years had needed and
+# three sections did not. Kept as a block rather than folded back into
+# YEARS_CSS -- it is the shape a second page wanted once and may want again,
+# and a named block with one caller costs nothing while an inlined one has to
+# be found and extracted a second time.
+YEAR_STRIP_CSS = """/* The years, as a strip. Generated from the same grouping as the headings
+   below, so it cannot offer a year the page does not hold. */
+.years{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+.years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
+   line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
+   color:var(--ink-soft);text-decoration:none;white-space:nowrap}
+.years a:hover{color:var(--hot-text);border-color:var(--hot-text)}
+.years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
+"""
+
+
 DORMANT_CSS = INDEX_CSS + """
 /* One list with the years marked inside it, rather than eighteen lists. A
    heading that is a row of the same ordered list keeps one column header, one
@@ -6025,11 +6625,7 @@ DORMANT_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span>
-<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>Out of rotation</h1>
 <p class="show">{subtitle}</p>
@@ -6057,6 +6653,7 @@ graveyard.</p></header>
 <div id="main" tabindex="-1">
 {rows}
 </div>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -6110,10 +6707,16 @@ ROTATION_SECTIONS = (
      "archive that began after {floor} or more performances, {rate}% has since "
      "been ended by another one."),
     ("rarities", "Rarities", "rarity",
-     "More than {few} performances and fewer than {floor}. The band gave these "
-     "a run and it did not take &mdash; enough of a habit to notice, never "
-     "enough to break. Some are covers taken out for one tour; some are "
-     "originals that never found a place in a set. {rate}% have come back."
+     # "The band gave these a run and it did not take" went at Ian's reading:
+     # it casts every performance as a trial aimed at sticking, and files the
+     # outcome as a failure at something nobody said was being attempted. A
+     # cover played twice on one tour was not an audition. What the archive
+     # supports is the count and nothing about intent, which is what the clause
+     # that survived already said.
+     "More than {few} performances and fewer than {floor} &mdash; enough of a "
+     "habit to notice, never enough to break. Some are covers taken out for "
+     "one tour; some are originals that never found a place in a set. "
+     "{rate}% have come back."
      "</p><p class='dek'>This is the one section where <em>when</em> the plays happened "
      "changes the answer. Read the years at the right of each row: a song "
      "whose handful of performances sat close together came back {tight}% of "
@@ -6244,26 +6847,285 @@ def render_dormant(docs, counting, since):
              (len(few), FEW_TITLE, "", "#" + ROTATION_SECTIONS[2][0]),
              ("{:,}".format(longest[0]) if longest else "n/a", "Longest gone",
               " hot", "#%s" % longest[1]["slug"] if longest else "")]
-    hero = "".join(
-        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in cards)
+    hero = hero_html(cards)
 
     n = len(dormant)
-    subtitle = ("%s song%s the band is not playing, in three kinds"
+    # "in three kinds" was Ian's: "'of three types,' or 'in three categories,'
+    # maybe, but 'in three kinds' feels like an awkward phrase." It is -- kind
+    # takes *of*, and the page's own furniture already had the plain word for
+    # what these are, since the three things below this line are three groups
+    # of rows.
+    subtitle = ("%s song%s the band is not playing, in three groups"
                 % ("{:,}".format(n), "" if n == 1 else "s"))
     blurb = ("Every Phish song that has dropped out of rotation, split by "
              "whether it ever had one.")
     return DORMANT_SHELL.format(
+        crumb=nav_strip(here="Out of rotation", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=DORMANT_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=DORMANT_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         floor=MIN_HISTORY, years_n=RECENT_YEARS,
         hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         rows="\n".join(body),
         share=share_meta("Out of rotation &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "dormant.html"),
+                         html.escape(blurb, quote=True), ROTATION_PAGE),
+        stamp="Updated %s" % _utcnow().date().isoformat())
+
+
+NOT_A_SHOW_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Not a show &mdash; Possum Logic</title>
+<meta property="og:type" content="website">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+{sheet}
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+{crumb}
+<div class="rule2"></div>
+<header><h1>Not a show</h1>
+<p class="show">{subtitle}</p>
+<p class="dek">Soundchecks, and television and radio sessions. phish.net lists
+these and marks them as excluded from statistics, so they are absent from the
+show calendar this site counts with &mdash; no gap here counts them, no
+verdict is measured over them, and the figures on their own pages describe the
+entry rather than a show the band played. They are kept because they happened:
+five songs the band has otherwise never touched exist only here, and a handful
+of these performances circulated well enough to be rated among the best
+versions of their song.</p>
+<p class="dek">The line is phish.net's rather than this site's, and they are
+not consistent about it across their whole history &mdash; of the studio, TV
+and radio sessions in the song histories, some count and some do not, split
+roughly at 1999. This site defers to their flag rather than inventing a rule,
+so where they disagree with themselves it disagrees in exactly the same
+places, which is at least auditable.
+<a href="./method.html#which-show-this-was">How this works</a> has the rest of
+it, including why there is no honest total for how many shows the band has
+played.</p></header>
+<section class="hero {hero_cls}">{hero}</section>
+<div class="rule2"></div>
+<div id="main" tabindex="-1">{body}</div>
+{totop}
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+
+def not_a_show_rows(aside, page_href):
+    """The soundchecks and the sessions, each as a row that goes somewhere.
+
+    With phish.net's note, which on these entries is the whole point and not
+    decoration. All twenty carry one, they run 53 to 778 characters with a
+    median of 253, and they are where the interesting thing about a soundcheck
+    is recorded: that Magnaball's was a single 46-minute jam, that Festival 8's
+    was two soundchecks in a day, and that the Bethel Woods tech rehearsal
+    produced the Waves that got released on From the Archives. A rated-versions
+    list cannot show any of that, because fouldomain scores almost none of
+    these performances -- the Bethel Waves included.
+    """
+    out = {"before": [], "own": []}
+    for a in sorted(aside, key=lambda a: a["report"]["date"], reverse=True):
+        r, kind = a["report"], a["kind"]
+        n = len(r.get("songs") or [])
+        note = re.sub(r"<[^>]+>", "", html.unescape(str(r.get("notes") or ""))).strip()
+        before = kind in BEFORE_A_SHOW
+        # One of these exists because of the show after it, so it says which.
+        # A taping or a ceremony does not -- it is its own occasion, and
+        # pointing it at the next concert on the calendar would invent a
+        # relationship out of nothing but the calendar's order.
+        link = ("<span class='for'>before <a href='%s'>%s</a></span>"
+                % (page_href % a["before"], a["before"])
+                if before and a["before"] else "")
+        out["before" if before else "own"].append(
+            "<li><a class='ax-row' href='%s'><span class='ax-date'>%s</span>"
+            "<span class='ax-kind'>%s</span>"
+            "<span class='ax-venue'>%s</span>"
+            "<span class='ax-n'>%d song%s</span></a>%s%s</li>"
+            % (page_href % r["date"], r["date"],
+               KIND_LABEL.get(kind, kind).lower(),
+               html.escape(r.get("venue") or ""), n, "" if n == 1 else "s",
+               link,
+               "<span class='ax-note'>%s</span>" % linkify(html.escape(note))
+               if note else ""))
+    return out
+
+
+def never_at_a_show(docs, counting):
+    """Songs the band has played, but never at a show. -> rows, newest first.
+
+    Nine of them, and five are one afternoon: a soundcheck at The Woodlands on
+    2024-08-14 that produced five covers Phish has otherwise never touched.
+    They are invisible everywhere else on the site -- `due_rows` drops any song
+    with no counted performance before it classifies anything, so they are not
+    on the due page or among the out-of-rotation three, and until this page
+    they existed only as a row on the songs index reading "never at a show".
+    """
+    rows = []
+    for doc in docs:
+        perfs = doc.get("performances") or []
+        if not perfs or any(p["date"] in counting for p in perfs):
+            continue
+        rows.append((perfs[-1]["date"], doc, perfs))
+    rows.sort(key=lambda r: (r[0], typographic(r[1]["song"])), reverse=True)
+    return rows
+
+
+def rated_off_stage(docs, counting):
+    """Rated versions that were not played at a show. -> rows, best first.
+
+    Ian's: "in rare cases, they get circulated and gain favor." They do, and
+    the archive can show it, because fouldomain scores every circulating
+    performance rather than every show -- so a soundcheck that got out is
+    scored beside the concerts. Fourteen of them, and one is the highest-rated
+    version of its song.
+
+    Not every piece of lore survives contact with this, and the limit is worth
+    stating where it will be read: phish.net logs almost none of these
+    setlists. The IT soundcheck is two songs in this archive, so the versions
+    people actually argue about from that afternoon are not reachable here at
+    all.
+    """
+    rows = []
+    for doc in docs:
+        best = doc.get("best") or []
+        # 1-based, and the count of the list it sits in. A first pass at this
+        # enumerated from zero and reported the ranks one too low, which turned
+        # "My Soul's second-best version is a soundcheck" into "its best is" --
+        # a claim about the whole archive resting on an index. The rank travels
+        # with its denominator here so nothing downstream can restate it.
+        for rank, b in enumerate(best, 1):
+            if b.get("date") and b["date"] not in counting:
+                rows.append((b["score"], rank, len(best), doc, b))
+    rows.sort(key=lambda r: (-r[0], typographic(r[3]["song"])))
+    return rows
+
+
+def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
+    """Everything the band played that was not a show, and what came of it."""
+    counting = set(calendar)
+    _, aside = split_archive(reports, calendar)
+    lists = not_a_show_rows(aside, page_href)
+    never = never_at_a_show(docs, counting)
+    rated = rated_off_stage(docs, counting)
+    kinds = {a["report"]["date"]: a["kind"] for a in aside}
+
+    def section(anchor, title, blurb, body):
+        return ("<section class='rot'>"
+                "<h2 class='shelf-h' id='%s'>%s</h2><p class='dek'>%s</p>"
+                "%s<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
+                "</section>" % (anchor, title, blurb, body))
+
+    body = section(
+        "before", "Before a show",
+        "The band in the room before the doors, and each one names the show "
+        "it came before &mdash; that is the whole reason it happened. Twelve "
+        "are soundchecks. The thirteenth is the 2011 Bethel Woods <b>tech "
+        "rehearsal</b>, which this site called a soundcheck until Ian pointed "
+        "out that it is not one: a soundcheck is the afternoon of a concert, "
+        "a rehearsal is for a run. phish.net&rsquo;s note says which, so the "
+        "rows say which.",
+        "<ol class='axlist'>%s</ol>" % "".join(lists["before"]))
+    body += section(
+        "own", "Occasions of their own",
+        "Not attached to any concert: five television appearances, "
+        "NPR&rsquo;s Tiny Desk, and the night in 2010 when Phish played two "
+        "Genesis songs at the Waldorf Astoria and Trey made the case for "
+        "inducting them into the Rock and Roll Hall of Fame. That last one "
+        "was filed as a <em>session</em> until the same read-through, and a "
+        "ceremony is not a session either.",
+        "<ol class='axlist'>%s</ol>" % "".join(lists["own"]))
+    if never:
+        body += section(
+            "never", "Never at a show",
+            "%d songs the band has played, and never once at a concert. Five "
+            "of them are a single afternoon &mdash; the covers soundcheck at "
+            "The Woodlands on 2024-08-14. These are the only songs on this "
+            "site with no gap, no median and no verdict, because every figure "
+            "here is counted in shows and they have none."
+            % len(never),
+            "<ol class='axlist'>%s</ol>" % "".join(
+                "<li><a class='ax-row' href='./song/%s.html'>"
+                "<span class='ax-date'>%s</span>"
+                "<span class='ax-kind'>%s</span>"
+                "<span class='ax-venue'>%s</span></a>"
+                "<span class='for'>%s</span></li>"
+                % (html.escape(doc["slug"], quote=True),
+                   html.escape(typographic(doc["song"])),
+                   kinds.get(date, "not a show"),
+                   html.escape(perfs[-1].get("venue") or ""), date)
+                for date, doc, perfs in never))
+    if rated:
+        # The best-placed of them, computed rather than written down: whether
+        # any of these ever beats every concert version of its song is exactly
+        # the interesting question, and it is one a rebuild can change.
+        top = min(rated, key=lambda r: r[1])
+        claim = (
+            "<b>%s</b> is rated above every concert version of itself."
+            % html.escape(typographic(top[3]["song"])) if top[1] == 1 else
+            "None of them is its song&rsquo;s best version. The closest is "
+            "<b>%s</b>, at no.&nbsp;%d of the %d versions of it fouldomain "
+            "rates highest."
+            % (html.escape(typographic(top[3]["song"])), top[1], top[2]))
+        body += section(
+            "rated", "Rated away from the stage",
+            "fouldomain scores every performance that circulates rather than "
+            "every show, so a soundcheck that got out is scored beside the "
+            "concerts. These are the %d that did. %s A rank here is within "
+            "that song&rsquo;s own rated versions, which is the only honest "
+            "way to read a score that is fouldomain&rsquo;s rather than this "
+            "site&rsquo;s."
+            "</p><p class='dek'>A score is not the only evidence that one of "
+            "these got out, and on the strength of the notes above it is not "
+            "the best. The Waves from the 2011 Bethel Woods tech rehearsal was "
+            "released on Kevin Shapiro&rsquo;s <em>From the Archives</em> and "
+            "phish.net calls it stunning &mdash; and fouldomain has no score "
+            "for it, so it is not in this list. Read the notes for the ones "
+            "that circulated; this list is only the ones that were also "
+            "rated."
+            % (len(rated), claim),
+            "<ol class='axlist'>%s</ol>" % "".join(
+                "<li><a class='ax-row' href='./song/%s.html#%s'>"
+                "<span class='ax-date'>%s</span>"
+                "<span class='ax-kind'>%s</span>"
+                "<span class='ax-venue'>%s</span></a>"
+                "<span class='for'>%s &middot; rated <b>%d</b>, "
+                "no.&nbsp;%d of %d</span></li>"
+                % (html.escape(doc["slug"], quote=True), b["date"],
+                   html.escape(typographic(doc["song"])),
+                   kinds.get(b["date"], "not a show"),
+                   html.escape(b.get("venue") or ""), b["date"], score,
+                   rank, of)
+                for score, rank, of, doc, b in rated))
+
+    n_b, n_o = len(lists["before"]), len(lists["own"])
+    cards = [(n_b, "Before a show", "", "#before"),
+             (n_o, "On their own", "", "#own"),
+             (len(never), "Never at a show", " hot", "#never"),
+             (len(rated), "Rated versions", "", "#rated")]
+    # Counted off the rows rather than written out, and spelled from the same
+    # labels the rows carry -- this line named two kinds when there were five.
+    tally = collections.Counter(a["kind"] for a in aside)
+    subtitle = ("%d entr%s &middot; %s"
+                % (n_b + n_o, "y" if n_b + n_o == 1 else "ies",
+                   _join_clauses(
+                       ["%d %s" % (n, KIND_COUNTED[k][0 if n == 1 else 1])
+                        for k, n in tally.most_common() if n], "and")))
+    blurb = ("Every Phish soundcheck and session the archive holds, the songs "
+             "that exist only there, and the versions that got out.")
+    return NOT_A_SHOW_SHELL.format(
+        crumb=nav_strip(section="Shows", mark=True),
+        analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS,
+        sheet=sheet_links("./fonts.css"),
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
+        hero=hero_html(cards), hero_cls=hero_cols(len(cards)),
+        subtitle=subtitle, body=body,
+        share=share_meta("Not a show &mdash; Possum Logic",
+                         html.escape(blurb, quote=True), NOT_A_SHOW_PAGE),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -6276,12 +7138,9 @@ VENUES_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a class="here">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>Venues</h1>
 <p class="show">{subtitle}</p>
@@ -6296,6 +7155,7 @@ over what span, and the longest gap the room has heard.</p></header>
 <ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -6357,8 +7217,9 @@ def render_venues(reports, card=None):
     blurb = ("Every venue in the archive: %d of them, over %s nights."
              % (n, "{:,}".format(total)))
     return VENUES_SHELL.format(
+        crumb=nav_strip(here="Venues", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(rows),
         share=share_meta("Venues &mdash; Possum Logic",
@@ -6385,20 +7246,50 @@ def due_card(docs, counting, since):
         size=104)
 
 
-def render_songs(docs, stamp=None, card=None):
-    """One page listing every song the archive holds a history for."""
+def render_songs(docs, stamp=None, card=None, counting=None):
+    """One page listing every song the archive holds a history for.
+
+    Every figure here counts *shows*, which is what the rest of the site
+    counts and what this page did not. A soundcheck, a Tonight Show slot and a
+    Tiny Desk are performances and they are in the archive, but they are not
+    shows -- the index files them in a list of their own, `due_rows` leaves
+    them out of every verdict, and each song's own page has always ignored
+    them: My Sharona's page says "0 performances" while this page said it had
+    been played once, and the two are one click apart.
+
+    The order matters as much as the filter, and it is the order that was
+    wrong. Drop the uncounted performances *first*, then drop the first of
+    what is left -- because that first one carries phish.net's debut "gap",
+    which is the number of shows the band played before the song existed
+    rather than a silence. Skipping row 0 of the raw list skips the debut gap
+    only when the song's first appearance was at a show; for the 45 songs that
+    first turned up at a soundcheck the debut gap sat on row 1, untouched, and
+    42 of them published it as their longest gap. Gone read 1,468 where the
+    truth is 49.
+    """
     rows, entries = [], []
     for doc in docs:
         perfs = doc.get("performances") or []
         if not perfs:
             continue
-        gaps = [p["gap"] for p in perfs[1:] if p["gap"] is not None]
+        played = [p for p in perfs if not counting or p["date"] in counting]
+        # (gap, the night that gap ended) rather than the gap alone, because
+        # the hero has to order the songs that tie on the figure -- see below.
+        gaps = [(p["gap"], p["date"]) for p in played[1:] if p["gap"] is not None]
         best = (doc.get("best") or [None])[0]
+        peak = max(gaps) if gaps else None
         entries.append({
-            "song": doc["song"], "slug": doc["slug"], "played": len(perfs),
-            "last": perfs[-1]["date"], "first": perfs[0]["date"],
-            "median": _median(gaps) if gaps else None,
-            "longest": max(gaps) if gaps else None,
+            "song": doc["song"], "slug": doc["slug"], "played": len(played),
+            # Nine songs have never been played at a show -- five of them at
+            # one soundcheck at The Woodlands in 2024. They keep their rows:
+            # dropping them would have this page say the band has never
+            # touched Day Tripper, which is worse than saying it has played it
+            # at no shows, and their pages exist and say the same thing.
+            "last": played[-1]["date"] if played else "",
+            "first": played[0]["date"] if played else "",
+            "median": _median([g for g, _ in gaps]) if gaps else None,
+            "longest": peak[0] if peak else None,
+            "longest_on": peak[1] if peak else "",
             "score": best["score"] if best else None,
             "best_date": best["date"] if best else "",
         })
@@ -6421,51 +7312,590 @@ def render_songs(docs, stamp=None, card=None):
             " data-longest='%s' data-score='%s' data-search=\"%s\">"
             "<a class='row' href='./song/%s.html'>"
             "<span class='r-song'>%s</span>"
-            "<span class='r-when'>last <b>%s</b></span>"
+            "<span class='r-when'>%s</span>"
             "<span class='r-stats'>%s</span></a></li>"
             % (html.escape(e["song"], quote=True), e["played"], e["last"],
                e["longest"] if e["longest"] is not None else "",
                e["score"] if e["score"] is not None else "",
                html.escape(e["song"].lower(), quote=True),
                html.escape(e["slug"], quote=True), html.escape(e["song"]),
-               e["last"], stats))
+               # "last <date>" needs a date. A song with no show to its name
+               # has none, and "last —" would read as a missing value rather
+               # than as the fact itself. `data-last` stays empty, which sorts
+               # these to the bottom of Recently played rather than the top.
+               "last <b>%s</b>" % e["last"] if e["last"] else "never at a show",
+               stats))
 
     total = sum(e["played"] for e in entries)
-    top = max(entries, key=lambda e: e["score"] or -1) if entries else None
+    # The song that holds the longest gap, so the figure can point at it. The
+    # index has done this since it was built and says why: a figure in the hero
+    # that cannot be followed is an advertisement for a page that does not
+    # exist. This page had four such figures and no links at all -- the reader
+    # was shown 1,468 and left to guess which of 589 songs it belonged to.
+    #
+    # Every song holding the record, not just one, because right now two do:
+    # Cold as Ice came back after 1,468 shows on 2026-07-22 and Gone after
+    # 1,468 on 2009-12-30. A bare `max()` would have named whichever sorted
+    # first and stated it as *the* answer, and this site's rule is that a wrong
+    # figure is worse than a missing one -- "Cold as Ice, 1,468" under the
+    # words LONGEST GAP is a claim of uniqueness the archive does not support.
+    # So the card names the most recent holder, links to it, and says how many
+    # others there are. render_index does the same, off the same two helpers.
+    #
+    # Most recent first, because among equals it is the one a reader has a
+    # chance of remembering, and because the ordering has to come from the
+    # data rather than from where a song happens to sit in the list.
+    top_gap = max((e["longest"] for e in entries if e["longest"]), default=None)
+    holders = sorted((e for e in entries if e["longest"] == top_gap),
+                     key=lambda e: e["longest_on"],
+                     reverse=True) if top_gap else []
+    peak = holders[0] if holders else None
     # "Performances" on a page listing songs can be read as the band's, and
     # 27,966 of those would be some tour. The count is of songs played, so it
-    # says so -- and the best version is some particular song's, so it names it
-    # rather than leaving a bare 97 to be a superlative about nothing.
+    # says so.
+    #
+    # There was a fourth card, "Best Rated Version", and it is gone. Three
+    # things were wrong with it and they are separable. It named a superlative
+    # about one song on a page whose whole job is the other 588. Its phrasing
+    # only parses if you already know it means "the best-rated version on the
+    # site", which is a sentence this page never says. And the score is
+    # fouldomain's, not this archive's -- a hero is where a site states what it
+    # thinks, and that cell handed the largest type on the page to someone
+    # else's judgement of one performance. None of that removes the fact from
+    # the site: every row still carries its own best score, and "Highest rated"
+    # is one of the five sorts directly below. A sort answers this for all 589
+    # songs, which is the right shape for the question; a hero answered it for
+    # one.
     cards = [
-        (len(entries), "Songs", ""),
-        ("{:,}".format(total), "Song Performances", ""),
-        (_stat(max((e["longest"] or 0) for e in entries)) if entries else "n/a",
-         "Longest Gap", " hot"),
-        (top["score"] if top and top["score"] else "n/a",
-         "Best Rated Version%s" % ("<span class='of'>%s</span>"
-                                   % html.escape(top["song"])
-                                   if top and top["score"] else ""), ""),
+        (len(entries), "Songs", "", ""),
+        ("{:,}".format(total), "Song Performances", "", ""),
+        (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
+         "./song/%s.html" % peak["slug"] if peak else "",
+         (peak["song"] + tied_with([e["song"] for e in holders[1:]]))
+         if peak else ""),
     ]
-    hero = "".join(
-        "<div class='card'><div class='lbl'>%s</div>"
-        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-        for val, lbl, cls in cards)
-    subtitle = ("%d song%s, played %s time%s"
+    hero = hero_html(cards)
+    # "589 songs, played 37,169 times" attaches the verb to the nearest noun a
+    # reader can find, and the nearest noun is singular: it reads as one song
+    # played 37,169 times. The count is of performances across the catalogue,
+    # so it says performances, and "between them" puts the 589 back in charge
+    # of the number.
+    subtitle = ("%d song%s &middot; %s performance%s between them"
                 % (len(entries), "" if len(entries) == 1 else "s",
                    "{:,}".format(total), "" if total == 1 else "s"))
-    blurb = ("Every song in the archive: %d of them, played %s times."
-             % (len(entries), "{:,}".format(total)))
+    # Same correction as the subtitle, and it matters more here: this is the
+    # line a link preview shows, with no page around it to disambiguate.
+    blurb = ("Every song in the archive: %d of them, %s performances between "
+             "them." % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
+        crumb=nav_strip(here="Songs"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        css=SONGS_CSS, js=SONGS_JS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, hero=hero, hero_cls=hero_cols(len(cards)),
         count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
         share=share_meta("Songs &mdash; Possum Logic",
                          html.escape(blurb, quote=True), "songs.html", card=card),
         stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
+
+
+# ------------------------------------------------------------------ years ---
+#
+# What a year sounded like, read off the running order rather than off the
+# gaps. Every other list on this site is about one song's habits; this is the
+# only one about the band's, and it is the only page whose input is the order
+# the songs came in rather than the dates they fell on.
+
+# Nights the repetition figure is stated over. See year_repeat for why a fixed
+# number and not the year's own length; 20 is the largest round number that
+# still lets 1987 (21 nights) and 2017 (28) answer.
+YEARS_SAMPLE = 20
+# A song is part of a year's sound if it turned up on at least this many of
+# that year's nights, and on at least this share of them. Both, because three
+# nights out of 124 is noise and three out of 21 is a habit.
+YEARS_FLOOR = 3
+YEARS_SHARE = .10
+# And a move belongs to a year only if a quarter of every time it ever
+# happened was that year.
+YEARS_OWN = .25
+# How many songs a fact line will name before it stops and says how many more
+# there were.
+YEARS_NAMED = 5
+
+
+def year_order(order, counting, reports=()):
+    """{date: rows} for every counting show whose running order is known.
+
+    Two sources, because neither is complete on its own. The extract holds the
+    whole career and is free to re-read, but it deliberately refuses a show
+    whose report is still provisional -- so on the one night anyone would look
+    hardest, the newest show is the one missing from it. The saved reports
+    carry a running order too and go back only as far as the archive does.
+    Extract first, then a report for anything the extract has not got.
+
+    Filtered to the counting calendar throughout, so a year's shows here are
+    the same shows the rest of the site counts. Nine of the archive's entries
+    are soundchecks and radio sessions; a soundcheck is not a night.
+    """
+    known = {date: rows for date, rows in order.items() if date in counting}
+    for report in reports:
+        date = report["date"]
+        if date in known or date not in counting:
+            continue
+        rows = [{"set": SET_SLUG.get(s.get("set"), ""), "position": i,
+                 "slug": s["slug"], "song": s.get("song") or s["slug"],
+                 "trans_mark": s.get("out") or ""}
+                for i, s in enumerate(report.get("songs") or (), 1)
+                if s.get("slug")]
+        if rows:
+            known[date] = rows
+    return known
+
+
+def year_songs(rows):
+    """One show's songs in running order, minus the entries that are not songs.
+
+    `jam` and `custom` are filed here for the same reason they carry a caveat
+    on their own pages: neither is a composition, so counting either as the
+    most-played song of a year answers a different question than the reader is
+    asking. `custom` alone would have put nine different pieces of music into
+    one row.
+    """
+    return [r for r in sorted(rows, key=lambda e: (SET_ORDER.get(e["set"], 9),
+                                                   e["position"]))
+            if r["slug"] not in NOT_A_SONG]
+
+
+def year_moves(rows):
+    """The song-to-song moves inside one show, as ordered pairs of slugs.
+
+    Inside a set only. What follows the break is not what the band segued
+    into, and treating it as one would make "Antelope, then Chalk Dust" the
+    same object as "Antelope > Chalk Dust", which is the distinction the whole
+    page is about.
+    """
+    songs = year_songs(rows)
+    return [(a["slug"], b["slug"]) for a, b in zip(songs, songs[1:])
+            if a["set"] == b["set"]]
+
+
+def year_repeat(dates, order, sample=YEARS_SAMPLE):
+    """The share of a year's moves that recur, stated over a fixed `sample`.
+
+    The obvious figure -- what share of a year's moves happened more than once
+    that year -- cannot be compared across years, and a page of years is
+    nothing but a comparison. It climbs with the number of shows for purely
+    arithmetic reasons: 124 nights give a pair 124 chances to turn up twice,
+    28 nights give it 28. Measured, that is most of the distance between the
+    two ends of this archive. Cut every year down to the same 29 nights and
+    1991 falls from 68% to 39% -- while 2017, which already had 29, stays at
+    1.4%. The ordering survives; the raw numbers do not deserve to.
+
+    So what is published is the figure a reader who saw `sample` nights of
+    that year would have seen, which every long-enough year can answer on the
+    same terms. Exact rather than sampled: a move that appears on m of the
+    year's n nights appears on X of a random `sample` of them, X being
+    hypergeometric, and it reads as a repeat whenever X is 2 or more --
+
+        E[repeats] = sum over moves of  E[X] - P(X = 1)
+
+    Checked against 120 random draws of every year: no year moved by more than
+    0.3 points, which is the difference between a statistic and a die roll.
+
+    A move that happens twice in one night is a sandwich rather than a habit,
+    so each move counts once per night. -> percent, or None below `sample`.
+    """
+    n = len(dates)
+    if n < sample:
+        return None
+    nights = collections.Counter()
+    for date in dates:
+        nights.update(set(year_moves(order[date])))
+    whole = math.comb(n, sample)
+    alone, top, bottom = {}, 0.0, 0.0
+    for m in nights.values():
+        bottom += m * sample / n
+        if m not in alone:
+            alone[m] = (m * math.comb(n - m, sample - 1) / whole
+                        if n - m >= sample - 1 else 0.0)
+        top += m * sample / n - alone[m]
+    return 100 * top / bottom if bottom else None
+
+
+def year_profiles(order, counting, docs=()):
+    """One profile per year of the band's career, newest first.
+
+    `order` is what year_order returned, so everything here is already
+    restricted to nights the site counts and whose running order is known.
+    """
+    by_year, played = {}, {}
+    for date in order:
+        by_year.setdefault(date[:4], []).append(date)
+    for date in counting:
+        played[date[:4]] = played.get(date[:4], 0) + 1
+
+    # A song's debut, from the fullest source that has it. A song page holds
+    # every performance phish.net knows of, which is better evidence than this
+    # extract -- 100 shows before 1992 have no running order on file, so a
+    # song first played at one of them looks younger here than it is. Only 589
+    # songs have a page, though (a page exists for a song the archive's own
+    # reports name, and those start in 2009), so the extract answers for the
+    # rest and the earlier of the two answers wins.
+    pages, debut, names = set(), {}, {}
+    for doc in docs:
+        pages.add(doc["slug"])
+        first = next((p["date"] for p in doc.get("performances") or ()
+                      if p["date"] in counting), None)
+        if first:
+            debut[doc["slug"]] = first[:4]
+
+    plays, nights, moves = {}, {}, {}
+    for year, dates in by_year.items():
+        p, s, m = collections.Counter(), collections.Counter(), collections.Counter()
+        for date in dates:
+            songs = year_songs(order[date])
+            for row in songs:
+                p[row["slug"]] += 1
+                names[row["slug"]] = row["song"]
+            s.update({row["slug"] for row in songs})
+            # Once a night. A move made twice in one show is a sandwich, and a
+            # sandwich is a thing that happened once.
+            m.update(set(year_moves(order[date])))
+        plays[year], nights[year], moves[year] = p, s, m
+        for slug in p:
+            if slug not in debut or year < debut[slug]:
+                debut[slug] = year
+
+    anywhere, ever = collections.Counter(), collections.Counter()
+    for year in by_year:
+        anywhere += nights[year]
+        ever += moves[year]
+    everything = sum(len(dates) for dates in by_year.values())
+
+    # A song nobody heard in any other year. Computed against every night the
+    # archive holds an order for rather than against every night played, which
+    # is the honest limit of the claim and is what the page says it is.
+    lonely = {}
+    for slug in names:
+        seen = [year for year in by_year if plays[year].get(slug)]
+        if len(seen) == 1:
+            lonely.setdefault(seen[0], []).append(slug)
+
+    def named(slugs, figure):
+        return [(slug, names[slug], figure(slug)) for slug in slugs]
+
+    out = []
+    for year in sorted(by_year, reverse=True):
+        dates = sorted(by_year[year])
+        n = len(dates)
+        p, s = plays[year], nights[year]
+        performances = sum(p.values())
+
+        # What made this year sound like itself rather than like the band:
+        # how much of the year a song was in, weighed against how much of
+        # every other year it was in. The log keeps a song that played twice
+        # as often as usual on 60% of nights above one that played fifty times
+        # as often on three -- rarity alone would fill every row with one-offs,
+        # which is the next fact line down and a different question.
+        rest = everything - n
+        # Songs the band played only this year are left out of it, because the
+        # line below says that about them and says it harder. In they went
+        # first, and 1995 answered Acoustic Army, Taste That Surrounds and
+        # Keyboard Army twice over -- the same three chips in two rows, where
+        # the second row is the stronger claim. Out of this list, 1995 says
+        # Strange Design, A Day in the Life and I'm Blue, I'm Lonesome, which
+        # is what the year sounded like rather than what was unique to it.
+        alone = set(lonely.get(year, ()))
+        sound = []
+        for slug, count in s.items():
+            if slug in alone or count < YEARS_FLOOR or count < YEARS_SHARE * n:
+                continue
+            here = count / n
+            elsewhere = (anywhere[slug] - count) / rest if rest else 0
+            # Never anywhere else: a rate of zero has no logarithm, so it is
+            # held at half a night rather than allowed to run to infinity.
+            elsewhere = elsewhere or .5 / rest
+            sound.append((here * math.log2(here / elsewhere), here, slug))
+        sound.sort(reverse=True)
+
+        # The move that was most this year's own, rather than the one it made
+        # most often. Ranked on the raw count, nearly every year of the
+        # archive answers with one of two pairs: The Horse into Silent in the
+        # Morning is one piece of music filed as two rows, and Mike's Song
+        # into I Am Hydrogen is a fixed sequence the band has played since
+        # 1988. Both are true and neither is about a year. Weighed against how
+        # often the pair ever happened, 1993 answers Big Ball Jam into Hold
+        # Your Head Up -- 16 of the 22 nights it has ever happened, all of them
+        # that year -- which is the thing worth knowing.
+        habit, best = None, 0
+        for pair, count in moves[year].items():
+            # A quarter of every time it ever happened, at least, or the line
+            # is not about this year and does not appear. Without the floor
+            # 2021 answers Mike's Song into I Am Hydrogen on the strength of 3
+            # nights out of 335 -- the best any 2021 pair could do, and still
+            # a statement about 1988. Four years say nothing here instead.
+            if count < YEARS_FLOOR or count < YEARS_OWN * ever[pair]:
+                continue
+            score = count * count / ever[pair]
+            if score > best:
+                habit, best = (names[pair[0]], names[pair[1]], count,
+                               ever[pair]), score
+
+        ages = sorted(int(year) - int(debut[slug])
+                      for slug, count in p.items() for _ in range(count))
+        only = sorted(lonely.get(year, ()), key=lambda x: (-p[x], names[x]))
+        out.append({
+            "year": year,
+            "shows": played.get(year, n),
+            "known": n,
+            "songs": len(p),
+            "performances": performances,
+            "per_night": performances / n,
+            "age": _median(ages),
+            "repeat": year_repeat(dates, order),
+            "most": named([slug for slug, _ in p.most_common(YEARS_NAMED)],
+                          lambda slug: "%d" % p[slug]),
+            "sound": named([slug for _, _, slug in sound[:YEARS_NAMED]],
+                           lambda slug: "%.0f%%" % (100 * s[slug] / n)),
+            "only": named(only[:YEARS_NAMED], lambda slug: "%d" % p[slug]),
+            "only_n": len(only),
+            "habit": habit,
+        })
+    return out
+
+
+YEARS_CSS = INDEX_CSS + YEAR_STRIP_CSS + """
+/* One block a year, and the year itself set the size the song titles are set
+   on a show page -- this is a page of forty headings and the reader is
+   scanning for one of them. */
+.yb{margin:0 0 2.6rem}
+.yb:first-of-type{margin-top:.4rem}
+.yh{display:flex;align-items:baseline;gap:.7rem;margin:0 0 .7rem;
+   padding:0 .25rem .35rem;border-bottom:1px solid var(--ink)}
+.yh .y{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1.75rem;
+   line-height:1;letter-spacing:-.01em;color:var(--ink)}
+.yh .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.yh .up{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative}
+.yh .up::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+.yh .up:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* The four figures, as a grid rather than a sentence with middots in it.
+   Set as running text they stranded a separator at the end of every wrapped
+   line; a grid cell cannot strand punctuation it does not carry. */
+.shape{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem 1rem;
+   margin:0 0 .9rem;padding:0 .25rem}
+.shape dt{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin:0}
+.shape dd{margin:.15rem 0 0;font-size:.9375rem;color:var(--ink-soft);
+   font-variant-numeric:tabular-nums}
+.shape dd b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   color:var(--ink)}
+/* Said only where it is true, and it is true only before 1992. */
+.part{margin:0 0 .9rem;padding:0 .25rem;font-family:'Literata',Georgia,serif;
+   font-size:.875rem;line-height:1.5;font-variation-settings:'opsz' 14;
+   color:var(--dim)}
+.fact{display:grid;grid-template-columns:9.5rem 1fr;align-items:baseline;
+   gap:.5rem .9rem;padding:.45rem .25rem;border-top:1px solid var(--rule-soft)}
+.fact h3{margin:0;font-size:.625rem;letter-spacing:.14em;font-weight:400;
+   text-transform:uppercase;color:var(--dim)}
+/* Songs as chips, one size down from the year strip they echo. A run of
+   titles set as text put its commas at the ends of lines; an enclosed item
+   carries no punctuation to strand. */
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chips a,.chips span{font-size:.8125rem;line-height:1.15;padding:.3rem .45rem;
+   border:1px solid var(--edge);color:var(--ink-soft);text-decoration:none}
+.chips a:hover{color:var(--hot-text);border-color:var(--hot-text)}
+.chips b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
+   color:var(--dim);margin-left:.35rem;font-variant-numeric:tabular-nums}
+.chips a:hover b{color:var(--hot-text)}
+/* Not a chip: it is one sentence about two songs, and breaking it into two
+   enclosures would hide the only thing it says, which is the arrow. */
+.habit{margin:0;font-size:.8125rem;line-height:1.35;color:var(--ink-soft)}
+.habit .to{color:var(--dim);margin:0 .3rem}
+.habit .n{font-family:'IBM Plex Mono',ui-monospace,monospace;color:var(--dim);
+   margin-left:.4rem;font-variant-numeric:tabular-nums}
+.more{font-size:.75rem;color:var(--dim);align-self:center}
+@media (max-width:620px){
+  .shape{grid-template-columns:repeat(2,1fr)}
+  .fact{grid-template-columns:1fr;gap:.3rem}
+}
+"""
+
+
+YEARS_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Years &mdash; Possum Logic</title>
+<meta property="og:type" content="website">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+{sheet}
+<style>{css}</style>{theme_js}{keys_js}</head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+{crumb}
+<div class="rule2"></div>
+<header><h1>Years</h1>
+<p class="show">{subtitle}</p>
+<p class="dek">What a year sounded like, taken from the order the songs came
+in rather than from how long the band went without them. Every other list here
+is about one song&rsquo;s habits. This one is about the band&rsquo;s.</p>
+<p class="dek"><b>Sounded like</b> is not the same list as <b>most played</b>,
+and the difference is the point: Possum was played every year, so it says
+nothing about any of them. A song earns a place in the first list by being a
+bigger share of that year than of every other year put together.</p>
+<p class="dek"><b>Moves that recur</b> is the share of a year&rsquo;s
+song-to-song moves that turn up on more than one night &mdash; stated over a
+fixed {sample} nights, because otherwise it is a count of how many shows the
+band played. A long year gets more chances to repeat itself for reasons that
+have nothing to do with how it sounded. Over the same {sample} nights, 1993
+reads {high} and 2017 reads {low}.</p>
+<p class="dek">Built from the running order of {read} nights. The archive has
+no running order for {missing} of the shows the calendar counts, almost all of
+them before 1992, so a year short of its own count says so under its figures
+&mdash; and <b>only in</b> means only in the nights read here.</p>
+<nav class="years" aria-label="Years on this page">{years}</nav></header>
+<section class="hero {hero_cls}">{hero}</section>
+<div class="rule2"></div>
+<main id="main" tabindex="-1">
+{blocks}
+</main>
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+
+def _year_chips(items, pages, root="./"):
+    """A run of songs, each with its figure, linked where the song has a page.
+
+    Not every song does. A page exists for a song some saved report names, and
+    the reports start in 2009 -- so Acoustic Army, 27 performances and all of
+    them in 1995, is a name here and nothing more. Set as an unlinked chip
+    rather than left out: what the page is saying about 1995 is that the song
+    existed, and a missing page is not a reason to un-say it.
+    """
+    out = []
+    for slug, song, figure in items:
+        label = "%s<b>%s</b>" % (html.escape(typographic(song)),
+                                 html.escape(figure))
+        if slug in pages:
+            out.append("<a href='%ssong/%s.html'>%s</a>"
+                       % (root, html.escape(slug, quote=True), label))
+        else:
+            out.append("<span>%s</span>" % label)
+    return "".join(out)
+
+
+def _year_fact(label, body, more=""):
+    return ("<div class='fact'><h3>%s</h3><div class='chips'>%s%s</div></div>"
+            % (label, body,
+               "<span class='more'>%s</span>" % more if more else ""))
+
+
+def _year_block(profile, pages):
+    """One year, as a heading, four figures and up to four fact lines."""
+    year, n = profile["year"], profile["known"]
+    age = profile["age"]
+    figures = [
+        ("A night", "<b>%.0f</b> songs" % profile["per_night"]),
+        ("In rotation", "<b>%d</b> songs" % profile["songs"]),
+        ("Median song", "new" if not age else
+         "<b>%.0f</b> year%s old" % (age, "" if age == 1 else "s")),
+        ("Moves that recur",
+         "&mdash;" if profile["repeat"] is None
+         else "<b>%.0f%%</b>" % profile["repeat"]),
+    ]
+    body = ["<section class='yb' id='y%s'>"
+            "<h2 class='yh'><span class='y'>%s</span>"
+            "<span class='n'>%s show%s</span>"
+            "<a class='up' href='#top'>&uarr; Top</a></h2>"
+            % (year, year, "{:,}".format(profile["shows"]),
+               "" if profile["shows"] == 1 else "s"),
+            "<dl class='shape'>%s</dl>"
+            % "".join("<div><dt>%s</dt><dd>%s</dd></div>" % f for f in figures)]
+
+    # Only when it is not the whole year, and it never is after 1991.
+    if n < profile["shows"]:
+        body.append("<p class='part'>Running order known for %d of these %d "
+                    "nights; the figures above are what those %d hold.</p>"
+                    % (n, profile["shows"], n))
+
+    if profile["most"]:
+        body.append(_year_fact("Most played",
+                               _year_chips(profile["most"], pages)))
+    if profile["sound"]:
+        body.append(_year_fact("Sounded like",
+                               _year_chips(profile["sound"], pages)))
+    if profile["only"]:
+        spare = profile["only_n"] - len(profile["only"])
+        body.append(_year_fact(
+            "Only in %s" % year, _year_chips(profile["only"], pages),
+            "and %d more" % spare if spare else ""))
+    if profile["habit"]:
+        first, second, count, ever = profile["habit"]
+        body.append(
+            "<div class='fact'><h3>Ran together</h3>"
+            "<p class='habit'>%s<span class='to'>&rarr;</span>%s"
+            "<span class='n'>%d night%s, of %d ever</span></p></div>"
+            % (html.escape(typographic(first)),
+               html.escape(typographic(second)),
+               count, "" if count == 1 else "s", ever))
+    body.append("</section>")
+    return "".join(body)
+
+
+def render_years(profiles, missing, pages=()):
+    """Forty years of this band, one block each, newest first."""
+    read = sum(p["known"] for p in profiles)
+    strip = "".join(
+        "<a href='#y%s' aria-label='%s, %d show%s'>%s<b>%d</b></a>"
+        % (p["year"], p["year"], p["shows"], "" if p["shows"] == 1 else "s",
+           p["year"], p["shows"]) for p in profiles)
+
+    rated = [p for p in profiles if p["repeat"] is not None]
+    most = max(rated, key=lambda p: p["repeat"], default=None)
+    least = min(rated, key=lambda p: p["repeat"], default=None)
+    widest = max(profiles, key=lambda p: p["songs"], default=None)
+    cards = [(len(profiles), "Years", "", ""),
+             ("{:,}".format(read), "Nights read", "", ""),
+             (most["year"] if most else "n/a", "Most habitual", " hot",
+              "#y%s" % most["year"] if most else ""),
+             (widest["year"] if widest else "n/a", "Widest rotation", "",
+              "#y%s" % widest["year"] if widest else "")]
+    hero = "".join(
+        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
+        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
+        + ("</a>" if href else "</div>")
+        for val, lbl, cls, href in cards)
+
+    span = "%s&ndash;%s" % (profiles[-1]["year"], profiles[0]["year"]) if profiles else ""
+    subtitle = "%d years of Phish, %s" % (len(profiles), span)
+    blurb = ("What each year of Phish sounded like: the songs that were only "
+             "that year's, and how much of the band's own running order they "
+             "repeated.")
+    return YEARS_SHELL.format(
+        crumb=nav_strip(here="Years", mark=True),
+        analytics=ANALYTICS, css=YEARS_CSS, fonts=WEB_FONTS,
+        sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        theme_ui=THEME_UI, years=strip, hero=hero,
+        hero_cls=hero_cols(len(cards)), subtitle=subtitle,
+        sample=YEARS_SAMPLE, read="{:,}".format(read),
+        missing="{:,}".format(missing),
+        high="%.0f%%" % next((p["repeat"] for p in profiles
+                              if p["year"] == "1993"), 0),
+        low="%.0f%%" % next((p["repeat"] for p in profiles
+                             if p["year"] == "2017"), 0),
+        blocks="\n".join(_year_block(p, pages) for p in profiles),
+        share=share_meta("Years &mdash; Possum Logic",
+                         html.escape(blurb, quote=True), "years.html"),
+        stamp="Updated %s" % _utcnow().date().isoformat())
 
 
 # ----------------------------------------------------------------- method ---
@@ -6598,12 +8028,9 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a class="here">How this works</a></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -6612,6 +8039,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <nav class="toc" id="sections" tabindex="-1" aria-label="Sections on this page"><span class="cap">Sections on this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
+{totop}
 <footer><span><a href="./index.html">All reports</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
@@ -6761,7 +8189,7 @@ written can reach the threshold.</p>"""),
     # quarter percent signs, and every one of them would have needed doubling.
     ('rotation', 'Dormant, rarity, %s' % FEW_TITLE.lower(), """
 <p>Songs with no recent record that have been gone a hundred shows or more sit
-<a href="./dormant.html">on their own page</a>, because there is nothing left
+<a href="./{page}">on their own page</a>, because there is nothing left
 to rank them by. For a long time that page called all
 <b class="num">281</b> of them <b>dormant</b>, and for
 <b class="num">174</b> of them that was false. Dormant means a song used to be
@@ -6771,8 +8199,9 @@ exactly once in this archive were played on a Halloween night.</p>
 <p>So the page splits on how many times the band ever played the song:
 <b class="num">{floor}</b> or more and it was in rotation and left, which is
 <span class="verdict">dormant</span>; <b class="num">{lo}</b> to
-<b class="num">{hi}</b> is a <b>rarity</b>, given a run that did not take;
-<b>{few_times}</b> and it never got going at all.</p>
+<b class="num">{hi}</b> is a <b>rarity</b>, enough performances to notice and
+never enough to become a habit; <b>{few_times}</b> and it never got going at
+all.</p>
 <p>The archive decides where that line goes rather than taste. Take every
 silence of a hundred shows or more it holds &mdash; <b class="num">774</b> of
 them &mdash; group them by how many times the song had been played when it fell
@@ -6799,8 +8228,8 @@ splitting <b>1 / 2&ndash;7 / 8+</b> the three groups return 28%, 55% and 84%,
 while splitting <b>1&ndash;2 / 3&ndash;7 / 8+</b> they return 30%, 65% and 84%.
 Merging widens the gap at the bottom boundary from 27 points to 35 and costs
 nothing at the top. On the evidence, a song played twice and dropped is the
-same object as a song played once and dropped &mdash; which is why the section
-is named for the nights rather than for a count.</p>
+same object as a song played once and dropped &mdash; which is why one heading
+covers both counts rather than a number naming either.</p>
 <p><b>When those few plays happened matters too, but only for the rarities.</b>
 Take how many shows passed per performance, and split at two hundred. A rarity
 whose handful of plays sat close together came back <b class="num">70%</b> of
@@ -6833,7 +8262,8 @@ quiet again for good <b class="num">43%</b> of the time; those played two to
 seven times, <b class="num">27%</b>; those played eight or more,
 <b class="num">7%</b>.</p>""".format(
         floor=ROTATION_PLAYS, lo=FEW_PLAYS + 1, hi=ROTATION_PLAYS - 1,
-        few_times=FEW_TIMES, few_title=FEW_TITLE.lower())),
+        few_times=FEW_TIMES, few_title=FEW_TITLE.lower(),
+        page=ROTATION_PAGE)),
     ('ratings-and-jam-charts', 'Ratings and jam charts', """
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
@@ -6882,10 +8312,11 @@ def render_method():
     blurb = ("How the gaps, the medians and the verdicts on this site are "
              "worked out.")
     return METHOD_SHELL.format(
+        crumb=nav_strip(here="How this works"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=METHOD_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=METHOD_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
@@ -6931,12 +8362,9 @@ FAQ_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a class="here">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">FAQ</p>
@@ -6947,6 +8375,7 @@ do not.</p></header>
 <nav class="toc" id="questions" tabindex="-1" aria-label="Questions on this page"><span class="cap">Questions on this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
@@ -7039,7 +8468,7 @@ true.</dd>
 <dt>Out of rotation</dt><dd>No recent record at all, and gone a hundred shows or
 more. Nobody is expecting it, and ranking these would bury the songs somebody
 might actually shout for tonight &mdash; so they have
-<a href="./dormant.html">a page of their own</a>, grouped by the year they were
+<a href="./{page}">a page of their own</a>, grouped by the year they were
 last heard rather than by a lateness they cannot have.</dd>
 </dl>
 <p>That fourth group is three groups, and the difference matters more than the
@@ -7074,7 +8503,8 @@ own usual gap &mdash; the figure on the right of every row &mdash; not how many
 shows it has been gone, since a hundred shows is nothing for one song and a
 decade for another.</p>""".format(
         floor=ROTATION_PLAYS, lo=FEW_PLAYS + 1, hi=ROTATION_PLAYS - 1,
-        few_times=FEW_TIMES, few_title=FEW_TITLE.lower())),
+        few_times=FEW_TIMES, few_title=FEW_TITLE.lower(),
+        page=ROTATION_PAGE)),
 
     ("eras", "What are the eras &mdash; 1.0, 2.0, 3.0 and 4.0?", """
 <p><em>Era</em> is the word this site uses for them, and the one on the chips
@@ -7143,10 +8573,11 @@ def render_faq():
     blurb = ("What the numbers on this site mean: gaps, segue marks, eras, "
              "and what &ldquo;due&rdquo; counts as.")
     return FAQ_SHELL.format(
+        crumb=nav_strip(here="FAQ"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=FAQ_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=FAQ_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
@@ -7453,15 +8884,25 @@ def index_card(reports):
          (_stat(longest) if longest else "&mdash;", "Longest gap", "hot")))
 
 
-def songs_card(docs):
-    total = sum(len(d["performances"]) for d in docs)
-    best = max((v["score"] for d in docs for v in (d.get("best") or [])),
-               default=None)
+def songs_card(docs, counting=None):
+    # The same three figures the page's hero now carries, counted the same way
+    # -- see render_songs for both, on why the top fouldomain score is not one
+    # of them and why the uncounted performances go before the first row does.
+    # It was worse here than on the page: the card had room for the number and
+    # not for the song, so it published a bare 97 under "Best rated version"
+    # with nothing anywhere to say whose.
+    def shows(d):
+        return [p for p in d["performances"]
+                if not counting or p["date"] in counting]
+    total = sum(len(shows(d)) for d in docs)
+    longest = max((p["gap"] for d in docs for p in shows(d)[1:]
+                   if p["gap"] is not None), default=None)
     return card_markup(
         "Every song", "Possum <em>Logic</em>", "One page per song, all the way back",
         (("%d" % len(docs), "Songs", ""),
          ("{:,}".format(total), "Song performances", ""),
-         (("%s" % best) if best else "&mdash;", "Best rated version", "hot")))
+         (_stat(longest) if longest is not None else "&mdash;",
+          "Longest gap", "hot")))
 
 
 # ------------------------------------------------------------------- site ---
@@ -7531,15 +8972,20 @@ def migrate_show_data(site_dir):
 # the move for free; these two are out in a chat somewhere and cannot.
 MOVED = ("2026-07-24", "2026-07-25")
 
+#: Pages that changed filename, and what they became. Same argument as MOVED
+#: and a stronger one: this URL is in the published sitemap, so it is not only
+#: possibly remembered, it has been handed to crawlers as a page that exists.
+#: See ROTATION_PAGE for why it moved.
+MOVED_PAGES = {"dormant.html": (ROTATION_PAGE, "Out of rotation")}
+
 REDIRECT = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=./show/{date}.html">
-<link rel="canonical" href="{site}/show/{date}.html">
-<title>{date} &mdash; Possum Logic</title>
+<meta http-equiv="refresh" content="0; url=./{href}">
+<link rel="canonical" href="{site}/{href}">
+<title>{title} &mdash; Possum Logic</title>
 <style>body{{font-family:ui-monospace,monospace;margin:4rem auto;max-width:32rem;
 padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
-<body><p>This report has moved to
-<a href="./show/{date}.html">show/{date}.html</a>.</p></body></html>
+<body><p>{what} has moved to <a href="./{href}">{href}</a>.</p></body></html>
 """
 
 
@@ -7581,12 +9027,25 @@ def write_grain(site_dir, size=140):
 
 
 def write_redirects(site_dir):
-    """Leave a forwarding note where the two shared links used to point."""
+    """Leave a forwarding note wherever an old link used to point."""
     for date in MOVED:
         if not os.path.isfile(site_paths(site_dir, date)[1]):
             continue
-        write_if_changed(os.path.join(site_dir, "%s.html" % date),
-                         REDIRECT.format(date=date, site=SITE_URL))
+        write_if_changed(
+            os.path.join(site_dir, "%s.html" % date),
+            REDIRECT.format(href="%s/%s.html" % (SHOW_DIR, date),
+                            site=SITE_URL, title=date, what="This report"))
+    # Only once the destination is on disk. A forwarding page written ahead of
+    # the page it forwards to would replace a working document with a bounce
+    # to a 404 -- and this one overwrites the old build's real dormant.html, so
+    # there would be nothing left to fall back to.
+    for old, (new, title) in MOVED_PAGES.items():
+        if not os.path.isfile(os.path.join(site_dir, new)):
+            continue
+        write_if_changed(
+            os.path.join(site_dir, old),
+            REDIRECT.format(href=new, site=SITE_URL, title=title,
+                            what="This page"))
 
 
 def write_sitemap(site_dir):
@@ -7607,11 +9066,14 @@ def write_sitemap(site_dir):
     omitted for the simpler reason that Google has said for years it ignores
     them.
 
-    The two forwarding pages left where old shared links used to point are
+    The forwarding pages left where old shared links used to point are
     excluded: a redirect is not a page, and listing one asks a crawler to index
-    a document whose only content is a meta refresh.
+    a document whose only content is a meta refresh. dormant.html has to be
+    taken out by name as well as written by name -- it was in the last sitemap
+    as a real page, so leaving it in would be this file publishing a claim it
+    had just stopped being true.
     """
-    moved = {"%s.html" % d for d in MOVED}
+    moved = {"%s.html" % d for d in MOVED} | set(MOVED_PAGES)
     pages = []
     for root, dirs, files in os.walk(site_dir):
         dirs[:] = [d for d in dirs if d not in ("data", "card", "font")]
@@ -8354,13 +9816,18 @@ def write_current(site_dir, dates=None):
 def show_kind(report, calendar=None):
     """Whether an archived report is a show, a soundcheck or a session.
 
-    Nine of the archive's entries are not concerts. phish.net lists them and
-    flags them exclude_from_stats, which is why they are absent from the
-    calendar, and their notes say which kind they are: five Moon Palace
-    soundchecks, the Mondegreen soundcheck, two Tonight Show appearances and an
-    NPR Tiny Desk. A gap counted over them would be counting a soundcheck as a
-    show the band played, and 2020-02-19 -- a soundcheck -- is the oldest entry
-    in the archive, so it opened the index.
+    Twenty of the archive's entries are not concerts -- thirteen soundchecks
+    and seven television or radio sessions, listed on not-a-show.html. phish.net
+    lists them and flags them exclude_from_stats, which is why they are absent
+    from the calendar, and their notes say which kind they are. A gap counted
+    over them would be counting a soundcheck as a show the band played, and
+    2020-02-19 -- a soundcheck -- is the oldest entry in the archive, so it
+    opened the index.
+
+    This docstring said "nine" and enumerated them by name until 2026-07-31,
+    which was true when it was written and had drifted by eleven. A count in a
+    comment is a figure like any other; the two figures above are the ones this
+    function's own output produces, so they are checkable against the page.
 
     phish.net is not consistent about this across its whole history: of twenty
     studio, TV and radio sessions in the song histories, eight count and twelve
@@ -8373,14 +9840,65 @@ def show_kind(report, calendar=None):
     if report["date"] in set(calendar):
         return "show"
     notes = re.sub(r"<[^>]+>", " ", html.unescape(str(report.get("notes") or "")))
-    # "was the soundcheck for X", but also "there were two soundchecks for X"
-    # and "the tech rehearsal for X" -- all the same thing, a non-show that
-    # exists because of a show that follows it. A television or radio session
-    # exists on its own account and matches none of them.
-    return ("soundcheck"
-            if re.search(r"\b(?:soundchecks?|rehearsal)\b[^.]{0,60}\bfor\b",
-                         notes, re.I)
-            else "session")
+    for kind, pattern in KIND_PATTERNS:
+        if re.search(pattern, notes, re.I):
+            return kind
+    return "session"
+
+
+#: How to read a not-a-show entry's note, in order. First match wins.
+#:
+#: This returned two values until 2026-07-31 -- "soundcheck" for anything whose
+#: note said soundcheck *or* rehearsal, and "session" for everything else --
+#: and Ian objected to the first half of that: "a tech rehearsal is not really
+#: a soundcheck. You could put them in the same bucket … but they're not the
+#: same thing." He is right, and the 2011-05-26 Bethel Woods entry is the one
+#: it was wrong about: phish.net calls it a tech rehearsal for a whole run
+#: rather than the soundcheck for a night, and this site called it a soundcheck
+#: because one regex covered both words.
+#:
+#: The second half was lumpier still. "Session" held five television
+#: appearances, one NPR taping and the 2010 Rock and Roll Hall of Fame
+#: ceremony where Phish inducted Genesis, which is not a session by any
+#: reading.
+#:
+#: The notes are formulaic enough to carry this: phish.net writes "This was
+#: the soundcheck for X" and "were the musical guests on X" almost verbatim
+#: every time. What they are not is guaranteed, so `session` stays as the
+#: fallback rather than a sixth pattern that pretends to know. Two traps this
+#: ordering exists for: *rehearsal* is tested before *soundcheck* because the
+#: Bethel note says both is not true -- it says rehearsal only -- but a future
+#: note may say "the rehearsal, in place of a soundcheck"; and *broadcast* is
+#: deliberately not a television signal, because two soundcheck notes say the
+#: soundcheck was broadcast on The Bunny.
+KIND_PATTERNS = (
+    ("rehearsal", r"\brehearsals?\b"),
+    ("soundcheck", r"\bsoundchecks?\b"),
+    ("ceremony", r"\bhall of fame\b|\binduct(?:ing|ed|ion)\b"),
+    ("radio", r"\btiny desk\b|\bNPR\b"),
+    ("television", r"\b(?:tonight show|late night|musical guests?"
+                   r"|in-studio guest|saturday night live)\b"),
+)
+
+#: What each kind is called on a page, and whether it happened because of a
+#: show. The second is the distinction the not-a-show page is built on -- a
+#: soundcheck and a rehearsal exist for a concert that follows, and a taping
+#: or a ceremony is its own occasion.
+KIND_LABEL = {"soundcheck": "Soundcheck", "rehearsal": "Tech rehearsal",
+              "television": "Television", "radio": "Radio",
+              "ceremony": "Ceremony", "session": "Not a show"}
+#: (one, many) for counting them in a sentence. Written out because three of
+#: the six do not take a plural by adding an s -- "5 televisions" was the first
+#: thing the new kinds published, and a label that names a medium is not a
+#: label that counts occasions.
+KIND_COUNTED = {"soundcheck": ("soundcheck", "soundchecks"),
+                "rehearsal": ("tech rehearsal", "tech rehearsals"),
+                "television": ("television appearance",
+                               "television appearances"),
+                "radio": ("radio taping", "radio tapings"),
+                "ceremony": ("ceremony", "ceremonies"),
+                "session": ("other", "others")}
+BEFORE_A_SHOW = ("soundcheck", "rehearsal")
 
 
 def split_archive(reports, calendar):
@@ -9056,7 +10574,14 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         jobs.append((name, markup))
         return True
 
-    songs = archived_songs(site_dir)
+    # Slug -> the dates that song's page will carry a row for, not just the set
+    # of slugs. Report pages anchor into those rows and one anchor pointed at a
+    # row that does not exist; see render_html. Measured at 0.15s for 589 songs
+    # against a ~2s rebuild, and it is read once rather than per report.
+    songs = {slug: frozenset(p["date"] for p in
+                             (song_history(site_dir, slug) or {}).get(
+                                 "performances") or [])
+             for slug in archived_songs(site_dir)}
     have_dates = {r["date"] for r in known}
     calendar = load_calendar(site_dir)
     counting = set(calendar)
@@ -9094,6 +10619,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # the lot; otherwise only the songs this run touched.
     have = archived_dates(site_dir)
     played = {s["slug"] for r in reports for s in r["songs"]}
+    # Date -> "soundcheck" or "session", for the rows a song page shows but
+    # does not count. Built once here rather than per song page: it is a read
+    # of every archived report's notes, and there are 589 pages.
+    kinds = {a["report"]["date"]: a["kind"]
+             for a in split_archive(known, sorted(counting))[1]}
     wrote, considered, docs = 0, 0, []
     for slug in sorted(archived_songs(site_dir)):
         doc = song_history(site_dir, slug)
@@ -9106,7 +10636,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         page = os.path.join(site_dir, "song", "%s.html" % slug)
         name = "song-%s" % slug
         moved = write_if_changed(page, render_song(doc, archived=have,
-                                                   card=name, counting=counting))
+                                                   card=name, counting=counting,
+                                                   kinds=kinds))
         wrote += 1 if moved else 0
         want_card(name, song_card(doc, counting))
     if considered:
@@ -9115,15 +10646,16 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
 
     if docs:
         songs_page = os.path.join(site_dir, "songs.html")
-        moved = write_if_changed(songs_page, render_songs(docs, card="songs"))
+        moved = write_if_changed(songs_page,
+                                 render_songs(docs, card="songs",
+                                              counting=counting))
         if moved:
             log("wrote %s (%d songs)", songs_page, len(docs))
-        want_card("songs", songs_card(docs))
+        want_card("songs", songs_card(docs, counting))
 
     if rebuilt:
         log("re-rendered %d unchanged-content page(s) after a template change",
             rebuilt)
-    write_redirects(site_dir)
     # Before the cards are shot, and it has to stay that way: `shoot_cards`
     # points the card renderer at this exact file, so a build that drew cards
     # first would set every one of them in whatever face the machine happened
@@ -9169,10 +10701,15 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         # fourth of that page's four lists, and its only door is the hero cell
         # there. Both are built from one due_rows() call's worth of definitions,
         # so the figure on the card and the length of the page cannot disagree.
-        dormant_page = os.path.join(site_dir, "dormant.html")
-        if write_if_changed(dormant_page,
+        rotation_page = os.path.join(site_dir, ROTATION_PAGE)
+        if write_if_changed(rotation_page,
                             render_dormant(docs, counting, since)):
-            log("wrote %s", dormant_page)
+            log("wrote %s", rotation_page)
+
+    # After the pages, because a forwarding note is only honest once the page
+    # it points at is on disk -- and the note for dormant.html lands on top of
+    # the previous build's copy of that page.
+    write_redirects(site_dir)
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):
@@ -9183,14 +10720,40 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         log("wrote %s", faq)
 
     index = os.path.join(site_dir, "index.html")
-    # Nine of the archive's entries are soundchecks or TV and radio sessions,
-    # which phish.net does not count toward a gap. Keeping them in the list
-    # meant the index counted 259 shows the band had not played 259 of, and
-    # opened on a 2020 Moon Palace soundcheck.
+    # Twenty of the archive's entries are soundchecks or TV and radio
+    # sessions, which phish.net does not count toward a gap. Keeping them in
+    # the list meant the index counted 259 shows the band had not played 259
+    # of, and opened on a 2020 Moon Palace soundcheck. (It was nine when that
+    # was written and this line said nine until 2026-07-31 -- a count in a
+    # comment is a figure like any other, and it went stale the ordinary way.)
     shows, aside = split_archive(known, load_calendar(site_dir))
     venues_page = os.path.join(site_dir, "venues.html")
     if write_if_changed(venues_page, render_venues(shows)):
         log("wrote %s", venues_page)
+
+    # The one page whose input is the running order rather than the gaps, so
+    # the one page that reads the extract at build time. A checkout without it
+    # still builds: year_order falls back to the running order inside each
+    # saved report, and the page then covers the years the archive reaches
+    # rather than the career -- shorter, and honest about being shorter,
+    # because every figure on it is stated against the nights it read.
+    read = year_order(setlist_order(), counting, known)
+    if read:
+        years_page = os.path.join(site_dir, "years.html")
+        if write_if_changed(years_page, render_years(
+                year_profiles(read, counting, docs), len(counting) - len(read),
+                pages={doc["slug"] for doc in docs})):
+            log("wrote %s (%d of %d counting nights read)",
+                years_page, len(read), len(counting))
+
+    # Needs the song histories as well as the reports, so it is built here
+    # rather than beside the due page: the entries are reports, the songs that
+    # exist only at them and the versions of them that got out are not.
+    if docs:
+        nas = os.path.join(site_dir, NOT_A_SHOW_PAGE)
+        if write_if_changed(nas, render_not_a_show(known, docs,
+                                                   load_calendar(site_dir))):
+            log("wrote %s", nas)
     changed = write_if_changed(
         index, render_index(shows, card="index", aside=aside, n_due=n_due))
     want_card("index", index_card(shows))
@@ -9814,7 +11377,9 @@ def main():
 
     report = reports[0]
     if args.html or args.pdf:
-        # No stylesheet beside a single file, so it carries the face itself.
+        # No stylesheet beside a single file, so it carries the display face
+        # itself -- but only on a show still being played, which is the only
+        # page here with a rule that asks for it. See render_html.
         markup = render_html(report, bar_scale=args.bar_scale, sheet=None)
         if args.html:
             with open(args.html, "w", encoding="utf-8") as fh:
