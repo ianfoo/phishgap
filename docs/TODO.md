@@ -84,6 +84,19 @@ only the first two. Done and verified; the detail worth carrying:
   one of the things in the bucket — which is the actual test, and it is not the
   same test as "is this page a composition". Both readings of the rule agree on
   `custom` and only the narrow one is right about `jam`.
+- **Their Jam is a superset of ours in recordings, not in shows**, measured
+  2026-07-31 off the page itself. Their *performance timeline* is 92 dates and
+  every one is in our 93 — the entry is phish.net's, same as ours; our 93rd is
+  the 1984-11-03 debut, which they carry as the song's `dateCreated` rather
+  than as a timeline row. Their *scored tracks* are 117 rows across 94 dates,
+  and that is where the breadth is: 30 dates carry a scored jam our record does
+  not file as Jam at all (2024-08-16 at Mondegreen, 2013-07-30 and 07-31,
+  2016-09-02, 2017-09-01, 2023-04-18…), and 18 nights carry more than one where
+  our archive holds at most one row per date — five for 2000-06-16, three each
+  for 1999-12-29 and 1997-12-07. So the chip shows a reader everything our page
+  lists and more, and contradicts nothing it claims. Their coverage of the
+  secret sets is partial too: 2003-08-02 is in both records and 2003-08-03 is
+  in neither.
 - `_badge` is the one copy of the chip markup now, shared by both page types,
   and the one place its href is escaped.
 
