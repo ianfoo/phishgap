@@ -72,6 +72,13 @@ detail is in §2k. Three things a fresh session should carry:
   button has been on screen permanently on every song page since it shipped.
   `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
   and prose pages as well, which is what Ian asked for.
+- **Open, and small: the IT remark is off the site and Ian has not ruled.**
+  The not-a-show page used to say the whole IT soundcheck is two songs in this
+  archive, so the versions people argue about from that afternoon cannot be
+  reached. That paragraph was replaced wholesale by the Bethel Woods one when
+  the real example turned up, and the IT fact is now nowhere on the site. It
+  is a fair caveat about phish.net's soundcheck coverage in general; it was
+  written about a wrong example. Put it back as a remark or leave it out.
 - **`show_kind` returns five kinds, not two** — soundcheck, tech rehearsal,
   television, radio, ceremony, with `session` as an honest fallback nothing
   currently reaches. It called the Bethel Woods tech rehearsal a soundcheck
@@ -653,6 +660,178 @@ with no `autoPort`, so a second worktree could not serve the site at all — and
 the server already running on 8769 belonged to another worktree and served the
 *old* build. Verifying against it would have shown this change as missing.
 Now `autoPort: true` with the port taken from `$PORT`.
+
+### The 2026-07-30 session — `years.html`, and one figure that needed fixing
+before it could be published
+
+Ian, after the MSG run of five shows each modeled on a year (1992 through
+1996, down to Trey's mini drum kit and Fish's original mumu): "It could be
+interesting to be able to explore the mood of the years." He asked for the
+measurement first and the page second, and the measurement is what decided the
+shape — see the ruling in §4, which this does not break.
+
+**Everything below is pushed.** The page is built from
+`archive/setlist-order.json` at render time, so it costs no API calls and adds
+~30 ms to a rebuild.
+
+| what | state |
+|---|---|
+| `years.html` — a block a year, 1983–2026, from the running order | done, 39 years, 1,950 of 2,108 counting nights read |
+| `Years` in the nav on all nine page types | done — checked from every depth, 0 dangling links across 1,312 pages |
+| `YEAR_STRIP_CSS` named rather than copied into a fourth sheet | done — `DORMANT_CSS` byte-identical after, sha1 unchanged |
+
+**The figure that had to be normalized, and why it is worth knowing.** "Moves
+that recur" — the share of a year's song-to-song moves that turn up on more
+than one night — is the most interesting number the archive has about this
+band, and the raw version of it is nearly a fraud. It reads 68% for 1991 and
+1.4% for 2017, which sounds like a finding and is mostly a count of shows: 124
+nights give a pair 124 chances to coincide, 28 nights give it 28. Cut every
+year to the same 29 nights and 1991 falls to 39% while 2017 does not move.
+The signal survives, but the published number could not be the raw one.
+
+So the page states it over a fixed 20 nights for every year, computed exactly
+rather than sampled — a move appears on X of a random 20, X hypergeometric,
+and reads as a repeat when X ≥ 2, so E[repeats] = Σ E[X] − P(X = 1). Checked
+against 150 random draws per year: worst disagreement 0.74 points, and that
+includes rounding to a whole percent. **This is the shape to reuse for any
+per-year figure added later** — almost all of them will have the same
+confound, because the band played 124 shows in 1991 and 28 in 2017.
+
+**Two editorial calls made from what the data returned, both cheap to undo:**
+
+- **"Ran together" is not the most repeated move.** Ranked on the raw count,
+  28 of 39 years answer with The Horse → Silent in the Morning or Mike's Song
+  → I Am Hydrogen — one piece of music filed as two rows, and a sequence fixed
+  since 1988. True, and not about a year. Weighed against how often the pair
+  ever happened, 1992 answers Cold as Ice → Cracklin' Rosie, 20 nights of the
+  20 it has ever happened. A move must be ≥ 25% of its own career to appear at
+  all, so 11 years say nothing here rather than something meaningless.
+- **"Sounded like" excludes songs played only that year**, because the line
+  directly under it makes the stronger claim about exactly those songs. 1995
+  was printing Acoustic Army, Taste That Surrounds and Keyboard Army in both
+  rows; without them it says Strange Design, A Day in the Life and I'm Blue,
+  I'm Lonesome, which is what 1995 sounded like rather than what only it had.
+
+**What the page cannot say, and says so on its face.** phish.net has no
+running order for 158 of the counting calendar's shows — 1985 is 11 of 22,
+1988 is 52 of 95, and everything from 1992 is complete. Those years carry a
+line under their figures naming what they were computed from. It also limits
+"only in 1994": it means only in the nights read. 163 such claims are on the
+page, 66 of them are checkable against a full song history (a song has one
+only if a saved report names it, and the reports start in 2009), and **0 of
+the 66 are contradicted**. The other 97 rest on the extract alone.
+
+**Still open from the measurement, and deliberately not built:**
+
+- **Segue density per year** — the share of moves marked `>` or `->` runs 23%
+  in 1988 to 50% in 2012, which would be the second-best number on the page if
+  it is real. It may instead be phish.net's transcription conventions drifting
+  as old tapes were cataloged decades later. Left off until someone can tell
+  those apart; a figure this suggestive is exactly the kind this archive should
+  not publish on a guess.
+- **The MSG tribute scoring.** 111 of the 114 songs across the five nights
+  were in the modeled year's rotation, no song on any night postdated its
+  year bar the closing Backwards Down the Number Line, and the deepest cut was
+  AC/DC Bag on the 1992 night — played once in all of 1992. It belongs on the
+  five show pages rather than here, and it is the obvious next thing.
+- **Per-year pages.** Not built, and the ruling in §4 explains why one page
+  came first. If the blocks earn their own pages, `years.html` is the index.
+
+### Same session — the nav, after Ian looked at it on a phone
+
+Ian: "the navigation links on mobile are a poor experience. This is not
+typically how mobile sites structure their navigation… There's also a real
+mixture of types of targets: shows, songs, years, venues, even due link to
+tabular data. FAQ and How This Works are a different sort of target." Plus:
+Years should come before Venues, and dormant had no door but the due page.
+
+All of it is done and pushed. The strip is now two groups in the markup —
+`<span class="lists">` and `<span class="meta">` — on all nine page types.
+
+| what | before | after |
+|---|---|---|
+| Order | Shows Songs Due Venues Years | Shows Songs Due **Out of rotation** Years Venues |
+| Out of rotation's nearest door | a hero card 1,126px down the due page | in the nav, 78px down |
+| Nav type size | 11.25px, everything | 13.5px for the six lists, 11.25px for the two meta links |
+| Tap targets | 24px (WCAG AA) | 44px on the lists at phone widths (AAA, Apple, Material all agree), 24px on meta |
+| The two explainers | fifth and sixth in one flat row | own group, dim, pushed right on desktop, own row on a phone |
+| Rest state | a hairline under all seven items | none; the page you are on is the one with a rule under it |
+
+**Years sits with Venues, and Songs comes before both** — Ian's call in the
+round after this one, which supersedes the ordering reasoning that was here.
+
+**The mobile fix was a measurement, not a preference.** At the desktop size
+(.75rem/.14em) the six labels are 310px of ink in the 336px a 390px phone
+leaves, so Venues wrapped alone and the strip came to **184px — 22% of the
+screen to say six words**. Measured across five settings, .6875rem at .1em is
+269px and fits one row — measured while the fourth item was called Dormant.
+It is **Out of rotation** since the merge with `main`, which is 55px wider, so
+the phone strip is two rows again and 124px on the index at 390px rather than
+the 73px this entry first recorded. Correct rather than tight: the label the
+nav uses is the name the page gives itself, and the alternative was a nav that
+called the page something the page does not. Nothing overlaps at any width.
+
+**No hamburger, deliberately.** Hiding six destinations behind a tap costs
+discoverability, needs JavaScript, and does not print — and this site's whole
+posture is that its pages degrade to a document. Eight items is under the
+threshold where hiding starts to pay.
+
+**One bug caught before it shipped, and it is the fifth of a known kind.**
+`.crumb{gap:.35rem}` in the show sheet's narrow media query out-specified the
+shared row gap, so show pages — and only show pages — had four overlapping
+44px targets at 390px. It is now `.crumb.pager`, which is what the comment
+above it always said it was for. Found by walking 10 page types × 8
+breakpoints and asserting no two targets overlap; that check is worth keeping.
+
+### Same session, second round on the nav — one function, three states
+
+Ian settled the order and then named the thing that mattered more: "we need to
+be consistent about showing where we are across the *entire site*. Every page.
+Considering 'show' part of 'shows' makes sense, but if we highlight it, then it
+makes it look like we're already there, and that definitely violates some sort
+of guideline."
+
+It does, and the guideline is `aria-current`. Marking Shows the way the current
+page is marked would assert that the index is the document being read, and the
+`here` treatment also drops the `href` — so a show page would have lost its one
+route back to the list to say something untrue.
+
+**Order, as he set it:** Shows · Songs · Due · Dormant · Years · Venues. Songs
+before Years, Years with Venues, Due with Dormant.
+
+**Three states now, not two:**
+
+| state | ink | rule | link? | `aria-current` |
+|---|---|---|---|---|
+| elsewhere | `--ink-soft` | transparent | yes | none |
+| the section you are in | `--ink` | `--edge` (3.08:1 on paper, over the 3:1 floor) | **yes** | `true` |
+| the page you are on | `--ink` | `--ink` | no | `page` |
+
+**And the nine copies are one function.** `nav_strip(here, section, root,
+mark)` — because the drift he spotted was structural, not cosmetic: eight
+pages marked themselves and **the 1,301 pages most likely to be read, every
+show and every song, marked nothing at all**, and no copy had ever carried
+`aria-current`. Venues and Years were also missing the wordmark the other
+page-titled pages carry, which is the same drift in another column; they have
+it now.
+
+Measured after the merge with `main`: 1,310 pages, 8 marked as the current
+page, 1,302 by section, 0 wrong. **The merge is what proved the function was
+worth building.** `main` had meanwhile added a tenth page type, Not a show,
+with a tenth hand-written strip in the old order marking nothing — it was
+converted to `nav_strip()` in one line and inherited all three states. `main`
+had also renamed `dormant.html` to `out-of-rotation.html`, leaving a
+forwarding page behind, and the nav went on pointing at the forwarder under
+the old label: the exact failure the constant `ROTATION_PAGE` exists to
+prevent, and Ian's own words about it — "the artifact name did not update with
+the conceptual shift" — were already in the comment above that constant. The
+nav was the eighth place still saying Dormant. `check_links.py` passed
+throughout, because a forwarding page is a file that exists. **A link check
+cannot see this class of bug**; the check that did was asserting that no nav
+href resolves to a page under 1 KB, which is now part of the sweep. The check asserts label order, exactly one marker per page,
+that a current page is *not* a link and a section marker *is*, and that show
+pages mark Shows and song pages mark Songs. Worth re-running after any nav
+change.
 
 ### The three biggest open things, in the order I would take them
 
@@ -2406,6 +2585,17 @@ rather than looking for a scrollbar.
 - **[ruling]** Do *not* build `/venue/` and `/year/` page trees. URL-addressable
   search gets the same result with no new build output and nothing to fall out
   of sync. Build real venue pages only for per-venue *statistics*.
+
+  **Held, and `years.html` is the second half of it rather than an exception.**
+  Ian asked on 2026-07-30 for a year profile after the MSG run of shows modeled
+  on 1992–96, and the test the ruling implies is the right one: can search
+  produce this? It cannot. Nothing on this site could tell you that 1991 opened
+  with Chalk Dust Torture 16 times, that Acoustic Army was played 27 times and
+  every one of them in 1995, or that Cold as Ice ran into Cracklin' Rosie on 20
+  nights and all 20 were 1992. That is per-year *statistics*, which is exactly
+  what the ruling reserves a real page for. What was not built is the tree: one
+  page, 39 blocks, no `/year/1993.html`. If the blocks ever earn pages of their
+  own, that is a second decision and this page is its index.
 
 ## 5. DOM growth before the 1983 backfill
 
