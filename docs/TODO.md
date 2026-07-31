@@ -54,7 +54,42 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### Newest first: the 2026-07-31 review of `years.html` — four notes from Ian
+### Newest first: "we should NOT be framing shows in terms of time of day"
+
+Ian, 2026-07-31, on the years page: *"The page is referencing 'nights'? We
+talked about 'nights.'"* He had ruled on this on 2026-07-27 (§ "Third round —
+the words come from the constant"), and the ruling had a guard. **The guard
+was scoped to one function.** `tools/check_few_plays.py` asserts the word
+cannot come back into any string derived from `FEW_NAMES`; `years.html`, built
+three days later, put it back as a *unit* and the check never looked. Measured
+before fixing: **111 occurrences on years.html, 238 across the site's own
+voice** — a glossary label (`A night`), a hero card (`Nights read`), a venues
+column head (`Nights`), the venues subtitle, the sample size the whole
+repetition figure is stated over, and 39 blocks of "4 nights, of 4 ever".
+
+Fixed in 90 anchored edits with asserted match counts — 45 reader-facing, 45
+in the comments and docstrings that taught the lexicon, because that is how it
+propagated. `per_night` is `per_show`. Left alone deliberately: song titles,
+venue names, phish.net's quoted prose, the two historical quotes in this file,
+and the watch-window comments at `possumlogic.py` — those are about clock time
+and correctly so.
+
+**`tools/check_vocabulary.py` is the guard that is not scoped to a function.**
+It reads every built page's reader-facing text, subtracts every song and venue
+name in the archive plus `.note`/`.notes`/`.jam`/`.ax-note`, and fails on
+night/nights/tonight/evening. 1,313 pages, 3,175 names exempted, ~13 s.
+`--probe` is checked in beside it and injects six cases into a copy of the
+site — four that must fail and two that must not — because **the two
+exemptions are the half of the file most likely to swallow a real hit.** Three
+bugs came out of writing it, and all three are the shape it exists to catch:
+`\bnote\b` matched none of `class='notes'`; `site/data` holds no song names so
+the first cut exempted 153 venues and reported 245 false pages; and a loop of
+`str.replace` let the song "Sleep" eat the middle of "The Lion Sleeps
+Tonight", leaving a `tonight` that read as an offence. An exemption that
+matches nothing makes a check louder, which is the safe direction — an
+exemption that matches too much makes it quiet, which is not.
+
+### The 2026-07-31 review of `years.html` — four notes from Ian
 
 He read the page and sent four. All four are done and pushed; §8k has the
 detail. Three things worth carrying:

@@ -74,6 +74,21 @@ it is the pattern — the builder *states* what the CSS needs to know (how many
 columns, which card carries a name) rather than the CSS inferring it, because
 an inference like `:has(.of)` fails silent.
 
+**The unit is a show, never a night, and the guard for that was scoped to one
+function.** Ian, 2026-07-27, on a heading reading "One or two nights": *"I'm
+not sure where you picked up the 'nights' lexicon. While it's true that most
+shows are at night, this seems over-specific."* A matinee and a festival
+afternoon are shows. `tools/check_few_plays.py` was made to assert the word
+could not come back — into any string derived from `FEW_NAMES`. Three days
+later `years.html` put it back as a *unit*: a glossary label, a hero card, a
+column of "4 nights, of 4 ever" on 39 blocks, and the sample size for the
+whole repetition figure. 111 occurrences on that page, 238 site-wide. **A
+check that covers one function reports a clean pass over a site that has the
+bug somewhere else** — `tools/check_vocabulary.py` reads every built page
+instead, and `--probe` proves it still fails. Song titles are the band's
+words and exempt (Waiting All Night, O Holy Night), as is phish.net's quoted
+prose in `.note`/`.notes`/`.jam`/`.ax-note`; this site's own voice is not.
+
 **A debut carries a "gap" that is not a gap, and skipping row 0 does not
 always skip it.** phish.net gives a song's first counted performance a gap
 equal to every show the band had played before it — 2,022 for What's Going
@@ -261,6 +276,14 @@ Where the data will not support a claim, the site says nothing — phish.net's
 gap is not reproducible from a show calendar, so this site computes its own
 "shows since" and says so; the 35 shows filed as "Not Part of a Tour" stay
 unnamed because their festival names exist only in freeform prose.
+
+## Checks to run before believing a change
+
+```bash
+python3 tools/check_links.py site        # every href and fragment resolves
+python3 tools/check_vocabulary.py site   # no page frames a show by time of day
+python3 tools/check_few_plays.py         # FEW_* strings survive moving the constant
+```
 
 ## Verifying a change
 

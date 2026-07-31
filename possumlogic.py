@@ -873,10 +873,10 @@ def add_previous(report, apikey, site_dir=None, **kw):
             missed.append("%s (%s)" % (s["song"], exc))
             continue
         # One row per show from here down. The response has one row per setlist
-        # slot, and a song can come round more than once a night -- five
+        # slot, and a song can come round more than once a show -- five
         # Tweezers at Merriweather in 2014 -- which would otherwise count as
         # five plays, and file four gaps of 0 into the distribution that
-        # decides whether tonight's gap is unusual.
+        # decides whether this gap is unusual.
         hist = by_show(own_history(hist, artist))
         if site_dir:
             save_song_history(site_dir, s["slug"], s["song"], hist, artist)
@@ -1026,7 +1026,7 @@ NEW_ROWS_JS = """<script>
     if(!live||!window.localStorage) return;
     var rows=[].slice.call(document.querySelectorAll('tbody tr'));
     if(!rows.length) return;
-    /* Keyed on the night, which the banner carries explicitly. It used to be
+    /* Keyed on the show, which the banner carries explicitly. It used to be
        derived from document.title -- but the title leads with the song count,
        "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
        a *different* key every time a song landed. seen was therefore always 0,
@@ -1094,7 +1094,7 @@ NEW_ROWS_JS = """<script>
 
 
 LIVE_JS = """<script>
-/* Watch tonight's report for a song landing, and reload when one does.
+/* Watch the live report for a song landing, and reload when one does.
    Replaces <meta http-equiv="refresh">, which was present, well-formed and
    correctly placed, and did not fire. Two reasons, and it needed both fixed:
    Pages serves cache-control:max-age=600, so a reload inside ten minutes can
@@ -1207,7 +1207,7 @@ ROW_JS = """<script>
     if(e.target.closest('a')) return;
     var tr=e.target.closest('tr');
     if(!tr) return;
-    // Two questions live in one row: "where does tonight's version sit in this
+    // Two questions live in one row: "where does this version sit in this
     // song's history" and "what else happened the last time they played it".
     // The whole row used to answer only the first, which swallowed the second
     // -- reaching for the previous show landed you on the current one.
@@ -1859,7 +1859,7 @@ header{padding-bottom:.9rem}
 .crumb.pager a:hover{border-bottom-color:var(--hot)}
 .crumb .prev{grid-column:1;justify-self:start}
 .crumb .next{grid-column:2;justify-self:end}
-/* The date, not the wordmark. A report is one night, and the night's name is
+/* The date, not the wordmark. A report is one show, and the show's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
    small beside a tour and an ordinal, so the one thing that identified the
    page was the least prominent thing on it. The wordmark is already in the nav
@@ -1894,12 +1894,12 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    line-height:1;color:var(--ink)}
 .show .tour{font-size:1rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--dim)}
-/* Sits with the tour, not with the date: it is context for the night rather
+/* Sits with the tour, not with the date: it is context for the show rather
    than part of naming it. Absent for 1.0, where it cannot be said honestly,
    and for anything phish.net does not count as a show. */
 .show .nth{font-size:.75rem;font-weight:400;letter-spacing:0;color:var(--dim);
    text-transform:none;white-space:nowrap}
-/* A dim middot, not a second hot bullet: this is an aside about the night, and
+/* A dim middot, not a second hot bullet: this is an aside about the show, and
    a second hot bullet would give it the rank of the ones naming it.
 
    It is an element rather than a ::before on the ordinal, and that is the
@@ -1996,10 +1996,10 @@ th.n,td.n{text-align:right;padding-right:1.1rem;white-space:nowrap}
 td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
    vertical-align:middle;line-height:1.35rem}
 .song{font-weight:600;font-size:1rem}
-/* Outlined, not filled: a bustout is the headline of a night and gets the
+/* Outlined, not filled: a bustout is the headline of a show and gets the
    solid stamp, while this is an invitation to read something elsewhere. Inside
    the link, so the whole title-and-chip is one target and lights up together. */
-/* The segue mark, which is a fact about the night rather than about the song:
+/* The segue mark, which is a fact about the show rather than about the song:
    "Tweezer ->" and "Tweezer" are different entries in a setlist, and the report
    was printing them identically. Quiet, because it qualifies the title rather
    than competing with it. */
@@ -2086,7 +2086,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .bar{padding-right:1.2rem}
 /* A position, not a length. The track is the whole range a gap can sit in for
    this song; the shaded middle is where it usually sits, the hairline is its
-   median, and the mark is tonight. Nothing here is scaled to the show, so a
+   median, and the mark is this one. Nothing here is scaled to the show, so a
    bustout somewhere else on the bill cannot flatten this row. */
 .bar .track{display:block;position:relative;width:100%;height:14px}
 /* The line the mark sits on. Faint, but a real line -- without it a mark near
@@ -2107,7 +2107,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    background:var(--band);opacity:var(--band-opacity);border-radius:1px}
 .bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
    background:var(--paper);opacity:.85}
-/* Tonight. Full height and full-strength ink, with a paper halo so it reads
+/* This show. Full height and full-strength ink, with a paper halo so it reads
    wherever it lands -- including on top of the median line. This is the one
    thing in the row the eye is meant to find. */
 .bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
@@ -2449,7 +2449,7 @@ def _show_links(date, on_phishin=None):
     """Badge links out to the sites that hold the rest of the story.
 
     phish.in only appears once they actually have the show. They post audio a
-    while after the night, so the page most likely to be shared -- tonight's,
+    while after the show, so the page most likely to be shared -- the live one,
     while it is being played -- was the one guaranteed to link to a 404. When
     the catalogue has not been fetched the link is shown as before, because a
     missing local file is not evidence of a missing recording.
@@ -2544,7 +2544,7 @@ BAND_K = statistics.NormalDist().inv_cdf(BAND[1])
 # expecting overdue songs." Two conditions come out of that, and measuring
 # against the songs he named showed both are load-bearing.
 #
-# ONE: the band has to play it often enough to expect on a given night. His
+# ONE: the band has to play it often enough to expect at a given show. His
 # phrasing was "median gaps of about 10-20". Without this, Fuck Your Face
 # qualifies -- gone 78 shows against a typical gap of 28.5, so only 2.7x late,
 # but a song you wait 28 shows for even when it is on time is not one you are
@@ -2902,7 +2902,7 @@ def _band_pos(gap, low, high):
     The old bar drew each gap as a fraction of the longest gap in the show,
     which works until a bustout is in the room -- and on 168 of 690 shows the
     longest gap is at least twenty times the median, so about 95% of that
-    night's bars collapse into one flat nub a couple of pixels long. A scale
+    show's bars collapse into one flat nub a couple of pixels long. A scale
     that one row can destroy for every other row is not a scale.
 
     So the bar stops measuring magnitude, which the printed number already
@@ -3486,7 +3486,7 @@ h1 a:hover em{color:var(--ink)}
    disappears into the type. Right, not down: this card leaves for another
    page, where the show and song sheets' cards land further down their own. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
-/* Which song, or which night, the figure belongs to -- under the label and in
+/* Which song, or which show, the figure belongs to -- under the label and in
    the label's own small type, so the card still reads as one object. */
 .lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
    text-transform:none;font-size:.75rem}
@@ -3494,7 +3494,7 @@ a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
    appends to the end of the label, and the last thing in a label carrying a
    name is that display:block name -- so the arrow opened a line of its own and
    sat alone under it. On the name it is also the more honest target: the card
-   goes to that song or that night, not to a page about longest gaps.
+   goes to that song or that show, not to a page about longest gaps.
 
    `.named` is written by hero_html rather than inferred here with `:has(.of)`,
    because an unsupported selector is dropped in silence -- which would leave
@@ -3589,7 +3589,7 @@ header{padding-bottom:.9rem}
    A grid rather than a <table>, because every row on these pages is one link
    and HTML does not let an <a> wrap a <tr>. Show pages get a real table for
    the opposite reason: their rows carry two destinations -- the song, and the
-   night it was last played -- so the links live in cells and a <tr> is free.
+   show it was last played at -- so the links live in cells and a <tr> is free.
    The tabular *look* is the same either way; only the markup differs, and it
    differs for a reason rather than by neglect.
 
@@ -3864,7 +3864,7 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .r-stats b.hot{color:var(--hot-text)}
 /* A show still being played, said in the one place on the row where the
    number it qualifies already is: 24 songs means something different
-   tonight than it will tomorrow. */
+   today than it will tomorrow. */
 .live-tag{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 /* The song that held the longest gap, under the figures it belongs to. Named
@@ -4706,7 +4706,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    color:var(--dim);cursor:pointer}
 .clear:hover{color:var(--hot);border-color:var(--hot)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
-/* A venue is a filter waiting to happen: click it to see every other night
+/* A venue is a filter waiting to happen: click it to see every other show
    the song was played there. */
 .r-venue{cursor:pointer}
 .r-venue:hover{color:var(--hot)}
@@ -6114,11 +6114,11 @@ is <a href="#slipping">slipping</a> rather than due, past {cap} shows it is
 <a href="#rotation">out of rotation</a>. All four are below, though the fourth
 is a count and a door rather than a list: there are more songs in it than in
 the other three put together, so they have a page to themselves.</p>
-<p class="dek">None of this knows what the band has planned. A themed night
+<p class="dek">None of this knows what the band has planned. A themed show
 overrides every figure here &mdash; the 2021 Halloween runs built around
-numbers and animals, the elements nights of the first Sphere run, a run played
-entirely out of one decade &mdash; and the theme is usually not public before
-the show. On a night like that the list below is the wrong question.</p>
+numbers and animals, the elements shows of the first Sphere run, a run played
+entirely out of one decade &mdash; and the theme is usually not announced
+beforehand. At a show like that the list below is the wrong question.</p>
 <p class="dek"><a href="./faq.html#due">The FAQ answers this at more
 length</a>, including why a song gone for years is not on the list.</p>
 </details></header>
@@ -6147,7 +6147,7 @@ def due_rows(docs, counting, since):
     Deliberately not every song that has been gone a while. A song with no
     recent habit that has not been played in 274 shows is not *due* -- nobody
     is expecting it, and calling it due would bury the fifty-five songs someone
-    might actually shout for tonight under three hundred that nobody would.
+    might actually shout for under three hundred that nobody would.
     Dormant is a different fact and the song's own page says it.
 
     "Recent" is the same ten years for every song -- see recent_cutoff. Read
@@ -6171,7 +6171,7 @@ def due_rows(docs, counting, since):
 
       due      past its norm, but only just -- a song you are expecting
       overdue  well past it, still inside the bustout line: might come back,
-               might be on its way out, and nobody is waiting on it tonight
+               might be on its way out, and nobody is waiting on it
       shelved  past its norm and past the bustout line; hearing it is an event
       dormant  no recent habit at all, and gone a bustout's worth
     """
@@ -6221,7 +6221,7 @@ def due_rows(docs, counting, since):
     rows.sort(key=lambda r: -r[0])
     # Past its own norm is necessary and not sufficient. A multiple alone put
     # Rise/Come Together top of the list at 12.8x -- gone 184 shows and four
-    # years, which nobody is expecting on any given night; meanwhile The
+    # years, which nobody is expecting at any given show; meanwhile The
     # Howling, gone 36 shows after twenty-one performances in four years, sat
     # ninth. Both are correctly measured and only one of them is *due*.
     #
@@ -6240,7 +6240,7 @@ def due_rows(docs, counting, since):
     shelved = [r for r in rows if r[1] >= BUSTOUT_GAP]
     live = [r for r in rows if r[1] < BUSTOUT_GAP]
     # Both tests, and the cadence one matters as much as the multiple: a song
-    # too rare to expect on any given night is not due however neatly its
+    # too rare to expect at any given show is not due however neatly its
     # multiple reads. Partitioned in one pass rather than by testing
     # membership of `due`, which would compare the archived documents inside
     # each row field by field.
@@ -6254,10 +6254,10 @@ def due_rows(docs, counting, since):
 def rotation_split(dormant):
     """The fourth list, split by whether there was ever a rotation to leave.
 
-    due_rows answers "is anyone expecting this tonight", and for all 281 of
+    due_rows answers "is anyone expecting this next", and for all 281 of
     these the answer is no -- which is why they came back in one list. But no
     is not one fact. 126 of them have been played exactly once, ever, and 42 of
-    those 126 were played on a Halloween night as part of a costume set: songs
+    those 126 were played on Halloween as part of a costume set: songs
     performed once by design, which never had a habit and so cannot have
     stopped. Filing them under a word that means "it used to be otherwise" was
     the page's largest single claim and it was false about nearly half its rows.
@@ -6303,7 +6303,7 @@ def rotation_word(plays):
 
     Empty for a song with no *counted* performances, which is nine of the 589:
     Day Tripper, My Sharona, Watcher of the Skies and six others exist in this
-    archive only as soundchecks, and a soundcheck is not a night the band
+    archive only as soundchecks, and a soundcheck is not a show the band
     played. They have no play count to be named by, and the box that would
     carry the word simply says nothing -- the same answer this file gives
     everywhere else it cannot support a claim. Found by a KeyError on the first
@@ -6364,7 +6364,7 @@ def _due_row(over, n, high, doc, last):
 
 
 def render_due(docs, counting, since, card=None):
-    """The page listing what is overdue going into tonight."""
+    """The page listing what is overdue going into the next show."""
     due, overdue, shelved, dormant = due_rows(docs, counting, since)
 
     out = [_due_row(*r) for r in due]
@@ -6401,7 +6401,7 @@ def render_due(docs, counting, since, card=None):
         # section is; it does not have to defend its own title.
         "Well past their usual gap rather than a little past it. These could "
         "turn up, and they could equally be on their way out of rotation "
-        "&mdash; either way they are not what anybody is expecting tonight. "
+        "&mdash; either way they are not what anybody is expecting. "
         "The usual gap beside each one is measured over the last ten years of "
         "its performances, so for a song this far past it, read it as the "
         "schedule the song <em>was</em> on.",
@@ -6437,7 +6437,7 @@ def render_due(docs, counting, since, card=None):
     hero = hero_html(cards)
 
     n_due = len(due)
-    subtitle = ("%d song%s you might reasonably expect tonight"
+    subtitle = ("%d song%s you might reasonably expect at the next show"
                 % (n_due, "" if n_due == 1 else "s"))
     # The fourth group, promoted out of the trailing paragraph it had been
     # bolted to. It was the only one of this page's four with no heading, no
@@ -6981,7 +6981,7 @@ def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
     body += section(
         "own", "Occasions of their own",
         "Not attached to any concert: five television appearances, "
-        "NPR&rsquo;s Tiny Desk, and the night in 2010 when Phish played two "
+        "NPR&rsquo;s Tiny Desk, and the day in 2010 when Phish played two "
         "Genesis songs at the Waldorf Astoria and Trey made the case for "
         "inducting them into the Rock and Roll Hall of Fame. That last one "
         "was filed as a <em>session</em> until the same read-through, and a "
@@ -7093,14 +7093,14 @@ VENUES_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header><h1>Venues</h1>
 <p class="show">{subtitle}</p>
-<p class="dek">Every room the archive holds a report from, most nights first.
+<p class="dek">Every room the archive holds a report from, most shows first.
 A venue opens the show list filtered to it rather than a page of its own: the
 search is already that page, and one that cannot fall out of step with the
-archive. What is here is what a search cannot tell you &mdash; how many nights,
+archive. What is here is what a search cannot tell you &mdash; how many shows,
 over what span, and the longest gap the room has heard.</p></header>
 <div class="rule2"></div>
 <div class="lhead vn-h"><span>Venue</span>
-<span>First to last</span><span class="end">Nights</span></div>
+<span>First to last</span><span class="end">Shows</span></div>
 <ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>
@@ -7113,7 +7113,7 @@ over what span, and the longest gap the room has heard.</p></header>
 
 
 def render_venues(reports, card=None):
-    """Every venue the archive holds a report from, most nights first.
+    """Every venue the archive holds a report from, most shows first.
 
     Deliberately not a page tree. The ruling was that URL-addressable search
     gets a reader to one venue's shows with no new build output and nothing to
@@ -7160,10 +7160,10 @@ def render_venues(reports, card=None):
 
     n = len(by_venue)
     total = sum(len(s) for s in by_venue.values())
-    subtitle = ("%d venue%s, %s night%s"
+    subtitle = ("%d venue%s, %s show%s"
                 % (n, "" if n == 1 else "s",
                    "{:,}".format(total), "" if total == 1 else "s"))
-    blurb = ("Every venue in the archive: %d of them, over %s nights."
+    blurb = ("Every venue in the archive: %d of them, over %s shows."
              % (n, "{:,}".format(total)))
     return VENUES_SHELL.format(
         crumb=nav_strip(here="Venues", mark=True),
@@ -7187,7 +7187,7 @@ def due_card(docs, counting, since):
     # headline something the page it previews does not lead with.
     best = rows[0] if rows else None
     return card_markup(
-        "Phish", "What&rsquo;s <em>due</em>", "Songs you might expect tonight",
+        "Phish", "What&rsquo;s <em>due</em>", "Songs you might expect next",
         (("%d" % len(rows), "Songs due", ""),
          ("%s&times;" % _stat(best[0]) if best else "&mdash;",
           html.escape(typographic(best[3]["song"][:22])) if best else "Most due",
@@ -7372,13 +7372,13 @@ def render_songs(docs, stamp=None, card=None, counting=None,
 # only one about the band's, and it is the only page whose input is the order
 # the songs came in rather than the dates they fell on.
 
-# Nights the repetition figure is stated over. See year_repeat for why a fixed
+# Shows the repetition figure is stated over. See year_repeat for why a fixed
 # number and not the year's own length; 20 is the largest round number that
-# still lets 1987 (21 nights) and 2017 (28) answer.
+# still lets 1987 (21 shows) and 2017 (28) answer.
 YEARS_SAMPLE = 20
 # A song is part of a year's sound if it turned up on at least this many of
-# that year's nights, and on at least this share of them. Both, because three
-# nights out of 124 is noise and three out of 21 is a habit.
+# that year's shows, and at at least this share of them. Both, because three
+# shows out of 124 is noise and three out of 21 is a habit.
 YEARS_FLOOR = 3
 YEARS_SHARE = .10
 # And a move belongs to a year only if a quarter of every time it ever
@@ -7394,14 +7394,14 @@ def year_order(order, counting, reports=()):
 
     Two sources, because neither is complete on its own. The extract holds the
     whole career and is free to re-read, but it deliberately refuses a show
-    whose report is still provisional -- so on the one night anyone would look
+    whose report is still provisional -- so on the one day anyone would look
     hardest, the newest show is the one missing from it. The saved reports
     carry a running order too and go back only as far as the archive does.
     Extract first, then a report for anything the extract has not got.
 
     Filtered to the counting calendar throughout, so a year's shows here are
     the same shows the rest of the site counts. Nine of the archive's entries
-    are soundchecks and radio sessions; a soundcheck is not a night.
+    are soundchecks and radio sessions; a soundcheck is not a show.
     """
     known = {date: rows for date, rows in order.items() if date in counting}
     for report in reports:
@@ -7451,16 +7451,16 @@ def year_repeat(dates, order, sample=YEARS_SAMPLE):
     The obvious figure -- what share of a year's moves happened more than once
     that year -- cannot be compared across years, and a page of years is
     nothing but a comparison. It climbs with the number of shows for purely
-    arithmetic reasons: 124 nights give a pair 124 chances to turn up twice,
-    28 nights give it 28. Measured, that is most of the distance between the
-    two ends of this archive. Cut every year down to the same 29 nights and
+    arithmetic reasons: 124 shows give a pair 124 chances to turn up twice,
+    28 shows give it 28. Measured, that is most of the distance between the
+    two ends of this archive. Cut every year down to the same 29 shows and
     1991 falls from 68% to 39% -- while 2017, which already had 29, stays at
     1.4%. The ordering survives; the raw numbers do not deserve to.
 
-    So what is published is the figure a reader who saw `sample` nights of
+    So what is published is the figure a reader who saw `sample` shows of
     that year would have seen, which every long-enough year can answer on the
     same terms. Exact rather than sampled: a move that appears on m of the
-    year's n nights appears on X of a random `sample` of them, X being
+    year's n shows appears at X of a random `sample` of them, X being
     hypergeometric, and it reads as a repeat whenever X is 2 or more --
 
         E[repeats] = sum over moves of  E[X] - P(X = 1)
@@ -7468,8 +7468,8 @@ def year_repeat(dates, order, sample=YEARS_SAMPLE):
     Checked against 120 random draws of every year: no year moved by more than
     0.3 points, which is the difference between a statistic and a die roll.
 
-    A move that happens twice in one night is a sandwich rather than a habit,
-    so each move counts once per night. -> percent, or None below `sample`.
+    A move that happens twice in one show is a sandwich rather than a habit,
+    so each move counts once per show. -> percent, or None below `sample`.
     """
     n = len(dates)
     if n < sample:
@@ -7492,7 +7492,7 @@ def year_profiles(order, counting, docs=()):
     """One profile per year of the band's career, newest first.
 
     `order` is what year_order returned, so everything here is already
-    restricted to nights the site counts and whose running order is known.
+    restricted to shows the site counts and whose running order is known.
     """
     by_year, played = {}, {}
     for date in order:
@@ -7524,7 +7524,7 @@ def year_profiles(order, counting, docs=()):
                 p[row["slug"]] += 1
                 names[row["slug"]] = row["song"]
             s.update({row["slug"] for row in songs})
-            # Once a night. A move made twice in one show is a sandwich, and a
+            # Once a show. A move made twice in one show is a sandwich, and a
             # sandwich is a thing that happened once.
             m.update(set(year_moves(order[date])))
         plays[year], nights[year], moves[year] = p, s, m
@@ -7538,8 +7538,8 @@ def year_profiles(order, counting, docs=()):
         ever += moves[year]
     everything = sum(len(dates) for dates in by_year.values())
 
-    # A song nobody heard in any other year. Computed against every night the
-    # archive holds an order for rather than against every night played, which
+    # A song nobody heard in any other year. Computed against every show the
+    # archive holds an order for rather than against every show played, which
     # is the honest limit of the claim and is what the page says it is.
     lonely = {}
     for slug in names:
@@ -7560,7 +7560,7 @@ def year_profiles(order, counting, docs=()):
         # What made this year sound like itself rather than like the band:
         # how much of the year a song was in, weighed against how much of
         # every other year it was in. The log keeps a song that played twice
-        # as often as usual on 60% of nights above one that played fifty times
+        # as often as usual on 60% of shows above one that played fifty times
         # as often on three -- rarity alone would fill every row with one-offs,
         # which is the next fact line down and a different question.
         rest = everything - n
@@ -7579,7 +7579,7 @@ def year_profiles(order, counting, docs=()):
             here = count / n
             elsewhere = (anywhere[slug] - count) / rest if rest else 0
             # Never anywhere else: a rate of zero has no logarithm, so it is
-            # held at half a night rather than allowed to run to infinity.
+            # held at half a show rather than allowed to run to infinity.
             elsewhere = elsewhere or .5 / rest
             sound.append((here * math.log2(here / elsewhere), here, slug))
         sound.sort(reverse=True)
@@ -7591,14 +7591,14 @@ def year_profiles(order, counting, docs=()):
         # into I Am Hydrogen is a fixed sequence the band has played since
         # 1988. Both are true and neither is about a year. Weighed against how
         # often the pair ever happened, 1993 answers Big Ball Jam into Hold
-        # Your Head Up -- 16 of the 22 nights it has ever happened, all of them
+        # Your Head Up -- 16 of the 22 shows it has ever happened, all of them
         # that year -- which is the thing worth knowing.
         habit, best = None, 0
         for pair, count in moves[year].items():
             # A quarter of every time it ever happened, at least, or the line
             # is not about this year and does not appear. Without the floor
             # 2021 answers Mike's Song into I Am Hydrogen on the strength of 3
-            # nights out of 335 -- the best any 2021 pair could do, and still
+            # shows out of 335 -- the best any 2021 pair could do, and still
             # a statement about 1988. Four years say nothing here instead.
             if count < YEARS_FLOOR or count < YEARS_OWN * ever[pair]:
                 continue
@@ -7616,7 +7616,7 @@ def year_profiles(order, counting, docs=()):
             "known": n,
             "songs": len(p),
             "performances": performances,
-            "per_night": performances / n,
+            "per_show": performances / n,
             "age": _median(ages),
             "repeat": year_repeat(dates, order),
             "most": named([slug for slug, _ in p.most_common(YEARS_NAMED)],
@@ -7744,7 +7744,7 @@ YEARS_SHELL = """<!DOCTYPE html>
 <p class="dek">What a year sounded like, taken from the order the songs came
 in rather than from how long the band went without them. Every other list here
 is about one song&rsquo;s habits. This one is about the band&rsquo;s.</p>
-<p class="dek">Built from the running order of {read} nights. The archive has
+<p class="dek">Built from the running order of {read} shows. The archive has
 no running order for {missing} of the shows the calendar counts, almost all of
 them before 1992, so a year short of its own count says so under its figures.
 The band played no show at all in {silent}, and a year with no show has no
@@ -7755,7 +7755,7 @@ block here &mdash; which is why {span} is {n} years and not {calendar}.</p>
 <p class="dek">Every year below carries the same four figures and up to four
 lists, under these eight labels.</p>
 <dl class="gloss">
-<div><dt>A night</dt><dd>Songs on an average night of that year. Jams and
+<div><dt>A show</dt><dd>Songs on an average show that year. Jams and
 untitled one-offs are left out of every figure on this page: neither is a
 composition, and counting one as a year&rsquo;s most-played song answers a
 different question than the one being asked.</dd></div>
@@ -7764,23 +7764,23 @@ different question than the one being asked.</dd></div>
 performances were of a song this many years past its first counted show;
 <b>new</b> means half of them were of songs the year had only just got.</dd></div>
 <div><dt>Moves that recur</dt><dd>The share of a year&rsquo;s song-to-song
-moves that turn up on more than one night &mdash; stated over a fixed {sample}
-nights, because otherwise it is a count of how many shows the band played. A
+moves that turn up at more than one show &mdash; stated over a fixed {sample}
+shows, because otherwise it is a count of how long the year was. A
 long year gets more chances to repeat itself for reasons that have nothing to
-do with how it sounded. Over the same {sample} nights, 1993 reads {high} and
-2017 reads {low}. A year with fewer than {sample} nights read cannot be put on
+do with how it sounded. Over the same {sample} shows, 1993 reads {high} and
+2017 reads {low}. A year with fewer than {sample} shows read cannot be put on
 those terms and says <b>&mdash;</b> instead.</dd></div>
 <div><dt>Most played</dt><dd>The five songs the band played most that year,
 with the number of performances.</dd></div>
 <div><dt>Sounded like</dt><dd>Not the same list, and the difference is the
 point: Possum was played every year, so it says nothing about any of them. A
 song earns a place here by being a bigger share of that year than of every
-other year put together. The figure is the share of the year&rsquo;s nights it
+other year put together. The figure is the share of the year&rsquo;s shows it
 was on.</dd></div>
 <div><dt>Only in &hellip;</dt><dd>Songs heard in that year and in no other
 &mdash; every one of them, not a top five, most-played first. Only in the
-nights read here: a song that also played at a show whose running order the
-archive lacks cannot know it.</dd></div>
+shows read here: one that also turned up where the archive holds no running
+order cannot know it.</dd></div>
 <div><dt>Ran together</dt><dd>The song-to-song move that was most that
 year&rsquo;s own, weighed against how often the pair has ever happened rather
 than how often it happened that year. Ranked raw, nearly every year answers
@@ -7830,7 +7830,7 @@ def _year_block(profile, pages):
     year, n = profile["year"], profile["known"]
     age = profile["age"]
     figures = [
-        ("A night", "<b>%.0f</b> songs" % profile["per_night"]),
+        ("A show", "<b>%.0f</b> songs" % profile["per_show"]),
         ("In rotation", "<b>%d</b> songs" % profile["songs"]),
         ("Median song", "new" if not age else
          "<b>%.0f</b> year%s old" % (age, "" if age == 1 else "s")),
@@ -7850,7 +7850,7 @@ def _year_block(profile, pages):
     # Only when it is not the whole year, and it never is after 1991.
     if n < profile["shows"]:
         body.append("<p class='part'>Running order known for %d of these %d "
-                    "nights; the figures above are what those %d hold.</p>"
+                    "shows; the figures above are what those %d hold.</p>"
                     % (n, profile["shows"], n))
 
     if profile["most"]:
@@ -7867,7 +7867,7 @@ def _year_block(profile, pages):
         body.append(
             "<div class='fact'><h3>Ran together</h3>"
             "<p class='habit'>%s<span class='to'>&rarr;</span>%s"
-            "<span class='n'>%d night%s, of %d ever</span></p></div>"
+            "<span class='n'>%d show%s, of %d ever</span></p></div>"
             % (html.escape(typographic(first)),
                html.escape(typographic(second)),
                count, "" if count == 1 else "s", ever))
@@ -7908,7 +7908,7 @@ def render_years(profiles, missing, pages=()):
     least = min(rated, key=lambda p: p["repeat"], default=None)
     widest = max(profiles, key=lambda p: p["songs"], default=None)
     cards = [(len(profiles), "Years played", "", ""),
-             ("{:,}".format(read), "Nights read", "", ""),
+             ("{:,}".format(read), "Shows read", "", ""),
              (most["year"] if most else "n/a", "Most habitual", " hot",
               "#y%s" % most["year"] if most else ""),
              (widest["year"] if widest else "n/a", "Widest rotation", "",
@@ -8103,7 +8103,7 @@ METHOD = (
     ('what-a-gap-is', 'What a gap is', """
 <p>The number beside a song is how many shows the band played between this
 performance and the one before it. A gap of <b class="num">0</b> means they
-played it again the very next night; <b class="num">485</b> means four hundred
+played it again the very next show; <b class="num">485</b> means four hundred
 and eighty-five shows went by. The figure comes from Phish.net, which computes
 it; nothing here is counted a second time.</p>"""),
     ('the-median-and-why-ten-years', 'The median, and why ten years', """
@@ -8154,7 +8154,7 @@ the median, and the mark is the performance being reported. Left of the shading
 is sooner than usual for that song, right of it is later. Past three times the
 upper edge the mark stops at the end and stays there, because beyond a point
 &ldquo;very late&rdquo; is the whole of the message.</p>
-<p>Every row is drawn against its own song rather than against the night, so
+<p>Every row is drawn against its own song rather than against the show, so
 one bustout cannot flatten the rest of the bill &mdash; on
 <span class="num">168</span> of <span class="num">690</span> shows the longest
 gap is at least twenty times the median. It shows position rather than
@@ -8182,14 +8182,14 @@ that runs together, and is also used by convention between songs that are
 simply always played as a set.
 <a href="./faq.html#segues">The difference, in phish.net's own words.</a></p>"""),
     ('which-show-this-was', 'Which show this was', """
-<p>A report says where the night sits inside its era &mdash; the
+<p>A report says where the show sits inside its era &mdash; the
 <span class="num">312th</span> show of 3.0 &mdash; and never where it sits
 overall. There is no honest overall number to give. phish.net offers three
 defensible totals for how many shows the band has played: <span
 class="num">2,239</span> entries listed, <span class="num">2,114</span> that
 count toward statistics, and <span class="num">2,106</span> distinct dates
 among those. They differ by soundchecks, television and radio sessions,
-cancelled dates, and nights when two separate shows were played.</p>
+cancelled dates, and dates when two separate shows were played.</p>
 <p>The disagreement reaches the beginning. <b>1983-10-30</b>, the show
 generally called Phish's first, is one phish.net excludes from statistics, so a
 count built on that flag declares the <em>second</em> show to be number one and
@@ -8238,7 +8238,7 @@ to rank them by. For a long time that page called all
 <b class="num">174</b> of them that was false. Dormant means a song used to be
 otherwise. A song played once at a Halloween show, as part of a costume set,
 never had a rotation to fall out of &mdash; and a third of the songs played
-exactly once in this archive were played on a Halloween night.</p>
+exactly once in this archive were played on Halloween.</p>
 <p>So the page splits on how many times the band ever played the song:
 <b class="num">{floor}</b> or more and it was in rotation and left, which is
 <span class="verdict">dormant</span>; <b class="num">{lo}</b> to
@@ -8294,11 +8294,11 @@ window, and the span from a song's first performance to its last. None beat the
 plain count, and span was the worst of them: whether a song was ever in rotation
 is answered by how many times the band played it, not by how long they had it
 lying around.</p>
-<p>A song called back for one night after years away does not get a fourth
+<p>A song called back for one show after years away does not get a fourth
 name. It is an event rather than a state, and the play count already carries
 it: the song moves up by one, and a second performance has not moved it out of
 the section it was already in. Whether it
-sticks is not knowable on the night, but it is not a coin toss either. Of
+sticks is not knowable at the time, but it is not a coin toss either. Of
 returns from a silence of three hundred shows or more that have since had three
 hundred shows of chance, the ones that had been played <b>once</b> before went
 quiet again for good <b class="num">43%</b> of the time; those played two to
@@ -8321,7 +8321,7 @@ neither.</p>"""),
 it as phish.net records them, the page says <b>setlist still coming in</b> with
 how much is there and when it last moved, and it reloads itself every couple of
 minutes. The index says <b>so far</b> next to the song count, because
-<span class="num">24</span> songs means something different tonight than it
+<span class="num">24</span> songs means something different today than it
 will tomorrow.</p>
 <p>Knowing when it is <em>finished</em> is the harder half, and nothing in the
 data says so. There is no show time to reason from, and the format is not
@@ -8330,7 +8330,7 @@ counting sets proves nothing. Stability stands in for completeness instead:
 once a song count has not moved for <b>two hours</b>, the show is taken to be
 over and the report stops calling itself provisional.</p>
 <p>Until that happens the figures are real but partial. A median gap over nine
-songs is the median of those nine, not of the night, and the preview image
+songs is the median of those nine, not of the show, and the preview image
 shared from that page deliberately carries no figures at all &mdash; only the
 date, the venue, and that the setlist is still coming in &mdash; so a link
 shared mid-show does not freeze a half-finished number into somebody else's
@@ -8431,7 +8431,7 @@ FAQ = (
     ("what-is-a-gap", "What is a gap?", """
 <p>The number beside a song on a show page is how many shows the band played
 between that performance and the one before it. A gap of
-<b class="num">0</b> means they played it again the very next night;
+<b class="num">0</b> means they played it again the very next show;
 <b class="num">485</b> means four hundred and eighty-five shows went by. It is
 phish.net&rsquo;s own figure and nothing here recomputes it.</p>
 <p>A gap is not a length of time. A song with a gap of 30 in 1995 had been gone
@@ -8490,8 +8490,9 @@ one not played in ten years at all. The statistics say which.</p>"""),
 song&rsquo;s habit, not against a single number for the whole catalogue. A
 staple is late at eight shows and a rarity is not late at eighty.</p>
 <p><em>Recent</em> means the last ten years of shows, counted back from the
-newest show in the archive rather than from the song&rsquo;s own last night on
-stage. That distinction is the whole of the previous paragraph: measured from
+newest show in the archive rather than from the song&rsquo;s own last
+appearance. That distinction is the whole of the previous paragraph: measured
+from
 its own last performance, a song that stopped being played in 2011 still has a
 tidy ten-year habit ending in 2011, and would be ranked as running late against
 a band that has since played a thousand shows without it.</p>
@@ -8502,15 +8503,15 @@ sorts songs into four:</p>
 <dl class="defs">
 <dt>Due</dt><dd>The band plays it at least every twenty shows or so, and it is
 now past its usual gap but less than three and a half times past. A song you
-would not be surprised to hear tonight.</dd>
-<dt>Slipping</dt><dd>Well past its usual gap, or too rare to expect on any one
-night. Could come back, could be on the way out of rotation.</dd>
+would not be surprised to hear at the next show.</dd>
+<dt>Slipping</dt><dd>Well past its usual gap, or too rare to expect at any one
+show. Could come back, could be on the way out of rotation.</dd>
 <dt>On the shelf</dt><dd>Gone more than a hundred shows &mdash; long enough
 that the habit it is being measured against has probably stopped being
 true.</dd>
 <dt>Out of rotation</dt><dd>No recent record at all, and gone a hundred shows or
 more. Nobody is expecting it, and ranking these would bury the songs somebody
-might actually shout for tonight &mdash; so they have
+might actually shout for &mdash; so they have
 <a href="./{page}">a page of their own</a>, grouped by the year they were
 last heard rather than by a lateness they cannot have.</dd>
 </dl>
@@ -8530,10 +8531,10 @@ not say.</p>
 <p><em>Slipping</em>, not <em>overdue</em>, because a show page already uses
 overdue for something narrower: a single performance that came back later than
 that song usually does. Every song on the due page would be stamped overdue if
-it turned up tonight, so the word cannot also name one of the lists.</p>
-<p>None of it knows what the band has planned. A themed night overrides every
+it turned up at the next show, so the word cannot also name one of the lists.</p>
+<p>None of it knows what the band has planned. A themed show overrides every
 figure &mdash; the 2021 Halloween runs built around numbers and animals, the
-elements nights of the first Sphere run, a run played out of a single decade
+elements shows of the first Sphere run, a run played out of a single decade
 &mdash; and the theme is usually not public beforehand.</p>
 <p>The hundred-show line is where this site already draws a bustout. It is
 counted in shows rather than in months on purpose: a gap of thirty-six shows is
@@ -8585,7 +8586,7 @@ honest. A wrong festival name is not.</p>"""),
 <p>Because the show is still being played. A report is published mid-show and
 fills in as phish.net records each song, so the figures on it are real but
 partial &mdash; a median gap over nine songs is the median of those nine, not
-of the night.</p>
+of the show.</p>
 <p>Nothing in the data says when a show has ended, so stability stands in for
 it: once the song count has stopped moving, the report stops calling itself
 provisional.
@@ -8827,7 +8828,7 @@ def shoot_cards(exe, jobs, site_dir):
 
 
 def report_card(report):
-    """A show: what it was, where, and the night's headline gap.
+    """A show: what it was, where, and its headline gap.
 
     A show still being played gets a different card, and deliberately a fixed
     one. Withholding it entirely was the wrong call: a show in progress is
@@ -9198,14 +9199,14 @@ def _gap(row):
 def by_show(rows):
     """One row per show, out of a history that has one row per setlist slot.
 
-    A song can come round more than once in a night -- Hold Your Head Up
+    A song can come round more than once in a show -- Hold Your Head Up
     bookends the Fishman song, Tweezer came back twice at SNHU Arena in 2025 --
     and phish.net records each appearance. That is 717 of the archive's 28,519
     rows, across 79 of its 165 songs, and a page listing performances rather
     than setlist slots wants them collapsed: three rows reading 2025-06-22,
     2025-06-22, 2025-06-22 look like a bug even when they are the truth.
 
-    The night's gap is the largest of them. Only the standalone performance has
+    The show's gap is the largest of them. Only the standalone performance has
     a gap to speak of -- the repeats sit at 0, having missed no shows since the
     one an hour earlier -- and taking the maximum finds it wherever it sits.
     phish.net is not consistent about that: on 2025-06-22 Tweezer's 5 is on the
@@ -9213,7 +9214,7 @@ def by_show(rows):
 
     Everything else comes off the first appearance, which is the one the set
     and position describe. `times` records how many there were, and is left off
-    the ordinary single-performance night.
+    the ordinary single-performance show.
 
     Copies rather than the rows themselves: add_previous goes on to measure the
     song's gap distribution off the same list, and a collapse it did not ask
@@ -9833,7 +9834,7 @@ def write_current(site_dir, dates=None):
         return None
     # Counted from the last performance that was at a *show*, which is not
     # always the last performance. Every page that prints a last-played date
-    # filters to the counting calendar first -- a soundcheck is not a night the
+    # filters to the counting calendar first -- a soundcheck is not a show the
     # band played -- so measuring from the raw last row meant two songs in the
     # archive carried a figure anchored to a date no page displays. Windora Bug
     # read 251 shows since beside a last-played date of 2000-09-15, because its
@@ -10063,7 +10064,7 @@ def setlist_neighbours(rows, artist=None):
     would be a lie about a segue. Adjacency itself is not: an encore is chosen
     in answer to how set 2 ended, and a blank cell threw that away.
 
-    At the two ends of the night, `first` and `last`. Those are the only two
+    At the two ends of the show, `first` and `last`. Those are the only two
     true terminals -- a set opener and a set closer both have a real song on
     the far side of a break, which is why they get a song and these get a
     flag. The four together mean a blank cell now says one thing only: we
@@ -10078,7 +10079,7 @@ def setlist_neighbours(rows, artist=None):
     show opener even where another band played earlier. That is the same
     reading every other page here takes.
 
-    A song played more than once in a night keeps the first appearance, which
+    A song played more than once in a show keeps the first appearance, which
     is the row the archive keeps too.
 
     Every song found in `rows` gets an entry, even an empty one. That is the
@@ -10789,14 +10790,14 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # still builds: year_order falls back to the running order inside each
     # saved report, and the page then covers the years the archive reaches
     # rather than the career -- shorter, and honest about being shorter,
-    # because every figure on it is stated against the nights it read.
+    # because every figure on it is stated against the shows it read.
     read = year_order(setlist_order(), counting, known)
     if read:
         years_page = os.path.join(site_dir, "years.html")
         if write_if_changed(years_page, render_years(
                 year_profiles(read, counting, docs), len(counting) - len(read),
                 pages={doc["slug"] for doc in docs})):
-            log("wrote %s (%d of %d counting nights read)",
+            log("wrote %s (%d of %d counting shows read)",
                 years_page, len(read), len(counting))
 
     # Needs the song histories as well as the reports, so it is built here
