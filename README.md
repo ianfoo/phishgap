@@ -207,6 +207,32 @@ Song pages are the bulk of the built site — one per song rather than one per
 show — so a template edit rewrites all of them at once. Worth knowing before
 changing something every page shares.
 
+## Acknowledgments
+
+This archive rests on three projects, and on the people who keep them going.
+The site has [a fuller page of
+thanks](https://possumlogic.com/acknowledgments.html); the short version:
+
+**[Phish.net](https://phish.net/)**, a project of the
+**[Mockingbird Foundation](https://mbird.org/)**, is the setlists, the gaps, the
+venues and tours, and the show ratings. The Foundation is a 501(c)(3) started in
+1996 and run entirely by volunteers — no salaries, no paid staff, no office —
+and hundreds of people have kept that record night after night for close to
+thirty years. It exists to fund music education for children, and by July 2026
+had made its 800th grant, more than $3 million in total. If this project is
+useful to you, [that is a good place to send
+something](https://mbird.org/donations/).
+
+**[phish.in](https://phish.in/)** is every listening link, and holds the audio —
+an open archive of audience recordings, made by tapers at their own expense
+under the band's own taping policy, and kept free.
+
+**[fouldomain](https://fouldomain.com/)** is the version scores, and is how
+phish.net's own show rating reaches the site. It is one person's work, by Kevin
+Spence.
+
+Not affiliated with Phish, and not endorsed by them.
+
 ## Notes
 
 API responses are cached under `~/.cache/possumlogic` for six hours (the old `~/.cache/phishgap` is

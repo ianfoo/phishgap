@@ -54,6 +54,45 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
+### Newest first: the 2026-07-31 acknowledgments page
+
+Ian asked for a page crediting phish.net and the Mockingbird Foundation,
+phish.in and fouldomain, linked from the footer rather than the nav ("we are
+short on nav space"), with an FAQ answer pointing at it and a README section.
+Done and pushed. Four things a fresh session should carry:
+
+- **`footer_html()` is the footer, and it is one function now**, beside
+  `nav_strip()` and for the same reason: it was eleven copies across eleven
+  shells, and the twelfth cell would have been eleven chances to miss a page.
+  `ACK_PAGE` is the filename. The credit cell is unconditional; on the page
+  itself it renders as a marked span rather than a link to where you already
+  are. Checked against the artifact: 1,310 pages link it, one marks itself,
+  three redirect stubs excluded.
+- **The footer reserves a lane for the floating back-to-top**, 2.5rem of
+  `padding-bottom` in `FOOTER_BOX_CSS`. `.totop` is fixed to the bottom right
+  of the viewport, so the one thing it always sits on is the last row of the
+  footer. It was a near miss before — the theme row is full-width but its
+  buttons are all on the left — and a fourth cell reflowed Keys into the
+  corner under it, 42×24px of a 65×26px control. Reserved rather than dodged:
+  at 768px the sweep found the Dark button under it too, so moving Keys would
+  only have elected a new victim. Swept 12 page types × 7 widths
+  (320/390/430/600/768/1024/1280) for tap-target overlap, back-to-top over
+  footer control, and sub-24px footer targets: zero of each, with a negative
+  control confirming the sweep reports the collision when the lane is removed.
+- **`.src` had never been drawn.** It is a `<p>` inside `.prose`, so
+  `.prose p` — one class and one type — out-specified it, exactly as
+  `.prose p` had beaten `.backtop`. The FAQ's segues source line has been a
+  body paragraph since it was written. `.src,.prose .src` is the fix, and the
+  rule moved from `FAQ_CSS` down into `METHOD_CSS` so all three prose sheets
+  have it. **Two rules in this file have now had this defect; check any
+  single-class rule that styles a `<p>` inside `.prose`.**
+- **The copy was rewritten after Ian read it.** The first draft credited by
+  self-deprecation — no audio, no opinion, nothing of its own — and remarked
+  on how long phish.in takes to post audio after a show, which is true and,
+  on a page of thanks, backhanded. It also called the gap "the number this
+  whole archive is built around": that was the impetus for the site, not what
+  it is now. Short, earnest, no pontificating.
+
 ### Newest first: the 2026-07-30 review of songs, home, due and dormant
 
 Ian read four pages and sent nine notes. All nine are done and pushed; the

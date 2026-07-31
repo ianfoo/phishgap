@@ -1632,6 +1632,13 @@ NAV_LISTS = (("Shows", "index.html"), ("Songs", "songs.html"),
              ("Years", "years.html"), ("Venues", "venues.html"))
 NAV_META = (("FAQ", "faq.html"), ("How this works", "method.html"))
 
+#: Who the data belongs to. Off the nav strip and in every footer instead --
+#: the strip is four browse spines and adding a fifth is a decision about its
+#: whole width, which the comment above measures. The footer is the older and
+#: better place for a credit anyway, and it is the one element on every one of
+#: the 1,311 pages.
+ACK_PAGE = "acknowledgments.html"
+
 
 def nav_strip(here=None, section=None, root="./", mark=False):
     """The navigation strip. Every page on this site gets it from here.
@@ -1764,15 +1771,79 @@ SELECT_CSS = """.sort{appearance:none;-webkit-appearance:none;
 .sort option{background:var(--paper);color:var(--ink)}
 """
 
+def footer_html(root="./", back=("How this works", "method.html"),
+                right="{stamp}", here=None):
+    """The footer. Every page on this site gets it from here.
+
+    Written for the same reason `nav_strip` was: it was eleven hand-written
+    copies of the same three cells across eleven shells, and the moment a
+    twelfth cell was wanted -- the credit link below -- eleven was eleven
+    chances to leave one page out. The chances are not hypothetical; the nav
+    was in ten copies and 1,302 of 1,310 pages marked no location at all.
+
+    `right` is whatever that page can honestly say about its own currency, and
+    is a *format placeholder* on the nine pages that have a date: the shells
+    are assembled here and formatted at render time, so `{stamp}` travels
+    through this function as literal text and is filled in later by the caller
+    that knows the date. The two prose pages have no such date and pass None,
+    which drops the cell rather than printing an empty one.
+
+    The credit cell is not conditional. What it credits is true of every page
+    equally -- the setlists, the audio and the scores are three other
+    projects' work -- so the page that thanks them is one click from all of
+    them, rather than from the two that happened to carry a credit line
+    before. `here` is that page saying so
+    itself: the cell stays, because taking it out on one page of 1,311 is how
+    a reader learns not to look for it, but it stops being a link to where
+    they already are. `back` needs no such guard -- the method page is the one
+    page that would have linked to itself and it passes All reports instead.
+    """
+    ack = ('<span aria-current="page">Acknowledgments</span>'
+           if here == ACK_PAGE else
+           '<span><a href="%s%s">Acknowledgments</a></span>' % (root, ACK_PAGE))
+    cells = ['<span><a href="%s%s">%s</a></span>' % (root, back[1], back[0]),
+             ack, "{theme_ui}"]
+    if right:
+        cells.append("<span>%s</span>" % right)
+    return "<footer>%s</footer>" % "\n".join(cells)
+
+
 FOOTER_BOX_CSS = """footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 """
+# The padding-bottom is the floating back-to-top's lane, and it is here rather
+# than in TOTOP_CSS because the footer is what gets covered. `.totop` is
+# position:fixed at the bottom right of the *viewport*, so the one piece of
+# content it is guaranteed to sit on top of is the last row of the footer, at
+# the one scroll position every reader reaches. It was a near miss before this
+# change -- the theme control's row is full-width but its three buttons are all
+# on the left, so the button covered empty space -- and adding a fourth cell
+# reflowed Keys onto that row's right edge and under it, 42x24px of a 65x26px
+# control. 2.5rem plus the body's own 1.575rem clears the 61px the button and
+# its offset occupy at narrow widths, which is where the wrap is wide enough to
+# reach under it at all; past 60rem the wrap stops short of the button and the
+# padding is 40px of air at the very bottom of the page.
+#
+# Reserved rather than dodged: moving Keys out of the corner would have left
+# the *next* cell to land there, and at 768px the sweep found the Dark button
+# under it too. A fixed control needs a lane, not a list of exceptions.
 
 FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 """
 
 #: The way back to the navigation, for pages long enough to strand a reader.
@@ -2418,8 +2489,7 @@ SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <p class="links">{links}</p>
 {sections}{notes}
-<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html(root="../") + """
 {analytics}
 </div>{row_js}</body></html>
 """
@@ -4140,8 +4210,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
 {totop}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html() + """
 {analytics}
 </div><script>{js}</script></body></html>
 """
@@ -5330,8 +5399,7 @@ SONG_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
-<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html(root="../") + """
 {analytics}
 </div><script>{js}</script></body></html>
 """
@@ -6035,8 +6103,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
 {totop}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html() + """
 {analytics}
 </div><script>{js}</script></body></html>
 """
@@ -6134,8 +6201,7 @@ length</a>, including why a song gone for years is not on the list.</p>
 {shelf}
 {dormant}
 {totop}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html() + """
 {analytics}
 </div></body></html>
 """
@@ -6603,8 +6669,7 @@ graveyard.</p></header>
 {rows}
 </div>
 {totop}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html() + """
 {analytics}
 </div></body></html>
 """
@@ -6857,8 +6922,7 @@ played.</p></header>
 <div class="rule2"></div>
 <div id="main" tabindex="-1">{body}</div>
 {totop}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html() + """
 {analytics}
 </div></body></html>
 """
@@ -7105,8 +7169,7 @@ over what span, and the longest gap the room has heard.</p></header>
 {rows}
 </ol>
 {totop}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html() + """
 {analytics}
 </div></body></html>
 """
@@ -7729,8 +7792,7 @@ them before 1992, so a year short of its own count says so under its figures
 <main id="main" tabindex="-1">
 {blocks}
 </main>
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>{stamp}</span></footer>
+""" + footer_html() + """
 {analytics}
 </div></body></html>
 """
@@ -7914,6 +7976,27 @@ METHOD_CSS = INDEX_CSS + """
 .prose a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* Where a claim came from, set small and dim under the claim. It sat on the
+   FAQ's sheet until the acknowledgments page wanted it, and the FAQ's sheet is
+   built on this one, so leaving it there would have made it a rule the other
+   two prose pages could not have -- the shape of every one-sheet-of-three bug
+   in this file. Moved rather than copied.
+
+   `.prose .src` as well as `.src`, and it is not belt and braces -- it is the
+   same defect `.backtop` had, found the same way. These are <p> elements
+   inside the prose, so `.prose p` is one class and one type against this
+   rule's one class and wins outright, order be damned. Measured on the built
+   page: the source line came out at 18px in Literata in --ink-soft, which is
+   a body paragraph exactly, so the only thing this rule had ever done was
+   the margin. It has been wrong on the FAQ's segues answer since that answer
+   was written. */
+/* The bottom margin is new with the second caller. On the FAQ this line is
+   the last thing in an answer and had nothing under it to be crowded by; on
+   the acknowledgments page it sits between a heading and the prose it
+   introduces, and with no bottom margin the two ran together. Matched to
+   `.prose p` so a source line spaces like the paragraph it stands in for. */
+.src,.prose .src{margin:.4rem 0 1rem;font-size:.75rem;
+   font-variation-settings:'opsz' 12;color:var(--dim)}
 /* The contents block, shared by both prose pages. Generated from the same
    list the sections are, so it cannot name one the page does not have or miss
    one it does -- the FAQ has worked this way since it was built and the method
@@ -7992,8 +8075,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <ol>{toc}</ol></nav>
 {body}</div>
 {totop}
-<footer><span><a href="./index.html">All reports</a></span>{theme_ui}
-<span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
+""" + footer_html(back=("All reports", "index.html"), right=None) + """
 {analytics}
 </div></body></html>
 """
@@ -8301,8 +8383,6 @@ FAQ_CSS = METHOD_CSS + """
 .defs dd{margin:.15rem 0 0;font-family:'Literata',Georgia,serif;
    font-size:1rem;line-height:1.6;font-variation-settings:'opsz' 16;
    color:var(--ink-soft)}
-.src{margin:.4rem 0 0;font-size:.75rem;font-variation-settings:'opsz' 12;
-   color:var(--dim)}
 """
 
 FAQ_SHELL = """<!DOCTYPE html>
@@ -8328,8 +8408,7 @@ do not.</p></header>
 <ol>{toc}</ol></nav>
 {body}</div>
 {totop}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
-<span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
+""" + footer_html(right=None) + """
 {analytics}
 </div></body></html>
 """
@@ -8489,6 +8568,16 @@ inconsistently and often not at all &mdash; pulling them out gives a handful of
 shows a label, some of them wrong, and leaves the rest blank. A blank is
 honest. A wrong festival name is not.</p>"""),
 
+    ("where-from", "Where does all of this come from?", """
+<p>Three projects. <b>Phish.net</b> &mdash; a project of the volunteer-run
+Mockingbird Foundation &mdash; is the setlists, the gaps, the venues and tours,
+and the show ratings. <b>phish.in</b> is every <b>Listen</b> link, and holds
+the audio. <b>fouldomain</b> is the version scores.</p>
+<p>Each of them is worth more than the credit line a footer can hold, so
+<a href="./{ack}">they have a page</a>: who they are, what they give away, and
+where to send money if any of this has been useful.</p>""".format(
+        ack=ACK_PAGE)),
+
     ("still-coming-in", "Why does a show page say &ldquo;setlist still coming"
                         " in&rdquo;?", """
 <p>Because the show is still being played. A report is published mid-show and
@@ -8534,6 +8623,145 @@ def render_faq():
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
                          "faq.html"))
+
+
+# ------------------------------------------------------- acknowledgments ---
+
+# Built on the method page's sheet like the FAQ is, and adding nothing to it.
+# The one rule this page wanted -- `.src`, the small dim line under a heading
+# naming where something came from -- was on the FAQ's sheet, which is built on
+# this one, so it moved down into METHOD_CSS rather than being copied up.
+ACK_CSS = METHOD_CSS
+
+ACK_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acknowledgments &mdash; Possum Logic</title>
+<meta property="og:type" content="article">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+{sheet}
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+{crumb}
+<div class="rule2"></div>
+<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
+<p class="show">Acknowledgments</p>
+<p class="dek">This archive rests on three projects, and on the people who
+keep them going.</p></header>
+<div class="rule2"></div>
+<div class="prose" id="main" tabindex="-1">
+{body}</div>
+{totop}
+""" + footer_html(right=None, here=ACK_PAGE) + """
+{analytics}
+</div></body></html>
+"""
+
+# (anchor, heading, source line, body). No contents block, unlike the two
+# prose pages this is built beside: theirs index eight and nine sections, and
+# an index over four would be furniture -- a list of the same four headings
+# already visible without scrolling.
+#
+# Short on purpose. The first draft said what this site is *not* three times
+# over -- no audio, no opinion, nothing of its own -- and Ian read it as
+# self-deprecation wearing a thank-you: "keep our thanks succinct, heartfelt,
+# and earnest, without pontificating too much." It also carried a remark about
+# how long phish.in takes to post audio after a show, which is a true
+# operational fact and, on a page of thanks, a backhanded one. Both are gone.
+# What each project gives, who gives it, and where to send money.
+#
+# `{listens}` in the phish.in entry is filled at render time from the
+# catalogue on disk, because a count typed into prose is a figure like any
+# other and goes stale the ordinary way -- a comment in this file said "nine"
+# soundchecks for the eleven months it was twenty. It is left out entirely
+# when the catalogue has never been fetched, rather than printed as zero.
+ACKNOWLEDGMENTS = (
+    ("phish-net", "Phish.net, and the Mockingbird Foundation",
+     '<a href="https://phish.net/" target="_blank" rel="noopener noreferrer">'
+     'phish.net</a> &middot; '
+     '<a href="https://mbird.org/" target="_blank" rel="noopener noreferrer">'
+     'mbird.org</a>', """
+<p>The setlists are theirs: what was played, in what order, what ran into what,
+at which venue, on which tour. So are the gaps and the show ratings, and the
+jam chart notes under a performance.</p>
+<p>Phish.net is a project of the <b>Mockingbird Foundation</b>, a 501(c)(3)
+started in 1996 by fans and run entirely by volunteers &mdash; no salaries, no
+paid staff, no office. Hundreds of people have kept that record night after
+night for close to thirty years, which the Foundation conservatively estimates
+at over <b class="num">100,000</b> hours. It is an extraordinary thing to have
+been given.</p>
+<p>And it is a means rather than an end. The Foundation exists to fund music
+education for children, and by July 2026 had made its <b class="num">800th</b>
+grant, more than <b class="num">$3</b> million in total. If this site has been
+of any use to you,
+<a href="https://mbird.org/donations/" target="_blank"
+rel="noopener noreferrer">that is a good place to send something</a>.</p>"""),
+
+    ("phish-in", "phish.in",
+     '<a href="https://phish.in/" target="_blank" rel="noopener noreferrer">'
+     'phish.in</a>', """
+<p>Every <b>Listen</b> link goes to phish.in, an open archive of audience
+recordings made under the band&rsquo;s own taping policy.{listens} Because of
+them, a page about a performance can be a way to hear it.</p>
+<p>The recordings themselves are the tapers&rsquo;, made at their own expense
+and given away, and phish.in is where forty years of that generosity is kept
+in one place and kept free.</p>"""),
+
+    ("fouldomain", "fouldomain",
+     '<a href="https://fouldomain.com/" target="_blank" '
+     'rel="noopener noreferrer">fouldomain.com</a>', """
+<p>The version scores are fouldomain&rsquo;s: every circulating performance
+rated out of <b class="num">100</b> from a blend of audio analysis and
+community signal, recomputed nightly. It is also how phish.net&rsquo;s own show
+rating reaches this site, since their API does not expose it.</p>
+<p>It is one person&rsquo;s work &mdash; <b>Kevin Spence</b>, building on
+phish.net&rsquo;s setlists and phish.in&rsquo;s audio &mdash; and it is the
+reason a song page here can point you at a version worth hearing rather than
+just counting the times it was played.</p>"""),
+
+    ("the-band", "And the band",
+     "", """
+<p>This site is not affiliated with Phish and not endorsed by them. The taping
+policy is theirs, though, and it is a generous and unusual one: forty years of
+live music recorded, traded and given away with permission. Every archive on
+this page rests on it.</p>"""),
+)
+
+
+def render_acknowledgments(on_phishin=None):
+    """Who the data belongs to, at the address every footer points at.
+
+    Off the nav strip on purpose -- see ACK_PAGE -- so its door is the footer,
+    which is the one element every page on this site carries. The strip marks
+    FAQ as this page's section, because the FAQ is where a reader asking
+    "where does this come from?" is answered in a paragraph and sent here for
+    the rest.
+    """
+    listens = ""
+    if on_phishin:
+        listens = (" Their archive covers <b class=\"num\">%s</b> nights."
+                   % f"{len(on_phishin):,}")
+    body = "\n".join(
+        "<h2 id=\"%s\">%s</h2>\n%s\n%s"
+        % (anchor, head,
+           "<p class=\"src\">%s</p>" % src if src else "",
+           text.strip().format(listens=listens))
+        for anchor, head, src, text in ACKNOWLEDGMENTS)
+    blurb = ("The sources this archive is built from: phish.net and the "
+             "Mockingbird Foundation, phish.in, and fouldomain.")
+    return ACK_SHELL.format(
+        crumb=nav_strip(section="FAQ"),
+        ago_js=AGO_JS,
+        new_rows_js=NEW_ROWS_JS,
+        analytics=ANALYTICS,
+        css=ACK_CSS, totop=TOTOP_JS, fonts=WEB_FONTS,
+        sheet=sheet_links("./fonts.css"),
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
+        body=body,
+        share=share_meta("Acknowledgments", html.escape(blurb, quote=True),
+                         ACK_PAGE))
 
 
 # ------------------------------------------------------------------ cards ---
@@ -10680,6 +10908,15 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     faq = os.path.join(site_dir, "faq.html")
     if write_if_changed(faq, render_faq()):
         log("wrote %s", faq)
+
+    # Reads the phish.in catalogue off disk rather than being handed the set
+    # the show pages use: those are built above from a different call in a
+    # branch this one is not inside, and a page whose only figure came from
+    # somewhere else would be the songs-index bug again -- two definitions of
+    # one count, on two pages, disagreeing.
+    ack = os.path.join(site_dir, ACK_PAGE)
+    if write_if_changed(ack, render_acknowledgments(phishin_dates(site_dir))):
+        log("wrote %s", ack)
 
     index = os.path.join(site_dir, "index.html")
     # Twenty of the archive's entries are soundchecks or TV and radio

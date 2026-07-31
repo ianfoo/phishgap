@@ -72,7 +72,24 @@ built the hero cards from five copies of the same two lines, three escaping
 the href and two not. `hero_html` is the one copy now, and `hero_cols` beside
 it is the pattern — the builder *states* what the CSS needs to know (how many
 columns, which card carries a name) rather than the CSS inferring it, because
-an inference like `:has(.of)` fails silent.
+an inference like `:has(.of)` fails silent. **The footer is `footer_html()`**
+for the same reason as the nav — it was eleven copies in eleven shells, and
+adding one cell to it would have been eleven chances to miss a page. It also
+reserves a lane at the page bottom for the floating back-to-top: `.totop` is
+fixed to the viewport's bottom right, so the footer's last row is the one
+piece of content it is guaranteed to cover, and a fourth cell put a 65×26px
+control under it. Reserve the lane rather than move the victim; the sweep
+found a second one at 768px.
+
+**`.prose p` beats a bare class, and two rules have lost to it.** `.prose p`
+is one class and one type, so any single-class rule styling a `<p>` inside the
+prose loses outright — order cannot help, because the two are not equal.
+`.backtop` was found this way; `.src` had *never once been drawn* since the
+FAQ's segues answer was written, rendering as an ordinary body paragraph. Both
+are `X,.prose X` now. **Check any single-class rule that styles a `<p>` inside
+`.prose`, and check it by reading the computed style off the built page** —
+and reload past the cache first: this was measured as still-broken once,
+against a page the browser had kept.
 
 **A debut carries a "gap" that is not a gap, and skipping row 0 does not
 always skip it.** phish.net gives a song's first counted performance a gap
