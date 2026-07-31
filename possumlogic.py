@@ -1412,7 +1412,7 @@ body{font-variant-numeric:tabular-nums}
    text-transform:uppercase;color:var(--dim);background:none;
    border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
    cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
-.keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.keyhint:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Not on a touch device. It is a discovery aid for keys, and a phone has
    none -- so it sat in the footer of every page offering "[ and ] to step
    between shows" to a reader with no way to press either, and "Keys ?" is
@@ -1444,7 +1444,7 @@ dialog.keys form{margin:1rem 0 0;text-align:right}
 dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim);background:none;
    border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
-dialog.keys button:hover{color:var(--hot);border-color:var(--hot)}
+dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
 @media print{.keyhint,dialog.keys{display:none}}
 """
 
@@ -1483,7 +1483,7 @@ html,body{overflow-x:clip}
 #: The navigation's hover and its 24x24 hit area (WCAG 2.5.8). The three sheets
 #: lay .crumb out differently -- show pages carry a pager row the others do not
 #: -- but the target and the hover are the same everywhere.
-NAV_HIT_CSS = """.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+NAV_HIT_CSS = """.crumb a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
@@ -1546,7 +1546,7 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
    with a browser underline, on the one page on the site that has them. */
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.dek a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 """
 
 #: Footer links, drawn the way every other link on the site is drawn.
@@ -1567,7 +1567,7 @@ FOOTER_BOX_CSS = """footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px so
 
 FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 """
 
 CSS = BASE_CSS + """h1,h2,.title{text-wrap:balance}
@@ -1660,8 +1660,8 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    that has happened here: a new link in a sheet with no rule for it. */
 .where .v-name a,.show .tour a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.where .v-name a:hover,.show .tour a:hover{color:var(--hot);
-   border-bottom-color:var(--hot)}
+.where .v-name a:hover,.show .tour a:hover{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 /* Two elements, so there is no separator to strand. The locality steps back
    rather than being joined by punctuation that has nowhere safe to break. */
 .where .v-name{display:block}
@@ -1775,7 +1775,7 @@ a.jc-chip:hover{background:var(--hot-text);color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;line-height:1;
      white-space:nowrap}
-.gap.big{color:var(--hot)}
+.gap.big{color:var(--hot-text)}
 .gap.small{color:var(--cool)}
 /* The number carries the gap; these carry how the song usually behaves. Sized
    into the same family as the venue text under a date, which is the smallest
@@ -1976,7 +1976,7 @@ td.song a{color:inherit;text-decoration:none}
    exclusion this one won and painted the chip's text the colour of its own
    fill. Excluding it here rather than escalating there is deliberate: a bigger
    selector on the chip would only move the race one round on. */
-td.song a:not(.jc-chip):hover{color:var(--hot)}
+td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 .place{color:var(--dim);font-size:.75rem;line-height:1.2rem;white-space:nowrap}
 .none{color:var(--dim);font-style:italic}
 /* The show's own notes: the other block of real prose on the site, and set in
@@ -1984,7 +1984,7 @@ td.song a:not(.jc-chip):hover{color:var(--hot)}
 .notes{margin:2.2rem 0 0;padding:1rem 1.1rem;border-left:3px solid var(--rule);
        font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
        font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:68ch}
-.notes a{color:var(--hot)}
+.notes a{color:var(--hot-text)}
 """ + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -3282,7 +3282,7 @@ header{padding-bottom:.9rem}
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
-.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -3405,13 +3405,13 @@ header{padding-bottom:.9rem}
 .due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
 .due .row:hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
-.due .row:hover .d-song{color:var(--hot)}
+.due .row:hover .d-song{color:var(--hot-text)}
 .d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;white-space:nowrap}
 .d-where{display:block;color:var(--dim);font-size:.75rem}
 .d-n{text-align:right}
 .d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
+   font-size:1.5rem;line-height:1;color:var(--hot-text);white-space:nowrap}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
 .d-n .typ span{display:block;white-space:nowrap}
 /* Same rule the song pages carry, and it has to be stated here too because
@@ -3442,7 +3442,7 @@ header{padding-bottom:.9rem}
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .backtop a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule);position:relative;display:inline-block}
-.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .backtop a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media print{.backtop{display:none}}
@@ -3457,7 +3457,7 @@ header{padding-bottom:.9rem}
 .vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
 .vn .row:hover{background:var(--hover)}
 .vn-venue{font-size:1rem;font-weight:500}
-.vn .row:hover .vn-venue{color:var(--hot)}
+.vn .row:hover .vn-venue{color:var(--hot-text)}
 .vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
 .vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
    color:var(--dim);white-space:nowrap}
@@ -3516,7 +3516,7 @@ header{padding-bottom:.9rem}
 .ax-row{display:contents;color:inherit;text-decoration:none}
 .ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
    border-bottom:1px solid var(--rule)}
-a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
+a.ax-row:hover .ax-date{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
@@ -4230,11 +4230,11 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    color:var(--dim)}
 .best .field{display:flex;flex-direction:column;gap:.3rem}
 .best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
-.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot);
+.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot-text);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
-.best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.best a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
@@ -4268,17 +4268,17 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .era-chip b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
 .era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
-.era-chip:hover b{color:var(--hot)}
+.era-chip:hover b{color:var(--hot-text)}
 /* Shown only once there is something to clear. */
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
-.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 /* A venue is a filter waiting to happen: click it to see every other night
    the song was played there. */
 .r-venue{cursor:pointer}
-.r-venue:hover{color:var(--hot)}
+.r-venue:hover{color:var(--hot-text)}
 .count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
@@ -4327,7 +4327,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-family:'IBM Plex Mono',ui-monospace,monospace;
    letter-spacing:0;text-transform:none;color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule);white-space:nowrap}
-.head .marks:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.head .marks:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .head .ghead{grid-column:4/-1;text-align:right}
 /* Every row is its own grid, so an `auto` last column sizes to its own content
    and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
@@ -4342,7 +4342,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:1rem;line-height:1.3rem;white-space:nowrap}
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.r-date a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.r-date a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* One copy of each favicon for the whole page, worn by class.
    No blanket opacity: these icons do not agree about their own. phish.net's is
    fully opaque, phish.in's averages an alpha of 130 and fouldomain's 137, so a
@@ -4428,7 +4428,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .card.since.over .v{color:var(--hot-text);text-transform:uppercase;
    letter-spacing:.14em}
 .card.since.dormant .num{color:var(--ink-soft)}
-.gap.big{color:var(--hot)}
+.gap.big{color:var(--hot-text)}
 .gap.none{color:var(--dim)}
 /* A soundcheck or a television session. It happened and it is listed,
    but phish.net does not count it toward a gap and neither do we, so
@@ -4515,7 +4515,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.mark a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.mark a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* phish.net's note on the version, set under the venue rather than across the
    row: spanning every column put it against the page's left edge, where it
    read as something stuck on afterwards rather than as part of the entry.
@@ -4553,7 +4553,7 @@ details.note summary::after{content:"More";display:inline-block;margin-top:.2rem
 details.jam[open] summary::after,
 details.note[open] summary::after{content:"Less"}
 details.jam summary:hover::after,
-details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot)}
+details.note summary:hover::after{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
 .empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
@@ -4603,7 +4603,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
   justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
-.totop:hover{color:var(--hot);border-color:var(--hot)}
+.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
 """ + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
@@ -5981,7 +5981,7 @@ DORMANT_CSS = INDEX_CSS + """
    border-bottom:1px solid var(--rule);position:relative}
 .yr .up::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
-.yr .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.yr .up:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The strip of jump links that used to sit here is gone with the years it
    pointed at. Eighteen years needed a strip; three sections do not, and the
    hero directly under it already names all three, counts them and links to
@@ -6510,7 +6510,7 @@ METHOD_CSS = INDEX_CSS + """
    would have come out in the browser's default blue. */
 .prose a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.prose a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The contents block, shared by both prose pages. Generated from the same
    list the sections are, so it cannot name one the page does not have or miss
    one it does -- the FAQ has worked this way since it was built and the method
@@ -6540,10 +6540,16 @@ METHOD_CSS = INDEX_CSS + """
    padding:.4rem 0;font-family:'Literata',Georgia,serif;
    font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
    color:var(--ink-soft);text-decoration:none;border:0}
+/* --ink-soft, not --dim. This is the one place on the site where --dim sits on
+   something other than paper: the panel above carries a --rule-soft wash, which
+   takes --dim from 4.98:1 on bare paper to 4.13:1 here, and 4.49:1 in the dark
+   -- both under the floor for 12px. The mono face and the smaller size were
+   always doing the work of separating the enumerator from the entry; being
+   dimmer as well was belt and braces that cost the contrast. */
 .toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
-   font-size:.75rem;font-weight:600;color:var(--dim)}
-.toc a:hover{color:var(--hot)}
-.toc a:hover::before{color:var(--hot)}
+   font-size:.75rem;font-weight:600;color:var(--ink-soft)}
+.toc a:hover{color:var(--hot-text)}
+.toc a:hover::before{color:var(--hot-text)}
 /* The way back up. Every answer and every section gets one, because the point of an index is
    being able to pick a second question after the first -- and without this the
    only route was scrolling back yourself. Mono and small: it is a control, not
@@ -6560,7 +6566,7 @@ METHOD_CSS = INDEX_CSS + """
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .backtop a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* 24x24, the same floor the nav links were held to, without moving the ink. */
 .backtop a{position:relative;display:inline-block}
 .backtop a::before{content:"";position:absolute;left:50%;top:50%;

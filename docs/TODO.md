@@ -2911,27 +2911,47 @@ Three things it got wrong first, all now guarded in the file:
   stylesheet, no findings, and a green report. It now throws if the loaded
   document has under 1000 bytes of CSS.
 
-### Still open: the `--hot`/`--hot-text` line outside the stamps
+### The `--hot`/`--hot-text` line outside the stamps — Ian said fix it. DONE
 
-The sweep leaves **one band standing, all of it in the light palette** (dark is
-unaffected: `--hot` and `--hot-text` are the same colour there). It is not a
-bug, it is the same palette rule not being applied outside the stamps, and it
-is Ian's call because it changes the site's hover red everywhere:
+The stamp fixes left **one band standing, all of it in the light palette**
+(dark is unaffected: `--hot` and `--hot-text` are the same colour there): 42
+findings between 3.68 and 4.49, none of them a bug so much as the palette's own
+rule — "Display keeps the brighter one; anything small takes the darker" — not
+being applied outside the stamps. Raised as his call because it darkens the
+site's hover red everywhere; he took it.
 
-- **4.12:1** — `--hot` text on the `--hover` row tint. Every row hover on the
-  site: `td.song a`, `.d-song`, `.vn-venue`, `.r-venue`, `.r-date a`,
-  `.gap.big`, `details.jam summary::after`, the `.ext` links.
-- **4.44:1** — `--hot` on plain paper, at 11–22px: `.keyhint`, `.crumb a`,
-  `.crumb.pager`, `.ax-date`, `.best .score`, `.era-chip b`, `.totop`,
-  `.yr .up`, `.notes p a`.
-- **3.68:1 and 4.13:1** — the method page's `.toc`, worst in the set, because
-  that panel has its own `--rule-soft` background under the text. Its resting
-  number (`.toc a::before`, `--dim`) is 4.13 light and 4.49 dark.
+**31 `color:var(--hot)` sites moved to `--hot-text`,** with the 15
+`border-bottom-color` and 4 `border-color` declarations in those same hover
+rules following, so a hovered link is not two different reds. Backgrounds,
+focus outlines, the `.bar .at.late` mark and the structural `border-left`
+accents were deliberately left alone: those are non-text and pass 3:1 easily.
 
-Swapping `--hot` → `--hot-text` in text position fixes all of it (5.30:1 on the
-row tint, 4.80:1 in the `.toc` panel) at roughly 20 rule sites, and darkens the
-light-mode hover red a shade. Not done: it is a look-of-the-site decision, not
-a defect.
+**Three sites keep the display accent, which is the rule working as written:**
+`.num.hot` (the hero figures, 40.5px), `h1 em` (the wordmark) and
+`.card.since.over .num`. `.num.hot` measures 4.44:1 against a floor of 3 — it
+is exactly the "36px figure" the palette note is about.
+
+One site was not a `--hot` problem at all. **`.toc a::before` is the only place
+on the site where `--dim` sits on something other than paper**: the index panel
+carries a `--rule-soft` wash, which takes `--dim` from 4.98:1 on bare paper to
+4.13:1 there, and 4.49:1 in the dark — under the floor in *both* palettes, the
+only resting failure in the set. It is `--ink-soft` now. The mono face and the
+smaller size were always what separated the enumerator from the entry text;
+being dimmer as well was belt and braces that cost the contrast.
+
+Measured after (all light unless noted):
+
+| | before | after |
+|---|---|---|
+| `.d-song` on the row-hover tint | 4.12 | **5.36** |
+| `.d-n b`, 27px | 4.12 | **5.36** |
+| `.toc a` label, in the panel | 3.68 | **4.79** |
+| `.toc a::before` number | 4.13 / 4.49 dark | **7.72 / 7.24 dark** |
+| `.crumb a` hover | 4.44 | **5.78** |
+| `.num.hot` hero figure | 4.44 (floor 3) | unchanged, deliberate |
+
+A full sweep of all 13 page states, both palettes, both layouts now reports
+**nothing below its AA floor** — the tool prints "Pass."
 
 ## 9. Known and deliberately not fixed
 

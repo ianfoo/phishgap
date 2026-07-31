@@ -66,6 +66,18 @@ touching a palette token, a `:hover`/`:focus` rule, or any selector that could
 out-specify one. It caught both bugs above, and then caught the first fix for
 the second one being wrong. `docs/TODO.md` §8j.
 
+**`--hot` is the display accent and `--hot-text` is everything else.** The
+brighter one reads 4.44:1 on paper — fine against a 40px figure, under the
+floor for the 10–22px text it had spread to. As of 2026-07-30 the only places
+still allowed to use `--hot` for *text* are `.num.hot`, `h1 em` and
+`.card.since.over .num`; 31 other sites were moved, along with the
+`border-bottom-color` in the same hover rules so a hovered link is one colour.
+Backgrounds, focus rings and the `.bar` marks are non-text and stay `--hot`.
+Watch for the other half of this: `--dim` is 4.98:1 on bare paper and fails on
+anything tinted — `.toc a::before` sat on the index panel's `--rule-soft` wash
+at 4.13:1 light and 4.49:1 dark. **A token that passes on paper has not been
+checked until it is checked on the thing it actually sits on.**
+
 **Drawing preview cards locally poisons CI.** `site/data/cards.json` records
 what each card was drawn from and is tracked; `site/card/*.png` is gitignored.
 So a local `--rebuild` draws the images here, writes "already drawn" into a
