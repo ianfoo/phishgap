@@ -92,6 +92,20 @@ Done and pushed. Four things a fresh session should carry:
   on a page of thanks, backhanded. It also called the gap "the number this
   whole archive is built around": that was the impetus for the site, not what
   it is now. Short, earnest, no pontificating.
+- **The type is credited in a colophon, set off from the three.** Ian: "it's
+  of a different nature than the data and service and source material
+  providers… Font designers deserve love, though." A tear line, a caption
+  rather than a heading, one size down, and each name set in the face it
+  names — Bagnard by Sebastien Sanfilippo, Literata by TypeTogether, IBM Plex
+  Mono by Mike Abbink and Bold Monday, all three under the OFL. Not `<b>`:
+  Bagnard ships at 400 only, so bold would draw a synthetic one on the very
+  face being shown off.
+- **`aria-label='Color theme'`**, on all 1,311 pages. It was the only British
+  spelling in the site's own copy — the 157 "Centre"s are phish.net venue
+  names, the "organism"s are their jam-chart prose, and "catalogue" is a
+  deliberate house habit in four places. Checked by scanning reader-visible
+  text and the aria/title/alt attributes across the built site, not by
+  grepping the source.
 
 ### Newest first: the 2026-07-30 review of songs, home, due and dormant
 

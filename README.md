@@ -231,6 +231,11 @@ under the band's own taping policy, and kept free.
 phish.net's own show rating reaches the site. It is one person's work, by Kevin
 Spence.
 
+Set in [Bagnard](https://github.com/sebsan/Bagnard) by Sebastien Sanfilippo,
+[Literata](https://www.type-together.com/literata-font) by TypeTogether, and
+[IBM Plex Mono](https://www.ibm.com/plex/) by Mike Abbink and Bold Monday — all
+three given away under the SIL Open Font License.
+
 Not affiliated with Phish, and not endorsed by them.
 
 ## Notes

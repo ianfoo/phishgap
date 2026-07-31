@@ -1221,7 +1221,12 @@ ROW_JS = """<script>
 })();
 </script>"""
 
-THEME_UI = ("<span class='theme' role='group' aria-label='Colour theme'>"
+# American spelling: the reader is, and nobody asked for the other one. This
+# was the only British spelling in the site's own copy -- the 157 "Centre"s and
+# the "organism"s are phish.net's venue names and jam-chart prose, and
+# "catalogue" is a deliberate house habit in four places. Screen-reader label,
+# so it is read aloud rather than seen, which is how it survived this long.
+THEME_UI = ("<span class='theme' role='group' aria-label='Color theme'>"
             + "".join("<button type='button' data-theme='%s' disabled>%s</button>"
                       % (v, v.title()) for v in ("auto", "light", "dark"))
             + "</span>")
@@ -8627,11 +8632,47 @@ def render_faq():
 
 # ------------------------------------------------------- acknowledgments ---
 
-# Built on the method page's sheet like the FAQ is, and adding nothing to it.
-# The one rule this page wanted -- `.src`, the small dim line under a heading
-# naming where something came from -- was on the FAQ's sheet, which is built on
-# this one, so it moved down into METHOD_CSS rather than being copied up.
-ACK_CSS = METHOD_CSS
+# Built on the method page's sheet like the FAQ is. The one rule this page
+# wanted from elsewhere -- `.src`, the small dim line under a heading naming
+# where something came from -- was on the FAQ's sheet, which is built on this
+# one, so it moved down into METHOD_CSS rather than being copied up.
+#
+# The colophon is this page's own, and it is a block rather than a fifth
+# section on purpose. Ian: "it's of a different nature than the data and
+# service and source material providers, so I feel like it should be set off
+# somehow. Font designers deserve love, though." A typeface is a tool this
+# site was made with; the three above it are the material it is made of. So it
+# gets the tear line this site already uses between one set and the next, a
+# caption where the others have a heading, and a size down -- a coda, not a
+# fourth name in the list.
+#
+# `.prose .colophon p` and not `.colophon p`: the latter is one class and one
+# type, exactly equal to `.prose p`, so it would win on source order alone --
+# and betting on source order is how `.src` and `.backtop` came to be rules
+# that had never once been drawn.
+ACK_CSS = METHOD_CSS + """
+.colophon{max-width:66ch;margin:0 0 1rem}
+.colophon .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .7rem}
+.prose .colophon p{font-size:.9375rem;font-variation-settings:'opsz' 15;
+   margin:0 0 .7rem}
+.prose .colophon p:last-child{margin-bottom:0;color:var(--dim)}
+/* Each name set in the face it names, which is the whole convention of a
+   colophon and the only place on this site where all three appear together.
+   Not <b>: Bagnard ships at 400 and nothing else, so asking for bold would
+   have the browser draw a synthetic one -- a slanted, smeared version of a
+   face being shown off. The weight each of these gets is the weight it has.
+   Plex is stepped down because a mono at the same nominal size sets visibly
+   larger than a serif beside it. */
+/* A name is one word however many spaces are in it: IBM Plex Mono broke over
+   two lines at this measure, and a typeface's name snapped in half is a poor
+   advertisement for the care being thanked. */
+.colophon .f-bag,.colophon .f-lit,.colophon .f-mono{white-space:nowrap}
+.colophon .f-bag{font-family:'Bagnard',Georgia,serif;font-size:1.0625rem}
+.colophon .f-lit{font-family:'Literata',Georgia,serif;font-weight:500}
+.colophon .f-mono{font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;font-size:.875rem}
+"""
 
 ACK_SHELL = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
@@ -8652,7 +8693,20 @@ ACK_SHELL = """<!DOCTYPE html>
 keep them going.</p></header>
 <div class="rule2"></div>
 <div class="prose" id="main" tabindex="-1">
-{body}</div>
+{body}
+<div class="perf"></div>
+<div class="colophon">
+<span class="cap">Set in</span>
+<p><a class="f-bag" href="https://github.com/sebsan/Bagnard" target="_blank"
+rel="noopener noreferrer">Bagnard</a>, by Sebastien Sanfilippo.
+<a class="f-lit" href="https://www.type-together.com/literata-font"
+target="_blank" rel="noopener noreferrer">Literata</a>, by TypeTogether.
+<a class="f-mono" href="https://www.ibm.com/plex/" target="_blank"
+rel="noopener noreferrer">IBM Plex Mono</a>, by Mike Abbink and Bold
+Monday.</p>
+<p>All three are given away under the SIL Open Font License &mdash; years of
+drawing, free to anyone, and the reason this site can look like itself.</p>
+</div></div>
 {totop}
 """ + footer_html(right=None, here=ACK_PAGE) + """
 {analytics}

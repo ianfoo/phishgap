@@ -217,6 +217,17 @@ exists is not the same as remembering it while costing work.
 **`body` is IBM Plex Mono site-wide.** Literata is loaded and applied
 deliberately to running prose (`.jam`, `.note`, `.prose`). Mono prose anywhere
 else is usually an artifact of that default rather than a decision.
+**Bagnard ships at weight 400 and nothing else**, so `<b>` around it draws a
+synthetic bold — the colophon on `acknowledgments.html` sets each typeface's
+name in its own face and uses classes rather than `<b>` for that reason.
+
+**American spellings, and the exceptions are somebody else's words.** The
+site's own copy is American; the 157 "Centre"s in the built pages are
+phish.net's venue names and the "organism"s are their jam-chart prose, both of
+which stay as written. "Catalogue" is a deliberate house habit in four places.
+`aria-label='Colour theme'` was the one real slip and lived on every page for
+months because it is read aloud rather than seen — **scan reader-visible text
+*and* the aria/title/alt attributes of the built site, not the source.**
 
 **Anything long-running must re-read its inputs each pass.** Three separate
 outages have had one shape — a job that publishes from something it read once:
