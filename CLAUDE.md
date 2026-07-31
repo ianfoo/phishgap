@@ -41,6 +41,31 @@ bugs have come out of the copies: a nav that could not wrap, a footer link in
 the browser's default blue, a sticky-header hide out-specified by a modifier
 class, and tabular figures on show pages only. `docs/TODO.md` §8e.
 
+**A stamp that reverses on hover can lose its text to a plainer rule, and you
+cannot see it in the source.** The Jam chart chip hovered to `var(--hot)` on a
+`var(--hot)` fill — 1.00:1, a solid red block where a word had been — because
+`a.jc-chip:hover` is 0-2-1 and `td.song a:hover`, further down the same sheet,
+is 0-2-2. What made it look handled was the dead half of the chip's own
+selector: `td.song a:hover .jc-chip` had never matched anything, because the
+chip is a *sibling* of the title link, not a descendant. **The fifth instance
+of a modifier class losing to a descendant selector**, after the sticky-header
+hide, `.backtop` and `.live span`. The same shape was live in `.onstage`: its
+hover repaint named three children and missed a fourth, leaving "songs so far"
+at 1.12:1 / 1.08:1 — on the banner that appears *only* while a show is being
+played, so no amount of browsing the archive could turn it up. **A list of
+children is a list a fourth child is not on.** Beware the obvious cure:
+`.onstage:hover *` does not work, because `*` contributes nothing to
+specificity, so at 0-2-0 it still loses to `.onstage .n b` at 0-2-1. Repeat
+the class instead.
+
+None of this is visible in the CSS, in a resting screenshot, or to anything
+that reads the source — the cascade has to be resolved *in the state*.
+`tools/contrast_audit.html` does that for every colour, state, palette and
+layout, and the `audit` entry in `.claude/launch.json` serves it. Run it after
+touching a palette token, a `:hover`/`:focus` rule, or any selector that could
+out-specify one. It caught both bugs above, and then caught the first fix for
+the second one being wrong. `docs/TODO.md` §8j.
+
 **Drawing preview cards locally poisons CI.** `site/data/cards.json` records
 what each card was drawn from and is tracked; `site/card/*.png` is gitignored.
 So a local `--rebuild` draws the images here, writes "already drawn" into a

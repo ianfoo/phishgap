@@ -1748,12 +1748,30 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 .seg.tight{letter-spacing:-.06em}
 .seg{margin-left:.3rem;font-family:'IBM Plex Mono',ui-monospace,monospace;
    font-weight:600;color:var(--dim);white-space:nowrap}
+/* One colour, not two. The border was --hot while the text was --hot-text,
+   which is invisible at rest and becomes a lighter ring around a darker fill
+   the moment the chip reverses. */
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
-   border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
+   border:1px solid var(--hot-text);color:var(--hot-text);font-size:.625rem;
    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
 a.jc-chip{text-decoration:none}
-td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper);
+/* The selector this replaces was `td.song a:hover .jc-chip,a.jc-chip:hover`,
+   and the first half of that was dead: the chip is a *sibling* of the title
+   link, never a descendant of it, so that half had never matched anything.
+   What it did do was make the hover look handled, while the half that does
+   match -- a.jc-chip:hover, 0-2-1 -- lost the colour to `td.song a:hover` at
+   0-2-2 further down this sheet. The chip therefore hovered to var(--hot) on
+   var(--hot): 1.00:1, a solid red block where a word had been. Ian caught it.
+   Fixed at the other end, by excluding the chip there rather than escalating
+   here -- see the note on that rule. Same shape as .live span:not(.since-you),
+   the sticky-header hide and .backtop: a modifier class losing to a descendant
+   selector, four times now.
+
+   --hot-text, not --hot, and for the reason the palette gives: 10px caps want
+   the 4.5 floor and paper on --hot is 4.44. On --hot-text it is 5.79 light,
+   6.64 dark. Same call as .since-you, .verdict.bustout and .onstage. */
+a.jc-chip:hover{background:var(--hot-text);color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;line-height:1;
      white-space:nowrap}
@@ -1782,10 +1800,15 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    two degrees off true. The right margin buys the rotation its clearance. This
    is the only rotated thing on the site; the moment there are two, it reads as
    a theme rather than a stamp. */
+/* --hot-text, like every other reversed stamp on the site. The palette note
+   names this case exactly -- "the 10px chips and verdicts it is also used on"
+   -- and this one had kept the display accent anyway: paper on --hot is
+   4.44:1, and this is 10px. --hot-text lands at 5.79. Dark is unaffected; the
+   two are the same colour there. */
 .verdict.bustout{display:inline-block;margin:0 .6rem .1rem .5rem;
-   background:var(--hot);color:var(--paper);padding:.16rem .4rem;
+   background:var(--hot-text);color:var(--paper);padding:.16rem .4rem;
    font-size:.625rem;font-weight:600;letter-spacing:.14em;line-height:1.15;
-   box-shadow:0 0 0 1.5px var(--paper),0 0 0 3px var(--hot);
+   box-shadow:0 0 0 1.5px var(--paper),0 0 0 3px var(--hot-text);
    transform:rotate(-2deg);transform-origin:left center;
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 /* Our own tooltip, because the browser's waits about a second before showing
@@ -1948,7 +1971,12 @@ tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
    them would stripe the table, so it colours on hover instead. */
 td.n,td.song{vertical-align:baseline}
 td.song a{color:inherit;text-decoration:none}
-td.song a:hover{color:var(--hot)}
+/* :not(.jc-chip), because this cell holds two links and only one of them is a
+   title. This rule is 0-2-2 and the chip's own hover is 0-2-1, so without the
+   exclusion this one won and painted the chip's text the colour of its own
+   fill. Excluding it here rather than escalating there is deliberate: a bigger
+   selector on the chip would only move the race one round on. */
+td.song a:not(.jc-chip):hover{color:var(--hot)}
 .place{color:var(--dim);font-size:.75rem;line-height:1.2rem;white-space:nowrap}
 .none{color:var(--dim);font-style:italic}
 /* The show's own notes: the other block of real prose on the site, and set in
@@ -3326,10 +3354,13 @@ header{padding-bottom:.9rem}
 .onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
    margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
    border-left:4px solid var(--hot);background:var(--hover)}
-.onstage:hover{background:var(--hot);color:var(--paper)}
+/* --hot-text and the left edge with it, so the reversed block is one colour
+   rather than a 4px stripe of the display accent against a darker fill. Same
+   4.44-at-10px argument as .jc-chip and .verdict.bustout. */
+.onstage:hover{background:var(--hot-text);border-left-color:var(--hot-text);
+   color:var(--paper)}
 .onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text);font-weight:600}
-.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
 .onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
 .onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
    text-transform:none;letter-spacing:0}
@@ -3337,6 +3368,26 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Everything inside a reversed block comes with it. This used to be a list of
+   the three children that pin a colour -- .k, .n b, .p -- and the list was
+   missing .n itself, whose own text is the words "songs so far". They stayed
+   var(--dim) on the fill: 1.12:1 light, 1.08:1 dark, which is not dim, it is
+   gone. Exactly the numbers the .live span bug produced, in the same week, on
+   the banner that only ever appears while a show is being played -- so the
+   one state nobody browsing the archive can stumble into.
+
+   A list of children is a list a fourth child is not on; `*` cannot be
+   incomplete.
+
+   The class is doubled because the first attempt at this was `.onstage:hover
+   *` and it did not work on all of them. `*` contributes *nothing* to
+   specificity, so that selector is 0-2-0: it beat .k and .p at 0-2-0 on order
+   alone and lost to .onstage .n b at 0-2-1, leaving the song count as var
+   (--ink) on the fill, 2.68:1 light and 2.25:1 dark. Repeating .onstage buys
+   the third class the element in `.n b` would otherwise win with, so this is
+   0-3-0 and no descendant rule in the block can reach it -- and it does not
+   have to be kept in any particular place in the sheet to stay true. */
+.onstage:hover.onstage *{color:inherit}
 /* Structural, and load-bearing rather than tidiness. Every list section on the
    due and out-of-rotation pages is wrapped in one of these so that its
    position:sticky column header is held by the section instead of by the page:
@@ -6422,9 +6473,15 @@ METHOD_CSS = INDEX_CSS + """
 .prose b{color:var(--ink)}
 .prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
-.prose .overdue{color:var(--hot)}
+/* The same two stamps the show pages carry, and they had drifted: there
+   .verdict.overdue is --hot-text and here .overdue was still --hot, so the
+   page that exists to explain the marks showed them in a different red from
+   the marks themselves -- and at 4.44:1, under the floor for 10px caps. Both
+   copies now say --hot-text. `.crumb` and `.hero` differ between sheets for
+   real reasons; these two never did. */
+.prose .overdue{color:var(--hot-text)}
 .prose .premature{color:var(--cool)}
-.prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;
+.prose .bust{background:var(--hot-text);color:var(--paper);padding:.1rem .3rem;
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}

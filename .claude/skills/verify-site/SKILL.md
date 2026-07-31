@@ -24,6 +24,22 @@ Rebuild (`--rebuild`, ~2s), serve via the `site` entry in
 - The browser pane sometimes reports `innerWidth: 0` and returns blank
   screenshots. Resize it and retake rather than trusting the measurement.
 
+## A colour is not one colour — check it in every state
+
+Resting is the state nobody ships broken. Two stamps shipped invisible *on
+hover*: the Jam chart chip at 1.00:1 (a solid red block where a word had been)
+and the "On stage now" banner's label at 1.12:1 — the second on a banner that
+only exists while a show is being played, so browsing the archive could never
+turn it up. Both were a `:hover` rule losing a `color` to a plainer descendant
+selector further down the same sheet. Neither is visible in the CSS, in a
+resting screenshot, or to anything that reads the source.
+
+Run `tools/contrast_audit.html` — the `audit` entry in `.claude/launch.json`
+serves it — after touching a palette token, a `:hover`/`:focus` rule, or any
+selector that could out-specify one. It resolves the cascade in each state,
+in both palettes, at both layouts, and reports anything under the AA floor for
+its own type size. Rebuild first; it reads built pages, not `possumlogic.py`.
+
 ## Local build and published site are different questions
 
 The live site and a local build disagreed for over an hour while every local

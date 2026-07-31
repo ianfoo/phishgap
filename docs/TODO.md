@@ -2830,6 +2830,109 @@ launch). Expect the next scheduled run to be several minutes longer than usual,
 once. After that the index is current again and the incremental behaviour is
 unchanged.
 
+## 8j. Hovering the Jam chart stamp made it vanish — Ian, 2026-07-30. DONE
+
+He sent a screenshot of a setlist row where the chip beside "Mercury >" was a
+solid red block, said this was the same thing as the "new since you last
+looked" tag the night before, and asked for the whole class to be swept rather
+than found one at a time. It was the right instinct: there was a second live
+one, on a banner he could not have stumbled into.
+
+### What was wrong
+
+**1. The chip — 1.00:1, both palettes.** `a.jc-chip:hover` sets
+`background:var(--hot);color:var(--paper)` at 0-2-1. `td.song a:hover{color:
+var(--hot)}`, 190 lines further down the same sheet, is 0-2-2 and took the
+`color` — so the chip painted `--hot` on `--hot`. What made it look handled was
+the other half of its own selector, `td.song a:hover .jc-chip`, which had
+**never matched anything**: the chip is a *sibling* of the title link, not a
+descendant. Fixed at the far end — `td.song a:not(.jc-chip):hover` — rather
+than by escalating the chip, which only moves the race one round on. That is
+the fifth modifier-class-loses-to-descendant-selector bug, after the
+sticky-header hide, `.backtop` and `.live span`.
+
+**2. "On stage now" — 1.12:1 light, 1.08:1 dark.** `.onstage:hover` reverses
+the whole banner onto a solid fill and then repaints exactly three children:
+`.k`, `.n b`, `.p`. It missed `.n` itself, whose own text is the words "songs
+so far", so they stayed `var(--dim)` on the fill. Identical numbers to the
+`.live span` bug in §"N new since you last looked". **This banner only exists
+while a show is being played**, so no page in the archive carries it and
+nothing that reads built HTML could have found it.
+
+**3. The stamps had drifted from the palette's own rule.** `--hot-text` exists
+because "the accent reads at 4.44:1 on paper — fine for a 36px figure, under
+the bar for the 10px chips and verdicts it is also used on." Three of the four
+reversed stamps were still filling with `--hot`: the chip's hover,
+`.verdict.bustout`, and `.prose .bust` on the method page. `.prose .overdue`
+was `--hot` where the show pages' `.verdict.overdue` was already `--hot-text` —
+the same stamp, two sheets, one of them fixed. All now `--hot-text`: 5.78:1
+light, 6.63:1 dark, and a no-op in the dark palette where the two are one
+colour.
+
+### The `*` trap, which cost a round
+
+The first fix for `.onstage` was `.onstage:hover *{color:inherit}` — a list of
+children is a list a fourth child is not on, so name none of them. It fixed
+`.k`, `.p` and `.n` and **not** `.n b`, which stayed at 2.68:1 / 2.25:1. `*`
+contributes *nothing* to specificity, so that selector is 0-2-0: it beat the
+0-2-0 rules on source order alone and lost to `.onstage .n b` at 0-2-1. It is
+`.onstage:hover.onstage *` now — 0-3-0, which no descendant rule in the block
+can reach and which does not depend on where it sits in the sheet.
+
+The audit below is what caught that. It is worth saying plainly: the tool
+caught the *fix* being wrong, not just the bug.
+
+### `tools/contrast_audit.html`
+
+None of this is visible in the source, in a resting screenshot, or to anything
+that reads the CSS. The cascade has to be resolved *in the state*, which means
+a browser. The tool rewrites `:hover`, `:focus-visible`, `:target` and
+`:active` to classes of **identical specificity** (a pseudo-class and a class
+are both 0-1-0), in place in the same `<style>` element, so cascade order and
+specificity are exactly what a real pointer produces; then it walks every
+element and pseudo-element, composites the translucent backgrounds down to
+what is actually painted, and compares against the AA floor for that element's
+own type size. Both palettes, 1280 and 390. The two live-show states are
+reconstructed, since no built page carries them.
+
+Served from the repo root by the `audit` entry in `.claude/launch.json`, so it
+cannot end up published. Run it after touching a palette token, a `:hover` or
+`:focus` rule, or any selector that could out-specify one.
+
+Three things it got wrong first, all now guarded in the file:
+
+- **Reading `.sheet.cssRules` right after rewriting `textContent`** returns the
+  rule list from *before* the rewrite, or an empty one. It reported a clean
+  pass on a page with a known 1.00:1 bug. Selectors are parsed out of the text.
+- **`python -m http.server` sends no `Cache-Control`,** so a run straight after
+  a `--rebuild` measured the *previous* build and reported the bug just fixed
+  as still present. Every load now carries its own query string.
+- **A 404 fires `onload` like any other page,** giving a document with no
+  stylesheet, no findings, and a green report. It now throws if the loaded
+  document has under 1000 bytes of CSS.
+
+### Still open: the `--hot`/`--hot-text` line outside the stamps
+
+The sweep leaves **one band standing, all of it in the light palette** (dark is
+unaffected: `--hot` and `--hot-text` are the same colour there). It is not a
+bug, it is the same palette rule not being applied outside the stamps, and it
+is Ian's call because it changes the site's hover red everywhere:
+
+- **4.12:1** — `--hot` text on the `--hover` row tint. Every row hover on the
+  site: `td.song a`, `.d-song`, `.vn-venue`, `.r-venue`, `.r-date a`,
+  `.gap.big`, `details.jam summary::after`, the `.ext` links.
+- **4.44:1** — `--hot` on plain paper, at 11–22px: `.keyhint`, `.crumb a`,
+  `.crumb.pager`, `.ax-date`, `.best .score`, `.era-chip b`, `.totop`,
+  `.yr .up`, `.notes p a`.
+- **3.68:1 and 4.13:1** — the method page's `.toc`, worst in the set, because
+  that panel has its own `--rule-soft` background under the text. Its resting
+  number (`.toc a::before`, `--dim`) is 4.13 light and 4.49 dark.
+
+Swapping `--hot` → `--hot-text` in text position fixes all of it (5.30:1 on the
+row tint, 4.80:1 in the `.toc` panel) at roughly 20 rule sites, and darkens the
+light-mode hover red a shade. Not done: it is a look-of-the-site decision, not
+a defect.
+
 ## 9. Known and deliberately not fixed
 
 - GitHub Pages serves `cache-control: max-age=600` and cannot be configured,
