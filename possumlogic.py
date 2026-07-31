@@ -2445,6 +2445,17 @@ ROTATION_PLAYS = 8
 #: as a forwarding page, since it is in the sitemap and on a preview card.
 ROTATION_PAGE = "out-of-rotation.html"
 
+#: The page for everything the band played that was not a show.
+#:
+#: Named for what unites the two kinds rather than for the larger one. Thirteen
+#: of the twenty are soundchecks and seven are television or radio sessions, so
+#: calling the page Soundchecks would be `dormant.html` again -- a filename
+#: naming one of the things it holds. "Not a show" is also already this site's
+#: phrase for it: it is what a song page prints in the gap column of one of
+#: these rows, and what the songs index prints for a song that has only ever
+#: been played at one.
+NOT_A_SHOW_PAGE = "not-a-show.html"
+
 # And below this many, the song never got going at all. Ian, on the first cut:
 # "We can't call two a 'one shot' ... but for most intents and purposes, they
 # should probably be grouped with the one shots."
@@ -3662,12 +3673,20 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .d-n{grid-area:n}
   .d-n > b{font-size:1.25rem}
 }
-.aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
-.aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--dim);margin:0 0 .3rem;font-weight:400}
-.aside>p{margin:0 0 .7rem;font-size:.75rem;color:var(--dim);max-width:68ch}
-.aside ol{list-style:none;margin:0;padding:0}
-.aside li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+/* The pointer to the not-a-show page, where a list of twenty used to sit at
+   the foot of 692 rows. Ian: "move the 'also on file' listings to a higher
+   prominence home, or at least something that's not tacked onto the end of
+   the show list." Under the hero, where a reader lands. */
+.aside{margin:1.1rem 0 0;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside b{color:var(--ink);font-weight:400}
+.aside a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.aside a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The list itself, which moved to a page of its own. Named rather than
+   scoped to `.aside`, because it now has two homes and the version in this
+   file has been the wrong shape twice for want of one name. */
+.axlist{list-style:none;margin:0;padding:0}
+.axlist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
    padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
 .ax-row{display:contents;color:inherit;text-decoration:none}
 .ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
@@ -3676,8 +3695,9 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
-.aside .for{color:var(--dim)}
-.aside .for a{color:inherit}
+.ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+.axlist .for{color:var(--dim)}
+.axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
    of the numbers beside it. */
@@ -3949,6 +3969,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <p class="show">{subtitle}</p></header>
 {onstage}
 <section class="hero {hero_cls}">{hero}</section>
+{aside}
 <div class="rule2"></div>
 <div class="tools" id="main" tabindex="-1">
 <div class="tools-main">
@@ -3970,7 +3991,6 @@ INDEX_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
-{aside}
 {totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
@@ -4343,27 +4363,25 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # Not concerts, and kept off the list above rather than out of the site:
     # the pages exist, the gap figures on them do not describe a show, and a
     # soundcheck's whole reason for existing is the concert it precedes.
+    #
+    # It was a twenty-row list at the foot of 692, which is where a reader who
+    # has scrolled the entire archive finds it and nowhere else. Ian: "move the
+    # 'also on file' listings to a higher prominence home, or at least
+    # something that's not tacked onto the end of the show list." So the list
+    # is a page now and this is one line under the hero, before the search box
+    # rather than after everything -- and the page can say the things a tail
+    # block could not, which is what it is for.
     aside_html = ""
     if aside:
-        items = []
-        for a in sorted(aside, key=lambda a: a["report"]["date"], reverse=True):
-            r, kind = a["report"], a["kind"]
-            link = ""
-            if kind == "soundcheck" and a["before"]:
-                link = ("<span class='for'>for <a href='%s'>%s</a></span>"
-                        % (page_href % a["before"], a["before"]))
-            items.append(
-                "<li><a class='ax-row' href='%s'><span class='ax-date'>%s</span>"
-                "<span class='ax-kind'>%s</span>"
-                "<span class='ax-venue'>%s</span></a>%s</li>"
-                % (page_href % r["date"], r["date"], kind,
-                   html.escape(r.get("venue") or ""), link))
+        kinds = collections.Counter(a["kind"] for a in aside)
         aside_html = (
-            "<section class='aside'><h2>Also on file</h2>"
-            "<p>Soundchecks, and television and radio sessions. phish.net lists"
-            " these but does not count them toward a gap, so neither do we"
-            " &mdash; the figures on their pages describe the entry, not a"
-            " show the band played.</p><ol>%s</ol></section>" % "".join(items))
+            "<p class='aside'>Also on file: <b>%d</b> soundcheck%s and "
+            "<b>%d</b> television or radio session%s, which phish.net lists "
+            "and does not count toward a gap &mdash; so neither does this "
+            "site. <a href='./%s'>What was played at them</a>.</p>"
+            % (kinds["soundcheck"], "" if kinds["soundcheck"] == 1 else "s",
+               kinds["session"], "" if kinds["session"] == 1 else "s",
+               NOT_A_SHOW_PAGE))
 
     # A show being played is the reason to be here tonight, and a "so far"
     # tag on one row among 690 is not a way of saying so. The whole block is
@@ -5310,7 +5328,8 @@ def _sparse_gap_card(gaps):
             "<div class='num hot'>%s</div></div>" % (lbl, _stat(val)))
 
 
-def render_song(doc, archived=(), stamp=None, card=None, counting=None):
+def render_song(doc, archived=(), stamp=None, card=None, counting=None,
+                kinds=None):
     """One song's whole performance history, newest first.
 
     The archive stores phish.net verbatim, so the corrections happen here.
@@ -5634,7 +5653,12 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
                html.escape(p["venue"]), html.escape(place), mark, jam, nb, bar,
                " none" if (g is None or debut) else (" big" if big else ""),
                "Debut" if debut else
-               ("Not a show" if not counted else
+               # Which kind of not-a-show, where the archive knows. It knows
+               # for the twenty entries it holds a report for; the other
+               # thirty-nine non-calendar dates are pre-2009 and have no report
+               # to read a kind out of, so they keep the general word.
+               ((kinds or {}).get(date, "Not a show").capitalize()
+                if not counted else
                 "{:,}".format(g) if g is not None else "&mdash;"), times))
 
     # Every bar on this page is the same song against the same scale, so the
@@ -6627,6 +6651,236 @@ def render_dormant(docs, counting, since):
         rows="\n".join(body),
         share=share_meta("Out of rotation &mdash; Possum Logic",
                          html.escape(blurb, quote=True), ROTATION_PAGE),
+        stamp="Updated %s" % _utcnow().date().isoformat())
+
+
+NOT_A_SHOW_SHELL = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Not a show &mdash; Possum Logic</title>
+<meta property="og:type" content="website">{share}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{fonts}" rel="stylesheet">
+{sheet}
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb sections"><span class="mark">Possum Logic</span>
+<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></nav>
+<div class="rule2"></div>
+<header><h1>Not a show</h1>
+<p class="show">{subtitle}</p>
+<p class="dek">Soundchecks, and television and radio sessions. phish.net lists
+these and marks them as excluded from statistics, so they are absent from the
+show calendar this site counts with &mdash; no gap here counts them, no
+verdict is measured over them, and the figures on their own pages describe the
+entry rather than a show the band played. They are kept because they happened:
+five songs the band has otherwise never touched exist only here, and a handful
+of these performances circulated well enough to be rated among the best
+versions of their song.</p>
+<p class="dek">The line is phish.net's rather than this site's, and they are
+not consistent about it across their whole history &mdash; of the studio, TV
+and radio sessions in the song histories, some count and some do not, split
+roughly at 1999. This site defers to their flag rather than inventing a rule,
+so where they disagree with themselves it disagrees in exactly the same
+places, which is at least auditable.
+<a href="./method.html#which-show-this-was">How this works</a> has the rest of
+it, including why there is no honest total for how many shows the band has
+played.</p></header>
+<section class="hero {hero_cls}">{hero}</section>
+<div class="rule2"></div>
+<div id="main" tabindex="-1">{body}</div>
+{totop}
+<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<span>{stamp}</span></footer>
+{analytics}
+</div></body></html>
+"""
+
+
+def not_a_show_rows(aside, page_href):
+    """The soundchecks and the sessions, each as a row that goes somewhere."""
+    out = {"soundcheck": [], "session": []}
+    for a in sorted(aside, key=lambda a: a["report"]["date"], reverse=True):
+        r, kind = a["report"], a["kind"]
+        n = len(r.get("songs") or [])
+        # A soundcheck exists because of the show after it, so it says which.
+        # A session does not -- it is its own occasion, and pointing it at the
+        # next concert on the calendar would invent a relationship.
+        link = ("<span class='for'>before <a href='%s'>%s</a></span>"
+                % (page_href % a["before"], a["before"])
+                if kind == "soundcheck" and a["before"] else "")
+        out[kind].append(
+            "<li><a class='ax-row' href='%s'><span class='ax-date'>%s</span>"
+            "<span class='ax-venue'>%s</span>"
+            "<span class='ax-n'>%d song%s</span></a>%s</li>"
+            % (page_href % r["date"], r["date"],
+               html.escape(r.get("venue") or ""), n, "" if n == 1 else "s",
+               link))
+    return out
+
+
+def never_at_a_show(docs, counting):
+    """Songs the band has played, but never at a show. -> rows, newest first.
+
+    Nine of them, and five are one afternoon: a soundcheck at The Woodlands on
+    2024-08-14 that produced five covers Phish has otherwise never touched.
+    They are invisible everywhere else on the site -- `due_rows` drops any song
+    with no counted performance before it classifies anything, so they are not
+    on the due page or among the out-of-rotation three, and until this page
+    they existed only as a row on the songs index reading "never at a show".
+    """
+    rows = []
+    for doc in docs:
+        perfs = doc.get("performances") or []
+        if not perfs or any(p["date"] in counting for p in perfs):
+            continue
+        rows.append((perfs[-1]["date"], doc, perfs))
+    rows.sort(key=lambda r: (r[0], typographic(r[1]["song"])), reverse=True)
+    return rows
+
+
+def rated_off_stage(docs, counting):
+    """Rated versions that were not played at a show. -> rows, best first.
+
+    Ian's: "in rare cases, they get circulated and gain favor." They do, and
+    the archive can show it, because fouldomain scores every circulating
+    performance rather than every show -- so a soundcheck that got out is
+    scored beside the concerts. Fourteen of them, and one is the highest-rated
+    version of its song.
+
+    Not every piece of lore survives contact with this, and the limit is worth
+    stating where it will be read: phish.net logs almost none of these
+    setlists. The IT soundcheck is two songs in this archive, so the versions
+    people actually argue about from that afternoon are not reachable here at
+    all.
+    """
+    rows = []
+    for doc in docs:
+        best = doc.get("best") or []
+        # 1-based, and the count of the list it sits in. A first pass at this
+        # enumerated from zero and reported the ranks one too low, which turned
+        # "My Soul's second-best version is a soundcheck" into "its best is" --
+        # a claim about the whole archive resting on an index. The rank travels
+        # with its denominator here so nothing downstream can restate it.
+        for rank, b in enumerate(best, 1):
+            if b.get("date") and b["date"] not in counting:
+                rows.append((b["score"], rank, len(best), doc, b))
+    rows.sort(key=lambda r: (-r[0], typographic(r[3]["song"])))
+    return rows
+
+
+def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
+    """Everything the band played that was not a show, and what came of it."""
+    counting = set(calendar)
+    _, aside = split_archive(reports, calendar)
+    lists = not_a_show_rows(aside, page_href)
+    never = never_at_a_show(docs, counting)
+    rated = rated_off_stage(docs, counting)
+    kinds = {a["report"]["date"]: a["kind"] for a in aside}
+
+    def section(anchor, title, blurb, body):
+        return ("<section class='rot'>"
+                "<h2 class='shelf-h' id='%s'>%s</h2><p class='dek'>%s</p>"
+                "%s<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
+                "</section>" % (anchor, title, blurb, body))
+
+    body = section(
+        "soundchecks", "Soundchecks",
+        "The band, in the room, before the doors. Each one names the show it "
+        "came before, because that is the whole reason it happened &mdash; a "
+        "soundcheck is not an occasion, it is the afternoon of one.",
+        "<ol class='axlist'>%s</ol>" % "".join(lists["soundcheck"]))
+    body += section(
+        "sessions", "Sessions",
+        "Television and radio: Studio 8H, the Tonight Show, NPR&rsquo;s Tiny "
+        "Desk. Unlike a soundcheck these stand on their own, so none of them "
+        "points at a concert.",
+        "<ol class='axlist'>%s</ol>" % "".join(lists["session"]))
+    if never:
+        body += section(
+            "never", "Never at a show",
+            "%d songs the band has played, and never once at a concert. Five "
+            "of them are a single afternoon &mdash; the covers soundcheck at "
+            "The Woodlands on 2024-08-14. These are the only songs on this "
+            "site with no gap, no median and no verdict, because every figure "
+            "here is counted in shows and they have none."
+            % len(never),
+            "<ol class='axlist'>%s</ol>" % "".join(
+                "<li><a class='ax-row' href='./song/%s.html'>"
+                "<span class='ax-date'>%s</span>"
+                "<span class='ax-kind'>%s</span>"
+                "<span class='ax-venue'>%s</span></a>"
+                "<span class='for'>%s</span></li>"
+                % (html.escape(doc["slug"], quote=True),
+                   html.escape(typographic(doc["song"])),
+                   kinds.get(date, "not a show"),
+                   html.escape(perfs[-1].get("venue") or ""), date)
+                for date, doc, perfs in never))
+    if rated:
+        # The best-placed of them, computed rather than written down: whether
+        # any of these ever beats every concert version of its song is exactly
+        # the interesting question, and it is one a rebuild can change.
+        top = min(rated, key=lambda r: r[1])
+        claim = (
+            "<b>%s</b> is rated above every concert version of itself."
+            % html.escape(typographic(top[3]["song"])) if top[1] == 1 else
+            "None of them is its song&rsquo;s best version. The closest is "
+            "<b>%s</b>, at no.&nbsp;%d of the %d versions of it fouldomain "
+            "rates highest."
+            % (html.escape(typographic(top[3]["song"])), top[1], top[2]))
+        body += section(
+            "rated", "Rated away from the stage",
+            "fouldomain scores every performance that circulates rather than "
+            "every show, so a soundcheck that got out is scored beside the "
+            "concerts. These are the %d that did. %s A rank here is within "
+            "that song&rsquo;s own rated versions, which is the only honest "
+            "way to read a score that is fouldomain&rsquo;s rather than this "
+            "site&rsquo;s."
+            "</p><p class='dek'>What is <em>not</em> here is the point as much "
+            "as what is. phish.net logs almost none of these setlists: the "
+            "whole IT soundcheck is two songs in this archive, so the versions "
+            "people actually argue about from that afternoon cannot be reached "
+            "from here at all. Fourteen rows is what the record supports, not "
+            "what circulates."
+            % (len(rated), claim),
+            "<ol class='axlist'>%s</ol>" % "".join(
+                "<li><a class='ax-row' href='./song/%s.html#%s'>"
+                "<span class='ax-date'>%s</span>"
+                "<span class='ax-kind'>%s</span>"
+                "<span class='ax-venue'>%s</span></a>"
+                "<span class='for'>%s &middot; rated <b>%d</b>, "
+                "no.&nbsp;%d of %d</span></li>"
+                % (html.escape(doc["slug"], quote=True), b["date"],
+                   html.escape(typographic(doc["song"])),
+                   kinds.get(b["date"], "not a show"),
+                   html.escape(b.get("venue") or ""), b["date"], score,
+                   rank, of)
+                for score, rank, of, doc, b in rated))
+
+    n_sc, n_se = len(lists["soundcheck"]), len(lists["session"])
+    cards = [(n_sc, "Soundchecks", "", "#soundchecks"),
+             (n_se, "Sessions", "", "#sessions"),
+             (len(never), "Never at a show", " hot", "#never"),
+             (len(rated), "Rated versions", "", "#rated")]
+    subtitle = ("%d entr%s &middot; %d soundcheck%s, %d session%s"
+                % (n_sc + n_se, "y" if n_sc + n_se == 1 else "ies",
+                   n_sc, "" if n_sc == 1 else "s",
+                   n_se, "" if n_se == 1 else "s"))
+    blurb = ("Every Phish soundcheck and session the archive holds, the songs "
+             "that exist only there, and the versions that got out.")
+    return NOT_A_SHOW_SHELL.format(
+        analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS,
+        sheet=sheet_links("./fonts.css"),
+        theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
+        hero=hero_html(cards), hero_cls=hero_cols(len(cards)),
+        subtitle=subtitle, body=body,
+        share=share_meta("Not a show &mdash; Possum Logic",
+                         html.escape(blurb, quote=True), NOT_A_SHOW_PAGE),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -8813,13 +9067,18 @@ def write_current(site_dir, dates=None):
 def show_kind(report, calendar=None):
     """Whether an archived report is a show, a soundcheck or a session.
 
-    Nine of the archive's entries are not concerts. phish.net lists them and
-    flags them exclude_from_stats, which is why they are absent from the
-    calendar, and their notes say which kind they are: five Moon Palace
-    soundchecks, the Mondegreen soundcheck, two Tonight Show appearances and an
-    NPR Tiny Desk. A gap counted over them would be counting a soundcheck as a
-    show the band played, and 2020-02-19 -- a soundcheck -- is the oldest entry
-    in the archive, so it opened the index.
+    Twenty of the archive's entries are not concerts -- thirteen soundchecks
+    and seven television or radio sessions, listed on not-a-show.html. phish.net
+    lists them and flags them exclude_from_stats, which is why they are absent
+    from the calendar, and their notes say which kind they are. A gap counted
+    over them would be counting a soundcheck as a show the band played, and
+    2020-02-19 -- a soundcheck -- is the oldest entry in the archive, so it
+    opened the index.
+
+    This docstring said "nine" and enumerated them by name until 2026-07-31,
+    which was true when it was written and had drifted by eleven. A count in a
+    comment is a figure like any other; the two figures above are the ones this
+    function's own output produces, so they are checkable against the page.
 
     phish.net is not consistent about this across its whole history: of twenty
     studio, TV and radio sessions in the song histories, eight count and twelve
@@ -9560,6 +9819,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # the lot; otherwise only the songs this run touched.
     have = archived_dates(site_dir)
     played = {s["slug"] for r in reports for s in r["songs"]}
+    # Date -> "soundcheck" or "session", for the rows a song page shows but
+    # does not count. Built once here rather than per song page: it is a read
+    # of every archived report's notes, and there are 589 pages.
+    kinds = {a["report"]["date"]: a["kind"]
+             for a in split_archive(known, sorted(counting))[1]}
     wrote, considered, docs = 0, 0, []
     for slug in sorted(archived_songs(site_dir)):
         doc = song_history(site_dir, slug)
@@ -9572,7 +9836,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         page = os.path.join(site_dir, "song", "%s.html" % slug)
         name = "song-%s" % slug
         moved = write_if_changed(page, render_song(doc, archived=have,
-                                                   card=name, counting=counting))
+                                                   card=name, counting=counting,
+                                                   kinds=kinds))
         wrote += 1 if moved else 0
         want_card(name, song_card(doc, counting))
     if considered:
@@ -9655,14 +9920,24 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         log("wrote %s", faq)
 
     index = os.path.join(site_dir, "index.html")
-    # Nine of the archive's entries are soundchecks or TV and radio sessions,
-    # which phish.net does not count toward a gap. Keeping them in the list
-    # meant the index counted 259 shows the band had not played 259 of, and
-    # opened on a 2020 Moon Palace soundcheck.
+    # Twenty of the archive's entries are soundchecks or TV and radio
+    # sessions, which phish.net does not count toward a gap. Keeping them in
+    # the list meant the index counted 259 shows the band had not played 259
+    # of, and opened on a 2020 Moon Palace soundcheck. (It was nine when that
+    # was written and this line said nine until 2026-07-31 -- a count in a
+    # comment is a figure like any other, and it went stale the ordinary way.)
     shows, aside = split_archive(known, load_calendar(site_dir))
     venues_page = os.path.join(site_dir, "venues.html")
     if write_if_changed(venues_page, render_venues(shows)):
         log("wrote %s", venues_page)
+    # Needs the song histories as well as the reports, so it is built here
+    # rather than beside the due page: the entries are reports, the songs that
+    # exist only at them and the versions of them that got out are not.
+    if docs:
+        nas = os.path.join(site_dir, NOT_A_SHOW_PAGE)
+        if write_if_changed(nas, render_not_a_show(known, docs,
+                                                   load_calendar(site_dir))):
+            log("wrote %s", nas)
     changed = write_if_changed(
         index, render_index(shows, card="index", aside=aside, n_due=n_due))
     want_card("index", index_card(shows))

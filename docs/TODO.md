@@ -72,6 +72,9 @@ detail is in §2k. Three things a fresh session should carry:
   button has been on screen permanently on every song page since it shipped.
   `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
   and prose pages as well, which is what Ian asked for.
+- **`not-a-show.html` holds the twenty soundchecks and sessions**, the nine
+  songs that exist only at them, and the fourteen rated versions that got out.
+  The index's "Also on file" tail is one line under its hero now. §2l.
 - **The songs index counts shows now, like the rest of the site.** It was the
   one page counting raw archive rows, so it disagreed with the song pages it
   links to — My Sharona's page said 0 performances, its row said 1 — and it
@@ -3125,6 +3128,58 @@ Cost: the full redraw took **4m25s locally** (1,304 cards, 24 per browser
 launch). Expect the next scheduled run to be several minutes longer than usual,
 once. After that the index is current again and the incremental behaviour is
 unchanged.
+
+## 2l. Not a show — Ian, 2026-07-31. DONE
+
+Off the back of §2k. Ian, on the nine songs that turned up there: "it makes me
+think how we could show another interesting set of songs: only ever
+soundchecked." And: "in rare cases, they get circulated and gain favor… If
+there's a way to expose something like this to make it discoverable, that'd be
+cool." Then, on where it should live: "move the 'also on file' listings to a
+higher prominence home, or at least something that's not tacked onto the end of
+the show list."
+
+**`not-a-show.html`**, named for what unites the two kinds rather than the
+larger one — thirteen soundchecks, seven sessions, so calling it Soundchecks
+would be `dormant.html` again. It is also already the site's phrase for it: a
+song page prints "Not a show" in the gap column of one of these rows, and the
+songs index prints "never at a show" for a song that has only ever been played
+at one. Four sections, each a hero cell: Soundchecks, Sessions, Never at a
+show, Rated away from the stage.
+
+The index's "Also on file" list is now one line under the hero, before the
+search box. It was twenty rows at the foot of 692 — reachable by scrolling the
+whole archive and no other way.
+
+**Two of my own claims to Ian were wrong and both are corrected on the page.**
+
+1. "Nothing on the song page says it was a soundcheck." It said "Not a show" in
+   the gap column, and had all along. I read a 400-character extract of a
+   1,167-character row and concluded from the part I could see. The row names
+   the kind now — "Soundcheck", "Session" — for the twenty dates the archive
+   holds a report for; the other thirty-nine non-calendar dates are pre-2009,
+   have no report to read a kind out of, and keep the general word.
+2. "My Soul's highest-rated version is a soundcheck." It is its **second** of
+   twenty-five. I enumerated from zero and reported the ranks one too low, and
+   an off-by-one in an index became a claim about the whole archive. **None of
+   the fourteen is its song's best version.** `rated_off_stage` now carries the
+   denominator with the rank so nothing downstream can restate it, and the
+   page's sentence is computed from the rows rather than written down.
+
+**And the lore does not survive the data, which the page says out loud.** Ian
+first cited the IT soundcheck Waves, then corrected himself to 46 Days.
+Neither is reachable: phish.net logs almost none of these setlists, and the
+whole IT soundcheck is **two songs** in this archive — Jam and Skin It Back.
+What the archive does have is both songs at IT proper, and fouldomain rates
+them highly: 46 Days on 2003-08-03 is its no. 2 of 159, Waves on 2003-08-02
+its no. 4. Fourteen rows is what the record supports, not what circulates, and
+the section says so rather than implying the list is the phenomenon.
+
+Two stale figures fixed in passing, both the same shape as the ones §2k found:
+`show_kind`'s docstring said "nine of the archive's entries are not concerts"
+and named them individually — it is twenty — and the comment beside
+`split_archive` in `write_site` said nine too. **A count in a comment is a
+figure like any other.**
 
 ## 10. Reach — Ian, 2026-07-31. FILED, NOT STARTED
 
