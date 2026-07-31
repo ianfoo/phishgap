@@ -122,6 +122,24 @@ nothing and touches no API:
 ./possumlogic.py --site site --rebuild
 ```
 
+Two checks answer questions about the built site that are otherwise settled by
+reading it, which has been wrong both ways — a working link reported broken, and
+a broken one reported fine:
+
+```sh
+python3 tools/check_links.py
+```
+
+Walks all 1,310 built pages and fails on a link to a missing file, a fragment no
+element carries, or an id repeated within a page.
+
+```sh
+python3 tools/check_few_plays.py
+```
+
+Fails if the words on the out-of-rotation page stop tracking `FEW_PLAYS`, the
+constant that decides how few performances counts as never having got going.
+
 ### Single files
 
 ```sh
