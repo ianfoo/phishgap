@@ -19,23 +19,32 @@ there, which makes local verification lie.
 **There are still three base stylesheets, but what they share is now named.**
 `CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS`,
 `FAQ_CSS`, `DORMANT_CSS` and `YEARS_CSS` extend `INDEX_CSS`. The rules that
-were identical in all three live in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_HIT_CSS`,
+were identical in all three live in `BASE_CSS`, `BODY_BOX_CSS`, `NAV_CSS`,
 `RULE2_CSS`, `FIGURE_CSS` and `FOOTER_LINK_CSS` — edit those once. The year
 strip that the dormant and years pages both draw is `YEAR_STRIP_CSS`, named
 when the second page wanted it rather than copied; `DORMANT_CSS` came out
-byte-identical, which is the check to run when extracting another. **Everything else is still copied**:
-32–46 rules repeat pairwise, and the near-misses `.crumb{…}` (four
-occurrences, all four different) and `.hero{…}` (flex in one sheet, grid in
-another) differ by real amounts. **`footer{…}` no longer does** — measured
+byte-identical, which is the check to run when extracting another. `NAV_CSS`
+is the whole nav strip and replaced `NAV_HIT_CSS`: the four near-identical
+`.crumb{…}` rules are gone, and the show sheet keeps only what is genuinely
+its own — the pager row and a margin. **Everything else is still copied**:
+32–46 rules repeat pairwise, and the near-miss `.hero{…}` (flex in one sheet,
+grid in another) differs by a real amount. **`footer{…}` no longer does** — measured
 2026-07-30, its three layout copies are identical once whitespace is
 normalised, so it is a pure triplicate that could join the named blocks
 above; the entry here said otherwise for long enough to be worth correcting.
 So a plain string replace on any rule
 outside a named block will still hit two or three sheets, or — worse — one.
-Anchor on a neighbouring line that differs and assert the match count. Four
+Anchor on a neighbouring line that differs and assert the match count. Five
 bugs have come out of the copies: a nav that could not wrap, a footer link in
 the browser's default blue, a sticky-header hide out-specified by a modifier
-class, and tabular figures on show pages only. `docs/TODO.md` §8e.
+class, tabular figures on show pages only, and — 2026-07-30, caught by
+measurement before it shipped — a `.crumb{gap:.35rem}` in the show sheet's
+narrow media query, written when both nav strips wanted the same geometry,
+which out-specified the shared row gap the moment the strip got 44px tap
+targets and left four overlapping targets on show pages and nowhere else.
+**The check that found it is the one to reuse**: walk every page type at every
+breakpoint and assert no two tap targets overlap, rather than looking at one
+page and calling it done. `docs/TODO.md` §8e.
 
 **Drawing preview cards locally poisons CI.** `site/data/cards.json` records
 what each card was drawn from and is tracked; `site/card/*.png` is gitignored.

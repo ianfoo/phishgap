@@ -1485,21 +1485,77 @@ BODY_BOX_CSS = """body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,
 html,body{overflow-x:clip}
 """
 
-#: The navigation's hover and its 24x24 hit area (WCAG 2.5.8). The three sheets
-#: lay .crumb out differently -- show pages carry a pager row the others do not
-#: -- but the target and the hover are the same everywhere.
-NAV_HIT_CSS = """.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+#: The whole navigation strip. It used to be four near-identical `.crumb`
+#: rules in four sheets plus a shared hit-area block, which is the arrangement
+#: that has produced four bugs in this file -- a nav that could not wrap among
+#: them. Show pages still lay theirs out differently, because they carry a
+#: pager row the others do not, but everything about the strip itself is here.
+#:
+#: Two groups, not one list. Ian, 2026-07-30: "There's also a real mixture of
+#: types of targets: shows, songs, years, venues, even due link to tabular
+#: data. FAQ and How This Works are a different sort of target." They are: six
+#: of them are the archive, two are about the archive. `.lists` is set one step
+#: up and in reading ink, `.meta` stays at the old size in the dim, and on a
+#: wide screen an auto margin pushes it to the far end of the row. No
+#: separator glyph anywhere in it -- a middot between two groups stranded at
+#: the end of a line the moment the strip wrapped, which it does at every
+#: phone width.
+NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem;margin-bottom:1.1rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb .lists,.crumb .meta{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem}
+.crumb .lists{font-size:.75rem}
+.crumb .meta{font-size:.625rem;margin-left:auto}
+/* Transparent rather than absent, so the strip does not move by a pixel when
+   an item is hovered or when it is the page you are on. The hairline under
+   every item went with it: seven of them under seven words set at 11px read
+   as a row of fine print rather than as the way around the site, and in a nav
+   landmark the underline is not carrying any meaning a body-text link needs
+   it for. What tells you where you are is now the one item drawn in full ink
+   with a rule under it. */
+.crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+   padding-bottom:.15rem;border-bottom:2px solid transparent}
+.crumb .meta a{color:var(--dim)}
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
+   area grows -- a pseudo-element centred on the label, and never narrower
+   than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+/* On a phone the strip is the whole of the navigation and 24px is the floor,
+   not the target: Apple asks 44pt, Material 48dp, and WCAG's own AAA level
+   agrees at 44. So the six destinations get 44px targets here.
+
+   Which costs a row unless the labels are made to fit one, and they were not:
+   at .75rem and .14em the six of them are 310px of ink in the 336px a 390px
+   phone leaves, so "Venues" wrapped alone onto a second row and the strip came
+   to 184px -- 22% of the screen, to say six words. Measured across the
+   settings, .6875rem at .1em is 269px and fits, and it is still a size and a
+   half up on the 11.25px this strip used to be set at. Under about 340px it
+   goes back to two rows, which is why the row gap is what it is: 44px targets
+   need 44px between their centres, and the gap is the only thing providing it.
+
+   The meta pair keeps 24px, the AA floor. They are the two least-used links on
+   the site and buying them 44px each costs another 20px of every phone screen.
+   They also drop the auto margin and take a row of their own, rather than
+   being pushed to a right edge a few characters away. */
+@media (max-width:620px){
+  .crumb{row-gap:1.5rem}
+  .crumb .lists{font-size:.6875rem;letter-spacing:.1em;gap:1.5rem .7rem}
+  .crumb .meta{margin-left:0;flex-basis:100%}
+  .crumb .lists a::before{min-width:44px;height:44px}
+}
+@media print{.crumb .meta{display:none}}
 """
 
 #: The two horizontal rules: the letterpress double, and the tear line.
@@ -1549,26 +1605,21 @@ CSS = BASE_CSS + """h1,h2,.title{text-wrap:balance}
    is room for it, can be lifted out to ride the breadcrumb row where there is
    not -- see the max-width block. One element either way. */
 header{padding-bottom:.9rem}
-/* Three fixed columns rather than space-between, so the index link stays put
-   when a show is missing one of its neighbours. */
-.crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   margin:0 0 .5rem}
-.crumb.sections{display:flex;flex-wrap:wrap;align-items:baseline;
-   gap:.55rem .9rem}
-/* The site's name, not a link. It used to go where "Shows" goes, so the strip
-   offered the same destination twice under two labels. As a label it also stops
-   inheriting the link underline that made it sit differently from its
-   neighbours on the song pages. */
-.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
+""" + NAV_CSS + """.crumb{margin:0 0 .5rem}
 /* Two cells, not three. The middle one held an "All reports" link that the
    section row above already provides, and once that came out it was an empty
-   grid cell on every page in the archive. */
+   grid cell on every page in the archive.
+
+   The pager is its own strip and keeps the old size and the old hairline: it
+   is two dates, not a set of destinations, and it is the one place where an
+   underline is doing work -- the labels are bare dates, which do not read as
+   links on their own the way a word like "Venues" does. */
 .crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
-         border-bottom:1px solid var(--rule)}
-""" + NAV_HIT_CSS + """.crumb .prev{grid-column:1;justify-self:start}
+.crumb.pager a{color:var(--dim);border-bottom:1px solid var(--rule)}
+.crumb.pager a:hover{border-bottom-color:var(--hot)}
+.crumb .prev{grid-column:1;justify-self:start}
 .crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
    its date -- but the page led with the site's own name at 4rem while the date sat
@@ -2028,10 +2079,20 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
      even at 320px, and the masthead closes up so it reads as one block rather
      than a stack of separate announcements. */
   header{padding-bottom:.55rem}
-  /* Two full dates and the index link have to share one line here, and at
-     320px they only just do, so the pager gives up some tracking rather than
-     risk pushing the page sideways. */
-  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
+  /* Two full dates have to share one line here, and at 320px they only just
+     do, so the pager gives up some tracking rather than risk pushing the page
+     sideways.
+
+     `.crumb.pager`, not `.crumb`. It was written as the latter, which was
+     harmless while both strips wanted the same geometry and stopped being so
+     the moment the sections strip got 44px targets on a phone: `gap:.35rem`
+     out-specified the shared block's row gap, the targets in the two rows
+     overlapped, and it showed up on show pages only -- four overlapping pairs
+     at 390px, none anywhere else on the site. The eighth instance of one sheet
+     of several quietly answering for a rule that belongs to all of them. */
+  .crumb.pager{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;
+     letter-spacing:.14em}
+  .crumb.sections{margin-bottom:.7rem}
   h1{margin-bottom:.45rem}
   /* At this width the whole thing fits on one line, so it reads better joined
      -- and a middot cannot be orphaned the way a comma was, because it only
@@ -2825,13 +2886,16 @@ def render_html(report, bar_scale="linear", index_href=None,
         # something else.
         crumb = ("<nav class='crumb sections'>"
                  "<span class='mark'>Possum Logic</span>"
+                 "<span class='lists'>"
                  "<a href='../index.html'>Shows</a>"
+                 "<a href='../years.html'>Years</a>"
                  "<a href='../songs.html'>Songs</a>"
                  "<a href='../due.html'>Due</a>"
-                 "<a href='../venues.html'>Venues</a>"
-                 "<a href='../years.html'>Years</a>"
+                 "<a href='../dormant.html'>Dormant</a>"
+                 "<a href='../venues.html'>Venues</a></span>"
+                 "<span class='meta'>"
                  "<a href='../faq.html'>FAQ</a>"
-                 "<a href='../method.html'>How this works</a></nav>"
+                 "<a href='../method.html'>How this works</a></span></nav>"
                  # No "All reports" in the middle: the row above already has
                  # Shows, pointing at the same page under the name the rest of
                  # the site uses for it. The pager is for the two neighbours.
@@ -3005,14 +3069,7 @@ INDEX_CSS = BASE_CSS + BODY_BOX_CSS + """/* Which of the two lists you are looki
    sideways for one nav item. Breaking between labels rather than inside them
    is what the song pages have always done; the two sheets disagreed only
    because nothing had ever pushed this one. */
-.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
-   margin-bottom:1.1rem;
-   font-size:.625rem;
-   letter-spacing:.14em;text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;padding-bottom:.15rem;
-   white-space:nowrap;border-bottom:1px solid var(--rule)}
-""" + NAV_HIT_CSS + """.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
-h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+""" + NAV_CSS + """h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(1.7778rem,7vw,3.5556rem);line-height:1.06;margin:0 0 .7rem;
    letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--hot)}
@@ -3550,11 +3607,14 @@ INDEX_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<nav class="crumb"><span class="lists"><a class="here">Shows</a>
 <a href="./years.html">Years</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a>
+<a href="./dormant.html">Dormant</a>
+<a href="./venues.html">Venues</a></span>
+<span class="meta"><a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
@@ -3953,12 +4013,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
 # song title; the gap figures and the hero numbers stay in the slab.
 SONG_FONTS = WEB_FONTS
 
-SONG_CSS = (BASE_CSS + BODY_BOX_CSS + """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
-   margin-bottom:1.1rem;
-   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-""" + NAV_HIT_CSS + """/* One of the three slots the display face is allowed: the wordmark, a show's
+SONG_CSS = (BASE_CSS + BODY_BOX_CSS + NAV_CSS + """/* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(1.7778rem,6.5vw,3.0222rem);line-height:1.14;margin:0 0 .5rem;
@@ -4594,7 +4649,7 @@ SONG_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../years.html">Years</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><span class="lists"><a href="../index.html">Shows</a><a href="../years.html">Years</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../dormant.html">Dormant</a><a href="../venues.html">Venues</a></span><span class="meta"><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></span></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -5124,11 +5179,14 @@ SONGS_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
 <a href="./years.html">Years</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a class="here">Songs</a>
+<a href="./due.html">Due</a>
+<a href="./dormant.html">Dormant</a>
+<a href="./venues.html">Venues</a></span>
+<span class="meta"><a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
@@ -5212,11 +5270,14 @@ DUE_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
-<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a class="here">Due</a><a href="./venues.html">Venues</a>
+<span class="lists"><a href="./index.html">Shows</a>
 <a href="./years.html">Years</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./songs.html">Songs</a>
+<a class="here">Due</a>
+<a href="./dormant.html">Dormant</a>
+<a href="./venues.html">Venues</a></span>
+<span class="meta"><a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
 <p class="show">{subtitle}</p>
@@ -5559,11 +5620,14 @@ DORMANT_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
-<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<span class="lists"><a href="./index.html">Shows</a>
 <a href="./years.html">Years</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a>
+<a class="here">Dormant</a>
+<a href="./venues.html">Venues</a></span>
+<span class="meta"><a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1>Dormant</h1>
 <p class="show">{subtitle}</p>
@@ -5701,11 +5765,14 @@ VENUES_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a class="here">Venues</a>
+<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
 <a href="./years.html">Years</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a>
+<a href="./dormant.html">Dormant</a>
+<a class="here">Venues</a></span>
+<span class="meta"><a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1>Venues</h1>
 <p class="show">{subtitle}</p>
@@ -6229,11 +6296,14 @@ YEARS_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
 <a class="here">Years</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a>
+<a href="./dormant.html">Dormant</a>
+<a href="./venues.html">Venues</a></span>
+<span class="meta"><a href="./faq.html">FAQ</a>
+<a href="./method.html">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1>Years</h1>
 <p class="show">{subtitle}</p>
@@ -6492,11 +6562,14 @@ METHOD_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
 <a href="./years.html">Years</a>
-<a href="./faq.html">FAQ</a>
-<a class="here">How this works</a></nav>
+<a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a>
+<a href="./dormant.html">Dormant</a>
+<a href="./venues.html">Venues</a></span>
+<span class="meta"><a href="./faq.html">FAQ</a>
+<a class="here">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -6748,11 +6821,14 @@ FAQ_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
 <a href="./years.html">Years</a>
-<a class="here">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./songs.html">Songs</a>
+<a href="./due.html">Due</a>
+<a href="./dormant.html">Dormant</a>
+<a href="./venues.html">Venues</a></span>
+<span class="meta"><a class="here">FAQ</a>
+<a href="./method.html">How this works</a></span></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">FAQ</p>

@@ -637,6 +637,56 @@ the 66 are contradicted**. The other 97 rest on the extract alone.
 - **Per-year pages.** Not built, and the ruling in §4 explains why one page
   came first. If the blocks earn their own pages, `years.html` is the index.
 
+### Same session — the nav, after Ian looked at it on a phone
+
+Ian: "the navigation links on mobile are a poor experience. This is not
+typically how mobile sites structure their navigation… There's also a real
+mixture of types of targets: shows, songs, years, venues, even due link to
+tabular data. FAQ and How This Works are a different sort of target." Plus:
+Years should come before Venues, and dormant had no door but the due page.
+
+All of it is done and pushed. The strip is now two groups in the markup —
+`<span class="lists">` and `<span class="meta">` — on all nine page types.
+
+| what | before | after |
+|---|---|---|
+| Order | Shows Songs Due Venues Years | Shows **Years** Songs Due **Dormant** Venues |
+| Dormant's nearest door | a hero card 1,126px down the due page | in the nav, 78px down |
+| Nav type size | 11.25px, everything | 13.5px for the six lists, 11.25px for the two meta links |
+| Tap targets | 24px (WCAG AA) | 44px on the lists at phone widths (AAA, Apple, Material all agree), 24px on meta |
+| The two explainers | fifth and sixth in one flat row | own group, dim, pushed right on desktop, own row on a phone |
+| Rest state | a hairline under all seven items | none; the page you are on is the one with a rule under it |
+
+**Years went second, not fourth.** Ian said only that it "takes precedence
+over Venues", which fourth would have satisfied. Second is on the strength of
+his older note in §3b — years as the browse spine, tours as context — and it
+groups the two time-spines together with the three song lists after them. One
+line to move if that reads as too much.
+
+**The mobile fix was a measurement, not a preference.** At the desktop size
+(.75rem/.14em) the six labels are 310px of ink in the 336px a 390px phone
+leaves, so Venues wrapped alone and the strip came to **184px — 22% of the
+screen to say six words**. Measured across five settings, .6875rem at .1em is
+269px and fits one row. The strip is now 73px on the index at 390px and goes
+to two rows below about 340px, where the row gap is sized for it.
+
+**No hamburger, deliberately.** Hiding six destinations behind a tap costs
+discoverability, needs JavaScript, and does not print — and this site's whole
+posture is that its pages degrade to a document. Eight items is under the
+threshold where hiding starts to pay.
+
+**One bug caught before it shipped, and it is the fifth of a known kind.**
+`.crumb{gap:.35rem}` in the show sheet's narrow media query out-specified the
+shared row gap, so show pages — and only show pages — had four overlapping
+44px targets at 390px. It is now `.crumb.pager`, which is what the comment
+above it always said it was for. Found by walking 10 page types × 8
+breakpoints and asserting no two targets overlap; that check is worth keeping.
+
+**Still open on the nav:** nothing marks the *current section* on a show or
+song page — a song page highlights nothing, though it sits under Songs. Cheap,
+and not done here because it needs a decision about whether a show page counts
+as being "in" Shows.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
