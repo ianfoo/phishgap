@@ -48,13 +48,26 @@ copy now, and `hero_cols` beside it is the pattern — the builder *states* what
 the CSS needs to know (how many columns, which card carries a name) rather
 than the CSS inferring it, because an inference like `:has(.of)` fails silent.
 
-**A recorded gap can be larger than the shows between its two dates.** 95 of
-the archive's 36,580 are, one of them by 1,458, and they are not noise: where
-phish.net does not count a song's first appearance, the *second* is treated as
-a debut and given a gap equal to every show ever played. They sit at the top
-of every longest-gap ranking because that is precisely what a `max()` picks —
-two of the archive's top three longest gaps are fiction. Bound a superlative
-by the site's own `shows_since` before publishing it. `docs/TODO.md` §2k.
+**A debut carries a "gap" that is not a gap, and skipping row 0 does not
+always skip it.** phish.net gives a song's first counted performance a gap
+equal to every show the band had played before it — 2,022 for What's Going
+Through Your Mind. That is the band's history length, not a silence. The site
+drops it by ignoring each song's first row, which is right for 473 of the 518
+debuts and wrong for the other 45: those songs first appeared at a date
+phish.net does not count toward gaps (Festival 8's 2009-10-29, 1997-06-06,
+1999-06-24, 1995-05-14 and a dozen more), the archive keeps that appearance as
+row 0, and the debut gap lands on row 1 where "skip the first row" cannot
+reach it. **Filter to counted performances first, then drop the first** —
+`due_rows` has always done it in that order and is correct; `render_songs` and
+`songs_card` did not and published 42 wrong longest gaps. `docs/TODO.md` §2k.
+
+**And phish.net's gaps themselves are sound — do not go looking for that bug.**
+Measured counted-performance to counted-performance, 0 of 36,378 exceed the
+shows actually between them. A first pass at the above found "95 impossible
+gaps" by comparing each gap with the previous row *in this archive's list*,
+which includes the performances phish.net deliberately does not count; every
+one of the 95 had an uncounted row before it, and 50 of them were the
+measurement being wrong rather than the data.
 
 **A `hidden` attribute loses to any author `display`.** The browser hides
 `[hidden]` with a *user-agent* rule, and a user-agent rule loses to an author

@@ -72,10 +72,14 @@ detail is in §2k. Three things a fresh session should carry:
   button has been on screen permanently on every song page since it shipped.
   `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
   and prose pages as well, which is what Ian asked for.
-- **95 recorded gaps in the archive are larger than the number of shows
-  between their two dates**, and they sit at the top of every longest-gap
-  ranking because a `max()` selects exactly them. Two of the archive's top
-  three are fiction. Open, and it needs Ian's call — see the end of §2k.
+- **42 songs publish a debut gap as their longest gap**, on the songs index
+  only. phish.net gives a debut a "gap" of every show played before it; the
+  site drops that by skipping row 0, which misses the 45 songs whose row 0 is
+  an appearance phish.net does not count. `due_rows` and `render_song` are
+  already right — they filter to counted performances *before* dropping the
+  first. Open, awaiting Ian; see the end of §2k. An earlier note here claimed
+  95 bad gaps in the archive and blamed phish.net; that was a measurement
+  error and §2k says why.
 - **The Browser pane cannot verify anything that uses IntersectionObserver.**
   Its top-level document reports `innerWidth`/`innerHeight` of 0, so IO has no
   root and never fires — not even the initial callback. The site's own sticky
@@ -1657,35 +1661,60 @@ between them, and this archive's own report for 2009-12-30 records Gone with
 no gap at all — so the two phish.net endpoints disagree about that
 performance, the same shape as `the-curtain` in §0.
 
-Measured across all 36,580 consecutive pairs in the archive: **95 recorded
-gaps exceed the shows actually between their two dates by more than ten.** It
-is not noise, it is one shape — a first row phish.net does not count toward
-gaps, so the *second* performance is treated as a debut and given a gap equal
-to every show ever played to that point:
+**First measurement of this was wrong and is corrected here, because a wrong
+figure in this file gets obeyed.** It reported "95 recorded gaps exceed the
+shows actually between their two dates" and blamed phish.net. The comparison
+was the bug: it measured each gap against the previous row *in this archive's
+list*, which includes performances phish.net deliberately does not count, so a
+correct gap measured from the last *counted* performance looked inflated
+against an uncounted neighbour. All 95 had an uncounted row before them, and
+50 were nothing but that error. **Measured properly — counted performance to
+counted performance — 0 of 36,378 gaps exceed the shows between them.**
+phish.net's gaps are sound.
 
-| recorded | actually between | song | dates |
-|---|---|---|---|
-| 1,460 | 2 | Sleep Again | 2009-10-29 → 2009-11-01 |
-| 1,468 | 18 | Gone | 2009-10-29 → 2009-12-30 |
-| 1,452 | 2 | Invisible | 2009-10-29 → 2009-11-01 |
-| 1,378 | 0 | Scents and Subtle Sounds | 2003-07-06 → 2003-07-07 |
-| 1,244 | 0 | Bug | 1999-06-24 → 1999-06-30 |
+**What is actually wrong is a debut gap landing on row 1.** phish.net gives a
+song's first counted performance a gap equal to every show the band had played
+before it: 2,022 for What's Going Through Your Mind, 1,967 for The Well. That
+is the band's history length, not a silence, and there are **518** of them.
+The site drops them by ignoring each song's first row, which is right **473**
+times. The other **45** are songs that first appeared at a date phish.net does
+not count toward gaps — Festival 8's 2009-10-29, the 1997-06-06 European date,
+1999-06-24, 1995-05-14, a dozen more. The archive keeps that appearance as row
+0, so the debut gap sits on row 1, where "skip the first row" cannot reach it.
 
-**This poisons the top of every longest-gap ranking, because the biggest
-overstatements are exactly the rows a `max()` selects.** Two of the archive's
-top three longest gaps are junk: Gone at 1,468 and Sleep Again at 1,460.
+**42 songs publish a longest gap that is really their debut gap**, and they
+land at the top of the songs page's Longest-gap sort because a debut gap is
+about as large as a number here gets:
+
+| published | actual longest | song |
+|---|---|---|
+| 1,468 | 49 | Gone |
+| 1,460 | 224 | Sleep Again |
+| 1,452 | *none — one counted play* | Invisible |
+| 1,378 | 109 | Scents and Subtle Sounds |
+| 1,363 | 16 | 46 Days |
+| 1,244 | 26 | Bug |
+| 1,181 | 15 | The Moma Dance |
+| 1,115 | 21 | Piper |
+
 Cold as Ice's 1,468 is real — 1,465 counted shows between 1992-05-18 and
-2026-07-22 — so the headline figure survives, but the songs page's "Longest
-gap" sort and its per-row longest column are ranked partly on fiction.
+2026-07-22 — so the hero figure itself survives; what goes is the "tied with
+Gone" beside it.
 
-**Not fixed, because it is the same call as `custom` and `the-curtain`**:
-deciding which phish.net endpoint to believe is Ian's, and the options differ
-a lot in blast radius. Cheapest first: bound the gap by the site's own
-`shows_since` wherever a superlative is chosen (fixes the heroes and the sort,
-changes no stored data); or drop the impossible gaps at archive time (fixes
-everything downstream, rewrites 95 rows and republishes those song pages); or
-leave them and mark them on the row. Note the third is not free either — the
-figures are already published.
+**This is not a which-endpoint-to-believe call like `custom` and
+`the-curtain`.** It is one function not doing what another already does. Both
+`due_rows` and `render_song` filter to counted performances *first* and drop
+the first of those — which is why the due page, every verdict, and Gone's own
+page (which reads "Debuted 2009-12-30, shows between 49") are all correct.
+`render_songs` and `songs_card` drop the first row of the raw list instead.
+The fix is to pass `counting` into those two and filter in the same order, and
+its whole blast radius is the songs index: 42 longest figures, the medians
+computed alongside them, the Longest-gap sort, and the hero's bogus tie.
+
+One judgement call inside it, flagged rather than taken: the same page's
+"shows" count and "last played" still count *every* row, uncounted appearances
+included. Making those counted-only too would move many more figures on a page
+nobody has complained about, so the recommendation is gaps only.
 
 **Two smaller things repaired in passing, both left by the same rename.** When
 `FEW_TITLE` went from "One or two nights" to "Once or twice" at Ian's request,
