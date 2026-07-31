@@ -1861,6 +1861,16 @@ Bagnard is not bad — the reviewer measured the method page as the best-typeset
 page on the site and Bagnard sets its headings. The open question is only
 whether something with more personality would serve the wordmark better.
 
+**Still open. A specimen was built on 2026-07-31 and it was not this one.**
+Ian ruled on the live banner — Bagnard stays, "Literata is a bit too soft,
+mono is just wrong here, Georgia is not a face that's anywhere in the site" —
+after seeing all four rendered at `.live b`'s own 1.25rem. That settles one
+20px line on show pages. It compared the faces the site already loads, asking
+whether the banner needs a display face at all; it did not compare Fraunces,
+Instrument Serif or Redaction, and it did not test the wordmark, song titles
+or method headings at 28–57px, which is the whole of the ask above. Do not
+read the ruling as closing this.
+
 ### Video enrichment — filed, not started
 
 GitHub issues #1 (show pages) and #2 (song pages). Official Phish YouTube and
