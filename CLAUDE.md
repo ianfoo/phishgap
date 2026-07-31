@@ -78,6 +78,18 @@ anything tinted — `.toc a::before` sat on the index panel's `--rule-soft` wash
 at 4.13:1 light and 4.49:1 dark. **A token that passes on paper has not been
 checked until it is checked on the thing it actually sits on.**
 
+**A filled red stamp of reversed 10px caps is the bustout's costume, and only
+the bustout's.** It is the headline of a show, struck twice and set two degrees
+off true so it cannot be mistaken for anything else. The Jam chart chip had
+always been *specified* to reverse into the same fill on hover — but the text
+was being overpainted the colour of the fill, so what shipped was a featureless
+block and nobody could see the collision. Fixing the contrast is what made it
+visible; Ian caught it in the very next screenshot. The chip reverses to
+`--ink` now (15.51:1 / 14.92:1), which is already the site's way of saying
+"this is a state, not a claim" — `.yr h2 .tab` and the tooltip do the same.
+**A bug can be hiding a design decision, so look at what the fix reveals, not
+just at whether the number went up.**
+
 **Drawing preview cards locally poisons CI.** `site/data/cards.json` records
 what each card was drawn from and is tracked; `site/card/*.png` is gitignored.
 So a local `--rebuild` draws the images here, writes "already drawn" into a

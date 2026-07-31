@@ -2953,6 +2953,30 @@ Measured after (all light unless noted):
 A full sweep of all 13 page states, both palettes, both layouts now reports
 **nothing below its AA floor** — the tool prints "Pass."
 
+### Then the fixed chip turned out to be wearing the bustout's costume
+
+Ian looked at the before/after and asked whether the Jam chart chip was now
+reading nearly as loud as the bustout stamp. He was right, in the hovered
+state, and the reason is worth writing down: **the chip has always been
+specified to fill on hover, and always with the accent** — the same fill the
+bustout uses. Nobody could see it, because the rule above it painted the text
+the colour of the fill. Making the word legible is what exposed a hierarchy
+collision that had been sitting in the CSS the whole time. Fixing a bug can
+reveal a design decision that was never actually visible enough to review.
+
+Hovered, the chip and the bustout were two filled red stamps of reversed 10px
+caps, one row apart. The bustout is meant to dominate a report — it is struck
+twice and set two degrees off true precisely so it cannot be mistaken for
+anything else, and a chip pointing at a paragraph on another page has no
+business borrowing that.
+
+The chip now reverses to **`--ink`**, not the accent: 15.51:1 light and
+14.92:1 dark, and the red stamp belongs to the bustout alone, which is once
+again the only filled red thing on a report. Ink was already the site's way of
+saying "this is a state, not a claim" — `.yr h2 .tab` and the tooltip both
+reverse to it. Red says something about the music; ink says the pointer is
+under your pointer.
+
 ## 9. Known and deliberately not fixed
 
 - GitHub Pages serves `cache-control: max-age=600` and cannot be configured,

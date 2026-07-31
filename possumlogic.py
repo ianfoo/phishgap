@@ -1768,10 +1768,25 @@ a.jc-chip{text-decoration:none}
    the sticky-header hide and .backtop: a modifier class losing to a descendant
    selector, four times now.
 
-   --hot-text, not --hot, and for the reason the palette gives: 10px caps want
-   the 4.5 floor and paper on --hot is 4.44. On --hot-text it is 5.79 light,
-   6.64 dark. Same call as .since-you, .verdict.bustout and .onstage. */
-a.jc-chip:hover{background:var(--hot-text);color:var(--paper);
+   The fill is --ink, not the accent, and that is a hierarchy decision rather
+   than a contrast one. A red block of reversed 10px caps is the bustout's
+   costume: it is the headline of a show and is struck twice and set two
+   degrees off true to say so. This chip is a pointer to a paragraph on
+   another page. Reversing it into the same red made the two marks read at the
+   same weight one row apart -- Ian caught that too.
+
+   It was never visible before. The chip has always been specified to fill on
+   hover, and always with the accent, but the rule above it painted the text
+   the colour of the fill, so what shipped was a featureless block. Making the
+   word legible is what exposed the collision underneath it.
+
+   Ink, specifically, because the site already reverses to ink for a state
+   rather than a claim -- .yr h2 .tab and the tooltip both do. Red says
+   something about the music; ink says the pointer is under your pointer.
+   15.5:1 light, 14.9:1 dark, and it leaves the red stamp to the bustout
+   alone, which is now the only filled red thing on a report. */
+a.jc-chip:hover{background:var(--ink);border-color:var(--ink);
+   color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;line-height:1;
      white-space:nowrap}
