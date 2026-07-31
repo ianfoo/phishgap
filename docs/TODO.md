@@ -72,14 +72,13 @@ detail is in §2k. Three things a fresh session should carry:
   button has been on screen permanently on every song page since it shipped.
   `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
   and prose pages as well, which is what Ian asked for.
-- **42 songs publish a debut gap as their longest gap**, on the songs index
-  only. phish.net gives a debut a "gap" of every show played before it; the
-  site drops that by skipping row 0, which misses the 45 songs whose row 0 is
-  an appearance phish.net does not count. `due_rows` and `render_song` are
-  already right — they filter to counted performances *before* dropping the
-  first. Open, awaiting Ian; see the end of §2k. An earlier note here claimed
-  95 bad gaps in the archive and blamed phish.net; that was a measurement
-  error and §2k says why.
+- **The songs index counts shows now, like the rest of the site.** It was the
+  one page counting raw archive rows, so it disagreed with the song pages it
+  links to — My Sharona's page said 0 performances, its row said 1 — and it
+  published 42 debut gaps as longest gaps. Filter to counted performances
+  *first*, then drop the first of those; `due_rows` and `render_song` always
+  did. §2k. An earlier note here claimed 95 bad gaps in the archive and blamed
+  phish.net: that was a measurement error, and §2k says why.
 - **The Browser pane cannot verify anything that uses IntersectionObserver.**
   Its top-level document reports `innerWidth`/`innerHeight` of 0, so IO has no
   root and never fires — not even the initial callback. The site's own sticky
@@ -1701,20 +1700,56 @@ Cold as Ice's 1,468 is real — 1,465 counted shows between 1992-05-18 and
 2026-07-22 — so the hero figure itself survives; what goes is the "tied with
 Gone" beside it.
 
-**This is not a which-endpoint-to-believe call like `custom` and
-`the-curtain`.** It is one function not doing what another already does. Both
+**This was never a which-endpoint-to-believe call like `custom` and
+`the-curtain`.** It was one function not doing what two others already did.
 `due_rows` and `render_song` filter to counted performances *first* and drop
 the first of those — which is why the due page, every verdict, and Gone's own
-page (which reads "Debuted 2009-12-30, shows between 49") are all correct.
-`render_songs` and `songs_card` drop the first row of the raw list instead.
-The fix is to pass `counting` into those two and filter in the same order, and
-its whole blast radius is the songs index: 42 longest figures, the medians
-computed alongside them, the Longest-gap sort, and the hero's bogus tie.
+page (which reads "Debuted 2009-12-30, shows between 49") were all correct
+throughout. `render_songs` and `songs_card` dropped the first row of the raw
+list instead.
 
-One judgement call inside it, flagged rather than taken: the same page's
-"shows" count and "last played" still count *every* row, uncounted appearances
-included. Making those counted-only too would move many more figures on a page
-nobody has complained about, so the recommendation is gaps only.
+### DONE, and Ian widened it — the whole page counts shows now
+
+He took the judgement call the other way, and he is right: "The songs summary
+data should not lie, so we need to be clear about what our counts are… If we
+are marking things as 'not a show' and not counting it in some contexts, we
+should be consistent." So `shows` and `last played` are counted the same way
+as the gaps, not just the gaps.
+
+The strongest argument for it turned up while measuring: **the index already
+disagreed with the pages it links to.** My Sharona's own page says
+"0 performances"; the index row said it had been played once. One click apart.
+
+| what moved | |
+|---|---|
+| longest gap | 42 songs — Gone 1,468 → 49, 46 Days 1,363 → 16, The Moma Dance 1,181 → 15 |
+| shows | 127 songs — Jam 93 → 74, The Star-Spangled Banner 28 → 22, My Soul 101 → 96 |
+| last played | 5 songs |
+| the totals | 37,169 → **36,958** performances; 211 uncounted rows across the archive |
+| the hero | "Cold as Ice, tied with Gone" → **Cold as Ice** alone, the tie having been an artefact of the bug that named it |
+| the Longest-gap sort | top is now Cold as Ice 1,468, Skin It Back 1,424, Fuck Your Face 1,424, Baby Lemonade 1,312 — real 20-to-34-year bustouts, each within 4 of this site's own count |
+
+**Nine songs have never been played at a show** — five of them at one
+soundcheck at The Woodlands on 2024-08-14, plus Liquid Time at the Festival 8
+soundcheck, Sunshine Superman at Moon Palace, and No Reply At All and Watcher
+of the Skies at the Waldorf Astoria. **They keep their rows.** Dropping them
+would have the page say the band has never touched Day Tripper, which is worse
+than saying it has played it at no shows, and their pages exist and say the
+same thing. The row reads `never at a show` and `0 shows`; `data-last` stays
+empty, which sinks them to the bottom of Recently played rather than the top.
+
+Verified by checking **all 589 index rows against the song page each one links
+to** — performance count and last-played date, both directions. Zero
+disagreements, where before there were 127.
+
+**And Ian's guess about Cold as Ice was right: 1,465 against 1,468 is our
+calendar against phish.net's.** Measured across all 36,378 counted-to-counted
+pairs, 27,416 agree exactly and 8,275 differ by one — but the surplus grows
+with the span, from a mean of +0.2 on gaps under 100 to +3.3 on gaps over
+1,400. That is the signature of a handful of shows they count and this
+calendar does not, accumulating over the span, rather than an off-by-one:
+roughly one missing show per 400. Not chased; `shows_since` exists precisely
+because this site does not try to reproduce their figure.
 
 **Two smaller things repaired in passing, both left by the same rename.** When
 `FEW_TITLE` went from "One or two nights" to "Once or twice" at Ian's request,
@@ -3090,6 +3125,30 @@ Cost: the full redraw took **4m25s locally** (1,304 cards, 24 per browser
 launch). Expect the next scheduled run to be several minutes longer than usual,
 once. After that the index is current again and the incremental behaviour is
 unchanged.
+
+## 10. Reach — Ian, 2026-07-31. FILED, NOT STARTED
+
+His words: "No one has complained because I am pretty much the only user of
+this site. We'll need to get to SEO or however people make their sites more
+popular in due course." Filed rather than started; noting what is already
+there so nobody rebuilds it.
+
+Already done, and it is more than half of the mechanical part: `sitemap.xml`
+generated from the built directory and excluding the forwarding pages;
+`robots.txt` pointing at it; `<meta name="description">`, the full Open Graph
+set and a drawn preview card on every page; one canonical hostname with a
+`CNAME`; server-rendered HTML with no client fetch, so there is nothing for a
+crawler to fail to run.
+
+Not done, cheapest first: **no `<link rel="canonical">` on any page**, which
+matters because `/` and `/index.html` are both reachable and the sitemap
+already takes a side; **no `application/ld+json`** — `MusicComposition` per
+song and `Event` per show are the obvious fits and this archive has better
+structured data than most sites that publish it; and **no `<title>`
+differentiation strategy** beyond "Song — Possum Logic". The honest question
+before any of it is what someone would be searching for that this site answers
+better than phish.net, since the answer is probably a *phrase* ("how long has
+it been since Phish played X") rather than a song name.
 
 ## 9. Known and deliberately not fixed
 

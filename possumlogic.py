@@ -6749,21 +6749,47 @@ def due_card(docs, counting, since):
         size=104)
 
 
-def render_songs(docs, stamp=None, card=None):
-    """One page listing every song the archive holds a history for."""
+def render_songs(docs, stamp=None, card=None, counting=None):
+    """One page listing every song the archive holds a history for.
+
+    Every figure here counts *shows*, which is what the rest of the site
+    counts and what this page did not. A soundcheck, a Tonight Show slot and a
+    Tiny Desk are performances and they are in the archive, but they are not
+    shows -- the index files them in a list of their own, `due_rows` leaves
+    them out of every verdict, and each song's own page has always ignored
+    them: My Sharona's page says "0 performances" while this page said it had
+    been played once, and the two are one click apart.
+
+    The order matters as much as the filter, and it is the order that was
+    wrong. Drop the uncounted performances *first*, then drop the first of
+    what is left -- because that first one carries phish.net's debut "gap",
+    which is the number of shows the band played before the song existed
+    rather than a silence. Skipping row 0 of the raw list skips the debut gap
+    only when the song's first appearance was at a show; for the 45 songs that
+    first turned up at a soundcheck the debut gap sat on row 1, untouched, and
+    42 of them published it as their longest gap. Gone read 1,468 where the
+    truth is 49.
+    """
     rows, entries = [], []
     for doc in docs:
         perfs = doc.get("performances") or []
         if not perfs:
             continue
+        played = [p for p in perfs if not counting or p["date"] in counting]
         # (gap, the night that gap ended) rather than the gap alone, because
         # the hero has to order the songs that tie on the figure -- see below.
-        gaps = [(p["gap"], p["date"]) for p in perfs[1:] if p["gap"] is not None]
+        gaps = [(p["gap"], p["date"]) for p in played[1:] if p["gap"] is not None]
         best = (doc.get("best") or [None])[0]
         peak = max(gaps) if gaps else None
         entries.append({
-            "song": doc["song"], "slug": doc["slug"], "played": len(perfs),
-            "last": perfs[-1]["date"], "first": perfs[0]["date"],
+            "song": doc["song"], "slug": doc["slug"], "played": len(played),
+            # Nine songs have never been played at a show -- five of them at
+            # one soundcheck at The Woodlands in 2024. They keep their rows:
+            # dropping them would have this page say the band has never
+            # touched Day Tripper, which is worse than saying it has played it
+            # at no shows, and their pages exist and say the same thing.
+            "last": played[-1]["date"] if played else "",
+            "first": played[0]["date"] if played else "",
             "median": _median([g for g, _ in gaps]) if gaps else None,
             "longest": peak[0] if peak else None,
             "longest_on": peak[1] if peak else "",
@@ -6789,14 +6815,19 @@ def render_songs(docs, stamp=None, card=None):
             " data-longest='%s' data-score='%s' data-search=\"%s\">"
             "<a class='row' href='./song/%s.html'>"
             "<span class='r-song'>%s</span>"
-            "<span class='r-when'>last <b>%s</b></span>"
+            "<span class='r-when'>%s</span>"
             "<span class='r-stats'>%s</span></a></li>"
             % (html.escape(e["song"], quote=True), e["played"], e["last"],
                e["longest"] if e["longest"] is not None else "",
                e["score"] if e["score"] is not None else "",
                html.escape(e["song"].lower(), quote=True),
                html.escape(e["slug"], quote=True), html.escape(e["song"]),
-               e["last"], stats))
+               # "last <date>" needs a date. A song with no show to its name
+               # has none, and "last —" would read as a missing value rather
+               # than as the fact itself. `data-last` stays empty, which sorts
+               # these to the bottom of Recently played rather than the top.
+               "last <b>%s</b>" % e["last"] if e["last"] else "never at a show",
+               stats))
 
     total = sum(e["played"] for e in entries)
     # The song that holds the longest gap, so the figure can point at it. The
@@ -7850,14 +7881,18 @@ def index_card(reports):
          (_stat(longest) if longest else "&mdash;", "Longest gap", "hot")))
 
 
-def songs_card(docs):
-    # The same three figures the page's hero now carries, and for the same
-    # reasons -- see render_songs on why the top fouldomain score is not one of
-    # them. It was worse here than on the page: the card had room for the
-    # number and not for the song, so it published a bare 97 under "Best rated
-    # version" with nothing anywhere to say whose.
-    total = sum(len(d["performances"]) for d in docs)
-    longest = max((p["gap"] for d in docs for p in d["performances"][1:]
+def songs_card(docs, counting=None):
+    # The same three figures the page's hero now carries, counted the same way
+    # -- see render_songs for both, on why the top fouldomain score is not one
+    # of them and why the uncounted performances go before the first row does.
+    # It was worse here than on the page: the card had room for the number and
+    # not for the song, so it published a bare 97 under "Best rated version"
+    # with nothing anywhere to say whose.
+    def shows(d):
+        return [p for p in d["performances"]
+                if not counting or p["date"] in counting]
+    total = sum(len(shows(d)) for d in docs)
+    longest = max((p["gap"] for d in docs for p in shows(d)[1:]
                    if p["gap"] is not None), default=None)
     return card_markup(
         "Every song", "Possum <em>Logic</em>", "One page per song, all the way back",
@@ -9546,10 +9581,12 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
 
     if docs:
         songs_page = os.path.join(site_dir, "songs.html")
-        moved = write_if_changed(songs_page, render_songs(docs, card="songs"))
+        moved = write_if_changed(songs_page,
+                                 render_songs(docs, card="songs",
+                                              counting=counting))
         if moved:
             log("wrote %s (%d songs)", songs_page, len(docs))
-        want_card("songs", songs_card(docs))
+        want_card("songs", songs_card(docs, counting))
 
     if rebuilt:
         log("re-rendered %d unchanged-content page(s) after a template change",

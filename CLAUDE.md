@@ -58,8 +58,12 @@ phish.net does not count toward gaps (Festival 8's 2009-10-29, 1997-06-06,
 1999-06-24, 1995-05-14 and a dozen more), the archive keeps that appearance as
 row 0, and the debut gap lands on row 1 where "skip the first row" cannot
 reach it. **Filter to counted performances first, then drop the first** —
-`due_rows` has always done it in that order and is correct; `render_songs` and
-`songs_card` did not and published 42 wrong longest gaps. `docs/TODO.md` §2k.
+`due_rows` and `render_song` have always done it in that order; `render_songs`
+and `songs_card` did not, and published 42 wrong longest gaps. Fixed, and the
+whole songs index counts shows now: 127 songs had a "shows" figure that
+included soundchecks, so the index and the song page one click away disagreed
+about 127 songs. **A page that summarises other pages must count the way they
+do** — the check that found it was reading both. `docs/TODO.md` §2k.
 
 **And phish.net's gaps themselves are sound — do not go looking for that bug.**
 Measured counted-performance to counted-performance, 0 of 36,378 exceed the
