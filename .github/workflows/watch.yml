@@ -34,6 +34,11 @@ on:
 
 permissions:
   contents: write
+  # To dispatch its own successor. A shift that ends with the show still going
+  # used to hope a cron landed; measured over five days this cron fires 13% of
+  # the time it is scheduled to, so that hope is worth about one chance in
+  # eight per quarter hour. A dispatch is not scheduled and is not throttled.
+  actions: write
 
 # Its own group, so a long watch does not block the ordinary run from
 # archiving, and a second watcher does not start on top of a live one.
@@ -56,10 +61,23 @@ jobs:
         with:
           python-version: "3.12"
 
+      # --lead 30 so the shift is already up when the first song is posted. The
+      # window opens half an hour before that typically happens, and on the
+      # three show nights measured this job started 6, 10 and 14 minutes into
+      # it -- margin that came from luck, not design, on a cron that fires 13%
+      # of the time. Thirty minutes early costs half an hour of runner time and
+      # is the difference between covering a show's opening and missing it.
+      #
+      # `grep` before `cut`, because --watching now prints two lines. Piping
+      # the whole output through `cut -d= -f2` yields "false\nfalse", which is
+      # never equal to "true" -- the gate would fail closed and this workflow
+      # would silently never run again.
       - name: Is a show playing?
         id: gate
         run: |
-          watching=$(python possumlogic.py --site site --watching | cut -d= -f2)
+          out=$(python possumlogic.py --site site --watching --lead 30)
+          echo "$out"
+          watching=$(echo "$out" | grep '^watching=' | cut -d= -f2)
           echo "watching=$watching" >> "$GITHUB_OUTPUT"
 
       - name: Install what the preview cards need
@@ -79,6 +97,8 @@ jobs:
           PL_PHISHNET_API_KEY: ${{ secrets.PHISHNET_API_KEY }}
           PL_GOATCOUNTER: ${{ vars.PL_GOATCOUNTER }}
           PL_DOMAIN: ${{ vars.PL_DOMAIN }}
+          # For the self-dispatch at the end of a shift.
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -u
           git config user.name "github-actions[bot]"
@@ -118,7 +138,10 @@ jobs:
               --catch-up 2 --calendar || true
 
             # The archive first, so a crash after this point still leaves the
-            # data recorded and only costs a publish.
+            # data recorded and only costs a publish. This also carries the
+            # running order, which --catch-up writes for any show it fetches
+            # that has settled -- during a show that is nothing, which is
+            # correct, and the pass after it settles is the one that records it.
             git add site/data
             if ! git diff --cached --quiet; then
               git commit -q -m "Archive gap reports for new shows"
@@ -163,14 +186,44 @@ jobs:
             git worktree remove --force ../pages
             echo "::endgroup::"
 
-            # Stop when the show is out of its window, or the shift is over.
-            still=$(python possumlogic.py --site site --watching | cut -d= -f2)
+            # Stop when the show has settled, when it is out of its window, or
+            # when the shift is over.
+            #
+            # Stillness is the one that matters and it was missing. The loop
+            # only ever asked whether the window was open, and the window is
+            # 7h30m -- 19:00 to 02:30 local -- so a show that ended at midnight
+            # held a runner until half past two.
+            #
+            # `released` is not the page's `provisional`. settle() lets the
+            # page go half an hour after an encore is recorded, which is right
+            # for a label the next pass can take back and wrong for the
+            # watcher, whose leaving is what stops the next pass. Six and seven
+            # song encores exist and run close to an hour; songs arriving keep
+            # resetting the clock, but phish.net posting the first one and then
+            # straggling past half an hour is ordinary. So this holds for the
+            # full two hours of stillness regardless of the encore shortcut.
+            # Still exits hours before the window closes.
+            out=$(python possumlogic.py --site site --watching --lead 30)
+            still=$(echo "$out" | grep '^watching=' | cut -d= -f2)
+            done_=$(echo "$out" | grep '^released=' | cut -d= -f2)
+            if [ "$done_" = "true" ]; then
+              echo "show still for two hours; stopping"
+              break
+            fi
             if [ "$still" != "true" ]; then
               echo "window closed; stopping"
               break
             fi
             if [ "$(date +%s)" -ge "$deadline" ]; then
-              echo "shift over; the next schedule picks it up"
+              # Hand off deliberately rather than hoping. The concurrency group
+              # serialises this workflow, so a run dispatched now sits pending
+              # and starts the instant this one exits -- measured at a three
+              # second gap on 2026-07-29, when a cron happened to have queued
+              # one. This makes that handoff happen every time instead of only
+              # when the scheduler obliges.
+              echo "shift over; dispatching the next one"
+              gh workflow run watch.yml --ref "$GITHUB_REF_NAME" \
+                || echo "dispatch failed; falling back to the cron"
               break
             fi
             sleep 300

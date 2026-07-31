@@ -54,7 +54,53 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### Newest first: the 2026-07-30 review of songs, home, due and dormant
+### Newest first: 2026-07-31, the fouldomain chip on song pages
+
+Ian asked for the chip song pages were missing — show pages have carried
+phish.net, phish.in and fouldomain since the badges shipped, song pages had
+only the first two. Done and verified; the detail worth carrying:
+
+- **fouldomain keys songs on the title, not on phish.net's slug**, and the
+  difference is 13 of the 589 songs. `foul_song_slug` derives it, and the one
+  detail that decides it is the apostrophe: fouldomain drops it where a naive
+  slugifier separates on it, so `mike-s-song` is a 404 and `mikes-song` is the
+  page. A first pass that separated on apostrophes fixed the original 13 and
+  broke 24 others, and would have shipped looking like an improvement.
+- **The check was identity, not existence.** Nine fouldomain song pages answer
+  with a `<title>` of `1993 · 6:16`, so "not Song Not Found" is not evidence
+  the page is about this song; `og:title` names it. All 589 derived slugs were
+  confirmed against the live site to land on a page naming that exact song, and
+  the built pages were then asserted against the *published* copies: every one
+  of the 712 show pages has a byte-identical chip row, and every song page is
+  its published row plus one fouldomain chip.
+- **One page carries no fouldomain chip: `custom`.** A title match cannot
+  preserve an aggregate — phish.net files one-off and unlisted titles under
+  that entry and the archive shows the page as Dog Log, one of the nine, so
+  the chip would have claimed the other eight were versions of Dog Log. The
+  phish.net and phish.in chips beside it key on the slug, point at phish.net's
+  own catch-all, and stay. `TITLE_NOT_THE_ENTRY` is the gate.
+- **The first gate was `NOT_A_SONG`, and Ian corrected it: `jam` keeps its
+  chip.** fouldomain has a jam page, and its title names the bucket rather than
+  one of the things in the bucket — which is the actual test, and it is not the
+  same test as "is this page a composition". Both readings of the rule agree on
+  `custom` and only the narrow one is right about `jam`.
+- **Their Jam is a superset of ours in recordings, not in shows**, measured
+  2026-07-31 off the page itself. Their *performance timeline* is 92 dates and
+  every one is in our 93 — the entry is phish.net's, same as ours; our 93rd is
+  the 1984-11-03 debut, which they carry as the song's `dateCreated` rather
+  than as a timeline row. Their *scored tracks* are 117 rows across 94 dates,
+  and that is where the breadth is: 30 dates carry a scored jam our record does
+  not file as Jam at all (2024-08-16 at Mondegreen, 2013-07-30 and 07-31,
+  2016-09-02, 2017-09-01, 2023-04-18…), and 18 nights carry more than one where
+  our archive holds at most one row per date — five for 2000-06-16, three each
+  for 1999-12-29 and 1997-12-07. So the chip shows a reader everything our page
+  lists and more, and contradicts nothing it claims. Their coverage of the
+  secret sets is partial too: 2003-08-02 is in both records and 2003-08-03 is
+  in neither.
+- `_badge` is the one copy of the chip markup now, shared by both page types,
+  and the one place its href is escaped.
+
+### The 2026-07-30 review of songs, home, due and dormant
 
 Ian read four pages and sent nine notes. All nine are done and pushed; the
 detail is in §2k. Three things a fresh session should carry:
@@ -136,8 +182,8 @@ questions.
 
 | § | what | state |
 |---|---|---|
-| 2b | The ten-year window travelled with each song, so the dormancy filter could never fire | done — 148 of 588 song pages changed |
-| 2c | `site/data` reorganised; 711 reports under `data/shows/` | done, with a one-shot migration |
+| 2b | The ten-year window traveled with each song, so the dormancy filter could never fire | done — 148 of 588 song pages changed |
+| 2c | `site/data` reorganized; 711 reports under `data/shows/` | done, with a one-shot migration |
 | 2d | "Due" reworked twice: a bustout ceiling, then measured against the **median** rather than the 85th percentile, plus a cadence floor | done — due 9 / slipping 26 / shelf 5 / dormant 283 |
 | 2g | His due-page review: the "overdue" overload, the false bustout claim, `tabular-nums` missing from two sheets | done bar three items |
 | 3e | FAQ index, back-links, the eras arithmetic; song front matter decluttered | done |
@@ -251,7 +297,7 @@ first looked like.** `--seed-setlists` builds its work list from every
 performance lacking `nb`, and that came to **1966 dates** rather than the 601 I
 had poisoned. I read that as "seeding was never finished" and said so; that was
 wrong, and Ian caught it by asking the obvious question — how did we ever have
-*any* neighbours if the setlists were not being fetched. Measured against the
+*any* neighbors if the setlists were not being fetched. Measured against the
 pre-repair archive:
 
 | performances | count |
@@ -259,12 +305,12 @@ pre-repair archive:
 | carry `prev`/`next` | 28,264 |
 | carry the `nb` flag | 18,292 |
 | **have the data but no flag** | **10,730** — 10,718 of them on dates the old index recorded as walked |
-| have neither, on a walked date | 8,058 — genuinely "walked, no neighbour", flag lost |
+| have neither, on a walked date | 8,058 — genuinely "walked, no neighbor", flag lost |
 | on a date never walked | ~78 |
 
 So the setlists *had* been fetched, for 1,975 of about 2,100 dates. What was
 lost was the record of it, and the loss has a precise cause. `nb` replaced an
-older central index, `site/data/neighbours.json`, which listed walked dates and
+older central index, `site/data/neighbors.json`, which listed walked dates and
 was deleted by `acd87fb91` on 2026-07-26 when the migration ran. That migration
 (possumlogic.py, the `if os.path.isfile(index)` block) sets `nb` **in memory**,
 calls `os.remove(index)` immediately, and then writes files only through
@@ -274,13 +320,13 @@ disk, and the index was already gone. Had `todo` come out empty it would have
 returned before writing anything at all. **It deleted the source of truth before
 durably writing the replacement** — the same family as the rest, but the worst
 instance, because the record was destroyed rather than merely stale. The
-migration guard also skips any song with no neighbours anywhere, which is 395
+migration guard also skips any song with no neighbors anywhere, which is 395
 songs, so none of those were ever flagged either.
 
 The consequence is only wasted work, not wrong data: the re-seed re-asks ~1,966
 dates that were mostly already answered and writes back the same values. After
 it lands, `nb` is a true record of all 37,146 performances for the first time.
-The migration block is now unreachable (no `neighbours.json` exists to trigger
+The migration block is now unreachable (no `neighbors.json` exists to trigger
 it) but is still present and still carries the landmine — **worth deleting
 outright, or at minimum writing every song before removing the index.**
 
@@ -294,16 +340,16 @@ with a gap of 185 that is arguably not its own. Two phish.net endpoints
 disagreeing about one performance. **Left alone deliberately** — deciding which
 of their endpoints to believe is the same call as the `custom` slug in §0, and
 it is Ian's. It stays unmarked, so every run re-asks and the counter keeps
-reporting it, which is the behaviour I want from it.
+reporting it, which is the behavior I want from it.
 
 Separately: `--seed-setlists` is a manual command and the daily workflow does
-not pass it, so a newly archived show gets neighbours only when someone runs it
+not pass it, so a newly archived show gets neighbors only when someone runs it
 by hand — tonight's 2026-07-29 rows had none until this run. **Worth fixing** —
-either add it to the daily run, or have `--catch-up` record neighbours for the
+either add it to the daily run, or have `--catch-up` record neighbors for the
 show it just fetched, since `build()` already holds that show's full setlist and
 needs no extra call.
 
-### Same session, third round — the agreed neighbour work, and the poller
+### Same session, third round — the agreed neighbor work, and the poller
 
 Everything here is pushed. Working tree clean.
 
@@ -311,14 +357,14 @@ Everything here is pushed. Working tree clean.
 |---|---|---|
 | 0 | The migration landmine deleted outright | done |
 | next.1 | Set / show opener–closer labels | done — 3,821 terminals named |
-| next.2 | Cross-boundary neighbours | done — 6,927 cross-set adjacencies shown |
-| 0 | `--seed-setlists` walks `archive/setlist-order.json` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
-| 0 | `--catch-up` records a new show's neighbours as it fetches it | done — no more blank column on the night |
+| next.2 | Cross-boundary neighbors | done — 6,927 cross-set adjacencies shown |
+| 0 | `--seed-setlists` walks `site/data/setlist-order.jsonl` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
+| 0 | `--catch-up` records a new show's neighbors as it fetches it | done — no more blank column on the night |
 | 0 | The live page polls instead of hoping; "last checked" reworded | done — all four paths driven in a browser |
 
 **The archive paid for itself on its first use.** Re-walking all 2,009 shows
 under new rules cost 44 API calls — the 43 dates the extract was missing, plus
-tonight's. That is what `archive/README.md` promised and it held.
+tonight's. That is what `docs/setlist-order.md` promised and it held.
 
 **But an extract is a cache with no expiry, and it had already gone stale in
 the one place that matters.** The harvest ran mid-show, so it holds 2026-07-29
@@ -337,7 +383,7 @@ violations. A blank cell now means one thing only: we have not walked that
 setlist. That was the whole point of items 1 and 2.
 
 **A seventh instance of the family, caught before it shipped.**
-`save_song_history` carries neighbour fields forward across an API rewrite
+`save_song_history` carries neighbor fields forward across an API rewrite
 through a hardcoded list of four key names. Adding four new fields elsewhere
 would have left every one of them dropped on the next `--previous` run, in a
 function nobody would think to open. The list is now one named constant,
@@ -395,7 +441,7 @@ rows already carry `scroll-margin-top:46.8px`, so it clears the sticky header
 without anything new.
 
 `text-decoration:none` had to be said out loud. The chip's own `color` beats
-the UA link colour so it was never going to come out browser blue, but it
+the UA link color so it was never going to come out browser blue, but it
 would have come out underlined — the same family as the four links that have
 shipped here wearing a default the author sheet never overrode.
 
@@ -416,7 +462,7 @@ real amounts". They now live in one named block beside `FOOTER_LINK_CSS`,
 which they precede at all three call sites.
 
 Proved a no-op rather than assumed. The built stylesheet of all nine page
-types is identical to the pre-hoist build once whitespace is normalised, and
+types is identical to the pre-hoist build once whitespace is normalized, and
 the raw diff of the whole site is **three continuation lines re-indented from
 seven spaces to three**, in the two sheets that used seven — `song/*.html` is
 byte-for-byte unchanged because its sheet already used three. No card was
@@ -446,7 +492,7 @@ stays bound, so an iPad with a keyboard attached still reaches the list.
 **Not verified on a real touch device**: the browser pane reports
 `pointer: fine` however narrow the viewport, so width is not the signal and
 resizing proves nothing. What was verified is that the query parses (it
-normalises rather than collapsing to `not all`), that the selector and
+normalizes rather than collapsing to `not all`), that the selector and
 declaration do hide the button, and that the footer — a flex row with `gap`
 and no separator characters — closes up with a 0px trailing gap. The iOS
 simulator was the way to close this and Xcode is not selected on this machine.
@@ -490,7 +536,7 @@ still stamped `nb=1` and `last` unconditionally. `--catch-up` had the guard;
 the seed did not, so a hand-run of `--seed-setlists` during a show would have
 written "closed the show" onto whatever song was last at that moment and
 marked the date answered — the one state no later run revisits. Both callers
-now go through `apply_neighbours`, which owns the rule. **Two callers of the
+now go through `apply_neighbors`, which owns the rule. **Two callers of the
 same walk, and only one of them had been taught the rule.**
 
 **Ian's note on the live banner, mid-session.** "This page refreshes itself"
@@ -512,15 +558,27 @@ of that page's 418 rows a line and the page 0.7% of its height. Titles still
 truncate: half a title is readable, half a preposition is not. Measured at
 1280px across eight song pages — 610 edge labels, none truncated.
 
-**What is still manual.** The extract only grows when `--seed-setlists` runs,
-which the workflows do not call, so it falls behind by however many nights
-since the last hand run. That is deliberate: it is a 3.4 MB single file, and
-committing it nightly in CI would put a fresh 3.4 MB blob in git history every
-day. `--catch-up` keeps the *reader-visible* data current on its own, so the
-lag costs nothing until the neighbour rules change again — and then it costs
-one call per un-archived night. If it is ever worth having CI maintain it,
-shard it by year first (~160 KB a year) and add `archive` to the `git add` in
-both workflows.
+**~~What is still manual.~~ Done 2026-07-31.** `--catch-up` writes the extract
+now, so CI maintains it and it no longer falls behind. Both workflows stage
+`archive` alongside `site/data`, without which the write would have happened in
+the runner's checkout and been discarded with the runner — working perfectly
+and changing nothing.
+
+The reason this was left manual was wrong, and it was mine. "It is a 3.4 MB
+single file, and committing it nightly in CI would put a fresh 3.4 MB blob in
+git history every day" was never measured. Git stores the delta: thirty nightly
+appends cost 13.0 KiB on the wire and 16 KiB of pack growth, about **500 bytes
+per show**. The advice that followed it — shard by year first — is also
+unnecessary: year shards measured 13.6 KiB and 250 KiB, a wash. Sharding by
+song, which is the intuitive fix and the one Ian proposed, is **fourteen times
+worse** (286 KiB wire, 497 KiB pack), because small blobs do not delta and each
+night adds a new tree over a 981-entry directory. `docs/setlist-order.md` holds the
+table.
+
+What the file did get is JSONL, one date per line, for the diff rather than the
+bytes: a backfilled show used to land mid-history as one changed line of 3.3 MB
+that `git diff --numstat` reported as "1 line", so the summary read as harmless
+while the diff was 7 MB. The pre-2009 backfill is 1,298 such inserts.
 
 ### Picked up next session — two left of the four agreed with Ian
 
@@ -531,16 +589,16 @@ still needs his call before anything is written.
    show" / "Closed the show" for the two true terminals, which carry no song
    because there is none, and "Opened set 2" / "Closed the encore" for the
    rest, which do.
-2. ~~**Cross-boundary neighbours.**~~ **DONE.** "Opened set 2, after Harry
+2. ~~**Cross-boundary neighbors.**~~ **DONE.** "Opened set 2, after Harry
    Hood" — label primary, in ink against the dim song, and no mark ever, so
    the page cannot imply a segue across a setbreak.
 3. **Reprises.** 683 of 1,966 shows repeat a song; **972 performances are
    currently dropped**, because only the first occurrence per show is kept. Their
-   neighbours differ from the first pass, so neighbour accuracy needs them.
+   neighbors differ from the first pass, so neighbor accuracy needs them.
    **Bring the cardinality question back to Ian before acting**: our 131 for Fly
    Famous Mockingbird matches phish.net's own "played 131 time(s)" headline while
    their table lists 143 rows, so adding rows diverges from their count and
-   touches gap and "shows since". Treat *neighbour accuracy* as separable from
+   touches gap and "shows since". Treat *neighbor accuracy* as separable from
    *what counts as a performance*.
 4. **Scarcity, as distinct from recency.** Ian's observation: Colonel Forbin's
    Ascent and Fly Famous Mockingbird are each **5 plays in ten years** yet
@@ -550,9 +608,9 @@ still needs his call before anything is written.
    the site has no vocabulary for it. §2d and the "under 8 plays in ten years"
    note already half-know this.
 
-**No fetching required for 3.** `archive/setlist-order.json` holds the running
+**No fetching required for 3.** `site/data/setlist-order.jsonl` holds the running
 order of all 2,008 settled dates — set, position, slug, song, trans_mark — which
-is everything reprises need. See `archive/README.md`.
+is everything reprises need. See `docs/setlist-order.md`.
 
 ### ~~Also open: the live page does not auto-refresh~~ DONE 2026-07-30
 
@@ -652,14 +710,14 @@ Now `autoPort: true` with the port taken from `$PORT`.
 ### The 2026-07-30 session — `years.html`, and one figure that needed fixing
 before it could be published
 
-Ian, after the MSG run of five shows each modelled on a year (1992 through
+Ian, after the MSG run of five shows each modeled on a year (1992 through
 1996, down to Trey's mini drum kit and Fish's original mumu): "It could be
 interesting to be able to explore the mood of the years." He asked for the
 measurement first and the page second, and the measurement is what decided the
 shape — see the ruling in §4, which this does not break.
 
 **Everything below is pushed.** The page is built from
-`archive/setlist-order.json` at render time, so it costs no API calls and adds
+`site/data/setlist-order.jsonl` at render time, so it costs no API calls and adds
 ~30 ms to a rebuild.
 
 | what | state |
@@ -668,7 +726,7 @@ shape — see the ruling in §4, which this does not break.
 | `Years` in the nav on all nine page types | done — checked from every depth, 0 dangling links across 1,312 pages |
 | `YEAR_STRIP_CSS` named rather than copied into a fourth sheet | done — `DORMANT_CSS` byte-identical after, sha1 unchanged |
 
-**The figure that had to be normalised, and why it is worth knowing.** "Moves
+**The figure that had to be normalized, and why it is worth knowing.** "Moves
 that recur" — the share of a year's song-to-song moves that turn up on more
 than one night — is the most interesting number the archive has about this
 band, and the raw version of it is nearly a fraud. It reads 68% for 1991 and
@@ -714,11 +772,11 @@ the 66 are contradicted**. The other 97 rest on the extract alone.
 - **Segue density per year** — the share of moves marked `>` or `->` runs 23%
   in 1988 to 50% in 2012, which would be the second-best number on the page if
   it is real. It may instead be phish.net's transcription conventions drifting
-  as old tapes were catalogued decades later. Left off until someone can tell
+  as old tapes were cataloged decades later. Left off until someone can tell
   those apart; a figure this suggestive is exactly the kind this archive should
   not publish on a guess.
 - **The MSG tribute scoring.** 111 of the 114 songs across the five nights
-  were in the modelled year's rotation, no song on any night postdated its
+  were in the modeled year's rotation, no song on any night postdated its
   year bar the closing Backwards Down the Number Line, and the deepest cut was
   AC/DC Bag on the 1992 night — played once in all of 1992. It belongs on the
   five show pages rather than here, and it is the obvious next thing.
@@ -821,10 +879,56 @@ that a current page is *not* a link and a section marker *is*, and that show
 pages mark Shows and song pages mark Songs. Worth re-running after any nav
 change.
 
+### Same session, third round — the nav is four destinations
+
+Ian, looking at the six-item strip: "we are starting to really crowd that nav
+bar… I don't think the mobile widths could survive another addition." Measured
+at 390px he was right with room to spare — one line holds **336px**, the six
+labels came to **400px**, and **"Out of rotation" alone was 130px**, more than
+Shows, Songs and Years put together. Four spines use 219px and leave 117px.
+
+**The split that fell out of the measurement is not about width.** The four
+that fit are the ways *into* the archive — every show, every song, every year,
+every venue. The three that did not are questions asked *about* it, and each
+has a parent that owns it. Due and Out of rotation are two rotation states of
+songs; Not a show is the show calendar's own boundary.
+
+| page | door | marks |
+|---|---|---|
+| Due | hero card on songs.html **and** index.html | Songs |
+| Out of rotation | hero card on songs.html | Songs |
+| Not a show | hero card on index.html, plus the "also on file" note | Shows |
+
+**The cards cost nothing vertically, which is why this was affordable.** The
+hero is a grid: on desktop it is one row at three cards or four, and on a
+phone it is two columns, so three cards already sat in two rows with an empty
+cell. Measured before and after on songs.html: **0px at 390px and at 1100px.**
+
+**Two cards were swapped out to make room, both for the same stated reason.**
+songs.html dropped *Song Performances* — the subtitle directly above it
+already reads "589 songs · 36,958 performances between them", so the widest
+row on the page was spending a cell to say a number twice. index.html dropped
+*Venues*, because the nav carries a door to the venues page from every page on
+the site, while Not a show now has no nav entry at all. The comment above that
+card had already removed a different one on exactly this reasoning.
+
+**Result at 390px: the strip is one row and 73px**, down from two rows and
+124px, and it is one row at 320px too. Verified over 11 page types × 5
+breakpoints: no overlapping tap targets, none under 24px, no sideways scroll.
+1,310 pages: 6 marked as the current page, 1,304 by section, 0 wrong.
+
+**The check worth keeping from this round** is the orphan check: for every page
+taken *out* of the nav, assert it still has a door from a page that is *in* the
+nav. Removing a nav item is the one edit that can silently strand a page, and
+`check_links.py` cannot see it — every link on the site still resolves.
+
+**Not a show has exactly one such door** (the index). That is the thinnest
+margin on the site and the first thing to look at if it feels buried.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
-   trajectory, §2e item 1). Both it and the catalogue-wide charts need the same
+   trajectory, §2e item 1). Both it and the catalog-wide charts need the same
    missing capability — evaluating the §2d classification **as of a past
    date** — so build that first and the charts fall out of it. **This is now
    the largest thing he has asked for that has not been started.**
@@ -849,14 +953,14 @@ random show / feed.
 - **A rule that is typed is not a rule that is drawn.** `.backtop` was in the
   sheet, reasoned about in a comment, and had never once applied. Read the
   computed style, not the stylesheet.
-- **Programmatic focus is not focus.** Reading a skip link's colour after
+- **Programmatic focus is not focus.** Reading a skip link's color after
   `element.focus()` reported browser blue on all eight page types tonight. A
   real Tab press showed it was correct all along.
 
 ### In flight when the *first* sitting ended (historical)
 
 - **A watcher run is live**, dispatched on the fixed code (see §8.5). The
-  previous run was cancelled because it was pinned to an old commit and
+  previous run was canceled because it was pinned to an old commit and
   republishing the whole site from it every five minutes.
 - **Verified once, not yet over a long run.** `origin/gh-pages` at 04:42 UTC
   carries the skip link, the new sort options, five hero cards and the
@@ -966,7 +1070,7 @@ percentile (>= 8 plays in the ten-year window) that are past it count as due.
 
 **That exclusion did not work, for nine months.** See §2b.
 
-## 2b. The ten-year window travelled with the song — FIXED 2026-07-28 (Ian)
+## 2b. The ten-year window traveled with the song — FIXED 2026-07-28 (Ian)
 
 Ian, on the live page: "The first entry is a song with a gap of over 500
 shows. This is not a song that is 'due.' That's clearly dormant."
@@ -990,7 +1094,7 @@ It has **zero** gaps inside the real ten years.
 - **The same window fed the song pages**, which is why the fix could not stop
   at `due.html`: `render_song` computed its "Median Gap, Last 10 Years" card,
   its `data-high`, and the percentile band behind every row from the same
-  travelling cutoff. Left alone, a song would have dropped off the due page
+  traveling cutoff. Left alone, a song would have dropped off the due page
   while its own page still called it due. **148 of 588 song pages** now give a
   different figure and **51** read `n/a` where they used to print a median
   drawn from a decade that ended years ago.
@@ -1214,7 +1318,7 @@ browser is set to 20px gets 22.5, not 18.
   display end and open at the reading end.
 - **`.dek` is the one size that does not simply ride the lift.** A standfirst
   introduces the body text under it, and this one was set *smaller* than that
-  text — 13px over 14 — so it apologised for the thing it announced. It is a
+  text — 13px over 14 — so it apologized for the thing it announced. It is a
   step above body now, with `opsz` moved 12 → 16 to follow the point size.
 - **The measure is in rem too.** `max-width:960px` would have held still while
   the type went up a step, which is the same page with less room in it.
@@ -1261,21 +1365,21 @@ nothing tells you which until something moves.
    ("slipping", "on the shelf"), and both rendered in **the browser's default
    link blue with a browser underline**. Folded into `DEK_CSS`, so there is now
    one place to say it. Checked afterwards across all eight page types: of
-   2,103 links, none resolves to a browser default colour.
+   2,103 links, none resolves to a browser default color.
 
 ### What was re-checked afterwards, and held
 
 - **No page scrolls sideways** at 320, 375, 414, 620, 820 or 1400px — six root
   pages, three shows and three songs, twelve pages × six widths.
 - **Sticky headers still hand off.** `overflow-x:clip` does not create a scroll
-  container, and the proof is behavioural: on a show page exactly one table's
+  container, and the proof is behavioral: on a show page exactly one table's
   header row is stuck at a time, and it changes over as you scroll.
 - **The skip link still lands clear of the sticky header** — first row top 47px,
   header bottom 47px, on the due page at the new scale.
 - **Nav hit areas** on all eight page types at 375px: every one still 24×24 or
   better, none overlapping.
 - One measurement of my own was wrong first time and is worth recording, since
-  the file already warns about it: reading the skip link's colour with
+  the file already warns about it: reading the skip link's color with
   `element.focus()` reported browser blue on all eight page types. A real Tab
   press showed it correctly — `--ink` on `--paper`, 163×43, with the hot ring.
   **Programmatic focus is not focus.**
@@ -1332,7 +1436,7 @@ anybody reaches for a charting library:
   is the natural fit and already matches the `.track` / `.band` / `.at`
   vocabulary the range bars use.
 - `prefers-reduced-motion` is already respected for `.bar .fill`. Any entrance
-  animation has to honour it, and the reduced case must be the finished chart
+  animation has to honor it, and the reduced case must be the finished chart
   rather than no chart.
 - §5's DOM budget is real. 588 song pages × an SVG each is fine; 691 index
   rows × anything is not.
@@ -1347,7 +1451,7 @@ anybody reaches for a charting library:
    rather than inferred. It is the picture of the classification this session
    spent its time getting right, and it needs the same thing §2f needs — the
    ability to evaluate that classification **as of a past date** — so build
-   that once and both this and the catalogue-wide charts fall out of it.
+   that once and both this and the catalog-wide charts fall out of it.
    Related, simpler, and worth doing first as a warm-up: a **heartbeat strip**,
    one tick per performance across the song's whole life, era-banded behind.
    McGrupp reads 101 / 1 / 13 / 9 by era in prose today; a strip shows it
@@ -1411,7 +1515,7 @@ list. The paragraphs are left as the record of what shipped that night.
 - **[ruling] the figures are set in ink, not the accent.** The due page sets
   its figure hot because it is sounding an alarm and because it is the order
   the list is in. Neither is true here, and 284 rows shouting in the accent
-  colour spends it on everything.
+  color spends it on everything.
 
 ### Building it found two wrong figures, both shipping
 
@@ -1464,9 +1568,9 @@ length? or maybe a collapsible section, which is a language we don't have on
 this site (yet)." A page, and no new interaction idiom for one use.
 
 He also wants it as a **graph**, and this is the most interesting of the ideas
-in §2e because it is about the catalogue rather than about one song:
+in §2e because it is about the catalog rather than about one song:
 
-- **Dormant count per year.** How much of the catalogue is out of rotation at
+- **Dormant count per year.** How much of the catalog is out of rotation at
   any moment, plotted over time. Needs the classification recomputed as of each
   past date rather than only as of today — the archive supports it, since every
   performance carries its date, but it is a real piece of work and not a
@@ -1627,7 +1731,7 @@ findings, and the effect is not where either of us expected:
   every row reads `2009` for a song played twice three shows apart and
   `1992–2021` for one played twice 1,308 apart; 13 of the 48 print a single
   year. Nothing pointed a reader at that column. Both blurbs now do — described
-  rather than modelled, which is the honest treatment of a continuum.
+  rather than modeled, which is the honest treatment of a continuum.
 
 **Two more layout defects found while verifying this round**, both measured
 rather than eyeballed: the second paragraph of a section blurb had
@@ -1719,7 +1823,7 @@ file's standing answer where the data will not support a claim.
 read `plays<=1?'one-off':…` off a `data-plays` of `0`, so a zero-play song came
 out as a one-off — but only where the verdict branch fires at all, which needs
 `since >= BUSTOUT_GAP`. Liquid Time, No Reply at All, Sunshine Superman and
-Watcher of the Skies cleared it and were each labelled **one-off** on a song the
+Watcher of the Skies cleared it and were each labeled **one-off** on a song the
 band has never played at a show. The other five sit at 91 shows and showed
 nothing either way. Measured, not assumed: the first draft of this entry said
 all nine, which was wrong by five.
@@ -1852,7 +1956,7 @@ shows actually between their two dates" and blamed phish.net. The comparison
 was the bug: it measured each gap against the previous row *in this archive's
 list*, which includes performances phish.net deliberately does not count, so a
 correct gap measured from the last *counted* performance looked inflated
-against an uncounted neighbour. All 95 had an uncounted row before them, and
+against an uncounted neighbor. All 95 had an uncounted row before them, and
 50 were nothing but that error. **Measured properly — counted performance to
 counted performance — 0 of 36,378 gaps exceed the shows between them.**
 phish.net's gaps are sound.
@@ -1896,7 +2000,7 @@ list instead.
 
 ### DONE, and Ian widened it — the whole page counts shows now
 
-He took the judgement call the other way, and he is right: "The songs summary
+He took the judgment call the other way, and he is right: "The songs summary
 data should not lie, so we need to be clear about what our counts are… If we
 are marking things as 'not a show' and not counting it in some contexts, we
 should be consistent." So `shows` and `last played` are counted the same way
@@ -1912,7 +2016,7 @@ disagreed with the pages it links to.** My Sharona's own page says
 | shows | 127 songs — Jam 93 → 74, The Star-Spangled Banner 28 → 22, My Soul 101 → 96 |
 | last played | 5 songs |
 | the totals | 37,169 → **36,958** performances; 211 uncounted rows across the archive |
-| the hero | "Cold as Ice, tied with Gone" → **Cold as Ice** alone, the tie having been an artefact of the bug that named it |
+| the hero | "Cold as Ice, tied with Gone" → **Cold as Ice** alone, the tie having been an artifact of the bug that named it |
 | the Longest-gap sort | top is now Cold as Ice 1,468, Skin It Back 1,424, Fuck Your Face 1,424, Baby Lemonade 1,312 — real 20-to-34-year bustouts, each within 4 of this site's own count |
 
 **Nine songs have never been played at a show** — five of them at one
@@ -1988,7 +2092,7 @@ index files stay flat in `data/`, beside `shows/` and `songs/`.
 
 - The four readers now go through `show_data_dir()`. `REPORT_NAME` is kept
   even though nothing else lives in `shows/` to be confused with: it is what
-  the migration recognises a stray report by.
+  the migration recognizes a stray report by.
 - **`migrate_show_data()` moves any reports still lying flat**, once, on any
   run with `--site`. Not a nicety: a checkout made before this commit, built
   with code from after it, finds **zero** shows and publishes a complete site
@@ -2127,7 +2231,7 @@ preference predates the review — his call, not the reviewer's.
 - **Song page breakpoint is 820px**; every other page breaks at 620px. Ian
   asked for this to match.
 - **`songs.html` accent thresholding** — roughly 750 orange numerals across
-  587 rows, which spends the accent colour on everything and therefore on
+  587 rows, which spends the accent color on everything and therefore on
   nothing.
 - **`method.html` carries INDEX_CSS wholesale**, of which the great majority is
   unused. Strip it.
@@ -2483,8 +2587,8 @@ reach for a pointer.
   and larger question.
 - **Song pages still have no prev/next.** The keys are ready for one — they
   bind to `rel` — but the stepper itself is §4's item and wants a decision:
-  baking neighbours into each page goes stale the moment a new song debuts
-  unless every neighbour is re-rendered, which is the "record that outlives the
+  baking neighbors into each page goes stale the moment a new song debuts
+  unless every neighbor is re-rendered, which is the "record that outlives the
   work it records" shape this file already has four instances of. The safe
   shape is a client-side lookup from a small JSON, like `current.json`.
 
@@ -2548,8 +2652,8 @@ rather than looking for a scrollbar.
       a cheap swap.
   - **Both links came out in the browser's default blue on the first build**,
     because `CSS` had no rule for a link in a masthead. Fifth instance tonight.
-    Caught by measuring the computed colour before shipping rather than by a
-    reader. They keep their own colour and weight — demoting the venue to
+    Caught by measuring the computed color before shipping rather than by a
+    reader. They keep their own color and weight — demoting the venue to
     `--dim` would demote the venue — and take the hairline every other link on
     the site wears.
 - Bustout leaderboard (biggest gaps per performance, archive-wide).
@@ -2575,7 +2679,7 @@ rather than looking for a scrollbar.
   of sync. Build real venue pages only for per-venue *statistics*.
 
   **Held, and `years.html` is the second half of it rather than an exception.**
-  Ian asked on 2026-07-30 for a year profile after the MSG run of shows modelled
+  Ian asked on 2026-07-30 for a year profile after the MSG run of shows modeled
   on 1992–96, and the test the ruling implies is the right one: can search
   produce this? It cannot. Nothing on this site could tell you that 1991 opened
   with Chalk Dust Torture 16 times, that Acoustic Army was played 27 times and
@@ -2944,7 +3048,7 @@ say `n/a` (the card said `&mdash;` — it now uses the page's word).
     performances"), not repeated per pairing as a share. Ian's note said the
     count "wants a denominator"; printing `26 of 331` three times per side is
     the clutter the whole item is about. One line above, once. If he wants
-    shares, `neighbours()` already returns the counts and the total is to hand.
+    shares, `neighbors()` already returns the counts and the total is to hand.
 11. **The FAQ links to the method page rather than restating it.** Two entries
     are two sentences and a link. The alternative — a self-contained FAQ — puts
     the same reasoning in two files that will drift.
@@ -2973,14 +3077,14 @@ Ian spotted this the same night: the footer link "appears semi-unstyled,
 appearing as blue text with an underline, like a default link in a browser
 would." Measured, it was worse than that — `footer a{color:var(--dim)}` existed
 in `SONG_CSS` **only**, so the footer link rendered in Chrome's default link
-colour on the index, songs, due, venues, method, FAQ and every show page. Song
+color on the index, songs, due, venues, method, FAQ and every show page. Song
 pages were the single exception. Long-standing; nothing in this session caused
 it.
 
 All three sheets now carry the rule, and it matches how links are drawn
 everywhere else on the site — `--dim`, no `text-decoration`, a `--rule`
 border-bottom, `--hot` on hover. Checked on all eight page types: no link
-anywhere in a footer still resolves to a default colour.
+anywhere in a footer still resolves to a default color.
 
 **This is the argument for §3b's "strip INDEX_CSS out of METHOD_CSS".** Three
 sheets carrying near-identical rule text also carry near-identical rules that
@@ -3184,7 +3288,7 @@ could replace.
   10-year 33%, median all-time 24%, longest gap 24%. The debut is the most
   widely available figure the hero was not showing.
 - **The two medians earn their two cards.** They differ as printed on **275 of
-  the 392** songs that have both — the standing defence in `render_song` holds,
+  the 392** songs that have both — the standing defense in `render_song` holds,
   so neither is the one to drop. Longest gap equals the all-time median on only
   52 of 446.
 - **Times played was the weak one, and not because it is uninteresting.** The
@@ -3219,7 +3323,7 @@ card links to. Swept 5 pages × 15 widths from 300 to 1440: **0 wrapped figures,
    fixed; an invariant now asserts sticky == counter == countable on all 589.
 2. **`id="main"` was very nearly duplicated.** The first cut moved the skip
    target onto the `<ol>`, which already had `id="list"` — two `id` attributes
-   on one element, only the first honoured, and `#main` silently resolving to
+   on one element, only the first honored, and `#main` silently resolving to
    nothing. Invisible unless you tab into the page. The skip link is now
    re-pointed at `#list` instead, and the sweep asserts every page's skip href
    resolves to exactly one element.
@@ -3294,7 +3398,7 @@ hash. When you fix a renderer, ask what invalidates the render.**
 
 ### 4. A three-line title collided with the wordmark
 
-`.card` centres its content in a fixed 630px box and the wordmark is positioned
+`.card` centers its content in a fixed 630px box and the wordmark is positioned
 absolutely, so a title that took three lines pushed the figures onto it — "The
 Inner Reaches of Outer" printed POSSUMLOGIC hard against TIMES PLAYED, 1 card of
 1,304. The box now stops short of the wordmark's strip, which cannot collide at
@@ -3320,7 +3424,7 @@ claiming they are current, and draws nothing.
 
 Cost: the full redraw took **4m25s locally** (1,304 cards, 24 per browser
 launch). Expect the next scheduled run to be several minutes longer than usual,
-once. After that the index is current again and the incremental behaviour is
+once. After that the index is current again and the incremental behavior is
 unchanged.
 
 ## 2l. Not a show — Ian, 2026-07-31. DONE
