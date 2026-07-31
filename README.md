@@ -13,7 +13,7 @@ The **gap** is the spine of it: how many shows passed between one performance of
 a song and the one before. A gap of 4 is a regular in rotation; 1,468 is Cold as
 Ice returning in 2026 after last being played in 1992. Gaps come from the
 [Phish.net API v5](https://docs.phish.net/) already computed, so there is no
-scraping and no arithmetic — but which shows *count* toward one is a judgement,
+scraping and no arithmetic — but which shows *count* toward one is a judgment,
 and the site follows phish.net's own `exclude_from_stats` flag rather than
 inventing a rule. Soundchecks and television sessions are on file and say so.
 
@@ -83,7 +83,7 @@ running order of every show already fetched — and buys only the dates that fil
 is missing, so re-walking all 2,008 shows after a rule change costs nothing and
 needs no API key. Each show is marked on its own rows as it is walked, so an
 interrupted run picks up where it stopped, and `--catch-up` records a new show's
-neighbours as it fetches it. `--force` re-walks everything.
+neighbors as it fetches it. `--force` re-walks everything.
 
 Ratings and jam charts arrive late — a version is scored from audio analysis, so
 it has none until a recording circulates, and jam chart entries are curated
