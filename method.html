@@ -283,8 +283,21 @@ header{padding-bottom:.9rem}
 .chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    letter-spacing:0;color:var(--dim);margin-left:.3rem}
 .chip.on .chip-n{color:var(--paper)}
-.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-      color:var(--ink);border:1px solid var(--edge);border-radius:0}
+.sort{appearance:none;-webkit-appearance:none;
+   font:inherit;font-size:.75rem;padding:.4rem 1.5rem .4rem .5rem;
+   background-color:transparent;color:var(--ink);cursor:pointer;
+   border:1px solid var(--edge);border-radius:0;
+   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+      linear-gradient(135deg,currentColor 50%,transparent 50%);
+   background-position:calc(100% - .78rem) calc(50% + .05rem),
+      calc(100% - .52rem) calc(50% + .05rem);
+   background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
+/* Matching the era chips beside it, which is the whole point of the exercise. */
+.sort:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* It ships disabled and is enabled by script; without this the UA greys out
+   text the reader can see for the split second before that happens. */
+.sort:disabled{opacity:1;color:var(--ink)}
+.sort option{background:var(--paper);color:var(--ink)}
 .count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);margin-left:auto}
 .count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
@@ -322,7 +335,13 @@ header{padding-bottom:.9rem}
    underneath it. Stated once for every id on these pages rather than per
    anchor, so a new one cannot be the thing that finds this out. */
 [id]{scroll-margin-top:2.6rem}
-.row:hover{background:var(--hover)}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
 /* Data in a column, so the mono: tabular by construction, which is what makes
@@ -368,7 +387,13 @@ header{padding-bottom:.9rem}
 .due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
    column-gap:1.1rem;align-items:baseline}
 .due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
-.due .row:hover{background:var(--hover)}
+.due /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
 .due .row:hover .d-song{color:var(--hot)}
 .d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
@@ -468,7 +493,13 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .vn .row,.lhead.vn-h{display:grid;grid-template-columns:1fr 12rem 7rem;
    column-gap:1.1rem;align-items:baseline}
 .vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
-.vn .row:hover{background:var(--hover)}
+.vn /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 .vn-venue{font-size:1rem;font-weight:500}
 .vn .row:hover .vn-venue{color:var(--hot)}
 .vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}

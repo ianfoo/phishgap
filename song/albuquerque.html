@@ -281,8 +281,21 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
    outline-offset:1px}
-.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-   color:var(--ink);border:1px solid var(--edge);border-radius:0}
+.sort{appearance:none;-webkit-appearance:none;
+   font:inherit;font-size:.75rem;padding:.4rem 1.5rem .4rem .5rem;
+   background-color:transparent;color:var(--ink);cursor:pointer;
+   border:1px solid var(--edge);border-radius:0;
+   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+      linear-gradient(135deg,currentColor 50%,transparent 50%);
+   background-position:calc(100% - .78rem) calc(50% + .05rem),
+      calc(100% - .52rem) calc(50% + .05rem);
+   background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
+/* Matching the era chips beside it, which is the whole point of the exercise. */
+.sort:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* It ships disabled and is enabled by script; without this the UA greys out
+   text the reader can see for the split second before that happens. */
+.sort:disabled{opacity:1;color:var(--ink)}
+.sort option{background:var(--paper);color:var(--ink)}
 .count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
@@ -366,7 +379,13 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    Fixed width, sized for the longest of them. */
 .row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
    column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
-.row:hover{background:var(--hover)}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 /* The row's identifier, in the display face, same as the show index. It is
    the one thing in the row that is not the song. */
 .r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
