@@ -72,7 +72,9 @@ built the hero cards from five copies of the same two lines, three escaping
 the href and two not. `hero_html` is the one copy now, and `hero_cols` beside
 it is the pattern — the builder *states* what the CSS needs to know (how many
 columns, which card carries a name) rather than the CSS inferring it, because
-an inference like `:has(.of)` fails silent. **The footer is `footer_html()`**
+an inference like `:has(.of)` fails silent. The outbound chips were the same
+shape in two copies and are now `_badge`, which is also the one place the href
+is escaped. **The footer is `footer_html()`**
 for the same reason as the nav — it was eleven copies in eleven shells, and
 adding one cell to it would have been eleven chances to miss a page. It also
 reserves a lane at the page bottom for the floating back-to-top: `.totop` is
@@ -90,6 +92,29 @@ are `X,.prose X` now. **Check any single-class rule that styles a `<p>` inside
 `.prose`, and check it by reading the computed style off the built page** —
 and reload past the cache first: this was measured as still-broken once,
 against a page the browser had kept.
+
+**A chip out to another site needs its slug measured, not assumed.**
+`foul_song_slug` derives fouldomain's slug from the song's *title*, because
+phish.net's slug — what every other identifier here keys on — lands on
+fouldomain's "Song Not Found" for 13 of the 589 songs: punctuation phish.net
+drops and fouldomain keeps as a separator (`acdc-bag` against `ac-dc-bag`),
+disambiguation suffixes fouldomain has no need of (`gloria-branigan`,
+`invisible-2`), and one slug with an `<em>` baked into it,
+`theme-from-emnew-york-new-yorkem`. An apostrophe is *dropped* rather than
+separated on, and a first pass that got that one detail wrong broke 24 more
+songs while still looking like an improvement. **Check the whole set against
+the live site, and check identity rather than existence** — nine of their
+pages answer with a `<title>` of `1993 · 6:16`, so "not a 404" proves nothing;
+`og:title` names the song, and all 589 chips were confirmed to land on a page
+naming this song exactly. One page carries no fouldomain chip — `custom`,
+where phish.net files one-off and unlisted titles and this archive shows the
+page as Dog Log because Dog Log is one of the nine, so a title match would
+have claimed the other eight were versions of it. `TITLE_NOT_THE_ENTRY` is
+that gate, and the first version of it was `NOT_A_SONG`, which was **too wide
+by one**: `jam` is equally not a composition, but its title names the bucket
+rather than one of the things in it and fouldomain files unnamed improvisation
+under the same word. The test is whether a title match lands on the same set,
+not whether the page is a song.
 
 **A debut carries a "gap" that is not a gap, and skipping row 0 does not
 always skip it.** phish.net gives a song's first counted performance a gap
@@ -124,6 +149,85 @@ every song page permanently, pinned over the header it exists to replace, from
 the day it shipped. The script had been setting `.hidden` correctly the whole
 time. **Prove the state you are claiming, not its opposite**: every screenshot
 of that button showed it working. `docs/TODO.md` §2k.
+
+**A stamp that reverses on hover can lose its text to a plainer rule, and you
+cannot see it in the source.** The Jam chart chip hovered to `var(--hot)` on a
+`var(--hot)` fill — 1.00:1, a solid red block where a word had been — because
+`a.jc-chip:hover` is 0-2-1 and `td.song a:hover`, further down the same sheet,
+is 0-2-2. What made it look handled was the dead half of the chip's own
+selector: `td.song a:hover .jc-chip` had never matched anything, because the
+chip is a *sibling* of the title link, not a descendant. **The fifth instance
+of a modifier class losing to a descendant selector**, after the sticky-header
+hide, `.backtop` and `.live span`. The same shape was live in `.onstage`: its
+hover repaint named three children and missed a fourth, leaving "songs so far"
+at 1.12:1 / 1.08:1 — on the banner that appears *only* while a show is being
+played, so no amount of browsing the archive could turn it up. **A list of
+children is a list a fourth child is not on.** Beware the obvious cure:
+`.onstage:hover *` does not work, because `*` contributes nothing to
+specificity, so at 0-2-0 it still loses to `.onstage .n b` at 0-2-1. Repeat
+the class instead.
+
+None of this is visible in the CSS, in a resting screenshot, or to anything
+that reads the source — the cascade has to be resolved *in the state*.
+`tools/contrast_audit.html` does that for every colour, state, palette and
+layout, and the `audit` entry in `.claude/launch.json` serves it. Run it after
+touching a palette token, a `:hover`/`:focus` rule, or any selector that could
+out-specify one. It caught both bugs above, and then caught the first fix for
+the second one being wrong. `docs/TODO.md` §8j.
+
+**`--hot` is the display accent and `--hot-text` is everything else.** The
+brighter one reads 4.44:1 on paper — fine against a 40px figure, under the
+floor for the 10–22px text it had spread to. As of 2026-07-30 the only places
+still allowed to use `--hot` for *text* are `.num.hot`, `h1 em` and
+`.card.since.over .num`; 31 other sites were moved, along with the
+`border-bottom-color` in the same hover rules so a hovered link is one colour.
+Backgrounds, focus rings and the `.bar` marks are non-text and stay `--hot`.
+Watch for the other half of this: `--dim` is 4.98:1 on bare paper and fails on
+anything tinted — `.toc a::before` sat on the index panel's `--rule-soft` wash
+at 4.13:1 light and 4.49:1 dark. **A token that passes on paper has not been
+checked until it is checked on the thing it actually sits on.**
+
+**The paper texture is on now, and `getComputedStyle` cannot see it.** The
+grain was generated, published, linked and *never painted* for its entire life,
+because `BODY_BOX_CSS` set the `background` shorthand one link after the sheet
+set `background-image`, and the shorthand resets it. Nothing caught that: the
+page is the right colour either way, just flat. Two more things were wrong
+underneath. `multiply` on cream and `screen` on near-black against a mid-grey
+tile are not a texture but a dimmer -- measured, they moved the light paper
+-20.8% and the dark paper +216% -- so the blend is `soft-light`, which is the
+identity at mid-grey and leaves the mean exactly where it was. And one tile
+cannot serve both palettes, because soft-light's swing depends on how far the
+backdrop sits from the extremes: the same band read sd(L*) 0.30 on cream and
+1.31 on near-black. `write_grain` now solves each palette its own spread from
+one perceptual target, `GRAIN_TARGET_DL`.
+**`tools/contrast_audit.html` is structurally blind to all of this** -- it reads
+`getComputedStyle().backgroundColor`, which returns the token, not the
+composite. `tools/check_paper.py` shoots the built pages headless and measures
+the painted pixels: the mean must stay within 2 levels of the palette's paper,
+and the texture must actually be there. Run it after touching the grain, the
+palette's paper, or anything that sets `background` on `body`.
+
+**And a clean sweep is true of the tree it ran on and nothing else.** Merging
+`main` into a branch that had just cleared the whole site brought nine fresh
+`color:var(--hot)` sites on small text — `.show a`, `.crumb a.sect`,
+`details.how > summary`, `.aside a`, `.ax-note a`, `.years a`, `.yh .up`,
+`.chips a` — plus two page types the audit had never opened. None of it
+conflicted; git had no reason to flag any of it. **Re-run the audit after a
+merge, not just after your own edits**, and when you add a page, add it to
+`PAGES` in `tools/contrast_audit.html` in the same change — a page type missing
+from that list is a page type nothing checks, and the report still says "Pass."
+
+**A filled red stamp of reversed 10px caps is the bustout's costume, and only
+the bustout's.** It is the headline of a show, struck twice and set two degrees
+off true so it cannot be mistaken for anything else. The Jam chart chip had
+always been *specified* to reverse into the same fill on hover — but the text
+was being overpainted the colour of the fill, so what shipped was a featureless
+block and nobody could see the collision. Fixing the contrast is what made it
+visible; Ian caught it in the very next screenshot. The chip reverses to
+`--ink` now (15.51:1 / 14.92:1), which is already the site's way of saying
+"this is a state, not a claim" — `.yr h2 .tab` and the tooltip do the same.
+**A bug can be hiding a design decision, so look at what the fix reveals, not
+just at whether the number went up.**
 
 **Drawing preview cards locally poisons CI.** `site/data/cards.json` records
 what each card was drawn from and is tracked; `site/card/*.png` is gitignored.

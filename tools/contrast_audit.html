@@ -1,0 +1,452 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>possumlogic contrast audit</title>
+<!--
+Every text colour on the site, in every state, against what is actually
+painted behind it -- resting, hovered, focused, :target and :active, in both
+palettes and at both layouts.
+
+Written because two of these were found by accident. A jam-chart chip hovered
+to var(--hot) text on a var(--hot) fill (1.00:1, a solid red block) and the
+"On stage now" banner's label hovered to var(--dim) on the same fill (1.12:1
+light, 1.08:1 dark). Both are the same shape -- a modifier class losing a
+`color` to a descendant selector -- and neither is visible in the source, in a
+screenshot of a resting page, or to anything that reads the CSS. You have to
+resolve the cascade in the state, which means a browser.
+
+Served from the REPO ROOT, not from site/, so it cannot end up published. That
+is not hypothetical tidiness: while this was being written, a copy sitting in
+site/ was picked up by the sitemap and shipped as page 1309 of 1309. The
+`audit` entry in .claude/launch.json starts that server; then open
+
+    /tools/contrast_audit.html?base=/site
+
+The ?base is not optional -- without it this page looks for the built site
+beside itself, finds nothing, and reports a clean pass on zero pages.
+
+Rebuild first (`./possumlogic.py --site site --rebuild`, ~2s). It reads the
+built pages, not possumlogic.py.
+
+It runs on load and prints a table. Everything below the AA floor for its own
+type size is listed, worst first; an empty table is a pass. Two states cannot
+occur in the archive because they need a show in progress -- the live banner
+with its "new since you last looked" tag, and "On stage now" -- so those are
+reconstructed here exactly as the generator and NEW_ROWS_JS build them.
+
+Re-run after touching any of: a palette token, a :hover/:focus rule, or a
+selector that could out-specify one.
+-->
+<style>
+  /* This tool spent its life unreadable in a dark browser: black-on-default
+     text over the UA's dark canvas, which is how Ian first saw it -- one of
+     three lines legible. It is a tool for checking contrast, so it can manage
+     its own. */
+  :root{color-scheme:light dark}
+  html,body{margin:0;font:13px/1.4 ui-monospace,monospace;padding:1rem;
+            background:#fff;color:#101214}
+  iframe{border:0;position:absolute;left:-9999px;top:0}
+  table{border-collapse:collapse;margin-top:.6rem;width:100%}
+  th,td{text-align:left;padding:.22rem .5rem;border-bottom:1px solid #ddd;
+        vertical-align:top}
+  th{font-weight:600;border-bottom:2px solid #999}
+  .bad{background:#fdd}.warn{background:#ffe9c7}
+  #at{color:#555;margin:.35rem 0 0}
+  #at b{color:inherit}
+  sw{display:inline-block;width:2.2em;height:1em;vertical-align:-.15em;
+     border:1px solid #0003}
+  /* Determinate, because "is it alive or wedged?" was a real question: the
+     only moving part used to be one line of text, and a finished sweep and a
+     stalled one printed the same thing. */
+  #bar{height:6px;background:#0001;margin:.5rem 0 0;overflow:hidden}
+  #bar i{display:block;height:100%;width:0;background:#2f6feb;
+         transition:width .25s linear}
+  #bar.done i{background:#1a8a4a}
+  #pulse{display:inline-block;width:.55em;height:.55em;border-radius:50%;
+         background:#2f6feb;vertical-align:.02em;margin-right:.45em;
+         animation:blip 1s ease-in-out infinite}
+  @keyframes blip{0%,100%{opacity:.25}50%{opacity:1}}
+  .finished #pulse{animation:none;background:#1a8a4a;opacity:1}
+  @media (prefers-color-scheme:dark){
+    html,body{background:#16181c;color:#e8e6e3}
+    th,td{border-bottom-color:#31353b}
+    th{border-bottom-color:#6b7280}
+    /* Dark equivalents, not the light ones dimmed: #fdd on #16181c is a pale
+       block with dark text sitting in a dark page. */
+    .bad{background:#4d1f1f}.warn{background:#4a3a17}
+    #at{color:#9ba3ae}
+    sw{border-color:#ffffff40}
+    #bar{background:#ffffff14}
+  }
+</style>
+<h1 style="font-size:1rem;margin:0">possumlogic contrast audit</h1>
+<p id=at><span id=pulse></span>starting&hellip;</p>
+<div id=bar><i></i></div>
+<div id=out></div>
+<iframe id=f width=1280 height=2400></iframe>
+<script>
+const BASE = new URLSearchParams(location.search).get('base') || '';
+
+// One page per template, plus the two states that need a show in progress.
+const PAGES = [
+  // No /dormant.html: it became a redirect stub when the page moved to
+  // out-of-rotation.html, so it is 121 bytes of CSS and nothing to audit.
+  // The freshness guard caught it sitting here, which is what it is for.
+  '/index.html', '/songs.html', '/due.html', '/venues.html',
+  '/method.html', '/faq.html',
+  // Added 2026-07-31 with the pages themselves. A page type missing from this
+  // list is a page type nothing checks: the years, not-a-show and
+  // out-of-rotation pages arrived on main carrying nine fresh instances of the
+  // --hot-on-small-text problem, and the sweep that had just cleared the site
+  // would have reported a clean pass without them.
+  '/years.html', '/not-a-show.html', '/out-of-rotation.html',
+  '/show/2026-05-01.html',   // a report carrying jam-chart chips
+  '/show/2026-07-29.html',   // a report carrying a bustout stamp and notes
+  '/song/tweezer.html',      // a song page with ratings, jam prose and eras
+  '/song/mercury.html',
+  ['/index.html', 'onstage'],
+  ['/show/2026-05-01.html', 'live'],
+];
+
+// Simulate :hover / :focus-visible / :target / :active by rewriting them to
+// classes of IDENTICAL specificity (a pseudo-class and a class are both
+// 0-1-0), in place in the same <style> element, so cascade order and
+// specificity are exactly what a real pointer would produce. This is the
+// whole trick: a lower-specificity :hover rule losing to a plain descendant
+// selector is the bug being hunted, so the simulation must not perturb
+// specificity by even one bit.
+const PSEUDO = [[/:hover\b/g, '.FH'], [/:focus-visible\b/g, '.FV'],
+                [/:focus\b/g, '.FV'], [/:target\b/g, '.TG'],
+                [/:active\b/g, '.FA']];
+
+const srgb = c => {
+  const m = (c || '').match(/[\d.]+/g);
+  if (!m) return null;
+  return {r: +m[0], g: +m[1], b: +m[2], a: m.length > 3 ? +m[3] : 1};
+};
+const over = (f, b) => ({r: f.r * f.a + b.r * (1 - f.a), g: f.g * f.a + b.g * (1 - f.a),
+                         b: f.b * f.a + b.b * (1 - f.a), a: 1});
+const lum = c => {
+  const g = v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; };
+  return .2126 * g(c.r) + .7152 * g(c.g) + .0722 * g(c.b);
+};
+const ratio = (a, b) => {
+  const x = lum(a), y = lum(b);
+  return (Math.max(x, y) + .05) / (Math.min(x, y) + .05);
+};
+
+// The background actually painted behind an element: its own, composited over
+// each ancestor's until something opaque is reached. --hover and --rule-soft
+// are translucent, so the naive "read backgroundColor" answer is wrong for
+// every row on the site.
+function bgOf(el, win, pseudo) {
+  const stack = [];
+  if (pseudo) {
+    const c = srgb(win.getComputedStyle(el, pseudo).backgroundColor);
+    if (c && c.a > 0) { stack.push(c); if (c.a === 1) return stack[0]; }
+  }
+  for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+    const c = srgb(win.getComputedStyle(n).backgroundColor);
+    if (c && c.a > 0) { stack.push(c); if (c.a === 1) break; }
+  }
+  let base = {r: 255, g: 255, b: 255, a: 1};
+  for (let i = stack.length - 1; i >= 0; i--) base = over(stack[i], base);
+  return base;
+}
+const ownText = el => {
+  for (const n of el.childNodes)
+    if (n.nodeType === 3 && n.nodeValue.trim()) return n.nodeValue.trim();
+  return null;
+};
+// The AA floor for this element's own type size, not a blanket 4.5.
+const floorFor = s => {
+  const px = parseFloat(s.fontSize);
+  return (px >= 24 || (parseInt(s.fontWeight, 10) >= 700 && px >= 18.66)) ? 3 : 4.5;
+};
+
+function measure(el, win, pseudo) {
+  const s = win.getComputedStyle(el, pseudo || null);
+  if (s.display === 'none' || s.visibility === 'hidden') return null;
+  if (parseFloat(s.opacity) === 0) return null;
+  let text;
+  if (pseudo) {
+    const c = s.content;
+    if (!c || c === 'none' || c === 'normal') return null;
+    if (/^(url\(|"")/.test(c)) return null;   // an icon or a rule: no glyphs
+    text = c.replace(/^"|"$/g, '');
+    if (!text.trim()) return null;
+  } else {
+    // A closed <dialog> and a hidden narrow-layout copy are not defects.
+    for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+      const p = win.getComputedStyle(n);
+      if (p.display === 'none' || p.visibility === 'hidden') return null;
+    }
+    text = ownText(el);
+    if (!text) return null;
+  }
+  const fg = srgb(s.color), bg = bgOf(el, win, pseudo);
+  return {r: ratio(fg.a < 1 ? over(fg, bg) : fg, bg), need: floorFor(s),
+          px: parseFloat(s.fontSize), color: s.color, text: text.slice(0, 34),
+          bg: `rgb(${[bg.r, bg.g, bg.b].map(Math.round)})`};
+}
+
+const sig = el => el.tagName.toLowerCase() + (typeof el.className === 'string'
+  ? el.className.trim().split(/\s+/).filter(c => c && !/^(F[HVA]|TG)$/.test(c))
+      .map(c => '.' + c).join('') : '');
+function where(el) {
+  const b = [];
+  for (let n = el; n && n.nodeType === 1 && b.length < 4; n = n.parentElement) b.unshift(sig(n));
+  return b.join(' ');
+}
+
+// Selectors read out of the TEXT, not the CSSOM: rewriting a <style>'s
+// textContent does not rebuild .sheet.cssRules synchronously, so the CSSOM
+// right after the rewrite is the rule list from before it -- or an empty one.
+// That silently produced a clean report on a page with a known 1.00:1 bug.
+function selectorsFrom(text) {
+  const t = text.replace(/\/\*[\s\S]*?\*\//g, '');
+  const out = [];
+  let prelude = '';
+  for (const ch of t) {
+    if (ch === '{') {
+      const p = prelude.trim();
+      if (p && !p.startsWith('@')) out.push(p);
+      prelude = '';
+    } else if (ch === '}') prelude = '';
+    else prelude += ch;
+  }
+  return out;
+}
+const allRules = doc =>
+  [...doc.querySelectorAll('style')].flatMap(s => selectorsFrom(s.textContent));
+
+// The element that WEARS the state class for a given selector: truncate at the
+// compound carrying it. `a.card.FH .lbl::after` -> `a.card`.
+function bearer(sel, cls) {
+  const parts = [];
+  let depth = 0, cur = '';
+  for (const ch of sel) {
+    if ('(['.includes(ch)) depth++;
+    if (')]'.includes(ch)) depth--;
+    if (depth <= 0 && ' >+~'.includes(ch)) { if (cur) parts.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  if (cur) parts.push(cur);
+  const i = parts.findIndex(p => p.includes('.' + cls));
+  if (i < 0) return null;
+  const out = parts.slice(0, i + 1).join(' ')
+    .split('.' + cls).join('').replace(/::[\w-]+/g, '');
+  return out.trim() || null;
+}
+
+// Every load gets its own query string. python -m http.server sends no
+// Cache-Control, so the browser heuristically reuses the document it already
+// has -- and a run right after a --rebuild then measures the previous build
+// and reports the bug you just fixed as still present. Which it did.
+let TICK = 0;
+async function load(url) {
+  const f = document.getElementById('f');
+  const bust = (url.includes('?') ? '&' : '?') + 'v=' + (++TICK);
+  await new Promise(res => { f.onload = res; f.src = BASE + url + bust; });
+  const styles = [...f.contentDocument.querySelectorAll('style')];
+  // A 404 page fires onload like any other. Without this, a wrong ?base or a
+  // page that has not been built yet gives a document with no stylesheet, no
+  // findings, and a green report -- the failure mode that reads as a pass.
+  const total = styles.reduce((n, s) => n + s.textContent.length, 0);
+  if (total < 1000)
+    throw new Error(`${BASE + url} has no stylesheet (${total} bytes in `
+      + `${styles.length} <style> tags) -- wrong ?base, or not built yet`);
+  for (const st of styles) {
+    let t = st.textContent;
+    for (const [re, c] of PSEUDO) t = t.replace(re, c);
+    st.textContent = t;
+  }
+  return f;
+}
+
+// States that only exist while a show is being played, so no built page in
+// the archive carries them -- which is exactly why they were never checked.
+const SYNTH = {
+  live(doc) {
+    const header = doc.querySelector('header');
+    const p = doc.createElement('p');
+    p.className = 'live';
+    p.setAttribute('role', 'status');
+    p.setAttribute('data-show', '2026-05-01');
+    p.innerHTML = "<b>This show is being played right now</b>"
+      + "<span><b class='n'>12</b> songs so far &middot; this page was built "
+      + "<time class='ago' datetime='x'>2 minutes ago</time></span>"
+      + "<span>It updates itself as songs land</span>";
+    header.appendChild(p);
+    const rows = [...doc.querySelectorAll('tbody tr')];
+    rows.slice(-3).forEach(r => r.classList.add('fresh'));
+    const tag = doc.createElement('a');
+    tag.className = 'since-you';
+    tag.href = '#' + (rows[rows.length - 3] || {}).id;
+    tag.textContent = '3 new since you last looked ↓';
+    p.appendChild(tag);
+  },
+  onstage(doc) {
+    const a = doc.createElement('a');
+    a.className = 'onstage';
+    a.href = './show/2026-05-01.html';
+    a.innerHTML = "<span class='k'>On stage now</span>"
+      + "<span class='w'>Madison Square Garden<span class='p'>New York, NY</span></span>"
+      + "<span class='n'><b>12</b> songs so far</span>";
+    doc.querySelector('header').after(a);
+  },
+};
+
+async function audit(url, theme, width, synth) {
+  const f = document.getElementById('f');
+  f.width = width;
+  await load(url);
+  const doc = f.contentDocument, win = f.contentWindow;
+  doc.documentElement.dataset.theme = theme;
+  if (synth) SYNTH[synth](doc);
+  const sels = allRules(doc);
+  const out = [], seen = new Set();
+  const push = (state, el, pseudo, m) => {
+    if (!m || m.r >= m.need) return;
+    // Keyed on what the element IS, or one bad rule reports itself once per
+    // ancestor that happened to be wearing the state class.
+    const key = [state, sig(el), pseudo || '', m.color, m.bg].join('|');
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({state, sel: where(el) + (pseudo || ''), ratio: +m.r.toFixed(2),
+              need: m.need, px: m.px, color: m.color, bg: m.bg, text: m.text});
+  };
+  const scan = (state, root) => {
+    for (const el of [root, ...root.querySelectorAll('*')]) {
+      if (/^(script|style|svg|path)$/i.test(el.tagName)) continue;
+      push(state, el, null, measure(el, win));
+      for (const p of ['::before', '::after']) push(state, el, p, measure(el, win, p));
+    }
+  };
+  scan('rest', doc.body);
+  for (const [cls, state] of [['FH', 'hover'], ['FV', 'focus'], ['TG', 'target'], ['FA', 'active']]) {
+    const targets = new Set();
+    for (const s of sels)
+      for (const one of s.split(','))
+        if (one.includes('.' + cls)) {
+          const b = bearer(one.trim(), cls);
+          if (b) { try { doc.querySelectorAll(b).forEach(e => targets.add(e)); } catch (e) {} }
+        }
+    for (const el of targets) {
+      // A pointer lights up the ancestor chain too; focus and :target do not.
+      const chain = [];
+      if (state === 'hover' || state === 'active')
+        for (let n = el; n && n.nodeType === 1; n = n.parentElement) chain.push(n);
+      const wear = chain.length ? chain : [el];
+      wear.forEach(n => n.classList.add(cls));
+      scan(state, el);
+      wear.forEach(n => n.classList.remove(cls));
+    }
+  }
+  return out;
+}
+
+function report(res) {
+  const groups = new Map();
+  for (const x of res) {
+    const k = [x.state, x.sel, x.color, x.bg].join('|');
+    if (!groups.has(k)) groups.set(k, {...x, pages: new Set(), themes: new Set()});
+    groups.get(k).pages.add(x.page);
+    groups.get(k).themes.add(x.theme);
+  }
+  const rows = [...groups.values()].sort((a, b) => a.ratio - b.ratio);
+  const cell = c => `<sw style="background:${c}"></sw> ${c}`;
+  document.getElementById('out').innerHTML = rows.length === 0
+    ? '<p><b>Pass.</b> Nothing below its AA floor.</p>'
+    : `<p><b>${rows.length}</b> distinct findings.</p><table><tr>
+       <th>ratio<th>needs<th>px<th>state<th>palette<th>element<th>text<th>ink<th>on</tr>`
+      + rows.map(r => `<tr class="${r.ratio < 3 ? 'bad' : 'warn'}">
+         <td>${r.ratio}<td>${r.need}<td>${r.px}<td>${r.state}
+         <td>${[...r.themes].join(' ')}<td>${r.sel}<td>${r.text}
+         <td>${cell(r.color)}<td>${cell(r.bg)}</tr>`).join('')
+      + '</table>';
+  return rows;
+}
+
+window._res = []; window._done = false;
+
+// This page cannot cache-bust its own URL, and python -m http.server sends no
+// Cache-Control -- so a reload after editing PAGES happily runs the *previous*
+// list and prints "Pass" for a set of pages that no longer matches the file on
+// disk. That happened: three pages were added, the browser served the old
+// document, and the report cleared 13 states while claiming to be current.
+// Re-fetch this file uncached and check the list length against what is
+// actually running.
+async function assertFresh() {
+  try {
+    const src = await (await fetch(location.pathname, {cache: 'no-store'})).text();
+    const m = src.match(/const PAGES = \[([\s\S]*?)\n\];/);
+    if (!m) return;
+    // Every entry carries exactly one '/-prefixed path, whether it is a bare
+    // string or a [path, synth] pair; entries share lines, so count paths.
+    const onDisk = (m[1].match(/'\//g) || []).length;
+    if (onDisk !== PAGES.length) {
+      const b = document.createElement('p');
+      b.style.cssText = 'background:#c00;color:#fff;padding:.6rem;font-weight:700';
+      b.textContent = `STALE DOCUMENT — running ${PAGES.length} pages, the file `
+        + `on disk lists ${onDisk}. Hard-reload (or add ?v=N) before believing `
+        + `this report.`;
+      document.body.prepend(b);
+    }
+  } catch (e) { /* offline or blocked: not worth failing the run over */ }
+}
+
+(async () => {
+  const at = document.getElementById('at');
+  const fill = document.querySelector('#bar i');
+  const t0 = Date.now();
+  const total = PAGES.length * 4;          // two palettes, two layouts
+  let n = 0;
+  const clock = () => {
+    const s = Math.round((Date.now() - t0) / 1000);
+    return `${Math.floor(s / 60)}m${String(s % 60).padStart(2, '0')}s`;
+  };
+  // Ticks on its own, so the page is visibly alive between page states -- some
+  // of which take minutes. A finished sweep and a wedged one used to print the
+  // same single line, and telling them apart meant asking the console.
+  const tick = setInterval(() => {
+    const el = document.getElementById('elapsed');
+    if (el) el.textContent = clock();
+  }, 1000);
+  const say = (where) => {
+    at.innerHTML = `<span id=pulse></span><b>${n}/${total}</b> · ${where}`
+      + ` · <span id=elapsed>${clock()}</span>`
+      + ` · <b>${window._res.length}</b> finding`
+      + (window._res.length === 1 ? '' : 's');
+    fill.style.width = (n / total * 100).toFixed(1) + '%';
+  };
+  await assertFresh();
+  say('starting');
+  try {
+    for (const spec of PAGES) {
+      const [url, synth] = Array.isArray(spec) ? spec : [spec, null];
+      for (const theme of ['light', 'dark'])
+        for (const width of [1280, 390]) {
+          say(`${url}${synth ? ' +' + synth : ''} · ${theme} · ${width}px`);
+          try {
+            for (const row of await audit(url, theme, width, synth))
+              window._res.push({page: url + (synth ? '+' + synth : ''),
+                                theme, width, ...row});
+          } catch (e) {
+            clearInterval(tick);
+            at.textContent = `FAILED on ${url}: ${e}`;
+            throw e;
+          }
+          n++;
+          report(window._res);
+          say(`${url}${synth ? ' +' + synth : ''} · ${theme} · ${width}px`);
+        }
+    }
+  } finally { clearInterval(tick); }
+  document.body.classList.add('finished');
+  document.getElementById('bar').classList.add('done');
+  fill.style.width = '100%';
+  at.innerHTML = `<span id=pulse></span><b>done</b> · ${total} page states`
+    + ` · light and dark · 1280 and 390 · ${clock()}`;
+  window._done = true;
+})();
+</script>

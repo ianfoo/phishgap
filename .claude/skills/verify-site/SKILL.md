@@ -54,6 +54,38 @@ the same page reporting both answers on consecutive runs; loop on
 frame cap. And **delete the harness and rebuild before committing**, or it
 ships and lands in `sitemap.xml`.
 
+## A colour is not one colour — check it in every state
+
+Resting is the state nobody ships broken. Two stamps shipped invisible *on
+hover*: the Jam chart chip at 1.00:1 (a solid red block where a word had been)
+and the "On stage now" banner's label at 1.12:1 — the second on a banner that
+only exists while a show is being played, so browsing the archive could never
+turn it up. Both were a `:hover` rule losing a `color` to a plainer descendant
+selector further down the same sheet. Neither is visible in the CSS, in a
+resting screenshot, or to anything that reads the source.
+
+Run `tools/contrast_audit.html` — the `audit` entry in `.claude/launch.json`
+serves it — after touching a palette token, a `:hover`/`:focus` rule, or any
+selector that could out-specify one. It resolves the cascade in each state,
+in both palettes, at both layouts, and reports anything under the AA floor for
+its own type size. Rebuild first; it reads built pages, not `possumlogic.py`.
+
+## Some things only exist in the painted pixels
+
+Two of this site's bugs were invisible to every text-based check and to
+`getComputedStyle`. The paper texture never painted for its whole life -- the
+page was the right colour, just flat -- and the first tuning of it moved the
+light paper -20.8% and the dark +216% while `contrast_audit.html` would still
+have printed "Pass", because it reads the background *token*, not the
+composite.
+
+`python3 tools/check_paper.py site` shoots the built pages headless and samples
+the pixels. Run it alongside the contrast audit whenever a background, a
+palette paper, or the grain changes. Reach for the same technique -- headless
+screenshot, sample with Pillow -- for anything blend modes, opacity or
+compositing can affect, because the CSSOM will confidently tell you the
+un-composited answer.
+
 ## Local build and published site are different questions
 
 The live site and a local build disagreed for over an hour while every local
