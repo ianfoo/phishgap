@@ -3253,6 +3253,17 @@ def render_html(report, bar_scale="linear", index_href=None,
                    html.escape(checked, quote=True), _clock(checked)))
         poll = LIVE_JS
 
+    # The inlined display face, for output with no stylesheet beside it -- but
+    # only when the page has a use for it. This sheet names Bagnard in exactly
+    # one rule, `.live b` above, so a settled show's single-file output was
+    # carrying 17 KB of font to paint nothing: 19% of a 91 KB file, measured
+    # 2026-07-30. Deleting it outright is the obvious cure and the wrong one --
+    # it drops that banner to Georgia, which no loaded page uses anywhere else
+    # and which is precisely the generic voice `.live b` was written to escape.
+    # Tying it to the one rule that asks for it costs the settled case nothing
+    # and leaves the live case exactly as designed.
+    face = inline_font_css() if report.get("provisional") else ""
+
     rating = ""
     if report.get("pnet_rating") is not None:
         rating = ("<p class='rating'>Phish.net rating <b>%.2f</b>"
@@ -3273,7 +3284,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         venue=_venue_lines(report), hero=hero, rating=rating,
         links=_show_links(report["date"], on_phishin), blurb=html.escape(blurb, quote=True),
         sections="\n".join(sections), notes=notes,
-        sheet=(sheet_links(sheet) if sheet else inline_font_css()),
+        sheet=(sheet_links(sheet) if sheet else face),
         row_js=ROW_JS,
         share=share_meta("%s%s &mdash; Possum Logic"
                          % ("Live: " if report.get("provisional") else "",
@@ -10238,7 +10249,9 @@ def main():
 
     report = reports[0]
     if args.html or args.pdf:
-        # No stylesheet beside a single file, so it carries the face itself.
+        # No stylesheet beside a single file, so it carries the display face
+        # itself -- but only on a show still being played, which is the only
+        # page here with a rule that asks for it. See render_html.
         markup = render_html(report, bar_scale=args.bar_scale, sheet=None)
         if args.html:
             with open(args.html, "w", encoding="utf-8") as fh:

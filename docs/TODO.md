@@ -1940,8 +1940,23 @@ preference predates the review — his call, not the reviewer's.
   A settled show's single-file output has no `.live` element, no wordmark, and
   an `h1` deliberately set in Plex Mono (`/* The date, not the wordmark */`).
   So the 17,372 bytes of inlined face — **19.0% of a 91,288-byte file** — paint
-  zero glyphs in the case the feature exists for. Whether to keep paying for it
-  is Ian's call — open as of 2026-07-30.
+  zero glyphs in the case the feature exists for.
+
+  **Fixed 2026-07-30, and Ian caught the obvious cure being the wrong one.**
+  I proposed deleting `inline_font_css()` outright; he asked why that should
+  introduce Georgia to the live banner. It should not — `.live b` is the one
+  rule that escaped the site's generic voice on purpose, and dropping it to a
+  browser default serif that no loaded page uses anywhere else is a worse
+  outcome than the 17 KB. The face is now emitted only when
+  `report["provisional"]`, so the settled case pays nothing and the live case
+  is unchanged. Verified rendered, not grepped: the live banner measures
+  383.2px, identical to forced Bagnard and 29px off forced Georgia; a sweep of
+  every element whose stack can reach Georgia returns **zero** on both pages;
+  the settled page's `FontFaceSet` has no Bagnard entry at all. The hosted
+  show page is byte-identical at 74,045 bytes, and the single-file diff is
+  exactly the `@font-face` block and nothing else. **`document.fonts.check()`
+  is not evidence** — it returned `true` for Bagnard on the page that has no
+  such face, because it counts fallback. Compare rendered widths instead.
 
 ## 3c. Song page front matter — Ian's live review, 2026-07-28. DONE
 
