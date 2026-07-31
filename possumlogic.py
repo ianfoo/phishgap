@@ -1559,6 +1559,43 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
 # the note was protecting nothing. `.crumb` (four occurrences, four different)
 # and `.hero` (flex in one sheet, grid in another) do still differ and stay
 # where they are.
+# The sort control, which is a native <select> and looked it: the one widget
+# on the site drawn by the operating system rather than by this stylesheet,
+# sitting beside era chips and a search field that are both drawn here. Ian
+# spotted it on the song page and correctly said it was not that page's fault.
+#
+# `appearance:none` is what native styling turns on, and it is safe on a
+# pre-rendered site -- no script and no framework involved. The caret is two
+# 45-degree gradients rather than an SVG data URI, because gradients can use
+# `currentColor` and so follow the theme; a data URI would have needed one copy
+# per palette and would have been the next thing to drift.
+#
+# What this cannot do, and it is worth writing down before someone tries: the
+# open dropdown is an OS menu, not part of the page, and no stylesheet reaches
+# it. The `option` colours below help on Windows and Linux and are ignored on
+# macOS. Chrome 135 has `appearance:base-select` for the popup as well, which
+# is one browser and too new to build on.
+#
+# Named rather than copied because it was already in two sheets, identical, and
+# it is about to be four times longer -- which is how the pairwise copies here
+# start disagreeing with each other.
+SELECT_CSS = """.sort{appearance:none;-webkit-appearance:none;
+   font:inherit;font-size:.75rem;padding:.4rem 1.5rem .4rem .5rem;
+   background-color:transparent;color:var(--ink);cursor:pointer;
+   border:1px solid var(--edge);border-radius:0;
+   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+      linear-gradient(135deg,currentColor 50%,transparent 50%);
+   background-position:calc(100% - .78rem) calc(50% + .05rem),
+      calc(100% - .52rem) calc(50% + .05rem);
+   background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
+/* Matching the era chips beside it, which is the whole point of the exercise. */
+.sort:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* It ships disabled and is enabled by script; without this the UA greys out
+   text the reader can see for the split second before that happens. */
+.sort:disabled{opacity:1;color:var(--ink)}
+.sort option{background:var(--paper);color:var(--ink)}
+"""
+
 FOOTER_BOX_CSS = """footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
@@ -3277,9 +3314,7 @@ header{padding-bottom:.9rem}
 .chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    letter-spacing:0;color:var(--dim);margin-left:.3rem}
 .chip.on .chip-n{color:var(--paper)}
-.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-      color:var(--ink);border:1px solid var(--edge);border-radius:0}
-.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+""" + SELECT_CSS + """.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
        color:var(--dim);margin-left:auto}
 .count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
          font-size:1rem;color:var(--ink)}
@@ -3316,7 +3351,13 @@ header{padding-bottom:.9rem}
    underneath it. Stated once for every id on these pages rather than per
    anchor, so a new one cannot be the thing that finds this out. */
 [id]{scroll-margin-top:2.6rem}
-.row:hover{background:var(--hover)}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 /* Same rule, same reason: this is the one place the site still spoke two
    languages, since the song pages had already moved. */
 /* Data in a column, so the mono: tabular by construction, which is what makes
@@ -3362,7 +3403,13 @@ header{padding-bottom:.9rem}
 .due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
    column-gap:1.1rem;align-items:baseline}
 .due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
-.due .row:hover{background:var(--hover)}
+.due /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
 .due .row:hover .d-song{color:var(--hot)}
 .d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
@@ -3451,7 +3498,13 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .vn .row,.lhead.vn-h{display:grid;grid-template-columns:1fr 12rem 7rem;
    column-gap:1.1rem;align-items:baseline}
 .vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
-.vn .row:hover{background:var(--hover)}
+.vn /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 .vn-venue{font-size:1rem;font-weight:500}
 .vn .row:hover .vn-venue{color:var(--hot)}
 .vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
@@ -4280,9 +4333,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .search::placeholder{color:var(--dim)}
 .search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
    outline-offset:1px}
-.sort{font:inherit;font-size:.75rem;padding:.4rem .3rem;background:transparent;
-   color:var(--ink);border:1px solid var(--edge);border-radius:0}
-.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+""" + SELECT_CSS + """.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);margin-left:auto}
 /* Jump to an era, with how many shows are in it. Anchors, so they work with
    scripting off and survive a reload. */
@@ -4365,7 +4416,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    Fixed width, sized for the longest of them. */
 .row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
    column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
-.row:hover{background:var(--hover)}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
 /* The row's identifier, in the display face, same as the show index. It is
    the one thing in the row that is not the song. */
 .r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
