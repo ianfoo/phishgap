@@ -118,8 +118,13 @@ jobs:
               --catch-up 2 --calendar || true
 
             # The archive first, so a crash after this point still leaves the
-            # data recorded and only costs a publish.
-            git add site/data
+            # data recorded and only costs a publish. `archive` alongside
+            # site/data because --catch-up now writes the running order of any
+            # show it fetches that has settled -- during a show that is
+            # nothing, which is correct, and the pass after it settles is the
+            # one that records it. Left unstaged, the write would be discarded
+            # with the runner every five minutes.
+            git add site/data archive
             if ! git diff --cached --quiet; then
               git commit -q -m "Archive gap reports for new shows"
               # A rebase that conflicts must not be left half-applied. It used

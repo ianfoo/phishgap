@@ -505,15 +505,27 @@ of that page's 418 rows a line and the page 0.7% of its height. Titles still
 truncate: half a title is readable, half a preposition is not. Measured at
 1280px across eight song pages — 610 edge labels, none truncated.
 
-**What is still manual.** The extract only grows when `--seed-setlists` runs,
-which the workflows do not call, so it falls behind by however many nights
-since the last hand run. That is deliberate: it is a 3.4 MB single file, and
-committing it nightly in CI would put a fresh 3.4 MB blob in git history every
-day. `--catch-up` keeps the *reader-visible* data current on its own, so the
-lag costs nothing until the neighbor rules change again — and then it costs
-one call per un-archived night. If it is ever worth having CI maintain it,
-shard it by year first (~160 KB a year) and add `archive` to the `git add` in
-both workflows.
+**~~What is still manual.~~ Done 2026-07-31.** `--catch-up` writes the extract
+now, so CI maintains it and it no longer falls behind. Both workflows stage
+`archive` alongside `site/data`, without which the write would have happened in
+the runner's checkout and been discarded with the runner — working perfectly
+and changing nothing.
+
+The reason this was left manual was wrong, and it was mine. "It is a 3.4 MB
+single file, and committing it nightly in CI would put a fresh 3.4 MB blob in
+git history every day" was never measured. Git stores the delta: thirty nightly
+appends cost 13.0 KiB on the wire and 16 KiB of pack growth, about **500 bytes
+per show**. The advice that followed it — shard by year first — is also
+unnecessary: year shards measured 13.6 KiB and 250 KiB, a wash. Sharding by
+song, which is the intuitive fix and the one Ian proposed, is **fourteen times
+worse** (286 KiB wire, 497 KiB pack), because small blobs do not delta and each
+night adds a new tree over a 981-entry directory. `archive/README.md` holds the
+table.
+
+What the file did get is JSONL, one date per line, for the diff rather than the
+bytes: a backfilled show used to land mid-history as one changed line of 3.3 MB
+that `git diff --numstat` reported as "1 line", so the summary read as harmless
+while the diff was 7 MB. The pre-2009 backfill is 1,298 such inserts.
 
 ### Picked up next session — two left of the four agreed with Ian
 
