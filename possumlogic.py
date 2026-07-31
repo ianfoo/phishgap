@@ -1377,6 +1377,18 @@ BASE_CSS = PALETTE_CSS + THEME_CSS + """
 a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
 summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
   outline:2px solid var(--hot);outline-offset:2px}
+/* The identity line under every h1, and any link inside it. It carried no link
+   at all until the song page's debut date moved up into it on 2026-07-30, and
+   there was no rule to catch it: it rendered #9E9EFF and underlined on all 589
+   song pages, measured, while the best-version link two lines below it was
+   site ink with no underline.
+   **The fifth time a link here has shipped in the browser's default blue**,
+   and the reason it is written into BASE_CSS rather than SONG_CSS is that
+   `.show` is on every page type. Putting it in the one sheet that needs it
+   today is precisely how the other four happened. */
+.show a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.show a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* The skip link's landing spot takes focus so the next Tab continues from
    the content rather than from the top of the page again -- but it is a
    place, not a control, so it does not wear the control's ring. */
