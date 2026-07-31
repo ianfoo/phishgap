@@ -49,13 +49,13 @@ anything off the strip still has a door from a page on it.
 **Everything else is still copied**: 32–46 rules repeat pairwise, and the
 near-miss `.hero{…}` (flex in one sheet, grid in another) differs by a real
 amount. `footer{…}` was listed with them and had stopped differing: measured
-2026-07-30 its three copies were identical once whitespace was normalised, so
+2026-07-30 its three copies were identical once whitespace was normalized, so
 it was hoisted into `FOOTER_BOX_CSS`. **The stale note is the lesson** — it
 told several sessions to leave a pure triplicate alone, and a wrong constraint
 in a doc gets obeyed.
 So a plain string replace on any rule
 outside a named block will still hit two or three sheets, or — worse — one.
-Anchor on a neighbouring line that differs and assert the match count. Five
+Anchor on a neighboring line that differs and assert the match count. Five
 bugs have come out of the copies: a nav that could not wrap, a footer link in
 the browser's default blue, a sticky-header hide out-specified by a modifier
 class, tabular figures on show pages only, and — 2026-07-30, caught by
@@ -105,7 +105,7 @@ reach it. **Filter to counted performances first, then drop the first** —
 and `songs_card` did not, and published 42 wrong longest gaps. Fixed, and the
 whole songs index counts shows now: 127 songs had a "shows" figure that
 included soundchecks, so the index and the song page one click away disagreed
-about 127 songs. **A page that summarises other pages must count the way they
+about 127 songs. **A page that summarizes other pages must count the way they
 do** — the check that found it was reading both. `docs/TODO.md` §2k.
 
 **And phish.net's gaps themselves are sound — do not go looking for that bug.**
@@ -148,13 +148,13 @@ the inputs can see. **A cache key must cover the whole pipeline; when you fix a
 renderer, ask what invalidates the render.** `docs/TODO.md` §8i.
 
 **And the fifth: `nb` on a performance meant "we asked", not "we know".**
-`setlist_neighbours` returned an entry only for songs that *had* a neighbour,
+`setlist_neighbors` returned an entry only for songs that *had* a neighbor,
 and the caller then stamped `nb=1` on every song of that date. So "the setlist
 we fetched did not mention this song" was written down identically to "this
 song genuinely opened its set" — and `nb` is what keeps a date from being
 asked again, so the guess became permanent. It emptied the Before / after
 column on 758 performances across 601 dates, concentrated in songs that have
-almost never been played without a neighbour: the Sloth 107 of 177, Colonel
+almost never been played without a neighbor: the Sloth 107 of 177, Colonel
 Forbin's Ascent 75 of 130, Fly Famous Mockingbird 74 of 131 — a song whose
 every performance follows Colonel Forbin's, showing nothing. Fixed by having
 the extractor report every song it *saw*, empty entry included. **When a flag
@@ -163,12 +163,12 @@ than absent.**
 
 **And the sixth, in the same flag: the migration that created it deleted the
 record it replaced before writing its own.** `nb` took over from a central
-`site/data/neighbours.json` listing walked dates. The migration block sets `nb`
+`site/data/neighbors.json` listing walked dates. The migration block sets `nb`
 in memory, calls `os.remove(index)` immediately, then writes files only via
 `flush()` — which writes only the slugs the *fetch loop* queued. Every song that
 run did not re-fetch lost its record permanently; an empty `todo` would have
 returned before writing anything. Measured cost: 28,264 performances carry
-neighbour data but only 18,292 carry the flag, and 10,718 of the difference sit
+neighbor data but only 18,292 carry the flag, and 10,718 of the difference sit
 on dates the deleted index had recorded as walked. Only ~78 performances in the
 archive were genuinely never asked. **Do not delete the old record until the new
 one is on disk** — and the block is still there, unreachable but loaded, so
@@ -176,24 +176,42 @@ one is on disk** — and the block is still there, unreachable but loaded, so
 
 **And the seventh, caught before it shipped: a carry-forward list in another
 function.** `save_song_history` rewrites a song's history from the API, and the
-neighbour fields are in no such response, so it copies them across by name —
+neighbor fields are in no such response, so it copies them across by name —
 through a hardcoded tuple of four key names, in a function nobody editing the
-neighbour walk would think to open. Adding four new fields to the walk would
+neighbor walk would think to open. Adding four new fields to the walk would
 have dropped every one of them on the next `--previous` run. The list is now
 one constant, `NB_CARRY`, sitting beside the walk that produces it. **When you
 add a field, grep for the list that copies fields.**
 
-**`archive/setlist-order.json` makes a re-walk free, and is a cache with no
+**`site/data/setlist-order.jsonl` makes a re-walk free, and is a cache with no
 expiry at all.** It holds the running order of every settled show, so changing
-the neighbour rules and re-walking all 2,009 of them cost 44 API calls rather
+the neighbor rules and re-walking all 2,009 of them cost 44 API calls rather
 than 2,009, and needs no API key. But the first harvest ran *during* a show and
 wrote down that show at the 12 songs it had at the time. Reading that back
 would have frozen the running order of the one show still moving — the six-hour
 cache bug again, minus the six hours. So `--seed-setlists` always re-fetches a
-show whose report is still `provisional`, and never writes one into the extract:
-its order is partial by definition, and the day it settles a partial record
-stops being skipped and starts being believed. **An extract of a live source
-needs the same staleness rules as the cache it replaced.**
+show whose report is still `provisional`, and neither writer records one: its
+order is partial by definition, and the day it settles a partial record stops
+being skipped and starts being believed. **An extract of a live source needs
+the same staleness rules as the cache it replaced.** `--catch-up` writes it too
+as of 2026-07-31, because the setlist that built the report is already in hand
+and the order costs no extra call — the same argument that already had
+`record_neighbors` writing the derived neighbors at fetch time.
+
+**And the cost model that kept it un-automated was invented, not measured.**
+The README here said a nightly append would add a fresh 3.4 MB blob to git
+history every day, and gave that as the reason CI must not maintain the file.
+Git stores the delta: thirty nightly appends measured 13.0 KiB on the wire and
+16 KiB of pack growth, about **500 bytes per show**. The 3.4 MB is the loose
+object before `git gc`, which is not what ends up in history or on the wire.
+The wrong number came from an earlier session of mine, went into a doc as a
+justification, and was then reasoned from twice. **Measure a storage cost
+before designing around it** — and see the note above about stale constraints
+in docs getting obeyed. Sharding was measured at the same time: by year it is a
+wash, and by song — the intuitive fix, since a show only touches the songs it
+played — it is *fourteen times worse*, because small blobs do not delta and
+each night adds a new tree over a 981-entry directory. `docs/setlist-order.md` has
+the table.
 
 **Measures are in `rem`, and one place was missed for a year.** `.wrap` is
 `max-width:60rem` precisely so it travels with the type scale, and the comment
@@ -221,13 +239,60 @@ else is usually an artifact of that default rather than a decision.
 synthetic bold — the colophon on `acknowledgments.html` sets each typeface's
 name in its own face and uses classes rather than `<b>` for that reason.
 
-**American spellings, and the exceptions are somebody else's words.** The
-site's own copy is American; the 157 "Centre"s in the built pages are
-phish.net's venue names and the "organism"s are their jam-chart prose, both of
-which stay as written. "Catalogue" is a deliberate house habit in four places.
-`aria-label='Colour theme'` was the one real slip and lived on every page for
-months because it is read aloud rather than seen — **scan reader-visible text
-*and* the aria/title/alt attributes of the built site, not the source.**
+**American spellings, and the exceptions are somebody else's words.** Ian is
+American and never asked for the other kind; it accumulated across sessions
+until a pass on 2026-07-31 rewrote it. The exceptions in the *built* pages are
+not ours to change: the 157 "Centre"s are phish.net's venue names and the
+"organism"s are their jam-chart prose. "Catalogue" is a house habit in four
+places. The last one standing was `aria-label='Colour theme'`, on all 1,311
+pages, and it lasted because it is read aloud rather than seen — **scan
+reader-visible text *and* the aria/title/alt attributes of the built site, not
+the source.**
+
+**Actions runtime: measure jobs, not runs — `created_at` to `updated_at` counts
+time a run spent queued.** The two workflows serialize through concurrency
+groups, so a cron firing mid-show sits *pending* and is superseded rather than
+executed. Those runs report a `conclusion` of `cancelled` and a multi-hour span
+that is entirely queue. Measured from run metadata, the watcher looked like
+17.2 hours over five days; measured from `actions/runs/<id>/jobs`, which gives
+real `started_at`/`completed_at`, it is **12.9 hours**, and one show night is
+5.4–7.4 hours rather than the 11.6 the run spans implied. `run_duration_ms`
+from the timing endpoint does *not* fix this — it agrees with the wrong number.
+Ian caught this by disbelieving the total: 25 runs against three shows.
+**The repo is public, so Actions is free and unlimited** — but if it ever goes
+private, the Free tier is 2,000 minutes a month and the watcher alone is about
+45 hours for seven shows, which is the whole allowance twice over.
+
+**The same measurement showed the handoff already works.** On 2026-07-29 the
+second shift started **three seconds** after the first exited, because the
+queued run was standing by. Mid-show succession was never the fragile part;
+*initial start* is, and the watcher's cron fires 13% of the time it is
+scheduled to. Hence the sentinel in `possumlogic.yml`, which dispatches
+`watch.yml` when a show is on and no watcher is up — `workflow_dispatch` is not
+a scheduled event and is not throttled.
+
+**A watcher that only watches the window runs long after the show ends — but
+the page's "settled" is not the watcher's "safe to leave".** The loop's exit
+test was `watching()`, which asks about the 7h30m window, so a show that ended
+at midnight held a runner until half past two. The obvious fix is to exit on
+`provisional`, and it is wrong: `settle()` releases the page **half an hour**
+after an encore is recorded, which is right for a label the next pass can take
+back and wrong for the watcher, because the watcher leaving is what stops the
+next pass. Ian, who has been to them: six and seven song encores exist and run
+close to an hour. Songs arriving keep resetting `count_since`, so a long encore
+does not trip it by itself — but phish.net posting the first encore song and
+then straggling past thirty minutes is ordinary, and that is enough. So
+`released()` measures stillness directly against the full `QUIET_HOURS` and
+ignores the encore shortcut, costing about an hour of runner time and still
+exiting hours before the window closes. **When you make a display heuristic
+load-bearing for control flow, re-derive its safety margin** — 30 minutes was
+tuned for how long a reader should see "still coming in", not for how long a
+show can surprise you. `--watching` prints `released=` now. Adding that second line nearly
+broke the gate: all three callers parsed the output with a bare `cut -d= -f2`,
+which turns two lines into `"false\nfalse"` — never equal to `"true"`, so the
+gate would have failed closed and the watcher would silently never run again.
+**When a command's stdout is a machine contract, adding a line is a breaking
+change**; the callers `grep '^watching='` first.
 
 **Anything long-running must re-read its inputs each pass.** Three separate
 outages have had one shape — a job that publishes from something it read once:

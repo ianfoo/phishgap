@@ -13,7 +13,7 @@ The **gap** is the spine of it: how many shows passed between one performance of
 a song and the one before. A gap of 4 is a regular in rotation; 1,468 is Cold as
 Ice returning in 2026 after last being played in 1992. Gaps come from the
 [Phish.net API v5](https://docs.phish.net/) already computed, so there is no
-scraping and no arithmetic — but which shows *count* toward one is a judgement,
+scraping and no arithmetic — but which shows *count* toward one is a judgment,
 and the site follows phish.net's own `exclude_from_stats` flag rather than
 inventing a rule. Soundchecks and television sessions are on file and say so.
 
@@ -71,7 +71,7 @@ night, how old the material was, what the year sounded like as distinct from
 what it played most, the songs heard in that year and no other, and the pair of
 songs that most belonged to it.
 
-It also carries the one figure on the site that had to be normalised to be
+It also carries the one figure on the site that had to be normalized to be
 publishable. "Moves that recur" is the share of a year's song-to-song moves
 that turn up on more than one night — which climbs with the number of shows
 whether or not the band repeated itself, so it is stated over a fixed twenty
@@ -79,7 +79,7 @@ nights for every year. Over the same twenty nights 1993 reads 32% and 2017
 reads 1%; over their own lengths, 124 nights against 28, the same two years
 read 64% and 1% and the comparison is mostly arithmetic.
 
-The page reads `archive/setlist-order.json`, so it needs no API key and adds
+The page reads `site/data/setlist-order.jsonl`, so it needs no API key and adds
 nothing to a build. Where that file has no running order — 158 of the counting
 calendar's shows, almost all before 1992 — the year says so under its figures
 rather than presenting a part as a whole.
@@ -99,12 +99,12 @@ expose it. `--seed-setlists` fills in what each performance followed and led
 into: a song's history says where it was played but not what stood next to it,
 which needs the whole setlist of every show in the archive.
 
-It used to be the expensive one. Now it walks `archive/setlist-order.json` — the
+It used to be the expensive one. Now it walks `site/data/setlist-order.jsonl` — the
 running order of every show already fetched — and buys only the dates that file
 is missing, so re-walking all 2,008 shows after a rule change costs nothing and
 needs no API key. Each show is marked on its own rows as it is walked, so an
 interrupted run picks up where it stopped, and `--catch-up` records a new show's
-neighbours as it fetches it. `--force` re-walks everything.
+neighbors as it fetches it. `--force` re-walks everything.
 
 Ratings and jam charts arrive late — a version is scored from audio analysis, so
 it has none until a recording circulates, and jam chart entries are curated
