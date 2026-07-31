@@ -368,7 +368,7 @@
   {"date": "1994-11-12", "venue": "MAC Center, Kent State University", "city": "Kent", "state": "OH", "gap": 1, "set": "2", "nb": 1, "prev": "Harry Hood", "xnext": "Sample in a Jar"},
   {"date": "1994-11-14", "venue": "DeVos Hall", "city": "Grand Rapids", "state": "MI", "gap": 2, "set": "e", "nb": 1, "xprev": "You Enjoy Myself", "last": 1},
   {"date": "1994-11-17", "venue": "Hara Arena", "city": "Dayton", "state": "OH", "gap": 2, "set": "2", "nb": 1, "prev": "Slave to the Traffic Light", "xnext": "I'm Blue, I'm Lonesome"},
-  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 3, "set": "1", "out": ">", "nb": 1, "prev": "Blackberry Blossom", "next": "Down with Disease"},
+  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 3, "set": "1", "out": ">", "nb": 1, "first": 1, "next": "Down with Disease"},
   {"date": "1994-11-25", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 4, "set": "1", "nb": 1, "prev": "Julius", "xnext": "Also Sprach Zarathustra"},
   {"date": "1994-12-01", "venue": "Salem Armory", "city": "Salem", "state": "OR", "gap": 4, "set": "2", "nb": 1, "prev": "Harry Hood", "xnext": "Sleeping Monkey"},
   {"date": "1994-12-03", "venue": "Event Center", "city": "San Jose", "state": "CA", "gap": 2, "set": "e", "nb": 1, "xprev": "Cavern", "last": 1},

@@ -30,7 +30,7 @@
   {"date": "1998-11-27", "venue": "Worcester Centrum Centre", "city": "Worcester", "state": "MA", "gap": 37, "set": "2", "jamchart": true, "jam": "-&gt; in from &quot;CDT.&quot; A bluesy rendering of &quot;Dog Log&quot; -&gt; back to &quot;CDT.&quot;", "note": "Unfinished; Blues version.", "out": "->", "nb": 1, "prev": "Chalk Dust Torture", "in": "->", "next": "Chalk Dust Torture"},
   {"date": "1999-12-18", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 68, "set": "1", "nb": 1, "prev": "Back at the Chicken Shack", "next": "Tube"},
   {"date": "2000-09-17", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 42, "set": "2", "out": ">", "nb": 1, "prev": "Theme from the Bottom", "in": "->", "next": "The Mango Song"},
-  {"date": "2003-08-02", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 50, "set": "e", "out": ">", "nb": 1, "xprev": "Tower Jam", "next": "The Mango Song"},
+  {"date": "2003-08-02", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 50, "set": "e", "out": ">", "nb": 1, "xprev": "Bug", "next": "The Mango Song"},
   {"date": "2012-06-20", "venue": "nTelos Pavilion", "city": "Portsmouth", "state": "VA", "gap": 172, "set": "1", "nb": 1, "prev": "Divided Sky", "next": "Undermind"},
   {"date": "2022-02-23", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 335, "set": "1", "nb": 1, "prev": "Sample in a Jar", "next": "Ghost"},
   {"date": "2024-09-01", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 464, "set": "1", "nb": 1, "first": 1, "next": "Runaway Jim"}

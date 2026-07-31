@@ -195,7 +195,7 @@
   {"date": "2009-08-02", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 4, "set": "e", "nb": 1, "prev": "Bouncing Around the Room", "last": 1},
   {"date": "2009-08-07", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 2, "set": "e", "nb": 1, "xprev": "Harry Hood", "last": 1},
   {"date": "2009-08-14", "venue": "The Comcast Theatre", "city": "Hartford", "state": "CT", "gap": 4, "set": "2", "nb": 1, "prev": "Wilson", "in": ">", "next": "Piper"},
-  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 5, "set": "3", "nb": 1, "prev": "Light", "in": ">", "xnext": "Driver"},
+  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 5, "set": "3", "nb": 1, "prev": "Light", "in": ">", "xnext": "Grind"},
   {"date": "2009-11-20", "venue": "U.S. Bank Arena", "city": "Cincinnati", "state": "OH", "gap": 2, "set": "2", "nb": 1, "prev": "Possum", "next": "You Enjoy Myself"},
   {"date": "2009-11-24", "venue": "Wachovia Center", "city": "Philadelphia", "state": "PA", "gap": 3, "set": "2", "out": ">", "nb": 1, "prev": "Simple", "in": ">", "next": "Weekapaug Groove"},
   {"date": "2009-12-02", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 5, "set": "2", "out": ">", "nb": 1, "prev": "Light", "in": ">", "next": "Tweezer"},

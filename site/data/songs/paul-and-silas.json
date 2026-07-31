@@ -111,7 +111,7 @@
   {"date": "1994-04-20", "venue": "Virginia Horse Center", "city": "Lexington", "state": "VA", "gap": 4, "set": "2", "out": ">", "nb": 1, "prev": "Magilla", "next": "Sample in a Jar"},
   {"date": "1994-04-24", "venue": "Grady Cole Center", "city": "Charlotte", "state": "NC", "gap": 4, "set": "1", "out": ">", "nb": 1, "prev": "Dog Faced Boy", "next": "It's Ice"},
   {"date": "1994-06-24", "venue": "Murat Theatre", "city": "Indianapolis", "state": "IN", "gap": 40, "set": "1", "out": ">", "nb": 1, "prev": "The Sloth", "in": ">", "next": "Horn"},
-  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 47, "set": "1", "nb": 1, "prev": "The Old Home Place", "next": "Dooley"},
+  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 47, "set": "1", "nb": 1, "prev": "Guyute", "next": "Axilla (Part II)"},
   {"date": "1995-10-24", "venue": "Dane County Coliseum", "city": "Madison", "state": "WI", "gap": 63, "set": "1", "nb": 1, "prev": "My Friend, My Friend", "next": "Taste That Surrounds"},
   {"date": "1997-02-28", "venue": "Huxley\u2019s Neue Welt", "city": "Berlin", "state": "Berlin", "gap": 120, "set": "1", "out": ">", "nb": 1, "prev": "Carini", "next": "My Soul"},
   {"date": "1998-11-08", "venue": "UIC Pavilion, University of Illinois", "city": "Chicago", "state": "IL", "gap": 115, "set": "1", "nb": 1, "prev": "Fee", "next": "Roggae"},

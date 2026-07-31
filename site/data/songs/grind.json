@@ -14,7 +14,7 @@
   {"date": "2009-08-02", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 4, "set": "1", "nb": 1, "prev": "Reba", "next": "Beauty of a Broken Heart"},
   {"date": "2009-08-08", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 3, "set": "2", "nb": 1, "prev": "Piper", "xnext": "Good Times Bad Times"},
   {"date": "2009-08-16", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 5, "set": "e", "nb": 1, "xprev": "You Enjoy Myself", "next": "I Been Around"},
-  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 3, "set": "e", "nb": 1, "prev": "Secret Smile", "next": "Esther"},
+  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 3, "set": "e", "nb": 1, "xprev": "Slave to the Traffic Light", "next": "Esther"},
   {"date": "2010-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 65, "set": "3", "nb": 1, "prev": "Slave to the Traffic Light", "xnext": "First Tube"},
   {"date": "2012-07-07", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 58, "set": "1", "nb": 1, "first": 1, "next": "Possum"},
   {"date": "2012-08-31", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 12, "set": "e", "nb": 1, "xprev": "Fuck Your Face", "next": "Meatstick"},

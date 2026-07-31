@@ -353,6 +353,24 @@ pages, and it lasted because it is read aloud rather than seen — **scan
 reader-visible text *and* the aria/title/alt attributes of the built site, not
 the source.**
 
+**The running order is `(showid, position)`, not `(SET_ORDER, position)`, and
+"the show" is the performance rather than the date.** phish.net files a
+festival secret set *after* the encore — the IT Tower Jam is set 4 at position
+27, behind an encore ending at 26 — and `SET_ORDER` puts `"4"` before `"e"`, so
+six shows had their secret set moved in front of the encore and the wrong song
+credited with closing the night. **Mondegreen's Woodlands Jam is filed as set
+3**, so special-casing `"4"` would have missed the newest one. Sorting on
+`position` alone breaks a different ten: those dates hold two performances,
+each numbered from 1, and interleave. `showid` is the discriminator, and the
+neighbor walk uses it too — before this, *Buried Alive* opening the Beacon
+Theatre was recorded as following a song played hours earlier in a WNEW radio
+studio. 92 performances across 17 dates were wrong. Ian found it by naming a
+counterexample from memory, which is worth more here than any sweep: the bug
+lived entirely in six festivals and ten double-headers, so every aggregate
+check averaged it away. **The backfill cost zero API calls** — all 39,774 rows
+found their `showid` in the six-hour cache on disk, which still held every
+date. Count the cache first.
+
 **Actions runtime: measure jobs, not runs — `created_at` to `updated_at` counts
 time a run spent queued.** The two workflows serialize through concurrency
 groups, so a cron firing mid-show sits *pending* and is superseded rather than

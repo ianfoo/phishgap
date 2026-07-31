@@ -287,7 +287,7 @@
   {"date": "2009-06-19", "venue": "Verizon Wireless Music Center", "city": "Noblesville", "state": "IN", "gap": 2, "set": "1", "nb": 1, "prev": "Backwards Down the Number Line", "next": "Limb By Limb"},
   {"date": "2009-08-01", "venue": "Red Rocks Amphitheatre", "city": "Morrison", "state": "CO", "gap": 4, "set": "1", "nb": 1, "first": 1, "next": "The Curtain With"},
   {"date": "2009-08-14", "venue": "The Comcast Theatre", "city": "Hartford", "state": "CT", "gap": 6, "set": "1", "out": ">", "nb": 1, "prev": "Punch You in the Eye", "next": "NICU"},
-  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 4, "set": "2", "out": ">", "nb": 1, "xprev": "McGrupp and the Watchful Hosemasters", "next": "Rift"},
+  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 4, "set": "2", "out": ">", "nb": 1, "xprev": "Secret Smile", "next": "Rift"},
   {"date": "2009-11-18", "venue": "Cobo Arena", "city": "Detroit", "state": "MI", "gap": 0, "set": "1", "nb": 1, "first": 1, "next": "Foam"},
   {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 5, "set": "1", "out": ">", "nb": 1, "first": 1, "next": "Maze"},
   {"date": "2009-12-02", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 2, "set": "1", "out": ">", "nb": 1, "first": 1, "next": "Chalk Dust Torture"},

@@ -19,8 +19,9 @@ instead of an absolute one derived from `__file__`.
 
 The running order of every **settled** show the archive has a performance for:
 one JSON object per line, `{"date": ..., "rows": [...]}`, sorted by date, each
-row `{set, position, slug, song, trans_mark}` sorted by `SET_ORDER` then
-position, Phish only. 2,008 dates.
+row `{showid, set, position, slug, song, trans_mark}` sorted by `showid` then
+`position` — phish.net's own running order, not `SET_ORDER`; see below.
+Phish only. 2,008 dates.
 
 It exists because the running order is the one thing the song-history endpoint
 does not give you. Same API as everything else here — `api.phish.net/v5`, one
@@ -29,7 +30,7 @@ key — but `/setlists/slug/<song>` says every night a song was played and only
 per song; adjacency is only knowable per show. That is one call per show, and
 this file is what stops us paying for them again.
 
-**It is a derived extract, not a cache of API responses.** Only the five fields
+**It is a derived extract, not a cache of API responses.** Only the six fields
 above are kept. Everything else the endpoint returns — reviews, ids, permalinks,
 tour metadata, ratings, footnotes — is dropped, either because the archive
 already stores it or because it has no use here. `CACHE_TTL` in
@@ -92,3 +93,32 @@ see `docs/TODO.md` §0 and the `nb` notes in `CLAUDE.md`. Keeping the running
 order means the neighbor rules can change again without re-fetching anything,
 which they did, the next day. Converted to JSONL and wired into `--catch-up` on
 2026-07-31.
+
+## Why `showid` is in here, and why the order is not `SET_ORDER`
+
+Added 2026-07-31, after Ian pointed out that phish.net files a festival secret
+set *after* the encore: the IT Tower Jam is set 4 at position 27, behind an
+encore that ends at 26. `SET_ORDER` puts `"4"` before `"e"`, so the site moved
+six of these in front of the encore and credited the wrong song with closing
+the night — the Clifford Ball's Flatbed Truck Jam, Lemonwheel's Ambient Jam,
+IT's Tower Jam, Super Ball's Storage Jam, Magnaball's Drive-In Jam and
+Mondegreen's Woodlands Jam. **Mondegreen's is filed as set 3, not set 4**, so a
+rule that special-cased `"4"` would have missed the most recent one.
+
+Sorting on `position` alone does not work either: ten dates hold two separate
+performances, each numbered from 1 — a WNEW radio session in the afternoon and
+the Beacon Theatre that night, The Late Show and then Live on Letterman, the
+Sonic Sessions taping and the in-studio set after it. On those, position alone
+interleaves the two. `showid` separates them, positions are unique within one,
+and `(showid, position)` is a total order across all 2,008 dates.
+
+The neighbor walk uses the same key, and treats **the performance** rather than
+the date as the show: adjacency is within a `showid`, and each performance has
+its own `first` and `last`. Before this, *Buried Alive* opening the Beacon was
+recorded as following *Sample in a Jar* — a song played hours earlier in a
+radio studio across town.
+
+Backfilled at a cost of zero API calls: every one of the 39,774 rows found its
+`showid` in the six-hour response cache on disk, which still held all 2,008
+dates. The re-walk that followed cost one call. See the note in `CLAUDE.md`
+about counting the cache before quoting a cost.

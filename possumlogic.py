@@ -10607,13 +10607,42 @@ def order_path(site_dir):
     return os.path.join(site_dir, "data", "setlist-order.jsonl")
 
 
-# The only five fields kept. Everything else the endpoint returns is either
+# The only six fields kept. Everything else the endpoint returns is either
 # already in the archive or of no use here; see docs/setlist-order.md.
-ORDER_FIELDS = ("set", "position", "slug", "song", "trans_mark")
+ORDER_FIELDS = ("showid", "set", "position", "slug", "song", "trans_mark")
+
+
+def running_key(r):
+    """Sort key for one setlist row: phish.net's own running order.
+
+    `(showid, position)`, and *not* `(SET_ORDER, position)`, which is what this
+    used to be and which was wrong twice.
+
+    A festival secret set is filed after the encore and numbered accordingly --
+    the IT Tower Jam is set 4 at position 27, behind an encore ending at 26 --
+    but SET_ORDER puts "4" before "e", so the site moved it in front of the
+    encore and credited the wrong song with closing the night. Six shows, every
+    one a festival: the Clifford Ball's Flatbed Truck Jam, Lemonwheel's Ambient
+    Jam, IT's Tower Jam, Super Ball's Storage Jam, Magnaball's Drive-In Jam and
+    Mondegreen's Woodlands Jam. **Mondegreen's is filed as set 3, not set 4**,
+    so a rule that special-cased "4" would have missed the most recent one.
+
+    And ten dates hold two separate performances -- a WNEW radio session in the
+    afternoon and the Beacon Theatre that night, The Late Show and then Live on
+    Letterman -- each numbered from position 1. Sorting on position alone
+    interleaves them. `showid` is what separates them, positions are unique
+    within one, and the pair is a total order across all 2,008 archived dates.
+
+    Ordering the performances against each other is by showid, which is a
+    record id rather than a clock; in all ten it agrees with the notes about
+    which came first, and nothing here depends on it beyond keeping each
+    performance contiguous.
+    """
+    return (int(r.get("showid") or 0), int(r.get("position") or 0))
 
 
 def order_rows(rows, artist="Phish"):
-    """One show's running order, reduced to the five fields worth keeping.
+    """One show's running order, reduced to the six fields worth keeping.
 
     `trans_mark` is stripped, because phish.net sends it padded inconsistently
     -- ", " and "," and " > " and ">" all appear -- and both readers of this
@@ -10625,9 +10654,9 @@ def order_rows(rows, artist="Phish"):
     """
     rows = [r for r in rows
             if r.get("song") and (not artist or r.get("artist_name") == artist)]
-    rows.sort(key=lambda r: (SET_ORDER.get(str(r.get("set")), 9),
-                             int(r.get("position") or 0)))
-    return [{"set": str(r.get("set") or ""),
+    rows.sort(key=running_key)
+    return [{"showid": int(r.get("showid") or 0),
+             "set": str(r.get("set") or ""),
              "position": int(r.get("position") or 0),
              "slug": r.get("slug") or r.get("song") or "",
              "song": r.get("song") or "",
@@ -10730,14 +10759,24 @@ def setlist_neighbors(rows, artist=None):
     """
     rows = [r for r in rows
             if r.get("song") and (not artist or r.get("artist_name") == artist)]
-    rows.sort(key=lambda r: (SET_ORDER.get(str(r.get("set")), 9),
-                             int(r.get("position") or 0)))
+    rows.sort(key=running_key)
     out = {}
+    # Ten dates hold two performances -- a radio session in the afternoon and
+    # a theatre that night. Both are "set 1" and both number from position 1,
+    # so a set test alone made the last song of the radio set and the first of
+    # the concert into neighbors, and only one of the two got a `first`. The
+    # show is the performance, not the date: adjacency is within a showid, and
+    # each performance has its own two ends.
     for i, r in enumerate(rows):
         slug = r.get("slug") or r.get("song")
         if slug in out:
             continue
-        same = lambda j: (0 <= j < len(rows)
+        # Bound per row rather than once, so they close over this `r` and not
+        # over whatever the loop last left behind.
+        perf = lambda j: (0 <= j < len(rows)
+                          and str(rows[j].get("showid") or "")
+                          == str(r.get("showid") or ""))
+        same = lambda j: (perf(j)
                           and str(rows[j].get("set")) == str(r.get("set")))
         nb = {}
         if same(i - 1):
@@ -10745,13 +10784,13 @@ def setlist_neighbors(rows, artist=None):
             mark = (rows[i - 1].get("trans_mark") or "").strip()
             if mark and mark != ",":
                 nb["in"] = mark
-        elif i:
+        elif perf(i - 1):
             nb["xprev"] = rows[i - 1].get("song") or ""
         else:
             nb["first"] = 1
         if same(i + 1):
             nb["next"] = rows[i + 1].get("song") or ""
-        elif i + 1 < len(rows):
+        elif perf(i + 1):
             nb["xnext"] = rows[i + 1].get("song") or ""
         else:
             nb["last"] = 1

@@ -42,7 +42,7 @@
   {"date": "1994-11-12", "venue": "MAC Center, Kent State University", "city": "Kent", "state": "OH", "gap": 3, "set": "2", "note": "Acoustic.", "nb": 1, "prev": "Rift", "next": "Nellie Kane"},
   {"date": "1994-11-14", "venue": "DeVos Hall", "city": "Grand Rapids", "state": "MI", "gap": 2, "set": "2", "note": "Acoustic.", "nb": 1, "prev": "Julius", "next": "Nellie Kane"},
   {"date": "1994-11-18", "venue": "MSU Auditorium, Michigan State University", "city": "East Lansing", "state": "MI", "gap": 3, "set": "1", "note": "Acoustic; The \"Reverend\" Jeff Mosier on banjo and vocals.", "nb": 1, "prev": "Little Tiny Butter Biscuits", "next": "My Long Journey Home"},
-  {"date": "1994-11-19", "venue": "Parking Lot, Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 2, "set": "1", "nb": 1, "prev": "Guyute", "next": "Paul and Silas"},
+  {"date": "1994-11-19", "venue": "Parking Lot, Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 2, "set": "1", "nb": 1, "prev": "Tennessee Waltz", "next": "Dooley"},
   {"date": "1994-12-31", "venue": "Boston Garden", "city": "Boston", "state": "MA", "gap": 20, "set": "2", "out": ">", "nb": 1, "xprev": "Funky Bitch", "next": "Maze"},
   {"date": "1995-06-15", "venue": "Lakewood Amphitheatre", "city": "Atlanta", "state": "GA", "gap": 8, "set": "1", "nb": 1, "prev": "AC/DC Bag", "next": "Taste"},
   {"date": "1995-10-11", "venue": "Compton Terrace Amphitheater", "city": "Chandler", "state": "AZ", "gap": 26, "set": "1", "out": ">", "nb": 1, "prev": "Stash", "next": "Cavern"},

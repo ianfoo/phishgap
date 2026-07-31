@@ -125,7 +125,7 @@
   {"date": "1999-07-15", "venue": "PNC Bank Arts Center", "city": "Holmdel", "state": "NJ", "gap": 3, "set": "1", "out": ">", "nb": 1, "first": 1, "next": "Ghost"},
   {"date": "1999-07-18", "venue": "Oswego County Airport", "city": "Volney", "state": "NY", "gap": 2, "set": "1", "nb": 1, "first": 1, "next": "Farmhouse"},
   {"date": "1999-07-23", "venue": "Polaris Amphitheater", "city": "Columbus", "state": "OH", "gap": 2, "set": "1", "note": "Trey played keys for part of PYITE.", "nb": 1, "prev": "Back at the Chicken Shack", "in": ">", "next": "Fast Enough for You"},
-  {"date": "1999-07-30", "venue": "Naeba Ski Resort", "city": "Niigata", "state": "Niigata", "gap": 3, "set": "1", "out": ">", "nb": 1, "prev": "Stash", "next": "NICU"},
+  {"date": "1999-07-30", "venue": "Naeba Ski Resort", "city": "Niigata", "state": "Niigata", "gap": 3, "set": "1", "out": ">", "nb": 1, "prev": "Taste", "next": "Waste"},
   {"date": "1999-09-11", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 4, "set": "1", "nb": 1, "prev": "Dogs Stole Things", "next": "Billy Breathes"},
   {"date": "1999-09-24", "venue": "South Park Meadows", "city": "Austin", "state": "TX", "gap": 8, "set": "1", "nb": 1, "prev": "First Tube", "in": ">", "next": "Farmhouse"},
   {"date": "1999-10-02", "venue": "Target Center", "city": "Minneapolis", "state": "MN", "gap": 5, "set": "1", "out": ">", "nb": 1, "prev": "Wolfman's Brother", "next": "Quinn the Eskimo (The Mighty Quinn)"},
