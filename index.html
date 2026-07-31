@@ -569,12 +569,20 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .d-n{grid-area:n}
   .d-n > b{font-size:1.25rem}
 }
-.aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
-.aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--dim);margin:0 0 .3rem;font-weight:400}
-.aside>p{margin:0 0 .7rem;font-size:.75rem;color:var(--dim);max-width:68ch}
-.aside ol{list-style:none;margin:0;padding:0}
-.aside li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+/* The pointer to the not-a-show page, where a list of twenty used to sit at
+   the foot of 692 rows. Ian: "move the 'also on file' listings to a higher
+   prominence home, or at least something that's not tacked onto the end of
+   the show list." Under the hero, where a reader lands. */
+.aside{margin:1.1rem 0 0;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside b{color:var(--ink);font-weight:400}
+.aside a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.aside a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The list itself, which moved to a page of its own. Named rather than
+   scoped to `.aside`, because it now has two homes and the version in this
+   file has been the wrong shape twice for want of one name. */
+.axlist{list-style:none;margin:0;padding:0}
+.axlist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
    padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
 .ax-row{display:contents;color:inherit;text-decoration:none}
 .ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
@@ -583,8 +591,9 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
-.aside .for{color:var(--dim)}
-.aside .for a{color:inherit}
+.ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+.axlist .for{color:var(--dim)}
+.axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
    of the numbers beside it. */
@@ -936,6 +945,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <p class="show">692 reports &middot; 2009-03-06 &rarr; 2026-07-29</p></header>
 
 <section class="hero hero-c4"><div class='card'><div class='lbl'>Reports</div><div class='num'>692</div></div><a class='card named' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap<span class='of'>2026-07-22</span></div><div class='num hot'>1,468</div></a><a class='card' href='./venues.html'><div class='lbl'>Venues</div><div class='num'>153</div></a><a class='card' href='./due.html'><div class='lbl'>Songs Due</div><div class='num hot'>9</div></a></section>
+<p class='aside'>Also on file: <b>13</b> soundchecks and <b>7</b> television or radio sessions, which phish.net lists and does not count toward a gap &mdash; so neither does this site. <a href='./not-a-show.html'>What was played at them</a>.</p>
 <div class="rule2"></div>
 <div class="tools" id="main" tabindex="-1">
 <div class="tools-main">
@@ -1648,7 +1658,6 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <li data-date='2009-03-06' data-year='2009' data-era='3.0' data-longest='183' data-songs='28' data-score='4.236' data-search="2009-03-06 03/06/2009 3/6/2009 3/6/09 03/06 3/6 3-6 march 06 2009 march 6 friday hampton coliseum hampton, va 2009 hampton reunion run fluffhead divided sky chalk dust torture sample in a jar stash i didn&#x27;t know the oh kee pa ceremony suzy greenberg farmhouse nicu horn rift train song water in the sky the squirming coil david bowie backwards down the number line tweezer taste possum theme from the bottom first tube harry hood waste you enjoy myself grind bouncing around the room loving cup"><a class='row' href='./show/2009-03-06.html'><span class='r-date'>2009-03-06</span><span class='r-where'><span class='r-venue'>Hampton Coliseum</span><span class='r-place'>Hampton, VA</span></span><span class='r-stats'><span class='st'><b>28</b> songs</span><span class='st'>median <b>4</b></span><span class='st'>longest <b class='hot'>183</b></span><span class='r-top'>Grind</span></span></a></li>
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
-<section class='aside'><h2>Also on file</h2><p>Soundchecks, and television and radio sessions. phish.net lists these but does not count them toward a gap, so neither do we &mdash; the figures on their pages describe the entry, not a show the band played.</p><ol><li><a class='ax-row' href='./show/2026-01-27.html'><span class='ax-date'>2026-01-27</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2026-01-28.html'>2026-01-28</a></span></li><li><a class='ax-row' href='./show/2025-01-28.html'><span class='ax-date'>2025-01-28</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2025-01-29.html'>2025-01-29</a></span></li><li><a class='ax-row' href='./show/2024-08-14.html'><span class='ax-date'>2024-08-14</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>The Woodlands, Dover, DE</span></a><span class='for'>for <a href='./show/2024-08-15.html'>2024-08-15</a></span></li><li><a class='ax-row' href='./show/2024-07-17.html'><span class='ax-date'>2024-07-17</span><span class='ax-kind'>session</span><span class='ax-venue'>NPR Headquarters, Washington, DC</span></a></li><li><a class='ax-row' href='./show/2024-07-11.html'><span class='ax-date'>2024-07-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2024-02-20.html'><span class='ax-date'>2024-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2024-02-21.html'>2024-02-21</a></span></li><li><a class='ax-row' href='./show/2022-02-23.html'><span class='ax-date'>2022-02-23</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2022-02-24.html'>2022-02-24</a></span></li><li><a class='ax-row' href='./show/2020-08-11.html'><span class='ax-date'>2020-08-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2020-02-19.html'><span class='ax-date'>2020-02-19</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2020-02-20.html'>2020-02-20</a></span></li><li><a class='ax-row' href='./show/2019-02-20.html'><span class='ax-date'>2019-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2019-02-21.html'>2019-02-21</a></span></li><li><a class='ax-row' href='./show/2017-01-12.html'><span class='ax-date'>2017-01-12</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2017-01-13.html'>2017-01-13</a></span></li><li><a class='ax-row' href='./show/2016-10-10.html'><span class='ax-date'>2016-10-10</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2015-08-20.html'><span class='ax-date'>2015-08-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2015-08-21.html'>2015-08-21</a></span></li><li><a class='ax-row' href='./show/2014-07-14.html'><span class='ax-date'>2014-07-14</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2011-06-30.html'><span class='ax-date'>2011-06-30</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2011-07-01.html'>2011-07-01</a></span></li><li><a class='ax-row' href='./show/2011-05-26.html'><span class='ax-date'>2011-05-26</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bethel Woods Center for the Arts, Bethel, NY</span></a><span class='for'>for <a href='./show/2011-05-27.html'>2011-05-27</a></span></li><li><a class='ax-row' href='./show/2010-05-13.html'><span class='ax-date'>2010-05-13</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2010-03-15.html'><span class='ax-date'>2010-03-15</span><span class='ax-kind'>session</span><span class='ax-venue'>The Waldorf Astoria, New York, NY</span></a></li><li><a class='ax-row' href='./show/2009-10-29.html'><span class='ax-date'>2009-10-29</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Empire Polo Club, Indio, CA</span></a><span class='for'>for <a href='./show/2009-10-30.html'>2009-10-30</a></span></li><li><a class='ax-row' href='./show/2009-06-11.html'><span class='ax-date'>2009-06-11</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bonnaroo Music &amp; Arts Festival, Manchester, TN</span></a><span class='for'>for <a href='./show/2009-06-12.html'>2009-06-12</a></span></li></ol></section>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a><script>
 (function(){
   var b=document.getElementById('totop'), h=document.querySelector('header');

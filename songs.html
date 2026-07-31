@@ -569,12 +569,20 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .d-n{grid-area:n}
   .d-n > b{font-size:1.25rem}
 }
-.aside{margin:2.2rem 0 0;padding-top:.9rem;border-top:1px solid var(--rule)}
-.aside h2{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   color:var(--dim);margin:0 0 .3rem;font-weight:400}
-.aside>p{margin:0 0 .7rem;font-size:.75rem;color:var(--dim);max-width:68ch}
-.aside ol{list-style:none;margin:0;padding:0}
-.aside li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+/* The pointer to the not-a-show page, where a list of twenty used to sit at
+   the foot of 692 rows. Ian: "move the 'also on file' listings to a higher
+   prominence home, or at least something that's not tacked onto the end of
+   the show list." Under the hero, where a reader lands. */
+.aside{margin:1.1rem 0 0;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside b{color:var(--ink);font-weight:400}
+.aside a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.aside a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The list itself, which moved to a page of its own. Named rather than
+   scoped to `.aside`, because it now has two homes and the version in this
+   file has been the wrong shape twice for want of one name. */
+.axlist{list-style:none;margin:0;padding:0}
+.axlist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
    padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
 .ax-row{display:contents;color:inherit;text-decoration:none}
 .ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
@@ -583,8 +591,9 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
 .ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
-.aside .for{color:var(--dim)}
-.aside .for a{color:inherit}
+.ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+.axlist .for{color:var(--dim)}
+.axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
    edge; every figure to the left of it still moved row to row with the width
    of the numbers beside it. */
