@@ -25,6 +25,17 @@ class Handler(SimpleHTTPRequestHandler):
         fs_path = super().translate_path(path)
         return pathmap.resolve(fs_path) or fs_path
 
+    def list_directory(self, path):
+        """404, because that is what Pages does.
+
+        `/song/` has no index.html, and http.server would answer it with a
+        generated file listing -- a 200 where production returns 404, and a
+        page that exists locally and nowhere else. Measured 2026-07-31:
+        /song/, /show/ and /data/ were 200 here and 404 live.
+        """
+        self.send_error(404, "File not found")
+        return None
+
     def log_message(self, fmt, *args):
         sys.stderr.write("%s %s\n" % (self.address_string(), fmt % args))
 

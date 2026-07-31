@@ -29,10 +29,21 @@ carrying `.html` as a problem, because it is the one kind of broken link that
 cannot announce itself. Plain `python3 -m http.server` 404s on every one of
 these links, which would make the local server disagree with production on
 every navigation; `tools/serve.py` adds the `.html` fallback, and the rule it
-shares with the link checker lives once in `tools/pathmap.py`. Verified against
-the live site on 2026-07-31. Untested, and worth settling before relying on it:
-what Pages serves for `/song/tweezer` when both `tweezer.html` and a
-`tweezer/` directory exist — which is what adding per-page sub-views would do.
+shares with the link checker lives once in `tools/pathmap.py`, which reproduces
+Pages on all 17 URL forms measured — including that a directory with no
+`index.html` is a 404 and not a file listing, which is the one thing plain
+`http.server` gets wrong in the *generous* direction.
+
+**Sub-views are available, and were measured rather than assumed.** A throwaway
+Pages deploy on 2026-07-31 built the collisions on purpose: with both `b.html`
+and `b/index.html` present, `/b` serves **`b.html`** — no redirect, same etag as
+`/b.html` — and only `/b/` reaches the directory. So a page keeps its own URL
+while owning a directory beside it, and `song/tweezer/` needs no `index.html`
+at all: `/song/tweezer` and `/song/tweezer/gaps` can both exist with no
+trailing slash anywhere. The tempting design — render each page as
+`tweezer/index.html` to get sub-views — is the one that *would* have forced the
+trailing slash, and it is unnecessary. `tools/pathmap.py` records the full
+measurement.
 
 **There are still three base stylesheets, but what they share is now named.**
 `CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and

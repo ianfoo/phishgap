@@ -15,12 +15,22 @@ passes while the server 404s, or the reverse. That is the failure this project
 keeps having: a local check that lies. So the rule lives here once and both
 import it.
 
-`site/song/tweezer.html` and `site/song/tweezer/` can coexist on disk, and it
-is *not* verified what Pages serves for `/song/tweezer` when both are there.
-No such collision exists in the site today. The order below prefers the flat
-file, on the principle that the page is the file; if sub-views are ever added
-under a page's own directory, settle what Pages actually does first rather than
-trusting this.
+The order below is measured, not assumed. A throwaway Pages deploy on
+2026-07-31 built every collision deliberately and was asked what it served:
+
+  * `/b`, with both `b.html` and `b/index.html` present -> **`b.html`**, no
+    redirect, and the same etag as `/b.html`. The flat file wins.
+  * `/b/` -> `b/index.html`. The trailing slash is what asks for the directory.
+  * `/c`, with `c.html` beside a `c/` holding only `c/sub.html` -> `c.html`,
+    and `/c/sub` -> `c/sub.html`.
+  * `/c/`, a directory with no index.html -> 404. Which is why the server in
+    tools/serve.py refuses to list directories: http.server would answer that
+    with a generated listing, a 200 where production 404s.
+
+So a page can own a directory of sub-views without losing its own URL or
+growing a trailing slash: `/song/tweezer` and `/song/tweezer/gaps` coexist,
+and `song/tweezer/` needs no index.html. No such collision exists in the site
+today, but nothing has to be redesigned the day one does.
 """
 import os
 
