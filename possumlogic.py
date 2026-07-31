@@ -3379,6 +3379,43 @@ header{padding-bottom:.9rem}
    while the identical class on a song page was 12px and dim. One class, two
    appearances, by accident. */
 """ + DEK_CSS + """.dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The measurement detail, folded away. Three paragraphs used to stand open
+   here: 835px of a 1,147px front matter on a phone, 73% of it, before the
+   first due song. And the FAQ already carries 2,930 characters on the same
+   subject against their 1,189 -- so this page was not explaining itself, it
+   was holding a shorter second copy of an answer that lives elsewhere, above
+   its own content.
+   What stays open is the one thing a reader cannot read the third column
+   without: what 2x means. The rest is one click, and the click does not leave
+   the page, which is the objection to sending it to the FAQ outright.
+   Nothing is remembered per reader. A flag that says "you have read this"
+   fails asymmetrically -- set wrongly it shows a first-time reader an
+   unlabelled table of multipliers, unset wrongly it costs one line -- and a
+   reference archive should not serve two different pages at one URL. The
+   site's own precedent argues the same way: the last per-reader flag here
+   shipped broken and stayed invisible for weeks.
+   Same <details> idiom the show pages use for long notes: no JavaScript and
+   keyboard-operable. It stays closed when printed, like every other one on
+   the site -- forcing it open needs more than hiding the summary, and a
+   half-done version that only removed the control would print a folded
+   section with no sign it folds. */
+details.how{margin:.7rem 0 0}
+/* display:block, which is the shape details.jam and details.note already use
+   on the song pages -- one idiom for disclosure on this site rather than two.
+   width:max-content keeps the rule under the words instead of across the
+   column.
+   A caution for whoever measures this next: the accessibility inspector
+   reports this summary as a plain "generic" node, and the site's existing
+   shipped details reports exactly the same way, so that reading is the tool
+   and not the markup. It was nearly written down here as a real defect. */
+details.how > summary{display:block;width:max-content;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule);cursor:pointer;
+   padding:0 0 .1rem;list-style:none}
+details.how > summary::-webkit-details-marker{display:none}
+details.how > summary::after{content:" \\2193"}
+details.how[open] > summary::after{content:" \\2191"}
+details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* A section heading, under the due list. At 1.5rem it was barely larger than
    the 1rem song titles it headed, which made a new section read as another
    row. 2.125rem sits clearly between the page title and the data. */
@@ -4157,13 +4194,31 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
-""" + RULE2_CSS + """.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
-   border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
-   display:flex;flex-direction:column}
+/* Two equal columns, not flex. Flex sized each card by its content, so the
+   rule that strips the first card's left padding made that card 21px narrower
+   than its siblings at every width -- correct under a grid, where the column
+   stays 1fr and only the content moves flush left, and wrong here, where it
+   moved the box. Measured 254 against 275 at 1280px, 174 against 195 at 860.
+   Two columns also have no bad arrangement: the five cards this replaced went
+   3+2 on the index's grid and onto one crammed line here. */
+""" + RULE2_CSS + """.hero{display:grid;grid-template-columns:repeat(2,1fr);
+   margin:.7rem 0 .3rem;border-bottom:1px solid var(--ink)}
+/* A one- or two-performance song still gets the old pair of narrow cards. */
+.hero.sparse{grid-template-columns:repeat(2,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column;min-width:0}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
    letter-spacing:0;margin-top:auto}
+/* The second half of each pair. It is the reason two cards can carry what five
+   did: the medians are one statistic over two windows and the gaps are one
+   distance at two moments, so the older reading belongs under the newer one
+   rather than in a card of its own. Also what fills the measure a bare number
+   left empty, which is what made two cards read as a hero and not as three
+   missing ones. */
+.card .sub{margin-top:.3rem;font-size:.6875rem;letter-spacing:.04em;
+   color:var(--dim);text-transform:none;line-height:1.35}
+.card .sub b{font-weight:600;color:var(--ink-soft)}
 /* The debut card goes to the debut's own row. SONG_CSS had no `a.card` rules
    at all -- this is the one sheet where a card had never been a link -- and
    writing them out here would have made an exact third copy of the show
@@ -4187,20 +4242,36 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:.875rem}
 .best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
-.best .field{display:flex;flex-direction:column;gap:.3rem}
+/* One flowing line rather than a row of stacked label/value columns. .field
+   is gone with the three captions that justified it; .v wraps as prose so a
+   narrow screen breaks it between middots instead of stacking four boxes. */
+.best .v{display:inline}
 .best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 .best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
 .best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-.links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+/* Up under the title, and captioned. These are links about the *song*, and
+   they used to sit directly beneath the best-version block -- so Ian read them
+   as being about that one performance and could not tell without clicking.
+   Two things were wrong and both are fixed here: they were adjacent to the
+   wrong thing, and they named no referent. Moving them alone would have cured
+   only the instance. */
+.links{margin:.55rem 0 0;display:flex;flex-wrap:wrap;align-items:center;
+   gap:.4rem .55rem}
+.links .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* Below the best version now, beside the list it summarises: "most often out
+   of / into" is a reading of the Before / after column, so it belongs next to
+   that column rather than between the title and the figures. */
+.pairs{margin:1.4rem 0 0}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
    margin:1.9rem 0 .9rem}
 .search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
@@ -4633,9 +4704,15 @@ SONG_JS = """
 /* How long this song has been waiting, read from one small file rather than
    rendered into the page. It is the only figure here that moves when some
    *other* song is played, so baking it in would rewrite every song page after
-   every show -- 48 MB pushed to publish one number that fits in 7 KB. The card
-   ships hidden and stays hidden if the fetch fails, so nothing on the page is
-   ever a placeholder waiting for a network that is not coming. */
+   every show -- 48 MB pushed to publish one number that fits in 7 KB.
+
+   The card no longer ships hidden. Hiding it meant a reader without
+   JavaScript got a hero one card short with no sign the figure existed, and
+   the label a reader saw depended on whether this file ran. It now carries
+   its label and its longest-gap line from the start, and the big slot holds
+   the same em-dash the bars use for a figure that is not available -- so a
+   failed fetch leaves a card short of one number rather than no card, and
+   only the number ever waits. */
 (function(){
   var box=document.querySelector('.card.since');
   if(!box||!window.fetch) return;
@@ -4691,7 +4768,10 @@ SONG_JS = """
     }
     box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
             ' shows that count toward a gap';
-    box.hidden=false;
+    /* Nothing to reveal any more. Setting .num's textContent above already
+       replaced the em-dash that stood in for the number, and a song missing
+       from current.json returns before that and keeps the dash, which is the
+       honest reading rather than a card that vanishes. */
   }).catch(function(){});
 })();
 (function(){
@@ -4836,11 +4916,11 @@ SONG_SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <header><h1>{song}</h1>
 <p class="show">{subtitle}</p>
-{pairs}{caveat}</header>
+<p class="links"><span class="cap">This song on</span>{links}</p>
+{caveat}</header>
 <section class="hero{herocls}">{hero}</section>
-<div class="rule2"></div>
 {best}
-<p class="links">{links}</p>
+{pairs}
 {tools}
 {head}
 <ol class="perfs" id="list"{listattrs}>
@@ -5033,28 +5113,62 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # of the four below read "n/a", and the fourth restates the subtitle. What
     # it has instead is a date and a distance from now, so that is what it gets.
     sparse = len(countable) <= SPARSE_HISTORY
-    hero = _debut_card(debut_date, sparse)
+    # The debut card only survives where the hero would otherwise be thin: a
+    # song with one or two performances has no median and no longest to pair,
+    # so its date is the figure it has. Everywhere else the date has gone up
+    # into the identity line, full rather than truncated to a year.
+    hero = _debut_card(debut_date, sparse) if sparse else ""
     if sparse:
         hero += _sparse_gap_card(gaps)
     else:
-        hero += "".join(
-            "<div class='card'><div class='lbl'>%s</div>"
-            "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-            for val, lbl, cls in (
-                (_stat(_median(recent)) if recent else "n/a", lbl10, ""),
-                (_stat(_median(gaps)) if gaps else "n/a", "Median Gap, All-Time", ""),
-                (_stat(biggest) if gaps else "n/a", "Longest Gap", " hot"),
-            ))
+        # Five cards were one date and one measure read at four moments, and
+        # five across is the count that has no tidy arrangement: the grid lays
+        # them 3+2 and the flex row crammed them onto one line at unequal
+        # widths. They pair. The two medians are the same statistic over two
+        # windows; the two gaps are the same distance at two moments. One card
+        # each, the timelier reading in the big slot and the historical one
+        # under it -- which is the same rule twice, not a per-card taste.
+        #
+        # The sub-line is also what fills the measure a bare number left empty,
+        # so two cards read as a hero rather than as three missing ones.
+        if recent:
+            median_num, median_sub = (
+                _stat(_median(recent)),
+                "last %d years &middot; <b>%s</b> all-time"
+                % (RECENT_YEARS, _stat(_median(gaps)) if gaps else "n/a"))
+        else:
+            # 51 songs have nothing in the window. Promoting the all-time
+            # figure into the big slot retires an "n/a" card and says why.
+            median_num, median_sub = (
+                _stat(_median(gaps)) if gaps else "n/a",
+                "all-time &middot; not played in the last %d years" % RECENT_YEARS)
+        hero += ("<div class='card'><div class='lbl'>Median gap</div>"
+                 "<div class='num'>%s</div><div class='sub'>%s</div></div>"
+                 % (median_num, median_sub))
     # Filled in the browser from data/current.json; see SONG_JS. It carries the
     # thresholds rather than the verdict, because the count it has to be judged
     # against is the thing that is not known until the page is open. They are
     # the same two the report pages use -- the upper edge of `gap_band` where
     # there is enough history for one, the bustout line where there is not --
     # so a song called overdue here is overdue by the site's one rule.
-    hero += ("<div class='card since' hidden data-slug='%s' data-high='%s' "
+    # Not `hidden`, and the label does not move. The card used to ship hidden
+    # and be revealed by script, so a reader without JavaScript got a hero one
+    # card short and never knew a figure existed. It now ships with the same
+    # label it will always carry and the em-dash the bars already use for a
+    # figure that is not available -- the mark that exists so an empty slot
+    # reads as "never possible" rather than "failed".
+    #
+    # Ian asked why the label should differ between the two readers at all,
+    # and the answer was that it should not: only the *number* is unknown
+    # until the page is open, so only the number waits. The longest gap is
+    # known at build time and sits under it, which also means this card says
+    # something true before the fetch and something truer after.
+    hero += ("<div class='card since' data-slug='%s' data-high='%s' "
              "data-bustout='%d' data-mult='%s' data-quiet='%s'>"
-             "<div class='lbl'>Current Gap<span class='v'></span></div>"
-             "<div class='num'></div></div>"
+             "<div class='lbl'>Current gap<span class='v'></span></div>"
+             "<div class='num'><span class='no-range' aria-hidden='true'>"
+             "&mdash;</span></div>"
+             "<div class='sub'>longest <b>%s</b></div></div>"
              % (html.escape(doc.get("slug") or ""),
                 gap_band(recent)[1] if len(recent) >= MIN_HISTORY else "",
                 BUSTOUT_GAP, DUE_MULTIPLE,
@@ -5062,7 +5176,8 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
                 # is used at all depends on the current gap, which is not known
                 # until the page is open -- but which of the four words it
                 # would be depends only on the play count, which is known here.
-                html.escape(rotation_word(len(countable)), quote=True)))
+                html.escape(rotation_word(len(countable)), quote=True),
+                _stat(biggest) if gaps else "n/a"))
 
     top = best[0] if best else ""
     if top:
@@ -5083,15 +5198,18 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         anchored = any(p["date"] == top["date"] for p in perfs)
         when = ("<a class='when' href='#%s'>%s</a>" % (top["date"], top["date"])
                 if anchored else "<span class='when'>%s</span>" % top["date"])
-        top = ("<p class='best'>"
-               "<span class='field'><span class='cap'>Best version</span>"
-               "%s</span>"
-               "<span class='field'><span class='cap'>Venue</span>"
-               "<span class='where'>%s</span></span>"
-               "<span class='field'><span class='cap'>Score</span>"
-               "<span class='score'>%s</span></span>"
-               "<span class='field'><span class='cap'>Hear it</span>"
-               "<span class='cap'>%s &middot; %s</span></span></p>"
+        # One line, not four stacked label/value pairs. Three of those four
+        # captions were naming a thing the reader can already identify: every
+        # row below puts a venue in the same slot without labelling it, and
+        # "Rated 83" is the phrasing the rows themselves use for a score. Only
+        # "Best version" says something the values do not, so only it survives
+        # as a caption. 170px of front matter on a phone for four words of
+        # scaffolding.
+        top = ("<p class='best'><span class='cap'>Best version</span>"
+               "<span class='v'>%s"
+               " &middot; <span class='where'>%s</span>"
+               " &middot; Rated <span class='score'>%s</span>"
+               " &middot; %s &middot; %s</span></p>"
                % (when, html.escape(where), top["score"],
                   _ext("https://phish.in/%s" % top["date"], "Listen", "i-pin"),
                   _ext(top["link"] or "https://fouldomain.com/", "Details", "i-foul")))
@@ -5386,11 +5504,17 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
 
     caveat = NOT_A_SONG.get(doc.get("slug") or "")
     caveat = "<p class='caveat'>%s</p>" % html.escape(caveat) if caveat else ""
-    # No "Debut" clause: the hero card is that date, in figure type, a dozen
-    # pixels below. Printing it here as well is the duplication the swap was
-    # made to end, only pointing the other way. What is left is the pair the
-    # hero does *not* carry.
+    # The debut is back, and it is here rather than in the hero because this
+    # is where it fits. _debut_card had to print the *year* alone: five cards
+    # across leaves 117-160px each, and "1986-02-03" wants 243px and wrapped
+    # at 900, 1024 and 375. In a line of running text the full date fits, and
+    # it keeps the link to its own row that was the card's real purpose -- the
+    # sort-reversal a reader would otherwise have to do by hand. So this is
+    # not the duplication that removed the clause before: the card is gone,
+    # and what is here says more than the card could.
     subtitle = " &middot; ".join(x for x in (
+        "Debuted <a href='#%s'>%s</a>" % (debut_date, debut_date)
+        if debut_date else "",
         "Last played %s" % last if last and last != first else "",
         "%d performance%s" % (n, "" if n == 1 else "s"),
     ) if x)
@@ -5577,6 +5701,7 @@ song&rsquo;s own recent gaps rather than one number for the whole catalogue
 &mdash; a staple is late at eight shows and a rarity is not late at eighty.
 The figure on the right is how far past: 2&times; means it has now been twice
 this song&rsquo;s usual gap, which is printed under it.</p>
+<details class="how"><summary>How these lists are measured</summary>
 <p class="dek">Being late is not the same as being expected, and more late is
 not more expected. A song at six times its usual gap is not one anybody is
 waiting on &mdash; it is drifting out of rotation. So past {mult}&times; a song
@@ -5589,7 +5714,10 @@ else here put together.</p>
 overrides every figure here &mdash; the 2021 Halloween runs built around
 numbers and animals, the elements nights of the first Sphere run, a run played
 entirely out of one decade &mdash; and the theme is usually not public before
-the show. On a night like that the list below is the wrong question.</p></header>
+the show. On a night like that the list below is the wrong question.</p>
+<p class="dek"><a href="./faq.html#due">The FAQ answers this at more
+length</a>, including why a song gone for years is not on the list.</p>
+</details></header>
 <section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
 <section class="rot">
@@ -5860,17 +5988,18 @@ def render_due(docs, counting, since, card=None):
 
     shelf = section(
         "slipping", "Slipping",
+        # Trimmed to the two sentences that define the boundary a reader has
+        # just crossed. What went is the naming rationale -- why "slipping"
+        # and not "overdue" -- which is a question about the site's vocabulary
+        # rather than about these songs, and which faq.html#due already
+        # answers in full. A section blurb earns its space by saying what the
+        # section is; it does not have to defend its own title.
         "Well past their usual gap rather than a little past it. These could "
         "turn up, and they could equally be on their way out of rotation "
         "&mdash; either way they are not what anybody is expecting tonight. "
         "The usual gap beside each one is measured over the last ten years of "
         "its performances, so for a song this far past it, read it as the "
-        "schedule the song <em>was</em> on. "
-        "Called slipping rather than overdue because a show page already uses "
-        "<em>overdue</em> for something narrower and different: one "
-        "performance that came back later than that song usually does. Every "
-        "song on this page, in both lists, would be stamped overdue if it "
-        "turned up tonight.",
+        "schedule the song <em>was</em> on.",
         overdue)
     shelf += section(
         "shelf", "On the shelf",
