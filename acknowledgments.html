@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acknowledgments &mdash; Possum Logic</title>
+<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="The sources this archive is built from: phish.net and the Mockingbird Foundation, phish.in, and fouldomain."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Acknowledgments"><meta property="og:description" content="The sources this archive is built from: phish.net and the Mockingbird Foundation, phish.in, and fouldomain."><meta property="og:url" content="https://possumlogic.com/acknowledgments.html"><meta property="og:image" content="https://possumlogic.com/card/index.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="The sources this archive is built from: phish.net and the Mockingbird Foundation, phish.in, and fouldomain."><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
+<link rel="preload" href="./static/font/Bagnard.otf" as="font" type="font/otf" crossorigin>
+<link href="./static/site.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain:url(grain-light.png);}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
+@media screen and (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
+}
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+:root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled):not(.on){color:var(--ink);
+   border-color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+/* The selected one is already ink-on-paper reversed, so hovering it must not
+   set the text to the color it is sitting on. It brightens its edge instead. */
+.theme button.on:hover:not(:disabled){color:var(--paper);
+   box-shadow:0 0 0 2px var(--hot)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
+
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The identity line under every h1, and any link inside it. It carried no link
+   at all until the song page's debut date moved up into it on 2026-07-30, and
+   there was no rule to catch it: it rendered #9E9EFF and underlined on all 589
+   song pages, measured, while the best-version link two lines below it was
+   site ink with no underline.
+   **The fifth time a link here has shipped in the browser's default blue**,
+   and the reason it is written into BASE_CSS rather than SONG_CSS is that
+   `.show` is on every page type. Putting it in the one sheet that needs it
+   today is precisely how the other four happened. */
+.show a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.show a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
+*{box-sizing:border-box}
+/* The whole scale, pitched one step up from where it started.
+   Ian: "the prose text feels small even by these standards... I feel this way
+   on iPhone and on desktop." He was right, and the figures said so: body was
+   .875rem against a 16px default, so running text set at 14px and the labels
+   -- the size used more than any other on the site, 101 declarations of it --
+   set at 10px.
+   It is stated once, here, rather than as 300 edited declarations. Everything
+   on this site is already sized in rem, so lifting the root lifts all of it in
+   proportion and no two sizes can change their relationship to each other. It
+   is also relative rather than absolute: a reader who has set their browser to
+   20px gets 22.5, not 18.
+   The top of the scale is held rather than lifted -- see the h1 clamps, whose
+   rem endpoints are pulled back by exactly this factor. A wordmark at 64px was
+   never the complaint; a scale should compress at the display end and open up
+   at the reading end, and this one now does both. */
+html{font-size:112.5%}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
+/* The keyboard overlay and the button that opens it. In the block every sheet
+   shares, because it is page furniture like the skip link above it and there
+   is no page it does not belong on -- and because stating it three times is
+   how four rules on this site came to disagree with themselves. */
+.keyhint{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
+   cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
+.keyhint:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* Not on a touch device. It is a discovery aid for keys, and a phone has
+   none -- so it sat in the footer of every page offering "[ and ] to step
+   between shows" to a reader with no way to press either, and "Keys ?" is
+   doubly meaningless when there is no ? to press. The footer is a flex row
+   with gap and no separator characters, so this leaves nothing stranded
+   behind it.
+
+   The `?` handler stays bound either way: this hides a button, it does not
+   remove the feature, so an iPad with a keyboard attached -- whose *primary*
+   pointer is still coarse -- can open the same list. */
+@media (hover:none) and (pointer:coarse){.keyhint{display:none}}
+dialog.keys{border:1px solid var(--ink);background:var(--paper);
+   color:var(--ink);padding:1.2rem 1.4rem 1rem;max-width:24rem;width:calc(100% - 2rem)}
+dialog.keys::backdrop{background:rgba(0,0,0,.5)}
+dialog.keys .cap{margin:0 0 .8rem;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600}
+dialog.keys dl{margin:0;display:grid;grid-template-columns:max-content 1fr;
+   gap:.5rem .9rem}
+/* display:contents so the two cells of a row land in the outer grid's columns
+   -- otherwise every <div> is one grid item and the keys never form a column. */
+dialog.keys dl > div{display:contents}
+dialog.keys dt{margin:0}
+dialog.keys dd{margin:0;font-size:.75rem;color:var(--ink-soft)}
+dialog.keys .none{margin:.9rem 0 0;font-size:.75rem;color:var(--dim)}
+kbd{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6875rem;
+   line-height:1;padding:.25rem .4rem;border:1px solid var(--edge);
+   color:var(--ink);background:var(--hover);white-space:nowrap}
+dialog.keys form{margin:1rem 0 0;text-align:right}
+dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
+dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
+@media print{.keyhint,dialog.keys{display:none}}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background-color:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:.875rem;line-height:1.55}
+/* The measure in rem rather than px, so it travels with the type. Stated as
+   960px it would have held still while the scale went up a step, which quietly
+   shortens every line and tightens every column -- the same page with less room
+   in it. 60rem is the 960px this has always been, at the root above. */
+.wrap{max-width:60rem;margin:0 auto}
+/* clip, not hidden, and the difference is the whole reason this is safe:
+   overflow:hidden would make the body a scroll container and break every
+   position:sticky header on the site, where clip does not.
+
+   It is here because a hidden thing was still taking up room. The show pages'
+   hover tooltip is position:absolute and white-space:nowrap, and it is hidden
+   with visibility:hidden -- which still lays out. That was found once and fixed
+   only for phones, by dropping the tooltip below 620px; above 620px every show
+   page has been scrollable sideways ever since. Measured on the live build at
+   1280px: 1,627px of scroll width, so the page slid 347px into nothing.
+   The general shape is what earns a rule rather than a patch -- an off-screen
+   or invisible decoration extends the scrollable area exactly as a visible one
+   does, and the page it does it to looks completely normal.
+
+   On html as well as body, and that is not belt and braces. An overflow set on
+   body alone is *propagated* to the viewport, and body is then treated as
+   visible -- so `body{overflow-x:clip}` by itself clips nothing, which is
+   exactly what the first attempt at this measured: the rule shipped, the page
+   still scrolled 347px. */
+html,body{overflow-x:clip}
+/* Which of the two lists you are looking at, and the way to the other one.
+   Above the wordmark because that is where a reader looks for it, and because
+   the footer link that used to be the only route was found by nobody. */
+/* Wrapping, with the same row gap the song pages use. This row did not wrap
+   before, and did not need to at five sections: each label simply broke inside
+   itself and the row stayed within the viewport. At six it stopped fitting and
+   the due page ran 401px wide inside a 375px phone -- the whole page scrolling
+   sideways for one nav item. Breaking between labels rather than inside them
+   is what the song pages have always done; the two sheets disagreed only
+   because nothing had ever pushed this one. */
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem;margin-bottom:1.1rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb .lists,.crumb .meta{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem}
+.crumb .lists{font-size:.75rem}
+.crumb .meta{font-size:.625rem;margin-left:auto}
+/* Transparent rather than absent, so the strip does not move by a pixel when
+   an item is hovered or when it is the page you are on. The hairline under
+   every item went with it: seven of them under seven words set at 11px read
+   as a row of fine print rather than as the way around the site, and in a nav
+   landmark the underline is not carrying any meaning a body-text link needs
+   it for. What tells you where you are is now the one item drawn in full ink
+   with a rule under it. */
+.crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+   padding-bottom:.15rem;border-bottom:2px solid transparent}
+.crumb .meta a{color:var(--dim)}
+/* --hot-text, not --hot: these are 12px and 10px, so they want the 4.5 floor
+   and --hot is 4.44 on paper. See the palette note. */
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centered on the label, and never narrower
+   than it is tall. It sits inside the anchor, so it is the same target. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+/* On a phone the strip is the whole of the navigation and 24px is the floor,
+   not the target: Apple asks 44pt, Material 48dp, and WCAG's own AAA level
+   agrees at 44. So the six destinations get 44px targets here.
+
+   Which costs a row unless the labels are made to fit one, and they were not:
+   at .75rem and .14em the six of them are 310px of ink in the 336px a 390px
+   phone leaves, so "Venues" wrapped alone onto a second row and the strip came
+   to 184px -- 22% of the screen, to say six words. Measured across the
+   settings, .6875rem at .1em is 269px and fits, and it is still a size and a
+   half up on the 11.25px this strip used to be set at. Under about 340px it
+   goes back to two rows, which is why the row gap is what it is: 44px targets
+   need 44px between their centers, and the gap is the only thing providing it.
+
+   The meta pair keeps 24px, the AA floor. They are the two least-used links on
+   the site and buying them 44px each costs another 20px of every phone screen.
+   They also drop the auto margin and take a row of their own, rather than
+   being pushed to a right edge a few characters away. */
+@media (max-width:620px){
+  .crumb{row-gap:1.5rem}
+  .crumb .lists{font-size:.6875rem;letter-spacing:.1em;gap:1.5rem .7rem}
+  .crumb .meta{margin-left:0;flex-basis:100%}
+  .crumb .lists a::before{min-width:44px;height:44px}
+}
+/* The section a page sits in, which is not the page it is. A show page
+   belongs under Shows and a song page under Songs, but neither *is* that
+   page. Ian, 2026-07-30: "Considering 'show' part of 'shows' makes sense, but
+   if we highlight it, then it makes it look like we're already there, and
+   that definitely violates some sort of guideline." It does, and the
+   guideline is aria-current: "page" is a claim that this is the document you
+   are reading, and a show page saying it about the index is simply false --
+   it would also take away the link, stranding the one route back to the list.
+
+   So there are three states and not two: nothing, the section you are in
+   (still a link, ink instead of soft ink, a rule in the edge color), and the
+   page you are on (not a link, full ink, full rule). The markup says the same
+   thing to a screen reader -- aria-current="page" for the page, plain "true"
+   for the item in the set that contains it. */
+.crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
+@media print{.crumb .meta{display:none}}
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:clamp(1.7778rem,7vw,3.5556rem);line-height:1.06;margin:0 0 .7rem;
+   letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home, as a wordmark does, without looking like a link. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
+/* A hero card that is also a way in. Only some of them are. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+/* Some of the cards are links and some are not, so the ones that are need to
+   say so -- but a rule under a letterspaced label reads as a stray underline
+   rather than an affordance, and it was the one line in the hero not doing
+   structural work. An arrow after the label carries the same message and
+   disappears into the type. Right, not down: this card leaves for another
+   page, where the show and song sheets' cards land further down their own. */
+a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+/* Which song, or which night, the figure belongs to -- under the label and in
+   the label's own small type, so the card still reads as one object. */
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
+   text-transform:none;font-size:.75rem}
+/* And on those cards the arrow moves down onto the name. The rule above
+   appends to the end of the label, and the last thing in a label carrying a
+   name is that display:block name -- so the arrow opened a line of its own and
+   sat alone under it. On the name it is also the more honest target: the card
+   goes to that song or that night, not to a page about longest gaps.
+
+   `.named` is written by hero_html rather than inferred here with `:has(.of)`,
+   because an unsupported selector is dropped in silence -- which would leave
+   the arrow where it was *and* add a second one below it, on exactly the
+   browsers nobody is testing. `.of` states its own color, so it does not
+   inherit the label's hover and has to be named again. */
+a.card.named .lbl::after{content:none}
+a.card.named .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card.named:hover .lbl .of,
+a.card.named:hover .lbl .of::after{color:var(--hot-text)}
+header{padding-bottom:.9rem}
+.show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
+      text-transform:uppercase;color:var(--ink-soft)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+/* Six cards do not fit on one line, and a wrapping flex row gives the first
+   card of the second line a left rule -- which then separates it from the page
+   margin rather than from another card, and leaves its number indented out of
+   line with the wordmark and every row below it. A grid ties both the rule and
+   the flush left edge to a *column position* rather than to wherever the cards
+   happen to wrap, so the stranded rule is impossible instead of relocated. The
+   column count is written by whoever builds the hero, so it cannot disagree
+   with the number of cards actually in it. */
+/* The class names the column count rather than the card count, so a hero that
+   gains or loses a card only has to say how many columns it now wants, and
+   four cards on the song index and six here share one set of rules. The
+   fallback is the four-across the hero had before any of this. */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);margin:.7rem 0 .3rem;
+      border-bottom:1px solid var(--ink)}
+.hero-c3{grid-template-columns:repeat(3,1fr)}
+.hero-c4{grid-template-columns:repeat(4,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
+/* Only above the breakpoint. The narrow layout has always been two columns and
+   already says which cards start a row down there; stating it twice meant the
+   wide rule outranked the narrow one and left card 4 of a six indented half a
+   space out of line with the cards above and below it. Each width states its
+   own row-starts and neither has to undo the other. */
+@media screen and (min-width:621px){
+  .hero-c3>.card:nth-child(3n+1),
+  .hero-c4>.card:nth-child(4n+1){border-left:0;padding-left:0}
+  /* A second row of cards needs a rule over it, or the two rows read as one
+     block with the numbers of the first sitting on the labels of the next. */
+  .hero-c3>.card:nth-child(n+4),
+  .hero-c4>.card:nth-child(n+5){border-top:1px solid var(--rule)}
+}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+     letter-spacing:0;margin-top:auto}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
+   color:var(--dim);margin-bottom:.35rem}
+.tools{margin:1.9rem 0 .9rem}
+/* Two rows rather than one wrapping run. The things you operate -- the search
+   box and the sort -- sit together on the first; the filter chips are a
+   different kind of control and get their own line instead of pushing sort to
+   wherever the chips happen to stop. */
+.tools-main{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem}
+.tools .chips{margin-top:.6rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
+        padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
+        background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.chip:focus-visible,.sort:focus-visible{
+  outline:2px solid var(--hot);outline-offset:1px}
+/* Shown only once there is something to clear. The song page has carried this
+   button for a while; the index only ever had the line of script that hides
+   it, which is why that line referred to an element that was never here. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+      padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
+      color:var(--dim);cursor:pointer}
+.chip:hover{color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* How many shows the era holds, so four chips carry the information the
+   forty years did without the forty buttons. */
+.chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   letter-spacing:0;color:var(--dim);margin-left:.3rem}
+.chip.on .chip-n{color:var(--paper)}
+.sort{appearance:none;-webkit-appearance:none;
+   font:inherit;font-size:.75rem;padding:.4rem 1.5rem .4rem .5rem;
+   background-color:transparent;color:var(--ink);cursor:pointer;
+   border:1px solid var(--edge);border-radius:0;
+   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+      linear-gradient(135deg,currentColor 50%,transparent 50%);
+   background-position:calc(100% - .78rem) calc(50% + .05rem),
+      calc(100% - .52rem) calc(50% + .05rem);
+   background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
+/* Matching the era chips beside it, which is the whole point of the exercise. */
+.sort:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* It ships disabled and is enabled by script; without this the UA grays out
+   text the reader can see for the split second before that happens. */
+.sort:disabled{opacity:1;color:var(--ink)}
+.sort option{background:var(--paper);color:var(--ink)}
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);margin-left:auto}
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+         font-size:1rem;color:var(--ink)}
+.reports{list-style:none;margin:0;padding:0}
+/* Geometry shared with the header below, chrome kept separate, so a column
+   that moves moves in both at once rather than in whichever one was edited. */
+.row,.lhead{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;
+     column-gap:1.1rem;align-items:baseline}
+.row{padding:.7rem .25rem;text-decoration:none;
+     color:inherit;border-bottom:1px solid var(--rule-soft)}
+/* The column header these list pages never had, and it stays put.
+
+   A grid rather than a <table>, because every row on these pages is one link
+   and HTML does not let an <a> wrap a <tr>. Show pages get a real table for
+   the opposite reason: their rows carry two destinations -- the song, and the
+   night it was last played -- so the links live in cells and a <tr> is free.
+   The tabular *look* is the same either way; only the markup differs, and it
+   differs for a reason rather than by neglect.
+
+   Opaque, because rows scroll under it. box-shadow rather than border-bottom:
+   a border on a stuck element is drawn at its edge and can be clipped by the
+   row arriving beneath it, and this way the rule never thins. */
+.lhead{position:sticky;top:0;z-index:3;background:var(--paper);
+   padding:.45rem .25rem;font-size:.625rem;text-transform:uppercase;
+   letter-spacing:.14em;color:var(--dim);font-weight:500;
+   box-shadow:inset 0 -1px 0 var(--rule)}
+/* The figures column is its own sub-grid on the row, so the header's must be
+   the same one or the labels sit over the wrong numbers. Taking .r-stats
+   wholesale would bring its 12px reading size with it. */
+.lhead .r-stats{font-size:inherit;color:inherit;line-height:inherit}
+.lhead .end{text-align:right}
+@media print{.lhead{position:static}}
+/* A sticky strip at the top of the viewport is what puts an anchor target
+   underneath it. Stated once for every id on these pages rather than per
+   anchor, so a new one cannot be the thing that finds this out. */
+[id]{scroll-margin-top:2.6rem}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
+/* Same rule, same reason: this is the one place the site still spoke two
+   languages, since the song pages had already moved. */
+/* Data in a column, so the mono: tabular by construction, which is what makes
+   710 dates present one edge to the venue beside them rather than a soft
+   ragged one. The display face keeps the mastheads, where a date is the name
+   of the page rather than a value in a list. */
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+        font-size:1rem;line-height:1.3rem;white-space:nowrap}
+.r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
+         line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+/* Deliberately not a report row. These are on file, not on the bill: smaller,
+   dimmer, no figures, and below the empty-search message so a search matching
+   nothing cannot look as though it matched these. */
+/* The due list. Same row grammar as the show index -- identity, context,
+   figure -- so the two pages read as the same object seen from two sides. */
+.onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
+   margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
+   border-left:4px solid var(--hot);background:var(--hover)}
+/* --hot-text and the left edge with it, so the reversed block is one colour
+   rather than a 4px stripe of the display accent against a darker fill. Same
+   4.44-at-10px argument as .jc-chip and .verdict.bustout. */
+.onstage:hover{background:var(--hot-text);border-left-color:var(--hot-text);
+   color:var(--paper)}
+.onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text);font-weight:600}
+.onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
+.onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
+   text-transform:none;letter-spacing:0}
+.onstage .n{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Everything inside a reversed block comes with it. This used to be a list of
+   the three children that pin a colour -- .k, .n b, .p -- and the list was
+   missing .n itself, whose own text is the words "songs so far". They stayed
+   var(--dim) on the fill: 1.12:1 light, 1.08:1 dark, which is not dim, it is
+   gone. Exactly the numbers the .live span bug produced, in the same week, on
+   the banner that only ever appears while a show is being played -- so the
+   one state nobody browsing the archive can stumble into.
+
+   A list of children is a list a fourth child is not on; `*` cannot be
+   incomplete.
+
+   The class is doubled because the first attempt at this was `.onstage:hover
+   *` and it did not work on all of them. `*` contributes *nothing* to
+   specificity, so that selector is 0-2-0: it beat .k and .p at 0-2-0 on order
+   alone and lost to .onstage .n b at 0-2-1, leaving the song count as var
+   (--ink) on the fill, 2.68:1 light and 2.25:1 dark. Repeating .onstage buys
+   the third class the element in `.n b` would otherwise win with, so this is
+   0-3-0 and no descendant rule in the block can reach it -- and it does not
+   have to be kept in any particular place in the sheet to stay true. */
+.onstage:hover.onstage *{color:inherit}
+/* Structural, and load-bearing rather than tidiness. Every list section on the
+   due and out-of-rotation pages is wrapped in one of these so that its
+   position:sticky column header is held by the section instead of by the page:
+   sticky is bounded by the element's *parent*, so three headers sharing one
+   parent each stayed pinned for the whole rest of the document, and the header
+   of one list came to rest ruled across the heading of the next. Deliberately
+   carries no visual property -- there is nothing to draw here, and anything
+   added would land on both pages at once. `display:block` is a <section>'s own
+   default and is written out so the class is findable in this sheet. */
+.rot{display:block}
+.due{list-style:none;margin:0;padding:0}
+.due li{border-bottom:1px solid var(--rule-soft)}
+.due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
+   column-gap:1.1rem;align-items:baseline}
+.due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
+.due /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
+.d-song{font-size:1rem;font-weight:500}
+.due .row:hover .d-song{color:var(--hot-text)}
+.d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;white-space:nowrap}
+.d-where{display:block;color:var(--dim);font-size:.75rem}
+.d-n{text-align:right}
+.d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot-text);white-space:nowrap}
+.d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.d-n .typ span{display:block;white-space:nowrap}
+/* Same rule the song pages carry, and it has to be stated here too because
+   this sheet does not include theirs. It was missing entirely, so the due and
+   venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
+   while the identical class on a song page was 12px and dim. One class, two
+   appearances, by accident. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 16;
+   color:var(--dim);max-width:56ch}
+/* And its links, which is the fifth time a rule has been found living in one
+   sheet of three. This one was in SONG_CSS alone, so the two links in the due
+   page's standfirst -- "slipping" and "on the shelf", both pointing at sections
+   of the page they introduce -- rendered in the browser's default link blue
+   with a browser underline, on the one page on the site that has them. */
+.dek a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.dek a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+
+/* The measurement detail, folded away. Three paragraphs used to stand open
+   here: 835px of a 1,147px front matter on a phone, 73% of it, before the
+   first due song. And the FAQ already carries 2,930 characters on the same
+   subject against their 1,189 -- so this page was not explaining itself, it
+   was holding a shorter second copy of an answer that lives elsewhere, above
+   its own content.
+   What stays open is the one thing a reader cannot read the third column
+   without: what 2x means. The rest is one click, and the click does not leave
+   the page, which is the objection to sending it to the FAQ outright.
+   Nothing is remembered per reader. A flag that says "you have read this"
+   fails asymmetrically -- set wrongly it shows a first-time reader an
+   unlabeled table of multipliers, unset wrongly it costs one line -- and a
+   reference archive should not serve two different pages at one URL. The
+   site's own precedent argues the same way: the last per-reader flag here
+   shipped broken and stayed invisible for weeks.
+   Same <details> idiom the show pages use for long notes: no JavaScript and
+   keyboard-operable. It stays closed when printed, like every other one on
+   the site -- forcing it open needs more than hiding the summary, and a
+   half-done version that only removed the control would print a folded
+   section with no sign it folds. */
+details.how{margin:.7rem 0 0}
+/* display:block, which is the shape details.jam and details.note already use
+   on the song pages -- one idiom for disclosure on this site rather than two.
+   width:max-content keeps the rule under the words instead of across the
+   column.
+   A caution for whoever measures this next: the accessibility inspector
+   reports this summary as a plain "generic" node, and the site's existing
+   shipped details reports exactly the same way, so that reading is the tool
+   and not the markup. It was nearly written down here as a real defect. */
+details.how > summary{display:block;width:max-content;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule);cursor:pointer;
+   padding:0 0 .1rem;list-style:none}
+details.how > summary::-webkit-details-marker{display:none}
+details.how > summary::after{content:" \2193"}
+details.how[open] > summary::after{content:" \2191"}
+details.how > summary:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* A section heading, under the due list. At 1.5rem it was barely larger than
+   the 1rem song titles it headed, which made a new section read as another
+   row. 2.125rem sits clearly between the page title and the data. */
+.shelf-h{margin:3rem 0 .5rem;font-family:'Bagnard',Georgia,serif;
+   font-weight:400;font-size:2.125rem;line-height:1.15;
+   scroll-margin-top:2.6rem}
+.shelf-h+.dek{margin-bottom:1.1rem}
+/* The adjacent-sibling rule above reaches the *first* standfirst under a
+   heading and no further, which was every case until a section blurb grew a
+   second paragraph. `.dek` is margin-bottom:0 by default, so the trailing
+   paragraph sat flush against the column header below it -- measured at 0px,
+   against 19.8px for the one above it. Every `.dek` inside a section instead.
+   A no-op on the due page, whose sections still carry one apiece. */
+.rot .dek{margin-bottom:1.1rem}
+/* The way back up. This is the fourth place it has been wanted -- the FAQ's
+   answers, and now each section here -- so it is a house idiom rather than a
+   page's own trick: jumping somewhere should never maroon a reader there, and
+   these pages are long. Mono and small: a control, not a sentence. */
+.backtop{margin:1rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative;display:inline-block}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
+/* The venue list borrows the due page's three-column shape because it answers
+   the same shape of question: a name, a when, and one figure worth ranking by.
+   Its own class names, though -- .d-* means "due", and a venue row sharing
+   them would make either page impossible to restyle without the other. */
+.vn{list-style:none;margin:0;padding:0}
+.vn li{border-bottom:1px solid var(--rule-soft)}
+.vn .row,.lhead.vn-h{display:grid;grid-template-columns:1fr 12rem 7rem;
+   column-gap:1.1rem;align-items:baseline}
+.vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
+.vn /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
+.vn-venue{font-size:1rem;font-weight:500}
+.vn .row:hover .vn-venue{color:var(--hot-text)}
+.vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
+.vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
+   color:var(--dim);white-space:nowrap}
+.vn-n{text-align:right}
+.vn-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--ink)}
+.vn-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem;
+   white-space:nowrap}
+@media screen and (max-width:620px){
+  /* "dates", not "span": grid-area:span would be parsed as the span keyword
+     and drop the whole declaration. */
+  /* max-content rather than 5.5rem, and it was the fixed figure that made this
+     worth measuring. 5.5rem was cut to fit "longest 1,468" at the old scale and
+     did not fit it at the new one -- 99px of column for 106px of label -- so
+     the figures column was quietly overflowing its own track. A column asked to
+     be exactly as wide as its content cannot be cut to fit anything. */
+  .vn .row{grid-template-columns:1fr max-content;
+     grid-template-areas:"venue n" "dates n";row-gap:.15rem}
+  .vn-venue{grid-area:venue}
+  .vn-span{grid-area:dates}
+  .vn-n{grid-area:n}
+  .vn-n b{font-size:1.25rem}
+}
+/* Below this the two columns cannot both be honest. The dates are a span --
+   "2009-12-02 -> 2026-07-27", 23 characters of mono that must not break, since
+   a date split across a line is unreadable and the arrow between them would be
+   stranded -- so the left column has a hard floor of about 217px, and the
+   figure wants another 106 beside it. At 320px there are 288 to share. The
+   answer is the one this site already gives everywhere else: stack, and let the
+   rules run the full width, rather than squeeze columns until something is
+   clipped or pushed off the screen. */
+@media screen and (max-width:400px){
+  .vn .row{grid-template-columns:1fr;
+     grid-template-areas:"venue" "dates" "n";row-gap:.2rem}
+  .vn-n{text-align:left}
+  .vn-n .typ{display:inline;margin-left:.5rem}
+}
+@media screen and (max-width:620px){
+  /* 5.5rem held one number. It now holds that number and the multiple the
+     list is ordered by, which wraps to two lines here rather than being
+     dropped -- the order is the point of the page at any width. */
+  .due .row{grid-template-columns:1fr 7rem;grid-template-areas:"song n" "last n";
+     row-gap:.15rem}
+  .d-song{grid-area:song}
+  .d-last{grid-area:last}
+  .d-n{grid-area:n}
+  .d-n > b{font-size:1.25rem}
+}
+/* The pointer to the not-a-show page, where a list of twenty used to sit at
+   the foot of 692 rows. Ian: "move the 'also on file' listings to a higher
+   prominence home, or at least something that's not tacked onto the end of
+   the show list." Under the hero, where a reader lands. */
+.aside{margin:1.1rem 0 0;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside b{color:var(--ink);font-weight:400}
+.aside a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.aside a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* The list itself, which moved to a page of its own. Named rather than
+   scoped to `.aside`, because it now has two homes and the version in this
+   file has been the wrong shape twice for want of one name. */
+.axlist{list-style:none;margin:0;padding:0}
+.axlist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+   padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
+.ax-row{display:contents;color:inherit;text-decoration:none}
+.ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
+   border-bottom:1px solid var(--rule)}
+a.ax-row:hover .ax-date{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+.ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+.ax-venue{color:var(--dim)}
+.ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+/* phish.net's note, on its own line under the row. flex-basis:100% rather than
+   a grid cell because the row above it is a wrapping flex line of four
+   variable-width parts, and the note is the one thing that always wants the
+   whole measure. Set in the reading face: it is the only prose in this list,
+   and at 12px mono a 778-character note is a wall. */
+.ax-note{flex-basis:100%;margin:.15rem 0 .1rem;max-width:74ch;
+   font-family:'Literata',Georgia,serif;font-size:.8125rem;line-height:1.5;
+   font-variation-settings:'opsz' 13;color:var(--ink-soft)}
+.ax-note a{color:var(--ink-soft);border-bottom:1px solid var(--rule)}
+.ax-note a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+.axlist .for{color:var(--dim)}
+.axlist .for a{color:inherit}
+/* A grid, not a right-aligned sentence. Right-alignment pins only the right
+   edge; every figure to the left of it still moved row to row with the width
+   of the numbers beside it. */
+.r-stats{font-size:.75rem;color:var(--dim);line-height:1.3rem;
+         display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
+         justify-items:end;column-gap:.6rem}
+.r-stats .st{white-space:nowrap}
+/* Tabular numerals do the aligning; the widths these used to be given by hand
+   were a workaround for not having asked the face for them. */
+.r-stats .st b{display:inline-block;text-align:right}
+.r-stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+           font-size:1rem;color:var(--ink)}
+.r-stats b.hot{color:var(--hot-text)}
+/* A show still being played, said in the one place on the row where the
+   number it qualifies already is: 24 songs means something different
+   tonight than it will tomorrow. */
+.live-tag{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+/* The song that held the longest gap, under the figures it belongs to. Named
+   for what it is: ".r-song" also means "the song this row is about" on the
+   song index, which inherits this stylesheet, and one grid-column rule meant
+   for this was enough to wreck that. */
+.r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
+   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);display:flex;justify-content:space-between;
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media screen{
+}
+/* Same lesson as the report tables: stack instead of squeezing columns, so
+   the rules still run the full width and nothing has to be hidden. */
+@media screen and (max-width:620px){
+  /* Every list row stacks into one column here and the due and venue rows
+     take a two-column area layout, so there are no columns left for a column
+     header to label. It goes rather than pretending: a header standing over
+     stacked rows is a claim about an alignment that is not there. The song
+     pages already hide their .head below 820px for the same reason.
+
+     All three selectors named, not just `.lhead`. The due and venue headers
+     are matched by `.lhead.due-h` and `.lhead.vn-h`, two classes against one,
+     so a bare `.lhead{display:none}` loses on specificity and both pages kept
+     a three-column header over two-column rows. Measured, not assumed: the
+     rule was written, the media query was active at 440px, and the computed
+     display was still `grid`. */
+  .lhead,.lhead.due-h,.lhead.vn-h{display:none}
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
+  .r-stats{display:block;text-align:left;white-space:normal}
+  .r-stats .st{display:inline;white-space:normal}
+  /* Before each but the first, never after: the last .st is not the last
+     child -- the song name follows it -- so a trailing separator was left
+     stranded at the end of the line with the name wrapped beneath it. */
+  .r-stats .st:empty{display:none}
+  /* --dim, not --rule: rule is a hairline color and a glyph drawn in it is
+     invisible on the dark paper, the way the separators were. */
+  .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\00b7";
+    color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
+  .r-stats .st b{min-width:0!important;text-align:left}
+  /* white-space, and it is the reason this rule is three declarations rather
+     than two. The wide layout gives .r-top a column of its own and clips the
+     overflow with an ellipsis, so nowrap is right up there. Down here it is an
+     inline run inside a paragraph, and nowrap made one row as wide as its
+     longest song title: "She Caught the Katy and Left Me a Mule to Ride" is 45
+     characters, which is 344px of mono at the old size and 389px at the new
+     one. The index was six pixels from scrolling sideways at 375px before the
+     scale went up a step, and 33 past it afterwards -- so the type change did
+     not cause this, it collected on it. */
+  .r-top{text-align:left;display:inline;white-space:normal}
+  .r-top::before{content:" ("}
+  .r-top::after{content:")"}
+  /* Two across, whatever the wide layout asked for. The flex basis that used
+     to be here stopped meaning anything when the hero became a grid. */
+  .hero-c3,.hero-c4{grid-template-columns:repeat(2,1fr)}
+  .card{padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  .show{font-size:.75rem;letter-spacing:0}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+/* --hot-text: this is 18px, under the 24px the display accent is cleared for,
+   and --hot is 4.44:1 on paper. See the palette note. */
+.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
+
+.prose{max-width:66ch;margin:0 0 2.4rem}
+.prose h2{font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:1.25rem;margin:2.2rem 0 .5rem;letter-spacing:0}
+/* The page is almost nothing but prose -- 3.4 KB of it, eleven paragraphs --
+   and it was the one place where setting everything in the mono was hardest to
+   defend: this is the page that has to be read start to finish rather than
+   scanned for a number. The reading face, at the measure it was already given.
+   Figures inside a sentence stay mono, so a threshold quoted in the text looks
+   like the same object it does on a report. */
+.prose p{margin:0 0 1rem;font-family:'Literata',Georgia,serif;
+   font-size:1rem;line-height:1.6;font-variation-settings:'opsz' 16;
+   color:var(--ink-soft)}
+.prose li{font-family:'Literata',Georgia,serif;font-size:1rem;line-height:1.6;
+   font-variation-settings:'opsz' 16;color:var(--ink-soft)}
+.prose b{color:var(--ink)}
+.prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase}
+/* The same two stamps the show pages carry, and they had drifted: there
+   .verdict.overdue is --hot-text and here .overdue was still --hot, so the
+   page that exists to explain the marks showed them in a different red from
+   the marks themselves -- and at 4.44:1, under the floor for 10px caps. Both
+   copies now say --hot-text. `.crumb` and `.hero` differ between sheets for
+   real reasons; these two never did. */
+.prose .overdue{color:var(--hot-text)}
+.prose .premature{color:var(--cool)}
+.prose .bust{background:var(--hot-text);color:var(--paper);padding:.1rem .3rem;
+   font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
+   color:var(--ink)}
+/* The one table on this page, and a real <table> rather than the grid the
+   listing pages use: those are grids because every row is one link and an <a>
+   cannot wrap a <tr>. Nothing here is a link, so the rows are rows.
+
+   Figures in the mono with tabular numerals, which is what makes a column of
+   percentages readable as a column -- this is the same lesson the show pages
+   learned, and the reason it is stated again is that it was fixed there by a
+   rule that lives on a sheet this page does not extend. Only on this sheet, so
+   a plain search for `.figs` finds one match rather than three. */
+.figs{max-width:66ch;width:100%;border-collapse:collapse;margin:0 0 1.4rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.8125rem;
+   font-variant-numeric:tabular-nums}
+.figs th{font-weight:400;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-align:left;
+   padding:0 .6rem .4rem 0;border-bottom:1px solid var(--ink)}
+.figs td{padding:.35rem .6rem .35rem 0;color:var(--ink-soft);
+   border-bottom:1px solid var(--rule-soft)}
+.figs tr:last-child td{border-bottom:0}
+.figs .end{text-align:right;padding-right:0}
+.figs td.end{color:var(--ink)}
+/* Stated here rather than on the FAQ's sheet, because this page links out too
+   and had no rule for a link in running prose -- the first one added to it
+   would have come out in the browser's default blue. */
+.prose a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.prose a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* Where a claim came from, set small and dim under the claim. It sat on the
+   FAQ's sheet until the acknowledgments page wanted it, and the FAQ's sheet is
+   built on this one, so leaving it there would have made it a rule the other
+   two prose pages could not have -- the shape of every one-sheet-of-three bug
+   in this file. Moved rather than copied.
+
+   `.prose .src` as well as `.src`, and it is not belt and braces -- it is the
+   same defect `.backtop` had, found the same way. These are <p> elements
+   inside the prose, so `.prose p` is one class and one type against this
+   rule's one class and wins outright, order be damned. Measured on the built
+   page: the source line came out at 18px in Literata in --ink-soft, which is
+   a body paragraph exactly, so the only thing this rule had ever done was
+   the margin. It has been wrong on the FAQ's segues answer since that answer
+   was written. */
+/* The bottom margin is new with the second caller. On the FAQ this line is
+   the last thing in an answer and had nothing under it to be crowded by; on
+   the acknowledgments page it sits between a heading and the prose it
+   introduces, and with no bottom margin the two ran together. Matched to
+   `.prose p` so a source line spaces like the paragraph it stands in for. */
+.src,.prose .src{margin:.4rem 0 1rem;font-size:.75rem;
+   font-variation-settings:'opsz' 12;color:var(--dim)}
+/* The contents block, shared by both prose pages. Generated from the same
+   list the sections are, so it cannot name one the page does not have or miss
+   one it does -- the FAQ has worked this way since it was built and the method
+   page does now too.
+
+   Stated here rather than on the FAQ's sheet because the FAQ's sheet is built
+   on this one: a rule put there would have been a rule the method page could
+   not have, which is the shape of every one-sheet-of-three bug in this file.
+
+   It used to be a bare caption over eight hairline-separated lines set in the
+   reading face, one size down from the h2 under it and in a softer ink -- so
+   the whole block read as continuous prose and, in Ian's words, "sort of looks
+   like the answer to the first question". Three things separate it now: it is
+   enclosed rather than merely ruled, the entries are numbered, and the numbers
+   are mono, which is this site's voice for a figure. A reader can tell an
+   index from an answer before reading a word of either. */
+.toc{max-width:66ch;margin:0 0 3rem;padding:1rem 1.2rem 1.1rem;
+   border:1px solid var(--rule);background:var(--rule-soft)}
+.toc .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .6rem}
+/* Counter rather than list-style:decimal, so the number is a column of its own
+   and an entry that wraps aligns under itself instead of under its number. */
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:q}
+.toc li{counter-increment:q;border-top:1px solid var(--rule-soft)}
+.toc li:first-child{border-top:0}
+.toc a{display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;
+   padding:.4rem 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
+   color:var(--ink-soft);text-decoration:none;border:0}
+/* --ink-soft, not --dim. This is the one place on the site where --dim sits on
+   something other than paper: the panel above carries a --rule-soft wash, which
+   takes --dim from 4.98:1 on bare paper to 4.13:1 here, and 4.49:1 in the dark
+   -- both under the floor for 12px. The mono face and the smaller size were
+   always doing the work of separating the enumerator from the entry; being
+   dimmer as well was belt and braces that cost the contrast. */
+.toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.75rem;font-weight:600;color:var(--ink-soft)}
+.toc a:hover{color:var(--hot-text)}
+.toc a:hover::before{color:var(--hot-text)}
+/* The way back up. Every answer and every section gets one, because the point of an index is
+   being able to pick a second question after the first -- and without this the
+   only route was scrolling back yourself. Mono and small: it is a control, not
+   a sentence, and it must not read as another paragraph of the answer. */
+/* .prose .backtop as well as .backtop, and it is not belt and braces. Inside
+   the prose these are <p> elements, so `.prose p` -- one class and one type --
+   out-specifies a bare `.backtop`, and order cannot help because the two are
+   not equal. The result was that this rule had never once been drawn: every
+   "All questions" link on the FAQ has been set in Literata at the body size
+   since the page was built, which is exactly the paragraph it was written not
+   to look like. Verified against the published sheet, not just this one. */
+.backtop,.prose .backtop{margin:.8rem 0 0;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24x24, the same floor the nav links were held to, without moving the ink. */
+.backtop a{position:relative;display:inline-block}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
+
+.colophon{max-width:66ch;margin:0 0 1rem}
+.colophon .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600;margin:0 0 .7rem}
+.prose .colophon p{font-size:.9375rem;font-variation-settings:'opsz' 15;
+   margin:0 0 .7rem}
+.prose .colophon p:last-child{margin-bottom:0;color:var(--dim)}
+/* Each name set in the face it names, which is the whole convention of a
+   colophon and the only place on this site where all three appear together.
+   Not <b>: Bagnard ships at 400 and nothing else, so asking for bold would
+   have the browser draw a synthetic one -- a slanted, smeared version of a
+   face being shown off. The weight each of these gets is the weight it has.
+   Plex is stepped down because a mono at the same nominal size sets visibly
+   larger than a serif beside it. */
+/* A name is one word however many spaces are in it: IBM Plex Mono broke over
+   two lines at this measure, and a typeface's name snapped in half is a poor
+   advertisement for the care being thanked. */
+.colophon .f-bag,.colophon .f-lit,.colophon .f-mono{white-space:nowrap}
+.colophon .f-bag{font-family:'Bagnard',Georgia,serif;font-size:1.0625rem}
+.colophon .f-lit{font-family:'Literata',Georgia,serif;font-weight:500}
+.colophon .f-mono{font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-weight:600;font-size:.875rem}
+</style><script>
+(function(){
+  // Deliberately not renamed: this is a private key in a reader's own
+  // browser, and changing it would silently reset the light/dark choice
+  // of everyone who has ever set one, to rename a string nobody sees.
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script><script>
+(function(){
+  function ready(fn){
+    if(document.readyState!=='loading') fn();
+    else document.addEventListener('DOMContentLoaded',fn);
+  }
+  ready(function(){
+    var search=document.querySelector('input.search');
+    var prev=document.querySelector('a[rel="prev"]');
+    var next=document.querySelector('a[rel="next"]');
+    var foot=document.querySelector('footer');
+    if(!foot) return;
+    // "Previous show, 2026-07-25" -> "Previous show". The pager already writes
+    // a label saying what it steps through, so the overlay does not have to
+    // guess whether this page is a list of shows or of anything else.
+    function what(a,fallback){
+      var s=(a&&a.getAttribute('aria-label'))||'';
+      s=s.split(',')[0].trim();
+      return s||fallback;
+    }
+    var rows=[];
+    if(search){
+      rows.push(['/','Jump to the search box']);
+      rows.push(['Esc','Clear the search']);
+    }
+    if(prev) rows.push(['[  \u2190', what(prev,'Previous')]);
+    if(next) rows.push([']  \u2192', what(next,'Next')]);
+    rows.push(['?','This list']);
+    var dlg=document.createElement('dialog');
+    dlg.className='keys';
+    dlg.setAttribute('aria-label','Keyboard shortcuts');
+    dlg.innerHTML='<p class="cap">Keyboard</p><dl>'
+      + rows.map(function(r){
+          return '<div><dt><kbd>'+r[0].split('  ').join('</kbd> <kbd>')
+                 +'</kbd></dt><dd>'+r[1]+'</dd></div>'; }).join('')
+      + '</dl>'
+      + (rows.length>1?'':'<p class="none">This page has nothing else to '
+         + 'step through. The show and song lists have more.</p>')
+      + '<form method="dialog"><button>Close</button></form>';
+    document.body.appendChild(dlg);
+    // A button as well as a key, because a shortcut nobody can find is a
+    // shortcut nobody has. It carries the key it stands for.
+    var hint=document.createElement('button');
+    hint.type='button';
+    hint.className='keyhint';
+    hint.setAttribute('aria-haspopup','dialog');
+    hint.innerHTML='Keys <kbd>?</kbd>';
+    hint.addEventListener('click',function(){ dlg.showModal(); });
+    foot.appendChild(hint);
+    document.addEventListener('keydown',function(e){
+      if(e.metaKey||e.ctrlKey||e.altKey||dlg.open) return;
+      var t=e.target;
+      // While typing, every one of these is a character somebody meant.
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'
+             ||t.tagName==='SELECT'||t.isContentEditable)) return;
+      if(e.key==='?'){ e.preventDefault(); dlg.showModal(); return; }
+      if(prev&&(e.key==='['||e.key==='ArrowLeft')){ e.preventDefault(); prev.click(); }
+      if(next&&(e.key===']'||e.key==='ArrowRight')){ e.preventDefault(); next.click(); }
+    });
+  });
+})();
+</script><script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function start(){
+    var els=[].slice.call(document.querySelectorAll('time.ago'));
+    if(!els.length) return;
+    function tick(){
+      var now=Date.now();
+      els.forEach(function(e){
+        var t=Date.parse(e.getAttribute('datetime'));
+        if(!isNaN(t)) e.textContent=say((now-t)/1000);
+      });
+    }
+    tick();
+    setInterval(tick,20000);
+  }
+  /* This ships in the head, so on a first load it runs before the body it is
+     looking for exists: querySelectorAll found nothing, the function returned,
+     and every reader saw the bare 03:41 UTC fallback the markup carries for
+     readers with no JavaScript at all. The stamp has been a clock reading on
+     every live page since it was written. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script><script>
+/* Which rows arrived while this reader was away, so a setlist that grew does
+   not have to be re-read from the top. The count is kept in this browser
+   only; nothing is sent anywhere and nothing is stored server-side.
+
+   The claim used to outlive the fact. The count was banked at page *load*,
+   the tag was built once from it and then never touched again -- so "since
+   you last looked" really meant "since this browser last loaded a document
+   for this show", and the tag was a snapshot frozen at load time. Scrolling
+   down to the new songs and back up left it still sitting there insisting
+   they were new, because nothing re-evaluated it. Ian caught it doing exactly
+   that, and asked the right question: how can it know when I last looked.
+
+   It could not, and it was nearly invisible before, because the meta refresh
+   it relied on never fired and the page therefore almost never reloaded.
+   Making the reloads real made the false claim frequent.
+
+   One rule makes the words true: **the stored count only ever advances to
+   rows that have actually been in view.** So "since you last looked" means
+   what it says -- since these rows were last in front of you -- and the tag
+   retires itself the moment that becomes true, instead of asserting it for
+   the life of the document.
+
+   A first attempt also banked the count when the page was hidden or
+   unloaded, to stop an unread page accumulating a claim. That was wrong in
+   both directions and the first test caught it. A reload fires pagehide, so
+   the count was banked from the document being torn down and the rows in the
+   *next* one that the reader had still never seen were recorded as seen: two
+   songs landing without a scroll in between reported "1 new", not 2.
+   Accumulation is not the bug -- if you never look at the new songs they are
+   still new, and saying so is the whole point. */
+(function(){
+  function start(){
+    var live=document.querySelector('.live');
+    if(!live||!window.localStorage) return;
+    var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+    if(!rows.length) return;
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
+    var seen=parseInt(localStorage.getItem(key)||'0',10);
+    function bank(){ try{ localStorage.setItem(key,String(rows.length)); }catch(e){} }
+    /* Banked here only when there is nothing new to show, where it is a
+       no-op or a correction for a setlist that shrank. With something new it
+       waits for the rows to be seen: writing the count at load is precisely
+       what made the old claim false. */
+    if(!(seen>0&&rows.length>seen)){ bank(); return; }
+    var fresh=rows.slice(seen);
+    fresh.forEach(function(r){ r.classList.add('fresh'); });
+    /* The count is also the way there. Every song row already carries its
+       slug as an id, so this is a real href to a real fragment rather than a
+       scripted scroll -- which matters because a fragment jump is reversible
+       with the Back button and a scroll is not, the same reasoning as the
+       show row's landing spot in docs/TODO.md 2h. It points at the *first*
+       new row, so the reader lands at the start of what they missed and
+       reads down.
+
+       tabindex="-1" so the jump moves focus as well as the viewport, and
+       [tabindex="-1"]:focus already drops the ring for exactly this case: a
+       landing spot is a place, not a control. */
+    var target=fresh[0];
+    var tag=document.createElement(target.id?'a':'span');
+    tag.className='since-you';
+    tag.textContent=(rows.length-seen)+' new since you last looked';
+    if(target.id){
+      target.setAttribute('tabindex','-1');
+      tag.href='#'+target.id;
+      /* Non-breaking, so the arrow can never be left on a line by itself. */
+      tag.textContent+='\u00a0\u2193';
+    }
+    live.appendChild(tag);
+    if(!window.IntersectionObserver){ bank(); return; }
+    /* Retired once the last of those rows has held still in view for a
+       second. One frame would retire it during a flick past the table, which
+       is not looking at it; a second is long enough to mean a deliberate look
+       and short enough that any real one counts. */
+    var timer=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          if(!timer) timer=setTimeout(function(){
+            io.disconnect();
+            if(tag.parentNode) tag.parentNode.removeChild(tag);
+            bank();
+          },1000);
+        } else if(timer){ clearTimeout(timer); timer=null; }
+      });
+    });
+    io.observe(fresh[fresh.length-1]);
+  }
+  /* Same trap as the relative stamp beside it: this ships in the head, so it
+     ran before .live or a single row existed and returned every time. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script></head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb" aria-label="Sections"><span class="lists"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a><a href="./years.html">Years</a><a href="./venues.html">Venues</a></span><span class="meta"><a href="./faq.html" class="sect" aria-current="true">FAQ</a><a href="./method.html">How this works</a></span></nav>
+<div class="rule2"></div>
+<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
+<p class="show">Acknowledgments</p>
+<p class="dek">This archive rests on three projects, and on the people who
+keep them going.</p></header>
+<div class="rule2"></div>
+<div class="prose" id="main" tabindex="-1">
+<h2 id="phish-net">Phish.net, and the Mockingbird Foundation</h2>
+<p class="src"><a href="https://phish.net/" target="_blank" rel="noopener noreferrer">phish.net</a> &middot; <a href="https://mbird.org/" target="_blank" rel="noopener noreferrer">mbird.org</a></p>
+<p>The setlists are theirs: what was played, in what order, what ran into what,
+at which venue, on which tour. So are the gaps and the show ratings, and the
+jam chart notes under a performance.</p>
+<p>Phish.net is a project of the <b>Mockingbird Foundation</b>, a 501(c)(3)
+started in 1996 by fans and run entirely by volunteers &mdash; no salaries, no
+paid staff, no office. Hundreds of people have kept that record night after
+night for close to thirty years, which the Foundation conservatively estimates
+at over <b class="num">100,000</b> hours. It is an extraordinary thing to have
+been given.</p>
+<p>And it is a means rather than an end. The Foundation exists to fund music
+education for children, and by July 2026 had made its <b class="num">800th</b>
+grant, more than <b class="num">$3</b> million in total. If this site has been
+of any use to you,
+<a href="https://mbird.org/donations/" target="_blank"
+rel="noopener noreferrer">that is a good place to send something</a>.</p>
+<h2 id="phish-in">phish.in</h2>
+<p class="src"><a href="https://phish.in/" target="_blank" rel="noopener noreferrer">phish.in</a></p>
+<p>Every <b>Listen</b> link goes to phish.in, an open archive of audience
+recordings made under the band&rsquo;s own taping policy. Their archive covers <b class="num">2,136</b> nights. Because of
+them, a page about a performance can be a way to hear it.</p>
+<p>The recordings themselves are the tapers&rsquo;, made at their own expense
+and given away, and phish.in is where forty years of that generosity is kept
+in one place and kept free.</p>
+<h2 id="fouldomain">fouldomain</h2>
+<p class="src"><a href="https://fouldomain.com/" target="_blank" rel="noopener noreferrer">fouldomain.com</a></p>
+<p>The version scores are fouldomain&rsquo;s: every circulating performance
+rated out of <b class="num">100</b> from a blend of audio analysis and
+community signal, recomputed nightly. It is also how phish.net&rsquo;s own show
+rating reaches this site, since their API does not expose it.</p>
+<p>It is one person&rsquo;s work &mdash; <b>Kevin Spence</b>, building on
+phish.net&rsquo;s setlists and phish.in&rsquo;s audio &mdash; and it is the
+reason a song page here can point you at a version worth hearing rather than
+just counting the times it was played.</p>
+<h2 id="the-band">And the band</h2>
+
+<p>This site is not affiliated with Phish and not endorsed by them. The taping
+policy is theirs, though, and it is a generous and unusual one: forty years of
+live music recorded, traded and given away with permission. Every archive on
+this page rests on it.</p>
+<div class="perf"></div>
+<div class="colophon">
+<span class="cap">Set in</span>
+<p><a class="f-bag" href="https://github.com/sebsan/Bagnard" target="_blank"
+rel="noopener noreferrer">Bagnard</a>, by Sebastien Sanfilippo.
+<a class="f-lit" href="https://www.type-together.com/literata-font"
+target="_blank" rel="noopener noreferrer">Literata</a>, by TypeTogether.
+<a class="f-mono" href="https://www.ibm.com/plex/" target="_blank"
+rel="noopener noreferrer">IBM Plex Mono</a>, by Mike Abbink and Bold
+Monday.</p>
+<p>All three are given away under the SIL Open Font License &mdash; years of
+drawing, free to anyone, and the reason this site can look like itself.</p>
+</div></div>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a><script>
+(function(){
+  var b=document.getElementById('totop'), h=document.querySelector('header');
+  if(!b||!h||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){ b.hidden=e[0].isIntersecting; },
+    {rootMargin:'-8px 0px 0px 0px'}).observe(h);
+})();
+</script>
+<footer><span><a href="./method.html">How this works</a></span>
+<span aria-current="page">Acknowledgments</span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span></footer>
+<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</div></body></html>

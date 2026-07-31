@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1137,7 +1148,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='sand'><td class='song'><a href='../song/sand.html#2020-02-21'>Sand</a><span class='seg tight'>-&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2019-12-31.html'>2019-12-31</a></span><span class='venue'>Madison Square Garden</span><span class='place'>New York, NY</span></td><td class='bar' data-tip='2 shows; usually 2 to 7'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:28.18%'></span></span></td><td class='n' data-tip='2 shows; usually 2 to 7'><span class='cap'>Gap</span><span class='gap small'>2</span><span class='typ'>med 4</span><span class='verdict premature at-gap'>premature</span><span class='sr'>2 shows; usually 2 to 7</span></td></tr>
 <tr id='weekapaug-groove'><td class='song'><a href='../song/weekapaug-groove.html#2020-02-21'>Weekapaug Groove</a><span class='seg tight'>-&gt;</span><a class='jc-chip' href='../song/weekapaug-groove.html#2020-02-21'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2019-12-30.html'>2019-12-30</a></span><span class='venue'>Madison Square Garden</span><span class='place'>New York, NY</span></td><td class='bar' data-tip='3 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:37.49%'></span></span></td><td class='n' data-tip='3 shows; usually 2 to 6'><span class='cap'>Gap</span><span class='gap small'>3</span><span class='typ'>med 4</span><span class='sr'>3 shows; usually 2 to 6</span></td></tr>
 </tbody></table><div class='notes'><p>Shafty&nbsp;was last played on June 10, 2012&nbsp;(302 shows) and Sea and Sand on July 20, 1998 (672 shows). The second Shafty was performed over Plasma. Page teased the theme from <em>Speed Racer</em> in The Lizards.&nbsp;Bathtub Gin was dedicated to the people at CID who organized the event and in honor of the fact that everyone had a hot tub in their room and also included a Gimme Some Lovin&#39; tease from Page before transitioning back into Shafty.&nbsp;Blaze On&#39;s lyrics were changed to &quot;you&#39;ll be dancing on the beach.&quot; Blaze On also included Plasma teases.&nbsp;Possum contained Back on the Train and Shafty teases and ended with a Plasma&nbsp;tease. Trey teased Another One Bites the Dust in&nbsp;Also Sprach Zarathustra.&nbsp;Trey teased L.A. Woman in I Always Wanted It This Way.&nbsp;No Men In&nbsp;No Man&#39;s Land included Shafty and Woman from Tokyo teases. Weekapaug Groove contained No Men In No Man&#39;s Land quotes as well as a Smoke on the&nbsp;Water tease from Trey.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

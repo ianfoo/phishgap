@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1153,7 +1164,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='is-this-what-you-wanted'><td class='song'><a href='../song/is-this-what-you-wanted.html#2014-10-31'>Is This What You Wanted</a></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='cap'>Gap</span><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
 <tr id='frankenstein'><td class='song'><a href='../song/frankenstein.html#2014-10-31'>Frankenstein</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2012-07-01.html'>2012-07-01</a></span><span class='venue'>Alpine Valley Music Theatre</span><span class='place'>East Troy, WI</span></td><td class='bar' data-tip='100 shows; usually 5 to 35'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:98.33%'></span></span></td><td class='n' data-tip='100 shows; usually 5 to 35'><span class='cap'>Gap</span><span class='gap big'>100</span><span class='typ'>med 8.5</span><span class='verdict overdue at-gap'>overdue</span><span class='sr'>100 shows; usually 5 to 35</span></td></tr>
 </tbody></table><div class='notes'><p>The backdrop on the stage at&nbsp;the start of the show was a large gate adorned with a "P." During Lawn Boy, Page introduced Mike as "Michael Gordleone" and Fish&nbsp;took a drum solo. Trey teased Saw It Again during Tube and San-Ho-Zay during Wolfman's. The musical costume was a set of original, mostly instrumental music played with the sound effects and narration of the 1964 Disneyland album <i>Chilling, Thrilling Sounds of the Haunted House</i>. Prior to the start of Set II, the stage was cleared of all band equipment, and a graveyard set was brought out. At the start of the set, smoke filled the stage, and zombies appeared behind the gate. When the gate opened, a large haunted house with the band inside was brought to the front of the stage. The sound effects and narration were played on the PA, while an undead narrator would emerge from a crypt inscribed with "ESTHER"&nbsp;prior to each song for&nbsp;the introduction. At the end of The Fuse, the sides of the house came down while sounds of an explosion were heard, and the band was revealed inside, dressed in white tuxedoes and with zombie face paint. Several zombies came to the front of the stage and danced during Martian Monster. At the conclusion of the set, the band members came down from the Haunted House riser, slowly walked to the front of the stage, and took bows, along with the entire cast of zombies. All songs during the second set were debuts, with the titles taken from the first ten tracks of <i>Chilling, Thrilling Sounds of the Haunted House</i>. Sand contained a tease by Trey&nbsp;of School's Out.&nbsp;Is This What You Wanted&nbsp;was a Phish debut. Page performed Frankenstein on keytar, which was played for the first time since July 1, 2012 (100 shows).</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

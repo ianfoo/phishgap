@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1155,7 +1166,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr id='suzy-greenberg'><td class='song'><a href='../song/suzy-greenberg.html#2009-10-31'>Suzy Greenberg</a><a class='jc-chip' href='../song/suzy-greenberg.html#2009-10-31'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-08-13.html'>2009-08-13</a></span><span class='venue'>Darien Lake Performing Arts Center</span><span class='place'>Darien Center, NY</span></td><td class='bar' data-tip='5 shows; usually 3 to 15'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:36.62%'></span></span></td><td class='n' data-tip='5 shows; usually 3 to 15'><span class='cap'>Gap</span><span class='gap small'>5</span><span class='typ'>med 5</span><span class='sr'>5 shows; usually 3 to 15</span></td></tr>
 </tbody></table><div class='notes'>This show was part of the three-show <a href="http://www.phish.com/festival8">Festival 8</a>. Playbills were distributed on-site (beginning at 12:30 p.m., 8 hours in advance) confirming that the second set (the band's "musical costume") would be the Rolling Stones' <em>Exile on Main St</em>. After Divided Sky, Trey acknowledged the beauty of the venue and announced that Page would now play a love song to the lawn since it was the first time they had played on grass in a long time. Antelope's lyrics were changed to  "Been you to have any Coil, man?" (The Coil was an art installation on the venue grounds.) Set 2 began with a video highlighting selections of the 99 classic albums displayed and then systematically eliminated on the phish.com web site leading up to the festival. Selections in the montage included snippets from Michael Jackson's <em>Thriller</em>, T.Rex's <em>Electric Warrior</em>, Metallica's <em>Master of Puppets</em>, Miles Davis's <em>A Tribute to Jack Johnson</em>, Fleetwood Mac's <em>Rumours</em> and The Doors (self titled), among others. All of the <em>Exile on Main St</em> songs were Phish debuts, except for <a href="http://phish.net/song/loving-cup">Loving Cup</a> and <a href="http://phish.net/song/sweet-virginia">Sweet Virginia</a>. All songs in the second set except for Casino Boogie, Torn and Frayed, and I Just Want To See His Face featured Dave Guy on trumpet, David Smith on trombone, and Tony Jarvis on saxophone. Tumbling Dice, Sweet Virginia, and Loving Cup through Soul Survivor also featured Sharon Jones and Saundra Williams on backup vocals. Trey introduced the horn section after Tumbling Dice and again after the completion of the costume, before saying "We are the Rolling Stones. See you later." Suzy Greenberg was played with Jones, Williams, and the horns. This show featured the first Sweet Virginia since September 26, 1999 (175 shows).</div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

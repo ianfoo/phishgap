@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1145,7 +1156,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='big-black-furry-creature-from-mars'><td class='song'><a href='../song/big-black-furry-creature-from-mars.html#2026-07-22'>Big Black Furry Creature from Mars</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2024-08-09.html'>2024-08-09</a></span><span class='venue'>Bethel Woods Center for the Arts</span><span class='place'>Bethel, NY</span></td><td class='bar' data-tip='88 shows; usually 17 to 49'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:82.01%'></span></span></td><td class='n' data-tip='88 shows; usually 17 to 49'><span class='cap'>Gap</span><span class='gap big'>88</span><span class='typ'>med 29</span><span class='verdict overdue at-gap'>overdue</span><span class='sr'>88 shows; usually 17 to 49</span></td></tr>
 <tr id='run-like-an-antelope'><td class='song'><a href='../song/run-like-an-antelope.html#2026-07-22'>Run Like an Antelope</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2026-07-18.html'>2026-07-18</a></span><span class='venue'>Merriweather Post Pavilion</span><span class='place'>Columbia, MD</span></td><td class='bar' data-tip='2 shows; usually 4 to 9'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:16.27%'></span></span></td><td class='n' data-tip='2 shows; usually 4 to 9'><span class='cap'>Gap</span><span class='gap small'>2</span><span class='typ'>med 6</span><span class='verdict premature at-gap'>premature</span><span class='sr'>2 shows; usually 4 to 9</span></td></tr>
 </tbody></table><div class='notes'><p>This show was Phish's 92nd performance at Madison Square Garden, featured a setlist comprised entirely of songs from the 1992 era of the band, included the return of long dormant antics from that time (trampolines in Mike's Song and bicycle kicks during I Am Hydrogen), and featured Trey wearing a sleeveless shirt (a common occurrence in 1992). This show also featured multiple bustouts: Glide (last played <a href="https://phish.net/setlists/phish-august-31-2021-shoreline-amphitheatre-mountain-view-ca-usa.html">August 31, 2021</a>, or 225 shows), Cold as Ice (last played <a href="https://phish.net/setlists/phish-may-18-1992-the-flynn-theatre-burlington-vt-usa.html">May 18, 1992</a>, or 1,468 shows), Love You (last played <a href="https://phish.net/setlists/phish-july-16-2016-gorge-amphitheatre-george-wa-usa.html">July 16, 2016</a>, or 382 shows), Hold Your Head Up (last played <a href="https://phish.net/setlists/phish-july-29-2023-madison-square-garden-new-york-ny-usa.html">July 29, 2023</a>, or 135 shows), and The Vibration of Life (last played <a href="https://phish.net/setlists/phish-november-19-1996-municipal-auditorium-kansas-city-mo-usa.html">November 19, 1996</a>, or 1,027 shows). Hold Your Head Up featured Fish on vacuum and a "GOOAAAALLL" announcement from Trey. Reba did not contain the whistling ending. My Friend, My Friend did not include the "Myfe"ending and contained The Well teases. Page teased the theme from <i>Speed Racer</i> in The Lizards. Harry Hood was aborted and quickly restarted.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-25</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

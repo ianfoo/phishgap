@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1143,7 +1154,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='silent-in-the-morning'><td class='song'><a href='../song/silent-in-the-morning.html#2014-08-30'>Silent in the Morning</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2014-07-20.html'>2014-07-20</a></span><span class='venue'>FirstMerit Bank Pavilion at Northerly Island</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='10 shows; usually 3 to 10'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:67.65%'></span></span></td><td class='n' data-tip='10 shows; usually 3 to 10'><span class='cap'>Gap</span><span class='gap small'>10</span><span class='typ'>med 6</span><span class='sr'>10 shows; usually 3 to 10</span></td></tr>
 <tr id='fluffhead'><td class='song'><a href='../song/fluffhead.html#2014-08-30'>Fluffhead</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2014-08-03.html'>2014-08-03</a></span><span class='venue'>Verizon Wireless Amphitheatre at Encore Park</span><span class='place'>Alpharetta, GA</span></td><td class='bar' data-tip='2 shows; usually 3 to 10'><span class='track'><span class='band'></span><span class='mid'></span><span class='at early' style='left:23.74%'></span></span></td><td class='n' data-tip='2 shows; usually 3 to 10'><span class='cap'>Gap</span><span class='gap small'>2</span><span class='typ'>med 4</span><span class='verdict premature at-gap'>premature</span><span class='sr'>2 shows; usually 3 to 10</span></td></tr>
 </tbody></table><div class='notes'><p>The second set was preceded by Call to the Post teases. Down with Disease contained What&#39;s the Use? teases and was unfinished. Trey teased Streets of Cairo in Carini. Following The Horse, the band acted as if the show was over&nbsp;before starting to play Silent in the Morning. Trey then explained that by pretending to not play Silent and end the show, they were making a joke, given their not playing The Horse to precede Silent in recent versions.&nbsp;Having to explain this &quot;joke&quot; prompted Trey to tell the story of performing In A&nbsp;Hole back in the 1980s. Fish suggested they play In A Hole, but Trey said he could not remember it. He agreed to sing the chorus, however, and sang part of it briefly (emphasizing&nbsp;the pun on the &quot;a hole&quot; lyric)&nbsp;while Fish and Page played a small&nbsp;part of the music of the song&#39;s chorus. &quot;It&#39;s just as funny as it was 30 years ago,&quot; Page noted. &quot;Thank you for laughing.&quot; Fluffhead contained a Dave&#39;s Energy Guide tease.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

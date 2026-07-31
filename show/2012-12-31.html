@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1152,7 +1163,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='driver'><td class='song'><a href='../song/driver.html#2012-12-31'>Driver</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2012-07-08.html'>2012-07-08</a></span><span class='venue'>Saratoga Performing Arts Center</span><span class='place'>Saratoga Springs, NY</span></td><td class='bar' data-tip='17 shows; usually 8 to 43, but 3 of its last 9 gaps ran 42 or longer'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:40.37%'></span></span></td><td class='n' data-tip='17 shows; usually 8 to 43, but 3 of its last 9 gaps ran 42 or longer'><span class='cap'>Gap</span><span class='gap small'>17</span><span class='typ'>med 17</span><span class='sr'>17 shows; usually 8 to 43, but 3 of its last 9 gaps ran 42 or longer</span></td></tr>
 <tr id='iron-man'><td class='song'><a href='../song/iron-man.html#2012-12-31'>Iron Man</a><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'>2003-12-31</span><span class='venue'>American Airlines Arena</span><span class='place'>Miami, FL</span></td><td class='bar' data-tip='not played in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='not played in 10 years, so there is no usual range to place this gap against'><span class='cap'>Gap</span><span class='gap big'>192</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span><span class='sr'>not played in 10 years, so there is no usual range to place this gap against</span></td></tr>
 </tbody></table><div class='notes'>This show featured the floor and stage covered with artificial turf (numerous plants also dotted the stage). Prior to the show, actors played garden sports including croquet, badminton, and mini-golf, while a few more &quot;sunbathed&quot; on a riser behind the stage. During the first setbreak, golfers came on stage and hit soft golf balls into the crowd. &nbsp;Light contained an Auld Lang Syne tease. &nbsp;You Enjoy Myself contained a Birds of a Feather tease. &nbsp;Trey, Page and Mike came out for the third set in golf carts and began hitting golf balls into the crowd. Fish&nbsp;then arrived on a golf cart wearing donut pants and shirt, an argyle vest, and a golf hat. &nbsp;Golf carts were brought back on stage during Kung, then began racing past the stage periodically during Chalk Dust. During the Chalk Dust jam, golfers began getting out of the carts, hitting balls into the crowd and dancing on stage. &nbsp;One of the golfers did the New Year&#39;s countdown from on top of a cart. &nbsp;Auld Lang Syne was accompanied by balloons dropping from the ceiling and ping pong balls fired from cannons. &nbsp;Tweezer Reprise featured Carrie Manolakos on vocals and a number of backup singers. The remainder of the third set and encore featured song titles focusing on a golf theme. Wilson was preceded by an animated Wilson golf ball on the venue&#39;s jumbotrons. Iron Man was preceded by Page coming to the front of the stage to wish the crowd Happy New Year and reference the start of the 30th year of Phish. In an apparent reference to Bob Hope, Page wore a blazer, USS Nimitz ball cap and carried a golf club. Driver was stopped and restarted.This show featured the Phish debuts of Garden Party and Fly Like an Eagle, the first full Phish performance of Iron Man (which was last played December 31, 2003, or 192 shows), and the first ever <em>a cappella</em> Lawn Boy.</div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

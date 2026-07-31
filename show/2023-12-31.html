@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1152,7 +1163,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='first-tube'><td class='song'><a href='../song/first-tube.html#2023-12-31'>First Tube</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-10-10.html'>2023-10-10</a></span><span class='venue'>Ervin J. Nutter Center, Wright State University</span><span class='place'>Dayton, OH</span></td><td class='bar' data-tip='7 shows; usually 2 to 9'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:57.67%'></span></span></td><td class='n' data-tip='7 shows; usually 2 to 9'><span class='cap'>Gap</span><span class='gap small'>7</span><span class='typ'>med 4</span><span class='sr'>7 shows; usually 2 to 9</span></td></tr>
 <tr id='tweezer-reprise'><td class='song'><a href='../song/tweezer-reprise.html#2023-12-31'>Tweezer Reprise</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-10-15.html'>2023-10-15</a></span><span class='venue'>United Center</span><span class='place'>Chicago, IL</span></td><td class='bar' data-tip='3 shows; usually 2 to 7'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:40.35%'></span></span></td><td class='n' data-tip='3 shows; usually 2 to 7'><span class='cap'>Gap</span><span class='gap small'>3</span><span class='typ'>med 4</span><span class='sr'>3 shows; usually 2 to 7</span></td></tr>
 </tbody></table><div class='notes'><p>Tube contained teases of the theme from <em>The Mary Tyler Moore Show</em>. Harpua was unfinished and contained a Vibration of Life tease. During the Harpua narration, Trey talked about some of the Harpuas and Phish shows at Madison Square Garden of the past 40 years, and a bed appeared from beneath the front of the stage with an actor playing Jimmy and a puppet version of Poster Nutbag. Trey then interrupted the song before the &quot;I want a dog&quot; lyric and said Jimmy had lacked a strong female influence over the years and introduced actress Annie Golden as Jimmy&#39;s grandmother. While consoling Jimmy, she told him it was time to tell the truth about the owner of Harpua. After telling Jimmy that the old man had given the puppet to Esther and helped Jimmy&#39;s cousin Reba make liquid meat, a vinyl record (with a rhombus on the cover) was brought forth and Jimmy&#39;s grandmother said &quot;it&#39;s time... it&#39;s New Year&#39;s Eve and I can&#39;t let you ring another new year without knowing the real story of Gamehendge!&quot; leading into The Man Who Stepped Into Yesterday and a glowing rhombus rising to frame the entire stage. The band then began the first performance of the Gamehendge saga since July 8, 1994 (1,194 shows), with Golden and Trey providing the narration and performers acting out the parts of Colonel Forbin, Rutherford, the AC/DC Bag, Tela, Errand Wolfe (later billed in post show credits as &quot;The Wolf&quot;), and the Sloth. The Man Who Stepped Into Yesterday, The Lizards, Tela, Wilson, Divided Sky, Colonel Forbin&#39;s Ascent, Fly Famous Mockingbird, and Split Open and Melt featured an off-stage backing chorus. The multi-beast and McGrupp were also performed by puppets. Tela performed acrobatics on wires during her song, with Jo Lampert (as the Wolf) providing additional vocals during Wilson. The Sloth&#39;s lyrics were changed to &quot;I&#39;m squeezing that Charmin. Thank you Mr. Whipple. I&#39;m still squeezing that Charmin. Thank you Mr. Whipple.&quot; Colonel Forbin ascended the rhombus during Colonel Forbin&#39;s Ascent (which had lyrics changed to &quot;weary body&quot;), and a large Famous Mockingbird puppet (with a top hat) flew over the crowd during Fly Famous Mockingbird, which also featured Annie Golden on additional vocals. Before Melt, Trey asked Jimmy&#39;s grandmother if she knew that the mountain was a volcano, and the Lizards reappeared to dance to the ensuing Melt jam, eventually leaving the stage one by one as the rhombus was lowered again.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

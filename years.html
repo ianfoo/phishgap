@@ -723,10 +723,21 @@ a.ax-row:hover .ax-date{color:var(--hot-text);border-bottom-color:var(--hot-text
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
@@ -1033,7 +1044,9 @@ them before 1992, so a year short of its own count says so under its figures
 <section class='yb' id='y1984'><h2 class='yh'><span class='y'>1984</span><span class='n'>3 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>9</b> songs</dd></div><div><dt>In rotation</dt><dd><b>19</b> songs</dd></div><div><dt>Median song</dt><dd>new</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><span>Can’t You Hear Me Knocking<b>3</b></span><a href='./song/makisupa-policeman.html'>Makisupa Policeman<b>2</b></a><span>In the Midnight Hour<b>2</b></span><span>Wild Child<b>2</b></span><span>Bertha<b>2</b></span></div></div><div class='fact'><h3>Only in 1984</h3><div class='chips'><span>Spanish Flea<b>1</b></span><span>St. Stephen<b>1</b></span></div></div></section>
 <section class='yb' id='y1983'><h2 class='yh'><span class='y'>1983</span><span class='n'>2 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>8</b> songs</dd></div><div><dt>In rotation</dt><dd><b>8</b> songs</dd></div><div><dt>Median song</dt><dd>new</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><p class='part'>Running order known for 1 of these 2 nights; the figures above are what those 1 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><span>Long Cool Woman in a Black Dress<b>1</b></span><span>Proud Mary<b>1</b></span><span>In the Midnight Hour<b>1</b></span><span>Squeeze Box<b>1</b></span><span>Roadhouse Blues<b>1</b></span></div></div><div class='fact'><h3>Only in 1983</h3><div class='chips'><span>Roadhouse Blues<b>1</b></span><span>Squeeze Box<b>1</b></span></div></div></section>
 </main>
-<footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="./method.html">How this works</a></span>
+<span><a href="./acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-31</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div></body></html>

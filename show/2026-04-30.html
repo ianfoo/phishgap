@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1136,7 +1147,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='the-sloth'><td class='song'><a href='../song/the-sloth.html#2026-04-30'>The Sloth</a><a class='jc-chip' href='../song/the-sloth.html#2026-04-30'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2023-12-31.html'>2023-12-31</a></span><span class='venue'>Madison Square Garden</span><span class='place'>New York, NY</span></td><td class='bar' data-tip='98 shows; usually 13 to 56'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:81.22%'></span></span></td><td class='n' data-tip='98 shows; usually 13 to 56'><span class='cap'>Gap</span><span class='gap big'>98</span><span class='typ'>med 27</span><span class='verdict overdue at-gap'>overdue</span><span class='sr'>98 shows; usually 13 to 56</span></td></tr>
 <tr id='the-squirming-coil'><td class='song'><a href='../song/the-squirming-coil.html#2026-04-30'>The Squirming Coil</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-09-16.html'>2025-09-16</a></span><span class='venue'>Ameris Bank Amphitheatre</span><span class='place'>Alpharetta, GA</span></td><td class='bar' data-tip='18 shows; usually 6 to 20'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:63.71%'></span></span></td><td class='n' data-tip='18 shows; usually 6 to 20'><span class='cap'>Gap</span><span class='gap small'>18</span><span class='typ'>med 11.5</span><span class='sr'>18 shows; usually 6 to 20</span></td></tr>
 </tbody></table><div class='notes'><p>As the show began, the view was from inside a cabin with windows on all four walls. The room began to spin, and accompanied by recorded sound effects, the visuals eventually blurred into multicolored streaks, finally resolving into a turntable. Once the needle dropped on the record, Trey began The Wedge. Among the visuals for Halfway to the Moon was the Colosseum, but built out of port-a-potties. During Golgi Apparatus, a camerman came on stage for close-ups of each band member as they played, projecting the image as a kaleidoscope across the dome. Trey teased The Secret of Life (The Dead Milkmen) in A Wave of Hope. The scene for Runaway Jim began by looking out at Las Vegas and the Sphere. Turning upside down and zooming in on a "Phish Hotel," the view passed through the peephole of the front door and into a surreal museum and library filled with odd sculptures, flying bowling pins, and toilets. After passing through several rooms, the view reached a door which opened and closed to reveal a variety of scenes, until finally backing out of the museum and returning to the Las Vegas strip. The Sloth contained alternate lyrics referencing the three songs (Fee, The Sloth, and Punch You In the Eye) which reference nipple slicing, all of which had been played during the Sphere run, and during none of which did Trey appear to have sung the traditional "nipple" lyrics. For the outro to The Squirming Coil, the view was a drive-in theater with video of the band playing as the movie. When the song reached the final chorus, suddenly only four cars remained. As each band member stopped playing and walked off stage, a corresponding car drove away.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

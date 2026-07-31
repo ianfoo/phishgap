@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1144,7 +1155,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='also-sprach-zarathustra'><td class='song'><a href='../song/also-sprach-zarathustra.html#2014-07-16'>Also Sprach Zarathustra</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2014-07-08.html'>2014-07-08</a></span><span class='venue'>The Mann Center for the Performing Arts</span><span class='place'>Philadelphia, PA</span></td><td class='bar' data-tip='6 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:65.31%'></span></span></td><td class='n' data-tip='6 shows; usually 2 to 6'><span class='cap'>Gap</span><span class='gap small'>6</span><span class='typ'>med 4</span><span class='sr'>6 shows; usually 2 to 6</span></td></tr>
 <tr id='possum'><td class='song'><a href='../song/possum.html#2014-07-16'>Possum</a><a class='jc-chip' href='../song/possum.html#2014-07-16'>Jam chart</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2014-07-13.html'>2014-07-13</a></span><span class='venue'>Randall&#x27;s Island</span><span class='place'>New York, NY</span></td><td class='bar' data-tip='1 show; usually 1 to 3'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:32.91%'></span></span></td><td class='n' data-tip='1 show; usually 1 to 3'><span class='cap'>Gap</span><span class='gap small'>1</span><span class='typ'>med 2</span><span class='sr'>1 show; usually 1 to 3</span></td></tr>
 </tbody></table><div class='notes'><p>Trey teased Streets of Cairo in Stealing Time. 46 Days&nbsp;included a&nbsp;Fuego tease. Weekapaug was&nbsp;unfinished. Possum included a 2001 tease from Trey.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1144,7 +1155,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='sleeping-monkey'><td class='song'><a href='../song/sleeping-monkey.html#2021-10-30'>Sleeping Monkey</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-08-01.html'>2021-08-01</a></span><span class='venue'>Ameris Bank Amphitheatre</span><span class='place'>Alpharetta, GA</span></td><td class='bar' data-tip='30 shows; usually 9 to 31'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:68.31%'></span></span></td><td class='n' data-tip='30 shows; usually 9 to 31'><span class='cap'>Gap</span><span class='gap small'>30</span><span class='typ'>med 14.5</span><span class='sr'>30 shows; usually 9 to 31</span></td></tr>
 <tr id='possum'><td class='song'><a href='../song/possum.html#2021-10-30'>Possum</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2021-10-16.html'>2021-10-16</a></span><span class='venue'>Chase Center</span><span class='place'>San Francisco, CA</span></td><td class='bar' data-tip='9 shows; usually 1 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:78.52%'></span></span></td><td class='n' data-tip='9 shows; usually 1 to 6'><span class='cap'>Gap</span><span class='gap small'>9</span><span class='typ'>med 3</span><span class='verdict overdue at-gap'>overdue</span><span class='sr'>9 shows; usually 1 to 6</span></td></tr>
 </tbody></table><div class='notes'>The songs in this show were based on animals. Big Black Furry Creature From Mars and Harpua contained Little Squirrel quotes. Shaggy Dog was played for the first time since June 22, 2012 (332 shows). I Am The Walrus was played for the first time since July 29, 2017 (131 shows). and featured Little Squirrel and Shipwreck quotes. Runaway Jim was unfinished and included a Hey, Ho, Nobody Home tease from Trey. Harpua was performed for the first time since July 30, 2017 (130 shows) and featured Carini, Your Pet Cat, and If 6 Was 9 quotes as well as This Jesus Must Die scatting from Trey. Part of Harpua was spoken in French by Page and Mike.</div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

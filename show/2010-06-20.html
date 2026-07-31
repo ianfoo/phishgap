@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1140,7 +1151,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr id='frankenstein'><td class='song'><a href='../song/frankenstein.html#2010-06-20'>Frankenstein</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-12-30.html'>2009-12-30</a></span><span class='venue'>American Airlines Arena</span><span class='place'>Miami, FL</span></td><td class='bar' data-tip='9 shows; usually 3 to 16'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:48.32%'></span></span></td><td class='n' data-tip='9 shows; usually 3 to 16'><span class='cap'>Gap</span><span class='gap small'>9</span><span class='typ'>med 7</span><span class='sr'>9 shows; usually 3 to 16</span></td></tr>
 </tbody></table><div class='notes'>In what is becoming a Father&#39;s Day tradition (see 6/21/09), the show-opening Brother featured the band members&#39; children jumping into a&nbsp;bathtub on stage, followed by Trey introducing each of them and wishing everyone a Happy Father&#39;s Day. Gotta Jibboo was preceded by a &quot;Charge!&quot; tease from Page and&nbsp;featured&nbsp;Tony Markellis on bass and Mike on a second guitar. In Antelope, &quot;Marco Esquandolas&quot; was changed to &quot;Mike-O Esquandolas,&quot; followed by a Mike solo. The end of Wilson contained a Dixie tease from Trey. In place of a traditional Makisupa keyword, Trey improvised verses that set up solos for Mike, then Fish, then Page. The subsequent Piper intro included repeated phrases from the Makisupa (&quot;Policeman,&quot; &quot;House,&quot; and &quot;Listen to Mike&quot;).&nbsp;Trey quoted Whole Lotta Love in the vocal jam of YEM. Page performed Frankenstein on keytar.</div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

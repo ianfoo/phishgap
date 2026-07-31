@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1153,7 +1164,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr id='space-oddity'><td class='song'><a href='../song/space-oddity.html#2016-10-31'>Space Oddity</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2016-08-26.html'>2016-08-26</a></span><span class='venue'>Oak Ridge Farm</span><span class='place'>Arrington, VA</span></td><td class='bar' data-tip='played 3 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 3 times in 10 years, so there is no usual range to place this gap against'><span class='cap'>Gap</span><span class='gap small'>17</span><span class='typ'><span class='full'>3 in 10 yr</span><span class='abbr'>3/10y</span></span><span class='sr'>played 3 times in 10 years, so there is no usual range to place this gap against</span></td></tr>
 </tbody></table><div class='notes'><p>Carini and Antelope featured lyrics altered to reference Trey&#39;s shirt.&nbsp;Trey teased Martian Monster in Free and Undermind in Possum. The second set &quot;musical costume&quot; was David Bowie&#39;s <em>The Rise and Fall of Ziggy Stardust and the Spiders From Mars</em>.&nbsp;All of the songs in the second set were Phish debuts. Five Years, Soul Love, Moonage Daydream, Starman, and Rock &#39;n&#39; Roll Suicide featured a string sextet comprised of Sylvia D&#39;Avanzo (violin), Alisa Horn (cello), Todd Low (viola), Antoine Silverman (violin), Alissa Smith (viola), and Hiroko Taguchi (violin). All the songs in the second set other than Five Years, Lady Stardust, and Ziggy Stardust featured Jennifer Hartswick, Celisse Henderson and Jo Lampert on backing vocals. Trey played acoustic guitar on Five Years, Soul Love, Starman, and Lady Stardust. Trey did not play guitar (but contributed lead vocals) on It Ain&#39;t Easy and Rock &#39;n&#39; Roll Suicide. Page did not play keyboards (but contributed lead vocals) on Ziggy Stardust. Carmel Dean arranged the all of the vocals and strings in the second set.&nbsp;Twist featured Trey on Marimba Lumina&nbsp;and Mike and Page on percussion. Also Sprach Zarathustra contained Fame quotes from Trey.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

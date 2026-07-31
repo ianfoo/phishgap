@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1139,7 +1150,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr id='cinnamon-girl'><td class='song'><a href='../song/cinnamon-girl.html#2017-07-29'>Cinnamon Girl</a><span class='verdict bustout'>bustout</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'>1997-07-31</span><span class='venue'>Shoreline Amphitheatre</span><span class='place'>Mountain View, CA</span></td><td class='bar' data-tip='not played in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='not played in 10 years, so there is no usual range to place this gap against'><span class='cap'>Gap</span><span class='gap big'>631</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span><span class='sr'>not played in 10 years, so there is no usual range to place this gap against</span></td></tr>
 </tbody></table><div class='notes'><p>This show was night seven of Phish&#39;s Baker&#39;s Dozen run at Madison Square Garden and consisted of a cinnamon donut theme. Donuts with a cinnamon glaze were&nbsp;given to fans arriving at the venue. Approximately ten minutes before lights, a voice came over the PA, reproducing some of the phrases spoken at Woodstock over the PA concerning &quot;brown acid,&quot; only substituting &quot;donuts&quot; for acid: &quot;. . .to get back to the warning that I received, you may take it with how many, however many grains of salt you wish, that the brown donuts that are circulating around us&nbsp;are not specifically too good.&nbsp;It&#39;s suggested that you do stay from the brown donuts. Of course, it&#39;s your own trip, so be my guest, but please be advised that there is a warning on that one, ok? Do not eat the brown donuts. Lewis Pittman, Lewis Pittman, your brother is at the WaterWheel table.&quot; &nbsp;I Am the Walrus included Shipwreck, The Unsafe Bridge, The Birds,&nbsp;Your Pet Cat,&nbsp;Martian Monster, and Runnin&#39; with the Devil quotes. Dirt and There is a Mountain&nbsp;were&nbsp;teased in Harry Hood. Cinnamon Girl was last performed on July 31, 1997&nbsp;(631 shows).</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

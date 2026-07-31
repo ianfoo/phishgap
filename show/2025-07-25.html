@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1136,7 +1147,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='loving-cup'><td class='song'><a href='../song/loving-cup.html#2025-07-25'>Loving Cup</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-07-09.html'>2025-07-09</a></span><span class='venue'>Jerome Schottenstein Center</span><span class='place'>Columbus, OH</span></td><td class='bar' data-tip='10 shows; usually 5 to 17'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:46.78%'></span></span></td><td class='n' data-tip='10 shows; usually 5 to 17'><span class='cap'>Gap</span><span class='gap small'>10</span><span class='typ'>med 10</span><span class='sr'>10 shows; usually 5 to 17</span></td></tr>
 <tr id='run-like-an-antelope'><td class='song'><a href='../song/run-like-an-antelope.html#2025-07-25'>Run Like an Antelope</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2025-07-16.html'>2025-07-16</a></span><span class='venue'>TD Pavilion at the Mann</span><span class='place'>Philadelphia, PA</span></td><td class='bar' data-tip='6 shows; usually 3 to 9'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:49.71%'></span></span></td><td class='n' data-tip='6 shows; usually 3 to 9'><span class='cap'>Gap</span><span class='gap small'>6</span><span class='typ'>med 5</span><span class='sr'>6 shows; usually 3 to 9</span></td></tr>
 </tbody></table><div class='notes'><p>Following Lawn Boy, Trey introduced Page as "The Chairman of the Mound." This show was officially released as part of the <i>Live in Saratoga Springs 2025</i> digital box set.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1138,7 +1149,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='brief-time'><td class='song'><a href='../song/brief-time.html#2026-04-17'>Brief Time</a></td><td class='last'><span class='cap'>Last performed</span><span class='none'>debut</span></td><td class='bar'></td><td class='n'><span class='cap'>Gap</span><span class='gap none'>&mdash;</span><span class='typ'><span class='full'>0 in 10 yr</span><span class='abbr'>0/10y</span></span></td></tr>
 <tr id='carini'><td class='song'><a href='../song/carini.html#2026-04-17'>Carini</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2026-01-30.html'>2026-01-30</a></span><span class='venue'>Moon Palace</span><span class='place'>Cancun, Quintana Roo</span></td><td class='bar' data-tip='2 shows; usually 2 to 6'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:31.57%'></span></span></td><td class='n' data-tip='2 shows; usually 2 to 6'><span class='cap'>Gap</span><span class='gap small'>2</span><span class='typ'>med 4</span><span class='sr'>2 shows; usually 2 to 6</span></td></tr>
 </tbody></table><div class='notes'><p>This show featured the Phish debut of Brief Time. Prior to the start of the show, the backdrop showed a dark forest setting with an outhouse bearing the crescent moon and star from the cover of <i>Farmhouse</i>. As the show began, the door swung open, revealing a vast landscape of buildings and bridges, all made out of port-a-potties, with hundreds of other port-a-potties floating in the air. Martian Monster's imagery was a nod to October 31, 2014's <i>Chilling, Thrilling Sounds of the Haunted House </i>Halloween set with the haunted house reappearing and opening up to reveal the band playing within its walls. During Divided Sky, the scene became blue sky and fluffy clouds above a mountainous terrain; following the pause, the images became fractalized and began to move. Trey teased Your Pet Cat in Mull. The backdrop for Suzy Greenberg became an 80's-style video game called "Tube Raider," appearing to be played in the night sky over Las Vegas. At the end of the song, the screen displayed "Game Over" along with video game avatars of the band. For Mike's Song, the background showed a lakeshore in front of a mountain range, with lighted, moving sculptures reflecting off the water's surface. During I Am Hydrogen, the view changed to a lush valley with a waterfall centered behind the band, then returned to focus on the lighted sculptures again during Weekapaug Groove. The backdrop for Beneath a Sea of Stars Part 1 was a dark forest at night, populated by animals with glowing eyes, as well as glowing fish swimming through the trees, and eventually glowing pink jellyfish which rose into the sky during the jam segment. Eventually the view returned to the forest, where peacocks displayed glowing tails amid numerous fish, until the entire perspective was swallowed by a whale.</p></div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

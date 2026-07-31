@@ -686,10 +686,21 @@ td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim);display:flex;justify-content:space-between;
-   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -1143,7 +1154,9 @@ footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 <tr id='bike'><td class='song'><a href='../song/bike.html#2009-06-18'>Bike</a><span class='seg'>&gt;</span></td><td class='last'><span class='cap'>Last performed</span><span class='date'>2000-09-12</span><span class='venue'>Tweeter Center</span><span class='place'>Mansfield, MA</span></td><td class='bar' data-tip='played 3 times in 10 years, so there is no usual range to place this gap against'><span class='no-range' aria-hidden='true'>&mdash;</span></td><td class='n' data-tip='played 3 times in 10 years, so there is no usual range to place this gap against'><span class='cap'>Gap</span><span class='gap big'>95</span><span class='typ'><span class='full'>3 in 10 yr</span><span class='abbr'>3/10y</span></span><span class='sr'>played 3 times in 10 years, so there is no usual range to place this gap against</span></td></tr>
 <tr id='loving-cup'><td class='song'><a href='../song/loving-cup.html#2009-06-18'>Loving Cup</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2009-06-09.html'>2009-06-09</a></span><span class='venue'>Asheville Civic Center</span><span class='place'>Asheville, NC</span></td><td class='bar' data-tip='4 shows; usually 3 to 7'><span class='track'><span class='band'></span><span class='mid'></span><span class='at usual' style='left:40.47%'></span></span></td><td class='n' data-tip='4 shows; usually 3 to 7'><span class='cap'>Gap</span><span class='gap small'>4</span><span class='typ'>med 5</span><span class='sr'>4 shows; usually 3 to 7</span></td></tr>
 </tbody></table><div class='notes'>This show featured the first Walk Away since October 5, 2000 (80 shows). Disease was unfinished. After Grind, Trey remarked that Page blew the wrong note on the pitch pipe and had them all singing in the wrong key. They decided to perform another <em>a cappella</em> song and Trey joked that if they couldn&rsquo;t get it right, Fish would sing Bike. Sure enough, Hello My Baby was no better and was aborted. However, true to his word, Trey announced that Fish will now sing Bike. For his part, Fish took the opportunity to welcome everyone to &ldquo;the trainwreck portion of the show.&rdquo; Bike was played for the first time since September 12, 2000 (95 shows).</div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-27</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>
