@@ -420,7 +420,7 @@ header{padding-bottom:.9rem}
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-.dek.foot{margin-top:1.4rem;max-width:64ch}
+
 /* The measurement detail, folded away. Three paragraphs used to stand open
    here: 835px of a 1,147px front matter on a phone, 73% of it, before the
    first due song. And the FAQ already carries 2,930 characters on the same
@@ -652,6 +652,26 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
 
 .prose{max-width:66ch;margin:0 0 2.4rem}
 .prose h2{font-family:'Bagnard',Georgia,serif;font-weight:400;
@@ -1014,7 +1034,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
-</script></head><body><div class="wrap">
+</script></head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -1108,7 +1128,7 @@ true.</dd>
 <dt>Out of rotation</dt><dd>No recent record at all, and gone a hundred shows or
 more. Nobody is expecting it, and ranking these would bury the songs somebody
 might actually shout for tonight &mdash; so they have
-<a href="./dormant.html">a page of their own</a>, grouped by the year they were
+<a href="./out-of-rotation.html">a page of their own</a>, grouped by the year they were
 last heard rather than by a lateness they cannot have.</dd>
 </dl>
 <p>That fourth group is three groups, and the difference matters more than the
@@ -1184,6 +1204,14 @@ provisional.
 <a href="./method.html#when-a-report-appears">The method page says how
 long.</a></p>
 <p class="backtop"><a href="#questions">&uarr; All questions</a></p></div>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a><script>
+(function(){
+  var b=document.getElementById('totop'), h=document.querySelector('header');
+  if(!b||!h||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){ b.hidden=e[0].isIntersecting; },
+    {rootMargin:'-8px 0px 0px 0px'}).observe(h);
+})();
+</script>
 <footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

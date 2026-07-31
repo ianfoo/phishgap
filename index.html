@@ -420,7 +420,7 @@ header{padding-bottom:.9rem}
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-.dek.foot{margin-top:1.4rem;max-width:64ch}
+
 /* The measurement detail, folded away. Three paragraphs used to stand open
    here: 835px of a 1,147px front matter on a phone, 73% of it, before the
    first due song. And the FAQ already carries 2,930 characters on the same
@@ -652,6 +652,26 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
 </style><script>
 (function(){
   // Deliberately not renamed: this is a private key in a reader's own
@@ -886,7 +906,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
-</script></head><body><div class="wrap">
+</script></head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -896,7 +916,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">692 reports &middot; 2009-03-06 &rarr; 2026-07-29</p></header>
 
-<section class="hero hero-c3"><div class='card'><div class='lbl'>Reports</div><div class='num'>692</div></div><a class='card' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></a><a class='card' href='./songs.html'><div class='lbl'>Song Performances</div><div class='num'>14,062</div></a><a class='card' href='./venues.html'><div class='lbl'>Venues</div><div class='num'>153</div></a><a class='card' href='./due.html'><div class='lbl'>Songs Due</div><div class='num hot'>9</div></a></section>
+<section class="hero hero-c4"><div class='card'><div class='lbl'>Reports</div><div class='num'>692</div></div><a class='card' href='./show/2026-07-22.html'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></a><a class='card' href='./venues.html'><div class='lbl'>Venues</div><div class='num'>153</div></a><a class='card' href='./due.html'><div class='lbl'>Songs Due</div><div class='num hot'>9</div></a></section>
 <div class="rule2"></div>
 <div class="tools" id="main" tabindex="-1">
 <div class="tools-main">
@@ -1610,6 +1630,14 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
 <section class='aside'><h2>Also on file</h2><p>Soundchecks, and television and radio sessions. phish.net lists these but does not count them toward a gap, so neither do we &mdash; the figures on their pages describe the entry, not a show the band played.</p><ol><li><a class='ax-row' href='./show/2026-01-27.html'><span class='ax-date'>2026-01-27</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2026-01-28.html'>2026-01-28</a></span></li><li><a class='ax-row' href='./show/2025-01-28.html'><span class='ax-date'>2025-01-28</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2025-01-29.html'>2025-01-29</a></span></li><li><a class='ax-row' href='./show/2024-08-14.html'><span class='ax-date'>2024-08-14</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>The Woodlands, Dover, DE</span></a><span class='for'>for <a href='./show/2024-08-15.html'>2024-08-15</a></span></li><li><a class='ax-row' href='./show/2024-07-17.html'><span class='ax-date'>2024-07-17</span><span class='ax-kind'>session</span><span class='ax-venue'>NPR Headquarters, Washington, DC</span></a></li><li><a class='ax-row' href='./show/2024-07-11.html'><span class='ax-date'>2024-07-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2024-02-20.html'><span class='ax-date'>2024-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2024-02-21.html'>2024-02-21</a></span></li><li><a class='ax-row' href='./show/2022-02-23.html'><span class='ax-date'>2022-02-23</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2022-02-24.html'>2022-02-24</a></span></li><li><a class='ax-row' href='./show/2020-08-11.html'><span class='ax-date'>2020-08-11</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2020-02-19.html'><span class='ax-date'>2020-02-19</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Moon Palace, Cancun, Quintana Roo</span></a><span class='for'>for <a href='./show/2020-02-20.html'>2020-02-20</a></span></li><li><a class='ax-row' href='./show/2019-02-20.html'><span class='ax-date'>2019-02-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2019-02-21.html'>2019-02-21</a></span></li><li><a class='ax-row' href='./show/2017-01-12.html'><span class='ax-date'>2017-01-12</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Barceló Maya Beach, Riviera Maya, Quintana Roo</span></a><span class='for'>for <a href='./show/2017-01-13.html'>2017-01-13</a></span></li><li><a class='ax-row' href='./show/2016-10-10.html'><span class='ax-date'>2016-10-10</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2015-08-20.html'><span class='ax-date'>2015-08-20</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2015-08-21.html'>2015-08-21</a></span></li><li><a class='ax-row' href='./show/2014-07-14.html'><span class='ax-date'>2014-07-14</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Studios, New York, NY</span></a></li><li><a class='ax-row' href='./show/2011-06-30.html'><span class='ax-date'>2011-06-30</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Watkins Glen International, Watkins Glen, NY</span></a><span class='for'>for <a href='./show/2011-07-01.html'>2011-07-01</a></span></li><li><a class='ax-row' href='./show/2011-05-26.html'><span class='ax-date'>2011-05-26</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bethel Woods Center for the Arts, Bethel, NY</span></a><span class='for'>for <a href='./show/2011-05-27.html'>2011-05-27</a></span></li><li><a class='ax-row' href='./show/2010-05-13.html'><span class='ax-date'>2010-05-13</span><span class='ax-kind'>session</span><span class='ax-venue'>NBC Television Studios, Studio 6B, New York, NY</span></a></li><li><a class='ax-row' href='./show/2010-03-15.html'><span class='ax-date'>2010-03-15</span><span class='ax-kind'>session</span><span class='ax-venue'>The Waldorf Astoria, New York, NY</span></a></li><li><a class='ax-row' href='./show/2009-10-29.html'><span class='ax-date'>2009-10-29</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Empire Polo Club, Indio, CA</span></a><span class='for'>for <a href='./show/2009-10-30.html'>2009-10-30</a></span></li><li><a class='ax-row' href='./show/2009-06-11.html'><span class='ax-date'>2009-06-11</span><span class='ax-kind'>soundcheck</span><span class='ax-venue'>Bonnaroo Music &amp; Arts Festival, Manchester, TN</span></a><span class='for'>for <a href='./show/2009-06-12.html'>2009-06-12</a></span></li></ol></section>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a><script>
+(function(){
+  var b=document.getElementById('totop'), h=document.querySelector('header');
+  if(!b||!h||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){ b.hidden=e[0].isIntersecting; },
+    {rootMargin:'-8px 0px 0px 0px'}).observe(h);
+})();
+</script>
 <footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-29</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

@@ -420,7 +420,7 @@ header{padding-bottom:.9rem}
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-.dek.foot{margin-top:1.4rem;max-width:64ch}
+
 /* The measurement detail, folded away. Three paragraphs used to stand open
    here: 835px of a 1,147px front matter on a phone, 73% of it, before the
    first due song. And the FAQ already carries 2,930 characters on the same
@@ -652,6 +652,26 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
 
 .prose{max-width:66ch;margin:0 0 2.4rem}
 .prose h2{font-family:'Bagnard',Georgia,serif;font-weight:400;
@@ -991,7 +1011,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
-</script></head><body><div class="wrap">
+</script></head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -1141,7 +1161,7 @@ written can reach the threshold.</p>
 <p class="backtop"><a href="#sections">&uarr; All sections</a></p>
 <h2 id="rotation">Dormant, rarity, once or twice</h2>
 <p>Songs with no recent record that have been gone a hundred shows or more sit
-<a href="./dormant.html">on their own page</a>, because there is nothing left
+<a href="./out-of-rotation.html">on their own page</a>, because there is nothing left
 to rank them by. For a long time that page called all
 <b class="num">281</b> of them <b>dormant</b>, and for
 <b class="num">174</b> of them that was false. Dormant means a song used to be
@@ -1151,8 +1171,9 @@ exactly once in this archive were played on a Halloween night.</p>
 <p>So the page splits on how many times the band ever played the song:
 <b class="num">8</b> or more and it was in rotation and left, which is
 <span class="verdict">dormant</span>; <b class="num">3</b> to
-<b class="num">7</b> is a <b>rarity</b>, given a run that did not take;
-<b>once or twice</b> and it never got going at all.</p>
+<b class="num">7</b> is a <b>rarity</b>, enough performances to notice and
+never enough to become a habit; <b>once or twice</b> and it never got going at
+all.</p>
 <p>The archive decides where that line goes rather than taste. Take every
 silence of a hundred shows or more it holds &mdash; <b class="num">774</b> of
 them &mdash; group them by how many times the song had been played when it fell
@@ -1179,8 +1200,8 @@ splitting <b>1 / 2&ndash;7 / 8+</b> the three groups return 28%, 55% and 84%,
 while splitting <b>1&ndash;2 / 3&ndash;7 / 8+</b> they return 30%, 65% and 84%.
 Merging widens the gap at the bottom boundary from 27 points to 35 and costs
 nothing at the top. On the evidence, a song played twice and dropped is the
-same object as a song played once and dropped &mdash; which is why the section
-is named for the nights rather than for a count.</p>
+same object as a song played once and dropped &mdash; which is why one heading
+covers both counts rather than a number naming either.</p>
 <p><b>When those few plays happened matters too, but only for the rarities.</b>
 Take how many shows passed per performance, and split at two hundred. A rarity
 whose handful of plays sat close together came back <b class="num">70%</b> of
@@ -1243,6 +1264,14 @@ date, the venue, and that the setlist is still coming in &mdash; so a link
 shared mid-show does not freeze a half-finished number into somebody else's
 timeline.</p>
 <p class="backtop"><a href="#sections">&uarr; All sections</a></p></div>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a><script>
+(function(){
+  var b=document.getElementById('totop'), h=document.querySelector('header');
+  if(!b||!h||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){ b.hidden=e[0].isIntersecting; },
+    {rootMargin:'-8px 0px 0px 0px'}).observe(h);
+})();
+</script>
 <footer><span><a href="./index.html">All reports</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Songs &mdash; Possum Logic</title>
-<meta property="og:type" content="website"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every song in the archive: 589 of them, played 37,169 times."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Songs &mdash; Possum Logic"><meta property="og:description" content="Every song in the archive: 589 of them, played 37,169 times."><meta property="og:url" content="https://possumlogic.com/songs.html"><meta property="og:image" content="https://possumlogic.com/card/songs.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every song in the archive: 589 of them, played 37,169 times."><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every song in the archive: 589 of them, 37,169 performances between them."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Songs &mdash; Possum Logic"><meta property="og:description" content="Every song in the archive: 589 of them, 37,169 performances between them."><meta property="og:url" content="https://possumlogic.com/songs.html"><meta property="og:image" content="https://possumlogic.com/card/songs.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every song in the archive: 589 of them, 37,169 performances between them."><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
@@ -420,7 +420,7 @@ header{padding-bottom:.9rem}
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-.dek.foot{margin-top:1.4rem;max-width:64ch}
+
 /* The measurement detail, folded away. Three paragraphs used to stand open
    here: 835px of a 1,147px front matter on a phone, 73% of it, before the
    first due song. And the FAQ already carries 2,930 characters on the same
@@ -652,6 +652,26 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
 
 /* Fixed, not auto. Every row is its own grid, so a column sized to its own
    contents put "485 shows - median 2 - longest 31 - best 90" and "325 shows -
@@ -664,9 +684,19 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
 .r-stats .score{color:var(--hot-text)}
-/* The song the top score belongs to, under its label. */
+/* Which song the figure above belongs to, under its label. */
 .lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
    text-transform:none;font-size:.75rem}
+/* The inherited arrow lands in the wrong place on this one card, and it is the
+   block that does it: `a.card .lbl::after` appends to the end of the label,
+   and the last thing in this label is a display:block song name, so the arrow
+   opened a line of its own and sat alone under it. Moved onto the name, which
+   is also the more honest target -- the card goes to that song's page, not to
+   a page about longest gaps. `.of` states its own colour, so it does not
+   inherit the label's hover and has to be named again here. */
+a.card .lbl::after{content:none}
+a.card .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card:hover .lbl .of,a.card:hover .lbl .of::after{color:var(--hot-text)}
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr}
   .r-when{white-space:normal}
@@ -905,7 +935,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
-</script></head><body><div class="wrap">
+</script></head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -913,8 +943,8 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <a href="./method.html">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
-<p class="show">589 songs, played 37,169 times</p></header>
-<section class="hero hero-c4"><div class='card'><div class='lbl'>Songs</div><div class='num'>589</div></div><div class='card'><div class='lbl'>Song Performances</div><div class='num'>37,169</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>1,468</div></div><div class='card'><div class='lbl'>Best Rated Version<span class='of'>Ghost</span></div><div class='num'>97</div></div></section>
+<p class="show">589 songs &middot; 37,169 performances between them</p></header>
+<section class="hero hero-c3"><div class='card'><div class='lbl'>Songs</div><div class='num'>589</div></div><div class='card'><div class='lbl'>Song Performances</div><div class='num'>37,169</div></div><a class='card' href='./song/cold-as-ice.html'><div class='lbl'>Longest Gap<span class='of'>Cold as Ice, tied with Gone</span></div><div class='num hot'>1,468</div></a></section>
 <div class="rule2"></div>
 <div class="tools" id="main" tabindex="-1">
 <label class="count" for="sort">Sort
@@ -1521,6 +1551,14 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <li data-song="Ziggy Stardust" data-played='1' data-last='2016-10-31' data-longest='' data-score='' data-search="ziggy stardust"><a class='row' href='./song/ziggy-stardust.html'><span class='r-song'>Ziggy Stardust</span><span class='r-when'>last <b>2016-10-31</b></span><span class='r-stats'><span class='st'><b>1</b> show</span><span class='st'></span><span class='st'></span><span class='st'></span></span></a></li>
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a><script>
+(function(){
+  var b=document.getElementById('totop'), h=document.querySelector('header');
+  if(!b||!h||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){ b.hidden=e[0].isIntersecting; },
+    {rootMargin:'-8px 0px 0px 0px'}).observe(h);
+})();
+</script>
 <footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-29</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
