@@ -1932,6 +1932,16 @@ preference predates the review — his call, not the reviewer's.
   references, still one 13 KB inlined face, still no `grain.png`. The exception
   was never minor — it is nearly all the text.
 
+  **And "only the wordmark survives offline", above, is itself wrong** — I wrote
+  it into the README before measuring and had to take it back. Nothing survives.
+  `inline_font_css()` has one caller, `render_html(..., sheet=None)`, which
+  serves `--html` and `--pdf` alike, and the show sheet `CSS` references Bagnard
+  in exactly **one** rule, `.live b` — the banner on a show still being played.
+  A settled show's single-file output has no `.live` element, no wordmark, and
+  an `h1` deliberately set in Plex Mono (`/* The date, not the wordmark */`).
+  So the 17,372 bytes of inlined face — **19.0% of a 91,288-byte file** — paint
+  zero glyphs in the case the feature exists for. See §3d.
+
 ## 3c. Song page front matter — Ian's live review, 2026-07-28. DONE
 
 All four items landed. The block above the statistics is now three things —

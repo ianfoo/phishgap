@@ -154,9 +154,11 @@ The file is one document — CSS, scripts, the favicon and the three source
 badges are inlined, and so is Bagnard, as a 13 KB `data:font/otf`. It is not
 self-contained: three references to Google's font hosts fetch IBM Plex Mono and
 Literata. Since `body` is Plex Mono site-wide, essentially every word depends on
-the network, and offline only the wordmark keeps its face — the rest falls back
-to the system monospace and Georgia. There is no paper grain either: the grain
-lives in `fonts.css`, and this path emits the inline face instead of the sheet.
+the network; offline the page falls back to the system monospace and Georgia.
+The inlined face buys nothing on a settled show — the only show-page rule that
+asks for Bagnard is `.live b`, which appears only while a show is being played.
+There is no paper grain either: the grain lives in `fonts.css`, and this path
+emits the inline face instead of the sheet.
 
 ## Publishing
 
