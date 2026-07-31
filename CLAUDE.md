@@ -26,7 +26,11 @@ when the second page wanted it rather than copied; `DORMANT_CSS` came out
 byte-identical, which is the check to run when extracting another. `NAV_CSS`
 is the whole nav strip and replaced `NAV_HIT_CSS`: the four near-identical
 `.crumb{…}` rules are gone, and the show sheet keeps only what is genuinely
-its own — the pager row and a margin. **Everything else is still copied**:
+its own — the pager row and a margin. **The markup is one function too**,
+`nav_strip()`, after nine hand-written copies left every show and song page —
+1,301 of 1,309 — marking no current location at all while the other eight
+marked themselves. A nav in nine copies is nine chances to be inconsistent
+about the one thing a nav must be right about. **Everything else is still copied**:
 32–46 rules repeat pairwise, and the near-miss `.hero{…}` (flex in one sheet,
 grid in another) differs by a real amount. **`footer{…}` no longer does** — measured
 2026-07-30, its three layout copies are identical once whitespace is

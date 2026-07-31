@@ -1555,8 +1555,67 @@ NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
   .crumb .meta{margin-left:0;flex-basis:100%}
   .crumb .lists a::before{min-width:44px;height:44px}
 }
+/* The section a page sits in, which is not the page it is. A show page
+   belongs under Shows and a song page under Songs, but neither *is* that
+   page. Ian, 2026-07-30: "Considering 'show' part of 'shows' makes sense, but
+   if we highlight it, then it makes it look like we're already there, and
+   that definitely violates some sort of guideline." It does, and the
+   guideline is aria-current: "page" is a claim that this is the document you
+   are reading, and a show page saying it about the index is simply false --
+   it would also take away the link, stranding the one route back to the list.
+
+   So there are three states and not two: nothing, the section you are in
+   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   page you are on (not a link, full ink, full rule). The markup says the same
+   thing to a screen reader -- aria-current="page" for the page, plain "true"
+   for the item in the set that contains it. */
+.crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
 @media print{.crumb .meta{display:none}}
 """
+
+
+#: The six lists that are the archive, then the two pages about it. Ian,
+#: 2026-07-30, on the order: "songs should come before years. I feel like
+#: Years and Venues go together. Due and Dormant go together as well."
+NAV_LISTS = (("Shows", "index.html"), ("Songs", "songs.html"),
+             ("Due", "due.html"), ("Dormant", "dormant.html"),
+             ("Years", "years.html"), ("Venues", "venues.html"))
+NAV_META = (("FAQ", "faq.html"), ("How this works", "method.html"))
+
+
+def nav_strip(here=None, section=None, root="./", mark=False):
+    """The navigation strip. Every page on this site gets it from here.
+
+    It was nine copies of the same markup in nine shells, which is how the
+    site came to be inconsistent about the one thing a nav has to be right
+    about: eight pages marked themselves and the two biggest page types --
+    every show and every song, 1,301 of the 1,309 pages -- marked nothing at
+    all. No copy carried aria-current either. A reader could not tell where
+    they were on the pages they were most likely to be on.
+
+    `here` is the page you are on and `section` is the list it belongs to;
+    passing both would be a contradiction and the first one wins, because a
+    page cannot be inside itself.
+
+    `mark` puts the wordmark in the strip. It belongs on pages whose <h1> is a
+    page title rather than the site's name -- a show, a song, Due, Dormant,
+    Years, Venues -- and not on the four whose <h1> already says Possum Logic.
+    Venues and Years were missing it before this was one function, which is
+    the same drift in a different column.
+    """
+    def item(label, page):
+        if label == here:
+            return '<a class="here" aria-current="page">%s</a>' % label
+        mod = ' class="sect" aria-current="true"' if label == section else ''
+        return '<a href="%s%s"%s>%s</a>' % (root, page, mod, label)
+    return ('<nav class="crumb%s" aria-label="Sections">%s'
+            '<span class="lists">%s</span><span class="meta">%s</span></nav>'
+            % (" sections" if mark else "",
+               '<span class="mark">Possum Logic</span>' if mark else "",
+               "".join(item(*x) for x in NAV_LISTS),
+               "".join(item(*x) for x in NAV_META)))
 
 #: The two horizontal rules: the letterpress double, and the tear line.
 RULE2_CSS = """
@@ -2884,27 +2943,20 @@ def render_html(report, bar_scale="linear", index_href=None,
         # other page type, and the pager sits under them. Appending them to a
         # three-column pager grid left them wrapping into cells meant for
         # something else.
-        crumb = ("<nav class='crumb sections'>"
-                 "<span class='mark'>Possum Logic</span>"
-                 "<span class='lists'>"
-                 "<a href='../index.html'>Shows</a>"
-                 "<a href='../years.html'>Years</a>"
-                 "<a href='../songs.html'>Songs</a>"
-                 "<a href='../due.html'>Due</a>"
-                 "<a href='../dormant.html'>Dormant</a>"
-                 "<a href='../venues.html'>Venues</a></span>"
-                 "<span class='meta'>"
-                 "<a href='../faq.html'>FAQ</a>"
-                 "<a href='../method.html'>How this works</a></span></nav>"
-                 # No "All reports" in the middle: the row above already has
-                 # Shows, pointing at the same page under the name the rest of
-                 # the site uses for it. The pager is for the two neighbours.
-                 "<nav class='crumb pager'>%s%s"
-                 "</nav>") % (
+        # No "All reports" in the middle: the row above already has Shows,
+        # pointing at the same page under the name the rest of the site uses
+        # for it. The pager is for the two neighbours.
+        #
+        # The pager is built first and the strip concatenated after, rather
+        # than interpolating both at once: nav_strip's output is markup this
+        # function did not write, and running % over it would make any literal
+        # percent sign in a future label a formatting error at render time.
+        pager = ("<nav class='crumb pager'>%s%s</nav>" % (
             step % ("prev", "prev", prev_date, "Previous", prev_date,
                     "&larr; " + prev_date) if prev_date else "",
             step % ("next", "next", next_date, "Next", next_date,
-                    next_date + " &rarr;") if next_date else "")
+                    next_date + " &rarr;") if next_date else ""))
+        crumb = nav_strip(section="Shows", root="../", mark=True) + pager
 
     # What a chat client shows when someone drops the link in a thread. Plain
     # text, entities and all, because html.escape has the last word on it.
@@ -3607,14 +3659,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><span class="lists"><a class="here">Shows</a>
-<a href="./years.html">Years</a>
-<a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a>
-<a href="./dormant.html">Dormant</a>
-<a href="./venues.html">Venues</a></span>
-<span class="meta"><a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
@@ -3991,6 +4036,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         subtitle, blurb = "No reports yet", "Per-song gaps for Phish shows."
 
     return INDEX_SHELL.format(
+        crumb=nav_strip(here="Shows"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
@@ -4649,7 +4695,7 @@ SONG_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><span class="lists"><a href="../index.html">Shows</a><a href="../years.html">Years</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../dormant.html">Dormant</a><a href="../venues.html">Venues</a></span><span class="meta"><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></span></nav>
+{crumb}
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -5121,6 +5167,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         for label, url, icon, flip in SONG_LINKS)
 
     return SONG_SHELL.format(
+        crumb=nav_strip(section="Songs", root="../", mark=True),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
@@ -5179,14 +5226,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
-<a href="./years.html">Years</a>
-<a class="here">Songs</a>
-<a href="./due.html">Due</a>
-<a href="./dormant.html">Dormant</a>
-<a href="./venues.html">Venues</a></span>
-<span class="meta"><a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
@@ -5269,15 +5309,7 @@ DUE_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span>
-<span class="lists"><a href="./index.html">Shows</a>
-<a href="./years.html">Years</a>
-<a href="./songs.html">Songs</a>
-<a class="here">Due</a>
-<a href="./dormant.html">Dormant</a>
-<a href="./venues.html">Venues</a></span>
-<span class="meta"><a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
 <p class="show">{subtitle}</p>
@@ -5541,6 +5573,7 @@ def render_due(docs, counting, since, card=None):
             % len(dormant)) if dormant else ""
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
+        crumb=nav_strip(here="Due", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
@@ -5619,15 +5652,7 @@ DORMANT_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span>
-<span class="lists"><a href="./index.html">Shows</a>
-<a href="./years.html">Years</a>
-<a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a>
-<a class="here">Dormant</a>
-<a href="./venues.html">Venues</a></span>
-<span class="meta"><a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>Dormant</h1>
 <p class="show">{subtitle}</p>
@@ -5743,6 +5768,7 @@ def render_dormant(docs, counting, since):
     blurb = ("Every Phish song that has dropped out of rotation, by the year it "
              "was last played.")
     return DORMANT_SHELL.format(
+        crumb=nav_strip(here="Dormant", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=DORMANT_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
@@ -5765,14 +5791,7 @@ VENUES_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
-<a href="./years.html">Years</a>
-<a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a>
-<a href="./dormant.html">Dormant</a>
-<a class="here">Venues</a></span>
-<span class="meta"><a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>Venues</h1>
 <p class="show">{subtitle}</p>
@@ -5848,6 +5867,7 @@ def render_venues(reports, card=None):
     blurb = ("Every venue in the archive: %d of them, over %s nights."
              % (n, "{:,}".format(total)))
     return VENUES_SHELL.format(
+        crumb=nav_strip(here="Venues", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
@@ -5947,6 +5967,7 @@ def render_songs(docs, stamp=None, card=None):
     blurb = ("Every song in the archive: %d of them, played %s times."
              % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
+        crumb=nav_strip(here="Songs"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
@@ -6296,14 +6317,7 @@ YEARS_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
-<a class="here">Years</a>
-<a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a>
-<a href="./dormant.html">Dormant</a>
-<a href="./venues.html">Venues</a></span>
-<span class="meta"><a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1>Years</h1>
 <p class="show">{subtitle}</p>
@@ -6446,6 +6460,7 @@ def render_years(profiles, missing, pages=()):
              "that year's, and how much of the band's own running order they "
              "repeated.")
     return YEARS_SHELL.format(
+        crumb=nav_strip(here="Years", mark=True),
         analytics=ANALYTICS, css=YEARS_CSS, fonts=WEB_FONTS,
         sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, years=strip, hero=hero,
@@ -6562,14 +6577,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
-<a href="./years.html">Years</a>
-<a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a>
-<a href="./dormant.html">Dormant</a>
-<a href="./venues.html">Venues</a></span>
-<span class="meta"><a href="./faq.html">FAQ</a>
-<a class="here">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
@@ -6770,6 +6778,7 @@ def render_method():
     blurb = ("How the gaps, the medians and the verdicts on this site are "
              "worked out.")
     return METHOD_SHELL.format(
+        crumb=nav_strip(here="How this works"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
@@ -6821,14 +6830,7 @@ FAQ_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><span class="lists"><a href="./index.html">Shows</a>
-<a href="./years.html">Years</a>
-<a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a>
-<a href="./dormant.html">Dormant</a>
-<a href="./venues.html">Venues</a></span>
-<span class="meta"><a class="here">FAQ</a>
-<a href="./method.html">How this works</a></span></nav>
+{crumb}
 <div class="rule2"></div>
 <header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
 <p class="show">FAQ</p>
@@ -7020,6 +7022,7 @@ def render_faq():
     blurb = ("What the numbers on this site mean: gaps, segue marks, eras, "
              "and what &ldquo;due&rdquo; counts as.")
     return FAQ_SHELL.format(
+        crumb=nav_strip(here="FAQ"),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,

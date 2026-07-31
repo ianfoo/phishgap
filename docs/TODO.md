@@ -682,10 +682,43 @@ shared row gap, so show pages — and only show pages — had four overlapping
 above it always said it was for. Found by walking 10 page types × 8
 breakpoints and asserting no two targets overlap; that check is worth keeping.
 
-**Still open on the nav:** nothing marks the *current section* on a show or
-song page — a song page highlights nothing, though it sits under Songs. Cheap,
-and not done here because it needs a decision about whether a show page counts
-as being "in" Shows.
+### Same session, second round on the nav — one function, three states
+
+Ian settled the order and then named the thing that mattered more: "we need to
+be consistent about showing where we are across the *entire site*. Every page.
+Considering 'show' part of 'shows' makes sense, but if we highlight it, then it
+makes it look like we're already there, and that definitely violates some sort
+of guideline."
+
+It does, and the guideline is `aria-current`. Marking Shows the way the current
+page is marked would assert that the index is the document being read, and the
+`here` treatment also drops the `href` — so a show page would have lost its one
+route back to the list to say something untrue.
+
+**Order, as he set it:** Shows · Songs · Due · Dormant · Years · Venues. Songs
+before Years, Years with Venues, Due with Dormant.
+
+**Three states now, not two:**
+
+| state | ink | rule | link? | `aria-current` |
+|---|---|---|---|---|
+| elsewhere | `--ink-soft` | transparent | yes | none |
+| the section you are in | `--ink` | `--edge` (3.08:1 on paper, over the 3:1 floor) | **yes** | `true` |
+| the page you are on | `--ink` | `--ink` | no | `page` |
+
+**And the nine copies are one function.** `nav_strip(here, section, root,
+mark)` — because the drift he spotted was structural, not cosmetic: eight
+pages marked themselves and **the 1,301 pages most likely to be read, every
+show and every song, marked nothing at all**, and no copy had ever carried
+`aria-current`. Venues and Years were also missing the wordmark the other
+page-titled pages carry, which is the same drift in another column; they have
+it now.
+
+Measured after: 1,309 pages, 8 marked as the current page, 1,301 marked by
+section, 0 wrong. The check asserts label order, exactly one marker per page,
+that a current page is *not* a link and a section marker *is*, and that show
+pages mark Shows and song pages mark Songs. Worth re-running after any nav
+change.
 
 ### The three biggest open things, in the order I would take them
 
