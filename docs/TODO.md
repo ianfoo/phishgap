@@ -72,6 +72,10 @@ detail is in §2k. Three things a fresh session should carry:
   button has been on screen permanently on every song page since it shipped.
   `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
   and prose pages as well, which is what Ian asked for.
+- **`show_kind` returns five kinds, not two** — soundcheck, tech rehearsal,
+  television, radio, ceremony, with `session` as an honest fallback nothing
+  currently reaches. It called the Bethel Woods tech rehearsal a soundcheck
+  and the Rock and Roll Hall of Fame ceremony a session. §2m.
 - **`not-a-show.html` holds the twenty soundchecks and sessions**, the nine
   songs that exist only at them, and the fourteen rated versions that got out.
   The index's "Also on file" tail is one line under its hero now. §2l.
@@ -3198,6 +3202,54 @@ Two stale figures fixed in passing, both the same shape as the ones §2k found:
 and named them individually — it is twenty — and the comment beside
 `split_archive` in `write_site` said nine too. **A count in a comment is a
 figure like any other.**
+
+## 2m. A tech rehearsal is not a soundcheck — Ian, 2026-07-31. DONE
+
+Off the back of §2l. Ian: "a tech rehearsal is not really a soundcheck. You
+could put them in the same bucket … but they're not the same thing. I don't
+know if there's adequate resolution to classify them properly, but if there
+is, it would make sense to be accurate."
+
+There is. `show_kind` returned two values and both were wrong at the edges. It
+called anything whose note said *soundcheck* **or** *rehearsal* a soundcheck —
+one regex covering both words — so 2011-05-26 at Bethel Woods, which phish.net
+describes as the tech rehearsal for a whole run, was filed as the soundcheck
+for a night. And `session` held five television appearances, one NPR taping,
+and the 2010 Rock and Roll Hall of Fame ceremony where Phish inducted Genesis,
+which is not a session by any reading.
+
+phish.net's notes are formulaic enough to carry the distinction — "This was
+the soundcheck for X", "were the musical guests on X" — so `KIND_PATTERNS` is
+an ordered list of five and `session` stays as an honest fallback rather than
+a sixth pattern pretending to know. All twenty classify without reaching it:
+
+| kind | n |
+|---|---|
+| soundcheck | 12 |
+| television | 5 |
+| tech rehearsal | 1 |
+| radio | 1 |
+| ceremony | 1 |
+
+Two traps the ordering exists for, both recorded beside it: **rehearsal is
+tested before soundcheck**, because a future note may well say "the rehearsal,
+in place of a soundcheck"; and **"broadcast" is deliberately not a television
+signal**, because two soundcheck notes say the soundcheck was broadcast on The
+Bunny.
+
+The page is now built on the distinction that survives new kinds — whether the
+entry happened *because of a show*. **Before a show** holds the soundchecks and
+the rehearsal, each naming the concert it preceded; **Occasions of their own**
+holds the rest. Every row carries its exact kind, and so does the gap column of
+a song page.
+
+Two things broke on the way and both were caught by looking at the page:
+**"5 televisions"** in the subtitle, because the label naming a medium was
+being pluralised as if it counted occasions — hence `KIND_COUNTED`, which
+writes the singular and plural out for all six; and the index pointer
+publishing **"0 television or radio sessions"**, because it was counting a
+bucket that had just been emptied into three others. It names the kinds now
+instead of counting them, so a new one cannot make it lie.
 
 ## 10. Reach — Ian, 2026-07-31. FILED, NOT STARTED
 

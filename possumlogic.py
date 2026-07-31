@@ -4383,15 +4383,18 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # block could not, which is what it is for.
     aside_html = ""
     if aside:
-        kinds = collections.Counter(a["kind"] for a in aside)
+        # The count, and the kinds named rather than counted. Counting them
+        # here meant restating a breakdown that changes when phish.net files
+        # something new -- and it published "0 television or radio sessions"
+        # the first time the kinds were split, because it was reading a bucket
+        # that had been emptied into three others.
         aside_html = (
-            "<p class='aside'>Also on file: <b>%d</b> soundcheck%s and "
-            "<b>%d</b> television or radio session%s, which phish.net lists "
-            "and does not count toward a gap &mdash; so neither does this "
-            "site. <a href='./%s'>What was played at them</a>.</p>"
-            % (kinds["soundcheck"], "" if kinds["soundcheck"] == 1 else "s",
-               kinds["session"], "" if kinds["session"] == 1 else "s",
-               NOT_A_SHOW_PAGE))
+            "<p class='aside'>Also on file: <b>%d</b> performances that were "
+            "not shows &mdash; soundchecks, a tech rehearsal, television and "
+            "radio tapings, one ceremony &mdash; which phish.net lists and "
+            "does not count toward a gap, so neither does this site. "
+            "<a href='./%s'>What was played at them</a>.</p>"
+            % (len(aside), NOT_A_SHOW_PAGE))
 
     # A show being played is the reason to be here tonight, and a "so far"
     # tag on one row among 690 is not a way of saying so. The whole block is
@@ -5667,7 +5670,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
                # for the twenty entries it holds a report for; the other
                # thirty-nine non-calendar dates are pre-2009 and have no report
                # to read a kind out of, so they keep the general word.
-               ((kinds or {}).get(date, "Not a show").capitalize()
+               (KIND_LABEL.get((kinds or {}).get(date), "Not a show")
                 if not counted else
                 "{:,}".format(g) if g is not None else "&mdash;"), times))
 
@@ -6723,22 +6726,26 @@ def not_a_show_rows(aside, page_href):
     list cannot show any of that, because fouldomain scores almost none of
     these performances -- the Bethel Waves included.
     """
-    out = {"soundcheck": [], "session": []}
+    out = {"before": [], "own": []}
     for a in sorted(aside, key=lambda a: a["report"]["date"], reverse=True):
         r, kind = a["report"], a["kind"]
         n = len(r.get("songs") or [])
         note = re.sub(r"<[^>]+>", "", html.unescape(str(r.get("notes") or ""))).strip()
-        # A soundcheck exists because of the show after it, so it says which.
-        # A session does not -- it is its own occasion, and pointing it at the
-        # next concert on the calendar would invent a relationship.
+        before = kind in BEFORE_A_SHOW
+        # One of these exists because of the show after it, so it says which.
+        # A taping or a ceremony does not -- it is its own occasion, and
+        # pointing it at the next concert on the calendar would invent a
+        # relationship out of nothing but the calendar's order.
         link = ("<span class='for'>before <a href='%s'>%s</a></span>"
                 % (page_href % a["before"], a["before"])
-                if kind == "soundcheck" and a["before"] else "")
-        out[kind].append(
+                if before and a["before"] else "")
+        out["before" if before else "own"].append(
             "<li><a class='ax-row' href='%s'><span class='ax-date'>%s</span>"
+            "<span class='ax-kind'>%s</span>"
             "<span class='ax-venue'>%s</span>"
             "<span class='ax-n'>%d song%s</span></a>%s%s</li>"
             % (page_href % r["date"], r["date"],
+               KIND_LABEL.get(kind, kind).lower(),
                html.escape(r.get("venue") or ""), n, "" if n == 1 else "s",
                link,
                "<span class='ax-note'>%s</span>" % linkify(html.escape(note))
@@ -6812,17 +6819,24 @@ def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
                 "</section>" % (anchor, title, blurb, body))
 
     body = section(
-        "soundchecks", "Soundchecks",
-        "The band, in the room, before the doors. Each one names the show it "
-        "came before, because that is the whole reason it happened &mdash; a "
-        "soundcheck is not an occasion, it is the afternoon of one.",
-        "<ol class='axlist'>%s</ol>" % "".join(lists["soundcheck"]))
+        "before", "Before a show",
+        "The band in the room before the doors, and each one names the show "
+        "it came before &mdash; that is the whole reason it happened. Twelve "
+        "are soundchecks. The thirteenth is the 2011 Bethel Woods <b>tech "
+        "rehearsal</b>, which this site called a soundcheck until Ian pointed "
+        "out that it is not one: a soundcheck is the afternoon of a concert, "
+        "a rehearsal is for a run. phish.net&rsquo;s note says which, so the "
+        "rows say which.",
+        "<ol class='axlist'>%s</ol>" % "".join(lists["before"]))
     body += section(
-        "sessions", "Sessions",
-        "Television and radio: Studio 8H, the Tonight Show, NPR&rsquo;s Tiny "
-        "Desk. Unlike a soundcheck these stand on their own, so none of them "
-        "points at a concert.",
-        "<ol class='axlist'>%s</ol>" % "".join(lists["session"]))
+        "own", "Occasions of their own",
+        "Not attached to any concert: five television appearances, "
+        "NPR&rsquo;s Tiny Desk, and the night in 2010 when Phish played two "
+        "Genesis songs at the Waldorf Astoria and Trey made the case for "
+        "inducting them into the Rock and Roll Hall of Fame. That last one "
+        "was filed as a <em>session</em> until the same read-through, and a "
+        "ceremony is not a session either.",
+        "<ol class='axlist'>%s</ol>" % "".join(lists["own"]))
     if never:
         body += section(
             "never", "Never at a show",
@@ -6886,15 +6900,19 @@ def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
                    rank, of)
                 for score, rank, of, doc, b in rated))
 
-    n_sc, n_se = len(lists["soundcheck"]), len(lists["session"])
-    cards = [(n_sc, "Soundchecks", "", "#soundchecks"),
-             (n_se, "Sessions", "", "#sessions"),
+    n_b, n_o = len(lists["before"]), len(lists["own"])
+    cards = [(n_b, "Before a show", "", "#before"),
+             (n_o, "On their own", "", "#own"),
              (len(never), "Never at a show", " hot", "#never"),
              (len(rated), "Rated versions", "", "#rated")]
-    subtitle = ("%d entr%s &middot; %d soundcheck%s, %d session%s"
-                % (n_sc + n_se, "y" if n_sc + n_se == 1 else "ies",
-                   n_sc, "" if n_sc == 1 else "s",
-                   n_se, "" if n_se == 1 else "s"))
+    # Counted off the rows rather than written out, and spelled from the same
+    # labels the rows carry -- this line named two kinds when there were five.
+    tally = collections.Counter(a["kind"] for a in aside)
+    subtitle = ("%d entr%s &middot; %s"
+                % (n_b + n_o, "y" if n_b + n_o == 1 else "ies",
+                   _join_clauses(
+                       ["%d %s" % (n, KIND_COUNTED[k][0 if n == 1 else 1])
+                        for k, n in tally.most_common() if n], "and")))
     blurb = ("Every Phish soundcheck and session the archive holds, the songs "
              "that exist only there, and the versions that got out.")
     return NOT_A_SHOW_SHELL.format(
@@ -9116,14 +9134,65 @@ def show_kind(report, calendar=None):
     if report["date"] in set(calendar):
         return "show"
     notes = re.sub(r"<[^>]+>", " ", html.unescape(str(report.get("notes") or "")))
-    # "was the soundcheck for X", but also "there were two soundchecks for X"
-    # and "the tech rehearsal for X" -- all the same thing, a non-show that
-    # exists because of a show that follows it. A television or radio session
-    # exists on its own account and matches none of them.
-    return ("soundcheck"
-            if re.search(r"\b(?:soundchecks?|rehearsal)\b[^.]{0,60}\bfor\b",
-                         notes, re.I)
-            else "session")
+    for kind, pattern in KIND_PATTERNS:
+        if re.search(pattern, notes, re.I):
+            return kind
+    return "session"
+
+
+#: How to read a not-a-show entry's note, in order. First match wins.
+#:
+#: This returned two values until 2026-07-31 -- "soundcheck" for anything whose
+#: note said soundcheck *or* rehearsal, and "session" for everything else --
+#: and Ian objected to the first half of that: "a tech rehearsal is not really
+#: a soundcheck. You could put them in the same bucket … but they're not the
+#: same thing." He is right, and the 2011-05-26 Bethel Woods entry is the one
+#: it was wrong about: phish.net calls it a tech rehearsal for a whole run
+#: rather than the soundcheck for a night, and this site called it a soundcheck
+#: because one regex covered both words.
+#:
+#: The second half was lumpier still. "Session" held five television
+#: appearances, one NPR taping and the 2010 Rock and Roll Hall of Fame
+#: ceremony where Phish inducted Genesis, which is not a session by any
+#: reading.
+#:
+#: The notes are formulaic enough to carry this: phish.net writes "This was
+#: the soundcheck for X" and "were the musical guests on X" almost verbatim
+#: every time. What they are not is guaranteed, so `session` stays as the
+#: fallback rather than a sixth pattern that pretends to know. Two traps this
+#: ordering exists for: *rehearsal* is tested before *soundcheck* because the
+#: Bethel note says both is not true -- it says rehearsal only -- but a future
+#: note may say "the rehearsal, in place of a soundcheck"; and *broadcast* is
+#: deliberately not a television signal, because two soundcheck notes say the
+#: soundcheck was broadcast on The Bunny.
+KIND_PATTERNS = (
+    ("rehearsal", r"\brehearsals?\b"),
+    ("soundcheck", r"\bsoundchecks?\b"),
+    ("ceremony", r"\bhall of fame\b|\binduct(?:ing|ed|ion)\b"),
+    ("radio", r"\btiny desk\b|\bNPR\b"),
+    ("television", r"\b(?:tonight show|late night|musical guests?"
+                   r"|in-studio guest|saturday night live)\b"),
+)
+
+#: What each kind is called on a page, and whether it happened because of a
+#: show. The second is the distinction the not-a-show page is built on -- a
+#: soundcheck and a rehearsal exist for a concert that follows, and a taping
+#: or a ceremony is its own occasion.
+KIND_LABEL = {"soundcheck": "Soundcheck", "rehearsal": "Tech rehearsal",
+              "television": "Television", "radio": "Radio",
+              "ceremony": "Ceremony", "session": "Not a show"}
+#: (one, many) for counting them in a sentence. Written out because three of
+#: the six do not take a plural by adding an s -- "5 televisions" was the first
+#: thing the new kinds published, and a label that names a medium is not a
+#: label that counts occasions.
+KIND_COUNTED = {"soundcheck": ("soundcheck", "soundchecks"),
+                "rehearsal": ("tech rehearsal", "tech rehearsals"),
+                "television": ("television appearance",
+                               "television appearances"),
+                "radio": ("radio taping", "radio tapings"),
+                "ceremony": ("ceremony", "ceremonies"),
+                "session": ("other", "others")}
+BEFORE_A_SHOW = ("soundcheck", "rehearsal")
 
 
 def split_archive(reports, calendar):
