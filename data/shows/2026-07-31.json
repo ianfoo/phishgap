@@ -32,9 +32,21 @@
       "prev_place": "Syracuse, NY",
       "out": "",
       "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Back on the Train",
+      "slug": "back-on-the-train",
+      "gap": 6,
+      "jamchart": false,
+      "prev_date": "2026-07-19",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD",
+      "out": "",
+      "verdict": null
     }
   ],
-  "count_since": "2026-07-31T23:27:03+00:00",
+  "count_since": "2026-07-31T23:42:26+00:00",
   "encored": false,
   "provisional": true
 }
