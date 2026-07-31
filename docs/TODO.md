@@ -54,7 +54,38 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### Newest first: the 2026-07-30 review of songs, home, due and dormant
+### Newest first: 2026-07-31, the fouldomain chip on song pages
+
+Ian asked for the chip song pages were missing — show pages have carried
+phish.net, phish.in and fouldomain since the badges shipped, song pages had
+only the first two. Done and verified; the detail worth carrying:
+
+- **fouldomain keys songs on the title, not on phish.net's slug**, and the
+  difference is 13 of the 589 songs. `foul_song_slug` derives it, and the one
+  detail that decides it is the apostrophe: fouldomain drops it where a naive
+  slugifier separates on it, so `mike-s-song` is a 404 and `mikes-song` is the
+  page. A first pass that separated on apostrophes fixed the original 13 and
+  broke 24 others, and would have shipped looking like an improvement.
+- **The check was identity, not existence.** Nine fouldomain song pages answer
+  with a `<title>` of `1993 · 6:16`, so "not Song Not Found" is not evidence
+  the page is about this song; `og:title` names it. All 589 derived slugs were
+  confirmed against the live site to land on a page naming that exact song, and
+  the built pages were then asserted against the *published* copies: every one
+  of the 712 show pages has a byte-identical chip row, and every song page is
+  its published row plus one fouldomain chip.
+- **The two `NOT_A_SONG` pages carry no fouldomain chip, deliberately.** A
+  title match cannot preserve an aggregate: `custom` is nine different pieces
+  phish.net files under one entry titled Dog Log, so the chip would have landed
+  on fouldomain's page for the actual Dog Log and claimed all nine were
+  versions of it. `jam` is off for the same reason. The phish.net and phish.in
+  chips beside them key on the slug, so they keep the aggregate and stay.
+  **[ruling]** — dropping `jam` as well is the arguable half; fouldomain's
+  `jam` page is probably the same aggregate, and if Ian wants it, the gate is
+  one name.
+- `_badge` is the one copy of the chip markup now, shared by both page types,
+  and the one place its href is escaped.
+
+### The 2026-07-30 review of songs, home, due and dormant
 
 Ian read four pages and sent nine notes. All nine are done and pushed; the
 detail is in §2k. Three things a fresh session should carry:

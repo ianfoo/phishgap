@@ -72,7 +72,27 @@ built the hero cards from five copies of the same two lines, three escaping
 the href and two not. `hero_html` is the one copy now, and `hero_cols` beside
 it is the pattern — the builder *states* what the CSS needs to know (how many
 columns, which card carries a name) rather than the CSS inferring it, because
-an inference like `:has(.of)` fails silent.
+an inference like `:has(.of)` fails silent. The outbound chips were the same
+shape in two copies and are now `_badge`, which is also the one place the href
+is escaped.
+
+**A chip out to another site needs its slug measured, not assumed.**
+`foul_song_slug` derives fouldomain's slug from the song's *title*, because
+phish.net's slug — what every other identifier here keys on — lands on
+fouldomain's "Song Not Found" for 13 of the 589 songs: punctuation phish.net
+drops and fouldomain keeps as a separator (`acdc-bag` against `ac-dc-bag`),
+disambiguation suffixes fouldomain has no need of (`gloria-branigan`,
+`invisible-2`), and one slug with an `<em>` baked into it,
+`theme-from-emnew-york-new-yorkem`. An apostrophe is *dropped* rather than
+separated on, and a first pass that got that one detail wrong broke 24 more
+songs while still looking like an improvement. **Check the whole set against
+the live site, and check identity rather than existence** — nine of their
+pages answer with a `<title>` of `1993 · 6:16`, so "not a 404" proves nothing;
+`og:title` names the song, and all 589 chips were confirmed to land on a page
+naming this song exactly. The two `NOT_A_SONG` pages carry no fouldomain chip:
+a title match cannot preserve an aggregate, so `custom` — nine different
+pieces filed under one entry titled Dog Log — would have claimed all nine were
+versions of Dog Log.
 
 **A debut carries a "gap" that is not a gap, and skipping row 0 does not
 always skip it.** phish.net gives a song's first counted performance a gap

@@ -2445,6 +2445,21 @@ SHOW_LINKS = (
 )
 
 
+def _badge(label, url, icon, flip):
+    """One outbound chip, wearing the favicon of wherever it lands.
+
+    The one copy of this markup. Show pages and song pages carry the same row
+    of chips and built it from two copies until 2026-07-31, which is the shape
+    that has cost this project five bugs elsewhere -- and the two had already
+    drifted, in that neither escaped the href but only one was interpolating
+    anything an escape would matter to. Escaped here, once.
+    """
+    return ("<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
+            "<img class='%s' src='data:image/png;base64,%s' alt='' "
+            "width='13' height='13'><span>%s</span></a>"
+            % (html.escape(url, quote=True), "flip" if flip else "", icon, label))
+
+
 def _show_links(date, on_phishin=None):
     """Badge links out to the sites that hold the rest of the story.
 
@@ -2455,10 +2470,7 @@ def _show_links(date, on_phishin=None):
     missing local file is not evidence of a missing recording.
     """
     return "".join(
-        "<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
-        "<img class='%s' src='data:image/png;base64,%s' alt='' "
-        "width='13' height='13'><span>%s</span></a>"
-        % (url % date, "flip" if flip else "", icon, label)
+        _badge(label, url % date, icon, flip)
         for label, url, icon, flip in SHOW_LINKS
         if label != "phish.in" or on_phishin is None or date in on_phishin)
 
@@ -5353,10 +5365,55 @@ SONG_TOOLS = """<div class="tools" id="main" tabindex="-1">
 <span class="count"><b id="shown">{count}</b> of {count} shows</span>
 </div>"""
 
+# Last field is which identifier the URL wants -- see foul_song_slug for why
+# fouldomain cannot take the one the other two share.
 SONG_LINKS = (
-    ("phish.net", "https://phish.net/song/%s", ICON_PNET, False),
-    ("phish.in", "https://phish.in/songs/%s", ICON_PIN, True),
+    ("phish.net", "https://phish.net/song/%s", ICON_PNET, False, "slug"),
+    ("phish.in", "https://phish.in/songs/%s", ICON_PIN, True, "slug"),
+    ("fouldomain", "https://fouldomain.com/songs/%s", ICON_FOUL, False, "foul"),
 )
+
+
+def foul_song_slug(title):
+    """fouldomain's slug for a song, derived from its title.
+
+    Not phish.net's slug, which is what every other identifier on this site
+    keys on. Measured against all 589 songs here, phish.net's slug lands on
+    fouldomain's "Song Not Found" for 13 of them: phish.net drops punctuation
+    fouldomain keeps as a separator (AC/DC Bag is `acdc-bag` there and
+    `ac-dc-bag` here, L.A. Woman `la-woman` against `l-a-woman`), carries
+    disambiguation suffixes fouldomain has no need of (`gloria-branigan`,
+    `invisible-2`, `timber-haunted`), and in one case has an `<em>` baked into
+    it -- `theme-from-emnew-york-new-yorkem`.
+
+    An apostrophe is *dropped* rather than separated on, and that is the whole
+    of what a first pass got wrong: `mike-s-song` is a 404 where `mikes-song`
+    is the page, and 24 songs turn on it. Derived this way all 589 resolve,
+    and each lands on a page whose og:title is this song's exact title -- the
+    check worth repeating if fouldomain ever changes its routing, because
+    "the page exists" and "the page is about this song" are different claims
+    and only the second one is the one being made here.
+    """
+    return re.sub(r"[^a-z0-9]+", "-", re.sub(r"['’]", "", title.lower())).strip("-")
+
+
+def _song_links(doc):
+    """The chips under a song's title, for the sites that hold the rest of it.
+
+    fouldomain is left off the two pages that are not a song. It matches on
+    title, and `custom` is nine different pieces of music filed by phish.net
+    under one entry titled Dog Log -- so the chip would land on fouldomain's
+    page for the actual Dog Log and claim all nine were versions of it, where
+    the phish.net and phish.in chips beside it key on the slug and so keep the
+    aggregate. NOT_A_SONG is where this site already records that a page is
+    not one composition; a page saying so should not carry a chip that ranks
+    versions of one.
+    """
+    ids = {"slug": doc["slug"], "foul": foul_song_slug(doc["song"])}
+    return "".join(
+        _badge(label, url % ids[key], icon, flip)
+        for label, url, icon, flip, key in SONG_LINKS
+        if key != "foul" or doc["slug"] not in NOT_A_SONG)
 
 
 def _ext(url, label, cls):
@@ -5933,12 +5990,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
     if best:
         blurb += ". Best version %s (%s)" % (best[0]["date"], best[0]["score"])
 
-    links = "".join(
-        "<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
-        "<img class='%s' src='data:image/png;base64,%s' alt='' width='13'"
-        " height='13'><span>%s</span></a>"
-        % (url % doc["slug"], "flip" if flip else "", icon, label)
-        for label, url, icon, flip in SONG_LINKS)
+    links = _song_links(doc)
 
     # `countable`, not `perfs`. The sticky bar counted every archived row where
     # the hero, the subtitle and the counter all count only the rows that count
