@@ -78,7 +78,7 @@ expose it. `--seed-setlists` fills in what each performance followed and led
 into: a song's history says where it was played but not what stood next to it,
 which needs the whole setlist of every show in the archive.
 
-It used to be the expensive one. Now it walks `archive/setlist-order.json` — the
+It used to be the expensive one. Now it walks `archive/setlist-order.jsonl` — the
 running order of every show already fetched — and buys only the dates that file
 is missing, so re-walking all 2,008 shows after a rule change costs nothing and
 needs no API key. Each show is marked on its own rows as it is walked, so an

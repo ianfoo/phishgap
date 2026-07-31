@@ -140,17 +140,35 @@ have dropped every one of them on the next `--previous` run. The list is now
 one constant, `NB_CARRY`, sitting beside the walk that produces it. **When you
 add a field, grep for the list that copies fields.**
 
-**`archive/setlist-order.json` makes a re-walk free, and is a cache with no
+**`archive/setlist-order.jsonl` makes a re-walk free, and is a cache with no
 expiry at all.** It holds the running order of every settled show, so changing
 the neighbor rules and re-walking all 2,009 of them cost 44 API calls rather
 than 2,009, and needs no API key. But the first harvest ran *during* a show and
 wrote down that show at the 12 songs it had at the time. Reading that back
 would have frozen the running order of the one show still moving — the six-hour
 cache bug again, minus the six hours. So `--seed-setlists` always re-fetches a
-show whose report is still `provisional`, and never writes one into the extract:
-its order is partial by definition, and the day it settles a partial record
-stops being skipped and starts being believed. **An extract of a live source
-needs the same staleness rules as the cache it replaced.**
+show whose report is still `provisional`, and neither writer records one: its
+order is partial by definition, and the day it settles a partial record stops
+being skipped and starts being believed. **An extract of a live source needs
+the same staleness rules as the cache it replaced.** `--catch-up` writes it too
+as of 2026-07-31, because the setlist that built the report is already in hand
+and the order costs no extra call — the same argument that already had
+`record_neighbors` writing the derived neighbors at fetch time.
+
+**And the cost model that kept it un-automated was invented, not measured.**
+The README here said a nightly append would add a fresh 3.4 MB blob to git
+history every day, and gave that as the reason CI must not maintain the file.
+Git stores the delta: thirty nightly appends measured 13.0 KiB on the wire and
+16 KiB of pack growth, about **500 bytes per show**. The 3.4 MB is the loose
+object before `git gc`, which is not what ends up in history or on the wire.
+The wrong number came from an earlier session of mine, went into a doc as a
+justification, and was then reasoned from twice. **Measure a storage cost
+before designing around it** — and see the note above about stale constraints
+in docs getting obeyed. Sharding was measured at the same time: by year it is a
+wash, and by song — the intuitive fix, since a show only touches the songs it
+played — it is *fourteen times worse*, because small blobs do not delta and
+each night adds a new tree over a 981-entry directory. `archive/README.md` has
+the table.
 
 **Measures are in `rem`, and one place was missed for a year.** `.wrap` is
 `max-width:60rem` precisely so it travels with the type scale, and the comment

@@ -9247,14 +9247,23 @@ def archived_history(site_dir, slug, date):
 # zero shows because the relative path missed is precisely the kind of quiet
 # nothing this project keeps paying for.
 ORDER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "archive", "setlist-order.json")
+                          "archive", "setlist-order.jsonl")
 # The only five fields kept. Everything else the endpoint returns is either
 # already in the archive or of no use here; see archive/README.md.
 ORDER_FIELDS = ("set", "position", "slug", "song", "trans_mark")
 
 
 def order_rows(rows, artist="Phish"):
-    """One show's running order, reduced to the five fields worth keeping."""
+    """One show's running order, reduced to the five fields worth keeping.
+
+    `trans_mark` is stripped, because phish.net sends it padded inconsistently
+    -- ", " and "," and " > " and ">" all appear -- and both readers of this
+    field strip it anyway. Storing the padded form meant the same show
+    re-derived from the same response did not equal what was on disk, so the
+    write-if-changed guard in --catch-up would have rewritten a date that had
+    not moved. 380 of the archive's 39,774 rows were stored padded; they
+    normalize on the next write of their date.
+    """
     rows = [r for r in rows
             if r.get("song") and (not artist or r.get("artist_name") == artist)]
     rows.sort(key=lambda r: (SET_ORDER.get(str(r.get("set")), 9),
@@ -9263,7 +9272,7 @@ def order_rows(rows, artist="Phish"):
              "position": int(r.get("position") or 0),
              "slug": r.get("slug") or r.get("song") or "",
              "song": r.get("song") or "",
-             "trans_mark": r.get("trans_mark") or ""}
+             "trans_mark": (r.get("trans_mark") or "").strip()}
             for r in rows]
 
 
@@ -9273,33 +9282,54 @@ def setlist_order(path=None):
     Missing is not an error. It costs API calls, not correctness -- every date
     absent here is simply fetched -- so a checkout without the archive still
     builds, just slowly.
+
+    One JSON object per line, `{"date": ..., "rows": [...]}`. A damaged line is
+    skipped rather than failing the read: the file's whole purpose is to save
+    API calls, so 2,007 usable dates and one refetch beats none.
     """
     path = path or ORDER_PATH
     if not os.path.isfile(path):
         return {}
+    shows, bad = {}, 0
     with open(path, encoding="utf-8") as fh:
-        try:
-            return json.load(fh).get("shows") or {}
-        except ValueError:
-            log("warning: %s is not readable JSON; walking without it", path)
-            return {}
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+                shows[rec["date"]] = rec["rows"]
+            except (ValueError, KeyError, TypeError):
+                bad += 1
+    if bad:
+        log("warning: %s has %d unreadable line%s; those dates will be refetched",
+            path, bad, "" if bad == 1 else "s")
+    return shows
 
 
-def save_setlist_order(shows, path=None, artist="Phish"):
+def save_setlist_order(shows, path=None):
     """Write the extract back, whole, via a temporary file.
 
-    Whole because it is one JSON document, and via a temporary file because a
-    3 MB write interrupted half way would leave the record of 1,966 walked
-    shows truncated -- and this file exists so those shows never have to be
-    fetched again.
+    One line per date, sorted by date, because the reason this is line-oriented
+    is the diff. A backfilled show lands mid-history, and as a single JSON
+    document that read as one changed line of 3.3 MB -- git's own --numstat
+    called it "1 line" either way, so a pull request summary looked harmless
+    and the diff itself was 7 MB of unreadable. One date per line makes the
+    same insert a one-line diff of about 1 KB.
+
+    Whole rather than appended because a backfill inserts in the middle, and a
+    file that is only correct when writes arrive in date order is a file that
+    silently stops being sorted. Via a temporary file because a write
+    interrupted half way would leave the record of 2,008 walked shows
+    truncated -- and this file exists so those shows are never fetched twice.
     """
     path = path or ORDER_PATH
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    doc = {"artist": artist, "endpoint": "setlists/showdate/<date>",
-           "fields": list(ORDER_FIELDS), "shows": shows}
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:
-        json.dump(doc, fh, sort_keys=True, separators=(",", ":"))
+        for date in sorted(shows):
+            fh.write(json.dumps({"date": date, "rows": shows[date]},
+                                sort_keys=True, separators=(",", ":")) + "\n")
     os.replace(tmp, path)
     log("archive: running order for %d show%s",
         len(shows), "" if len(shows) == 1 else "s")
@@ -9440,7 +9470,7 @@ NEIGHBOR_FLUSH = 150
 def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     """Backfill what came before and after each archived performance.
 
-    Walked from `archive/setlist-order.json` wherever it reaches, and fetched
+    Walked from `archive/setlist-order.jsonl` wherever it reaches, and fetched
     only where it does not -- so changing the neighbor rules and re-walking
     all 1,966 shows with `--force` costs nothing and needs no API key.
 
@@ -10513,6 +10543,10 @@ def main():
         sys.exit("error: --html and --pdf point at the same file")
 
     reports, key, dates, recheck = [], None, list(args.showdate), set()
+    # Running orders picked up by the fetch loop below, saved once after it
+    # rather than per show: the extract is one file and rewriting it inside
+    # the loop would write it once per date for nothing.
+    fresh_order = {}
     # What the archive already holds, which the fetch loop below consults to
     # decide whether a setlist may come from the cache. Bound here rather than
     # only under --catch-up because every path reaches that loop.
@@ -10605,9 +10639,36 @@ def main():
                 # history for these to be written into.
                 if args.previous:
                     record_neighbors(args.site, report["date"], setlist,
-                                      artist=args.artist,
-                                      settled=not report.get("provisional"))
+                                     artist=args.artist,
+                                     settled=not report.get("provisional"))
+                # Free, and for the same reason record_neighbors above is:
+                # the setlist that built the report is already in hand, so the
+                # running order costs no call. Without this the extract only
+                # grew when somebody ran --seed-setlists by hand, so it lagged
+                # by however many nights since -- and the whole point of it is
+                # that a change to the neighbor rules re-walks every show for
+                # nothing. A night it is missing is a night that costs a call.
+                #
+                # Settled shows only, which is the rule the extract has always
+                # had: it is a cache with no expiry, so a show written down at
+                # the 12 songs it had mid-performance would be believed at 12
+                # songs forever. The first harvest did exactly that.
+                if not report.get("provisional"):
+                    kept = order_rows(setlist, args.artist)
+                    if kept:
+                        fresh_order[report["date"]] = kept
             reports.append(report)
+
+        # After the fetch loop, so the file is written once however many shows
+        # were caught up, and only when a date is genuinely new or has changed
+        # -- a --catch-up that finds nothing new must not touch it, or every
+        # run puts a fresh commit in the archive saying nothing.
+        if fresh_order:
+            order = setlist_order()
+            changed = {d: r for d, r in fresh_order.items() if order.get(d) != r}
+            if changed:
+                order.update(changed)
+                save_setlist_order(order)
 
         if args.seed_songs:
             # After the fetch loop, so anything new tonight is already archived

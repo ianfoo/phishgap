@@ -305,7 +305,7 @@ Everything here is pushed. Working tree clean.
 | 0 | The migration landmine deleted outright | done |
 | next.1 | Set / show opener–closer labels | done — 3,821 terminals named |
 | next.2 | Cross-boundary neighbors | done — 6,927 cross-set adjacencies shown |
-| 0 | `--seed-setlists` walks `archive/setlist-order.json` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
+| 0 | `--seed-setlists` walks `archive/setlist-order.jsonl` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
 | 0 | `--catch-up` records a new show's neighbors as it fetches it | done — no more blank column on the night |
 | 0 | The live page polls instead of hoping; "last checked" reworded | done — all four paths driven in a browser |
 
@@ -543,7 +543,7 @@ still needs his call before anything is written.
    the site has no vocabulary for it. §2d and the "under 8 plays in ten years"
    note already half-know this.
 
-**No fetching required for 3.** `archive/setlist-order.json` holds the running
+**No fetching required for 3.** `archive/setlist-order.jsonl` holds the running
 order of all 2,008 settled dates — set, position, slug, song, trans_mark — which
 is everything reprises need. See `archive/README.md`.
 
