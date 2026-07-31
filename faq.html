@@ -592,6 +592,16 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
 .ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+/* phish.net's note, on its own line under the row. flex-basis:100% rather than
+   a grid cell because the row above it is a wrapping flex line of four
+   variable-width parts, and the note is the one thing that always wants the
+   whole measure. Set in the reading face: it is the only prose in this list,
+   and at 12px mono a 778-character note is a wall. */
+.ax-note{flex-basis:100%;margin:.15rem 0 .1rem;max-width:74ch;
+   font-family:'Literata',Georgia,serif;font-size:.8125rem;line-height:1.5;
+   font-variation-settings:'opsz' 13;color:var(--ink-soft)}
+.ax-note a{color:var(--ink-soft);border-bottom:1px solid var(--rule)}
+.ax-note a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .axlist .for{color:var(--dim)}
 .axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
