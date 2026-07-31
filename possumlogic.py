@@ -2917,9 +2917,19 @@ def render_html(report, bar_scale="linear", index_href=None,
             # Anchored at this very performance, so the link answers "where
             # does tonight's version sit against all the others" rather than
             # dropping you at the top of a six-hundred-row page to go looking.
-            href = "../song/%s.html#%s" % (
-                html.escape(s["slug"], quote=True),
-                html.escape(report["date"], quote=True))
+            #
+            # Only where that row exists. `songs` maps each slug to the dates
+            # its page actually carries, because a show report and a song
+            # history are two phish.net endpoints and they disagree once: the
+            # 2020-08-11 Tonight Show lists I Never Needed You Like This
+            # Before as a debut, and that song's own history begins in 2021.
+            # One anchor of 14,126, and it landed at the top of the page --
+            # which is what the anchor exists to avoid.
+            rows_on = songs.get(s["slug"]) if hasattr(songs, "get") else None
+            frag = ("#" + html.escape(report["date"], quote=True)
+                    if rows_on is None or report["date"] in rows_on else "")
+            href = "../song/%s.html%s" % (
+                html.escape(s["slug"], quote=True), frag)
             title = "<a href='%s'>%s</a>" % (href, title)
         # phish.net wrote something about this one. The prose itself lives on
         # the song page, so this says so and points there rather than repeating
@@ -5060,16 +5070,29 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         # The date is a link to its own row. Without it the only way to read
         # that version's notes was to remember the date, tap an era chip and
         # scroll for it.
+        #
+        # Unless there is no such row. The scores come from fouldomain and the
+        # rows from phish.net's song history, and on twelve songs the two do
+        # not agree about what exists: Joy's best version is dated 1995-12-09,
+        # which is a night the band played but not one this archive holds a Joy
+        # performance for -- likewise Rift, Axilla, Free, Sleep, Waves and six
+        # more. The link went to a fragment no element carried, so it landed at
+        # the top of the page: the exact behaviour the comment above says it
+        # was added to fix. Plain text when we cannot point at the row, which
+        # is this file's rule everywhere else -- say less rather than say wrong.
+        anchored = any(p["date"] == top["date"] for p in perfs)
+        when = ("<a class='when' href='#%s'>%s</a>" % (top["date"], top["date"])
+                if anchored else "<span class='when'>%s</span>" % top["date"])
         top = ("<p class='best'>"
                "<span class='field'><span class='cap'>Best version</span>"
-               "<a class='when' href='#%s'>%s</a></span>"
+               "%s</span>"
                "<span class='field'><span class='cap'>Venue</span>"
                "<span class='where'>%s</span></span>"
                "<span class='field'><span class='cap'>Score</span>"
                "<span class='score'>%s</span></span>"
                "<span class='field'><span class='cap'>Hear it</span>"
                "<span class='cap'>%s &middot; %s</span></span></p>"
-               % (top["date"], top["date"], html.escape(where), top["score"],
+               % (when, html.escape(where), top["score"],
                   _ext("https://phish.in/%s" % top["date"], "Listen", "i-pin"),
                   _ext(top["link"] or "https://fouldomain.com/", "Details", "i-foul")))
 
@@ -5980,8 +6003,7 @@ means it used to be otherwise. A song played once at a Halloween show never had
 a rotation to fall out of &mdash; and in this archive, that difference is the
 strongest thing we know about whether it is ever coming back. So the page is in
 three parts, split on how many times the band ever played the song, and
-<a href="./method.html#songs-with-no-verdict">how this works</a> shows the
-measurement.</p>
+<a href="./method.html#rotation">how this works</a> shows the measurement.</p>
 <p class="dek">Inside each part they are ordered by when you last heard one,
 newest first, and within a year by how often the band played it. None of it is
 a prediction: a song coming back from here is a bustout, and the archive is
@@ -8979,7 +9001,14 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         jobs.append((name, markup))
         return True
 
-    songs = archived_songs(site_dir)
+    # Slug -> the dates that song's page will carry a row for, not just the set
+    # of slugs. Report pages anchor into those rows and one anchor pointed at a
+    # row that does not exist; see render_html. Measured at 0.15s for 589 songs
+    # against a ~2s rebuild, and it is read once rather than per report.
+    songs = {slug: frozenset(p["date"] for p in
+                             (song_history(site_dir, slug) or {}).get(
+                                 "performances") or [])
+             for slug in archived_songs(site_dir)}
     have_dates = {r["date"] for r in known}
     calendar = load_calendar(site_dir)
     counting = set(calendar)

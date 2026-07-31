@@ -1507,6 +1507,52 @@ band has never played at a show. The other five sit at 91 shows and showed
 nothing either way. Measured, not assumed: the first draft of this entry said
 all nine, which was wrong by five.
 
+### Fourth round — a link claim that was wrong, and the check that settles them
+
+`1280be25a` repointed the out-of-rotation page's "how this works shows the
+measurement" link from `#rotation` to `#songs-with-no-verdict`, on an agent's
+report that `method.html` had no such id. **It did.** `<h2 id="rotation">Dormant,
+rarity, once or twice</h2>` was in the very build that shipped that commit, and
+still is. Reverted.
+
+The target matters: `#rotation` holds the 774-silence table and the
+`ROTATION_PLAYS` reasoning that page splits on, while `#songs-with-no-verdict`
+explains **`MIN_HISTORY`** — eight performances *inside the ten-year window*,
+the verdict gate. Those are the two eights this file keeps apart on purpose, and
+the link had been moved from one to the other.
+
+**`tools/check_links.py`** exists so this is settled by running something.
+
+```
+python3 tools/check_links.py
+```
+
+It walks every built page — all 1,310, not the 9 root ones a scratch script
+checked — and reports missing files, same-page fragments with no id, cross-page
+fragments with no id, and ids repeated within a page. Query strings are stripped
+first, because the 153 `index.html?q=…` venue links are not broken. Verified
+against a fixture that trips each class.
+
+**It found 13 real broken links on its first run**, none of them the one that was
+reported:
+
+- **Twelve "Best version" links.** Scores come from fouldomain and rows from
+  phish.net's song history, and on twelve songs the two disagree about what
+  exists — Joy's best version is dated 1995-12-09, a night the band played but
+  not one this archive holds a Joy performance for; likewise Rift, Axilla, Free,
+  Sleep, Waves and six more. The date is now plain text when there is no row to
+  point at, which is this file's rule everywhere else.
+- **One show→song anchor.** The 2020-08-11 Tonight Show report lists I Never
+  Needed You Like This Before as a debut; that song's own history begins in
+  2021. One of 14,126. `write_site` now passes `{slug: dates}` rather than a set
+  of slugs so a report only anchors a row that exists — measured at 0.15s
+  against a 2.4s rebuild.
+
+**The lesson is the shape, not the link.** "I looked and did not see it" is not a
+measurement, and it cost a correct link. Neither is "I checked the links" when
+the checker only saw 9 of 1,310 pages — that was mine, and it is why the check
+is in `tools/` now instead of a scratch file.
+
 ## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 
 His words: the directory "is cluttered. shows should probably go under a
