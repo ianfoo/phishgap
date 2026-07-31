@@ -22,17 +22,28 @@ Checks, over every .html the build produced:
 
   * `href` to a file that does not exist
   * `href="#frag"` where this page has no element with that id
-  * `href="other.html#frag"` where that page has no element with that id
+  * `href="other#frag"` where that page has no element with that id
   * ids that repeat within one page, which makes a fragment ambiguous
+  * an internal `href` that still carries `.html`, which resolves perfectly
+    and is wrong anyway -- see below
 
 Query strings are stripped before resolving: the venue links are
-`index.html?q=%22...%22`, and an earlier version of this check called all 153
-of them broken.
+`?q=%22...%22`, and an earlier version of this check called all 153 of them
+broken.
+
+Links are extensionless -- `href="./method"`, not `href="./method.html"` --
+so resolving one to the file that answers it is tools/pathmap.py's job, the
+same rule tools/serve.py uses. A link that resolves here resolves in the
+browser only if all three of pathmap, the local server and GitHub Pages agree;
+that is why the rule is written once.
 """
 import os
 import re
 import sys
 from collections import Counter
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pathmap  # noqa: E402
 
 HREF = re.compile(r"""href=["']([^"']+)["']""")
 ID = re.compile(r"""\bid=["']([^"']+)["']""")
@@ -76,15 +87,30 @@ def main(root="site"):
                 continue
             target, _, frag = href.partition("#")
             target = target.split("?")[0]
+            # The site links extensionless, and `./faq.html` would *work* --
+            # the file is right there, and Pages and pathmap both serve it. So
+            # nothing else in this project can notice the convention breaking:
+            # no 404, no broken build, just two URL forms in circulation and a
+            # canonical tag pointing at whichever one share_meta computed. A
+            # rule that cannot fail visibly has to be checked deliberately.
+            if target.endswith(".html"):
+                bad.append((path, href,
+                            "links .html; the site links extensionless"))
             if not target:
                 if frag not in ids[here]:
                     bad.append((path, href, "no id %r on this page" % frag))
                 continue
-            dest = os.path.realpath(
-                os.path.join(os.path.dirname(path), target))
-            if not os.path.exists(dest):
+            # Resolved the way the host resolves it, so that an extensionless
+            # `href="./method"` is checked against method.html -- and, just as
+            # importantly, so `dest` is the *file*. Accepting the bare path as
+            # "exists" would quietly skip every fragment check below, leaving a
+            # check that still passes and no longer checks.
+            dest = pathmap.resolve(os.path.realpath(
+                os.path.join(os.path.dirname(path), target)))
+            if dest is None:
                 bad.append((path, href, "no such file"))
                 continue
+            dest = os.path.realpath(dest)
             if frag and dest in ids and frag not in ids[dest]:
                 bad.append((path, href,
                             "%s has no id %r" % (os.path.basename(dest), frag)))

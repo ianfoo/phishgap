@@ -577,6 +577,11 @@ def share_meta(title, description, path="", image=OG_IMAGE, card=None):
     twitter:card line is what makes the ones that look for it render a large
     image rather than a thumbnail. Without og:image the card is a line of grey
     text, which is a poor advertisement for a page of graphs.
+
+    It also emits rel="canonical", which is not a share tag at all -- it is
+    here because computing a page's absolute URL is this function's whole first
+    line, and a second place doing the same arithmetic is a second place to get
+    it wrong.
     """
     url = "%s/%s" % (SITE_URL, path.lstrip("./")) if path else SITE_URL + "/"
     # A page's own card when one is being made for it, the house card when not
@@ -584,6 +589,13 @@ def share_meta(title, description, path="", image=OG_IMAGE, card=None):
     if card:
         image = "%s/%s.png" % (CARD_DIR, card)
     return "".join((
+        # Which of this page's two URLs is the page. Pages serves both `/due`
+        # and `/due.html` with identical bytes and no redirect between them, so
+        # without this a crawler sees two documents with the same content and
+        # picks one; links pointing at the two forms then accrue to two weaker
+        # pages instead of one. This function is where it belongs because it is
+        # already the only place that knows a page's own absolute URL.
+        '<link rel="canonical" href="%s">' % html.escape(url, quote=True),
         '<link rel="icon" href="%s">' % FAVICON_HREF,
         '<meta name="theme-color" content="#c8371b">',
         '<meta name="description" content="%s">' % description,
@@ -2145,7 +2157,7 @@ SHELL = """<!DOCTYPE html>
 <div class="rule2"></div>
 <p class="links">{links}</p>
 {sections}{notes}
-<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="../method">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div>{row_js}</body></html>
@@ -2928,7 +2940,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             rows_on = songs.get(s["slug"]) if hasattr(songs, "get") else None
             frag = ("#" + html.escape(report["date"], quote=True)
                     if rows_on is None or report["date"] in rows_on else "")
-            href = "../song/%s.html%s" % (
+            href = "../song/%s%s" % (
                 html.escape(s["slug"], quote=True), frag)
             title = "<a href='%s'>%s</a>" % (href, title)
         # phish.net wrote something about this one. The prose itself lives on
@@ -2961,7 +2973,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                 # it" is the most natural click on the page. It was dead text.
                 stamp = s["prev_date"]
                 if stamp in archived_show:
-                    stamp = ("<a href='./%s.html'>%s</a>"
+                    stamp = ("<a href='./%s'>%s</a>"
                              % (html.escape(stamp, quote=True), stamp))
                 bits = ["<span class='cap'>Last performed</span>",
                         "<span class='date'>%s</span>" % stamp]
@@ -3000,7 +3012,7 @@ def render_html(report, bar_scale="linear", index_href=None,
     # index link in the middle either way.
     crumb = ""
     if index_href:
-        step = ("<a class='%s' rel='%s' href='./%s.html' "
+        step = ("<a class='%s' rel='%s' href='./%s' "
                 "aria-label='%s show, %s'>%s</a>")
         # Two rows, deliberately: the section links read the same as every
         # other page type, and the pager sits under them. Appending them to a
@@ -3008,12 +3020,12 @@ def render_html(report, bar_scale="linear", index_href=None,
         # something else.
         crumb = ("<nav class='crumb sections'>"
                  "<span class='mark'>Possum Logic</span>"
-                 "<a href='../index.html'>Shows</a>"
-                 "<a href='../songs.html'>Songs</a>"
-                 "<a href='../due.html'>Due</a>"
-                 "<a href='../venues.html'>Venues</a>"
-                 "<a href='../faq.html'>FAQ</a>"
-                 "<a href='../method.html'>How this works</a></nav>"
+                 "<a href='../'>Shows</a>"
+                 "<a href='../songs'>Songs</a>"
+                 "<a href='../due'>Due</a>"
+                 "<a href='../venues'>Venues</a>"
+                 "<a href='../faq'>FAQ</a>"
+                 "<a href='../method'>How this works</a></nav>"
                  # No "All reports" in the middle: the row above already has
                  # Shows, pointing at the same page under the name the rest of
                  # the site uses for it. The pager is for the two neighbours.
@@ -3165,7 +3177,7 @@ def render_html(report, bar_scale="linear", index_href=None,
                          % ("Live: " if report.get("provisional") else "",
                             html.escape(report["date"])),
                          html.escape(blurb, quote=True),
-                         "%s/%s.html" % (SHOW_DIR, report["date"]), card=card),
+                         "%s/%s" % (SHOW_DIR, report["date"]), card=card),
         # Dated by the report's own data, not by the clock. A build stamp made
         # every page differ from yesterday's copy of itself, so a nightly run
         # republished all of them to say nothing had happened. count_since is
@@ -3780,10 +3792,10 @@ INDEX_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<nav class="crumb"><a class="here">Shows</a><a href="./songs">Songs</a>
+<a href="./due">Due</a><a href="./venues">Venues</a>
+<a href="./faq">FAQ</a>
+<a href="./method">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1>Possum <em>Logic</em></h1>
 <p class="show">{subtitle}</p></header>
@@ -3811,7 +3823,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
 {aside}
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="./method">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -3947,7 +3959,7 @@ def search_href(phrase, root="../"):
     the whole correctness of this link, so it lives in one function rather than
     in every caller.
     """
-    return "%sindex.html?q=%s" % (
+    return "%s?q=%s" % (
         root, urllib.parse.quote('"%s"' % phrase, safe=""))
 
 
@@ -3972,7 +3984,7 @@ def _venue_lines(report):
         # Reports saved before venue/city/state were stored separately.
         parts = [p.strip() for p in (report.get("venue") or "").split(",")]
         venue, place = (parts[0] if parts else ""), ", ".join(parts[1:])
-    # The venue is a search too -- the same link venues.html gives it, so a
+    # The venue is a search too -- the same link the venues page gives it, so a
     # reader who wants the other nights in this room does not have to go via a
     # third page to ask. The locality is not linked: it is context for the
     # venue rather than a thing to browse, and two links in a two-line block
@@ -4015,7 +4027,7 @@ def hero_cols(n):
     return "hero-c3" if n > 4 else "hero-c4"
 
 
-def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
+def render_index(reports, page_href="./show/%s", card=None, aside=(),
                  n_due=None):
     """A single self-contained index page over every saved report."""
     entries = sorted((summarize(r) for r in reports),
@@ -4092,15 +4104,15 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         # report. Labelled "Songs Logged" it read 4,593 and linked to a
         # page saying 379, which is the same word counting two things.
         ("{:,}".format(sum(e["songs"] for e in entries)),
-         "Song Performances", "", "./songs.html"),
+         "Song Performances", "", "./songs"),
         (len({e["venue"] for e in entries if e["venue"]}), "Venues", "",
-         "./venues.html"),
+         "./venues"),
     ]
     # What is overdue going into tonight, counted once by due_rows() and shown
     # here only if the due page was actually built -- a card offering a figure
     # and a link to a page that is not there is worse than no card.
     if n_due is not None:
-        cards.append((n_due, "Songs Due", " hot", "./due.html"))
+        cards.append((n_due, "Songs Due", " hot", "./due"))
     hero = "".join(
         ("<a class='card' href='%s'>" % html.escape(href, quote=True)
          if href else "<div class='card'>")
@@ -4908,7 +4920,7 @@ SONG_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="{skip}">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
+<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../">Shows</a><a href="../songs">Songs</a><a href="../due">Due</a><a href="../venues">Venues</a><a href="../faq">FAQ</a><a href="../method">How this works</a></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">{song}</span>
 <span class="n">{stuckstat}</span></div>
@@ -4928,7 +4940,7 @@ SONG_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
-<footer><span><a href="../method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="../method">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -5275,7 +5287,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         # to phish.net, wearing their favicon so the trip off-site is visible
         # before it is taken rather than after.
         if date in archived:
-            link = "<a href='../show/%s.html'>%s</a>" % (date, date)
+            link = "<a href='../show/%s'>%s</a>" % (date, date)
         else:
             link = _ext("https://phish.net/setlist/?d=%s" % date, date, "i-pnet")
         place = ", ".join(x for x in (p["city"], p["state"]) if x)
@@ -5464,7 +5476,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
     # who wonders what `>` means is looking straight at the answer's door.
     cols = ("<div class='row head'><span>Date</span><span>Venue</span>"
             "<span class='nhead'>Before / after "
-            "<a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a>"
+            "<a class='marks' href='../faq#segues'>&gt; and &#8211;&gt;</a>"
             "</span>"
             "<span class='ghead'>Gap%s</span></div>"
             % (" &middot; mark at median %s" % _stat(med) if medmark else ""))
@@ -5553,7 +5565,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None):
         skip=skip, herocls=herocls,
         share=share_meta(html.escape(typographic(song)),
                          html.escape(blurb, quote=True),
-                         "song/%s.html" % doc["slug"], card=card),
+                         "song/%s" % doc["slug"], card=card),
         stuckstat=stuckstat,
         head=head,          # already carries medmark; see where it is built
         rows="\n".join(rows), blurb=html.escape(blurb, quote=True),
@@ -5601,12 +5613,12 @@ SONGS_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<nav class="crumb"><a href="./">Shows</a><a class="here">Songs</a>
+<a href="./due">Due</a><a href="./venues">Venues</a>
+<a href="./faq">FAQ</a>
+<a href="./method">How this works</a></nav>
 <div class="rule2"></div>
-<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
+<header><h1><a href="./">Possum <em>Logic</em></a></h1>
 <p class="show">{subtitle}</p></header>
 <section class="hero {hero_cls}">{hero}</section>
 <div class="rule2"></div>
@@ -5627,7 +5639,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="./method">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div><script>{js}</script></body></html>
@@ -5688,10 +5700,10 @@ DUE_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
-<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a class="here">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./">Shows</a><a href="./songs">Songs</a>
+<a class="here">Due</a><a href="./venues">Venues</a>
+<a href="./faq">FAQ</a>
+<a href="./method">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1>What&rsquo;s due</h1>
 <p class="show">{subtitle}</p>
@@ -5707,7 +5719,7 @@ not more expected. A song at six times its usual gap is not one anybody is
 waiting on &mdash; it is drifting out of rotation. So past {mult}&times; a song
 is <a href="#slipping">slipping</a> rather than due, past {cap} shows it is
 <a href="#shelf">on the shelf</a>, and with no recent habit at all it is
-<a href="./dormant.html">dormant</a>. The first three are below; the dormant
+<a href="./dormant">dormant</a>. The first three are below; the dormant
 have a page of their own, because there are more of them than of everything
 else here put together.</p>
 <p class="dek">None of this knows what the band has planned. A themed night
@@ -5715,7 +5727,7 @@ overrides every figure here &mdash; the 2021 Halloween runs built around
 numbers and animals, the elements nights of the first Sphere run, a run played
 entirely out of one decade &mdash; and the theme is usually not public before
 the show. On a night like that the list below is the wrong question.</p>
-<p class="dek"><a href="./faq.html#due">The FAQ answers this at more
+<p class="dek"><a href="./faq#due">The FAQ answers this at more
 length</a>, including why a song gone for years is not on the list.</p>
 </details></header>
 <section class="hero {hero_cls}">{hero}</section>
@@ -5729,7 +5741,7 @@ length</a>, including why a song gone for years is not on the list.</p>
 </section>
 {shelf}
 <p class="dek foot">{dormant}</p>
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="./method">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div></body></html>
@@ -5934,7 +5946,7 @@ def _due_row(over, n, high, doc, last):
     against a typical gap of 15.
     """
     place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
-    return ("<li><a class='row' href='./song/%s.html'>"
+    return ("<li><a class='row' href='./song/%s'>"
             "<span class='d-song'>%s</span>"
             "<span class='d-last'><span class='d-date'>%s</span>"
             "<span class='d-where'>%s</span></span>"
@@ -5991,7 +6003,7 @@ def render_due(docs, counting, since, card=None):
         # Trimmed to the two sentences that define the boundary a reader has
         # just crossed. What went is the naming rationale -- why "slipping"
         # and not "overdue" -- which is a question about the site's vocabulary
-        # rather than about these songs, and which faq.html#due already
+        # rather than about these songs, and which the FAQ's #due already
         # answers in full. A section blurb earns its space by saying what the
         # section is; it does not have to defend its own title.
         "Well past their usual gap rather than a little past it. These could "
@@ -6025,7 +6037,7 @@ def render_due(docs, counting, since, card=None):
     cards = [(len(due), "Due", " hot", "#main"),
              (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
-             (len(stopped), "Dormant", "", "./dormant.html#dormant")]
+             (len(stopped), "Dormant", "", "./dormant#dormant")]
     hero = "".join(
         ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
         + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
@@ -6035,7 +6047,7 @@ def render_due(docs, counting, since, card=None):
     n_due = len(due)
     subtitle = ("%d song%s you might reasonably expect tonight"
                 % (n_due, "" if n_due == 1 else "s"))
-    tail = ("A further %s are <a href=\"./dormant.html\">out of rotation</a> "
+    tail = ("A further %s are <a href=\"./dormant\">out of rotation</a> "
             "&mdash; gone long enough to be bustouts, with no recent habit to "
             "be late against at all. They are not due, they are the largest "
             "part of the catalogue, and they are not one thing: %d were in "
@@ -6052,7 +6064,7 @@ def render_due(docs, counting, since, card=None):
         mult=_stat(DUE_MULTIPLE), hero=hero, hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, rows="\n".join(out), shelf=shelf, dormant=tail,
         share=share_meta("What's due &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "due.html", card=card),
+                         html.escape(blurb, quote=True), "due", card=card),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -6112,14 +6124,14 @@ DORMANT_SHELL = """<!DOCTYPE html>
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb sections"><span class="mark">Possum Logic</span>
-<a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./">Shows</a><a href="./songs">Songs</a>
+<a href="./due">Due</a><a href="./venues">Venues</a>
+<a href="./faq">FAQ</a>
+<a href="./method">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1>Out of rotation</h1>
 <p class="show">{subtitle}</p>
-<p class="dek">The fourth list on <a href="./due.html">what&rsquo;s due</a>, and
+<p class="dek">The fourth list on <a href="./due">what&rsquo;s due</a>, and
 the longest by some way. Every song here has been gone {cap} shows or more
 <em>and</em> has fewer than {floor} performances inside the last {years_n}
 years, so there is no habit left to be late against and nothing to rank it by.
@@ -6132,7 +6144,7 @@ means it used to be otherwise. A song played once at a Halloween show never had
 a rotation to fall out of &mdash; and in this archive, that difference is the
 strongest thing we know about whether it is ever coming back. So the page is in
 three parts, split on how many times the band ever played the song, and
-<a href="./method.html#rotation">how this works</a> shows the measurement.</p>
+<a href="./method#rotation">how this works</a> shows the measurement.</p>
 <p class="dek">Inside each part they are ordered by when you last heard one,
 newest first, and within a year by how often the band played it. None of it is
 a prediction: a song coming back from here is a bustout, and the archive is
@@ -6143,7 +6155,7 @@ graveyard.</p></header>
 <div id="main" tabindex="-1">
 {rows}
 </div>
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="./method">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div></body></html>
@@ -6164,7 +6176,7 @@ def _dormant_row(gone, doc, played):
     place = ", ".join(x for x in (last.get("city"), last.get("state")) if x)
     first_yr, last_yr = played[0]["date"][:4], last["date"][:4]
     span = first_yr if first_yr == last_yr else "%s&ndash;%s" % (first_yr, last_yr)
-    return ("<li><a class='row' id='%s' href='./song/%s.html'>"
+    return ("<li><a class='row' id='%s' href='./song/%s'>"
             "<span class='d-song'>%s</span>"
             "<span class='d-last'><span class='d-date'>%s</span>"
             "<span class='d-where'>%s</span></span>"
@@ -6349,7 +6361,7 @@ def render_dormant(docs, counting, since):
         hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         rows="\n".join(body),
         share=share_meta("Out of rotation &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "dormant.html"),
+                         html.escape(blurb, quote=True), "dormant"),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -6364,10 +6376,10 @@ VENUES_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a class="here">Venues</a>
-<a href="./faq.html">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<nav class="crumb"><a href="./">Shows</a><a href="./songs">Songs</a>
+<a href="./due">Due</a><a class="here">Venues</a>
+<a href="./faq">FAQ</a>
+<a href="./method">How this works</a></nav>
 <div class="rule2"></div>
 <header><h1>Venues</h1>
 <p class="show">{subtitle}</p>
@@ -6382,7 +6394,7 @@ over what span, and the longest gap the room has heard.</p></header>
 <ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="./method">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
 </div></body></html>
@@ -6420,7 +6432,7 @@ def render_venues(reports, card=None):
         # The Wharf Amphitheater and Amphitheater at the Wharf each return the
         # other's nights. The name is not lowercased -- both sides are folded
         # before they meet, so the box can show the room as it is spelled.
-        href = "./index.html?q=%s" % urllib.parse.quote('"%s"' % venue)
+        href = "./?q=%s" % urllib.parse.quote('"%s"' % venue)
         rows.append(
             "<li><a class='row' href='%s'>"
             "<span class='vn-venue'>%s<span class='vn-place'>%s</span></span>"
@@ -6448,7 +6460,7 @@ def render_venues(reports, card=None):
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(rows),
         share=share_meta("Venues &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "venues.html",
+                         html.escape(blurb, quote=True), "venues",
                          card=card),
         stamp="Updated %s" % (max((e["date"] for s in by_venue.values()
                                    for e in s), default="&mdash;")))
@@ -6505,7 +6517,7 @@ def render_songs(docs, stamp=None, card=None):
         rows.append(
             "<li data-song=\"%s\" data-played='%d' data-last='%s'"
             " data-longest='%s' data-score='%s' data-search=\"%s\">"
-            "<a class='row' href='./song/%s.html'>"
+            "<a class='row' href='./song/%s'>"
             "<span class='r-song'>%s</span>"
             "<span class='r-when'>last <b>%s</b></span>"
             "<span class='r-stats'>%s</span></a></li>"
@@ -6550,7 +6562,7 @@ def render_songs(docs, stamp=None, card=None):
         count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
         share=share_meta("Songs &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "songs.html", card=card),
+                         html.escape(blurb, quote=True), "songs", card=card),
         stamp=stamp or "Updated %s" % max((e["last"] for e in entries), default=""))
 
 
@@ -6674,19 +6686,19 @@ METHOD_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
-<a href="./faq.html">FAQ</a>
+<nav class="crumb"><a href="./">Shows</a><a href="./songs">Songs</a>
+<a href="./due">Due</a><a href="./venues">Venues</a>
+<a href="./faq">FAQ</a>
 <a class="here">How this works</a></nav>
 <div class="rule2"></div>
-<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
+<header><h1><a href="./">Possum <em>Logic</em></a></h1>
 <p class="show">How this is worked out</p></header>
 <div class="rule2"></div>
 <div class="prose" id="main" tabindex="-1">
 <nav class="toc" id="sections" tabindex="-1" aria-label="Sections on this page"><span class="cap">Sections on this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
-<footer><span><a href="./index.html">All reports</a></span>{theme_ui}
+<footer><span><a href="./">All reports</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
 </div></body></html>
@@ -6783,7 +6795,7 @@ two look equally deliberate on the page.</p>
 interruption into the next; <span class="num">&gt;</span> is everything else
 that runs together, and is also used by convention between songs that are
 simply always played as a set.
-<a href="./faq.html#segues">The difference, in phish.net's own words.</a></p>"""),
+<a href="./faq#segues">The difference, in phish.net's own words.</a></p>"""),
     ('which-show-this-was', 'Which show this was', """
 <p>A report says where the night sits inside its era &mdash; the
 <span class="num">312th</span> show of 3.0 &mdash; and never where it sits
@@ -6835,7 +6847,7 @@ written can reach the threshold.</p>"""),
     # quarter percent signs, and every one of them would have needed doubling.
     ('rotation', 'Dormant, rarity, %s' % FEW_TITLE.lower(), """
 <p>Songs with no recent record that have been gone a hundred shows or more sit
-<a href="./dormant.html">on their own page</a>, because there is nothing left
+<a href="./dormant">on their own page</a>, because there is nothing left
 to rank them by. For a long time that page called all
 <b class="num">281</b> of them <b>dormant</b>, and for
 <b class="num">174</b> of them that was false. Dormant means a song used to be
@@ -6963,7 +6975,7 @@ def render_method():
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
-                         "method.html"))
+                         "method"))
 
 
 # -------------------------------------------------------------------- faq ---
@@ -7007,12 +7019,12 @@ FAQ_SHELL = """<!DOCTYPE html>
 {sheet}
 <style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
-<a href="./due.html">Due</a><a href="./venues.html">Venues</a>
+<nav class="crumb"><a href="./">Shows</a><a href="./songs">Songs</a>
+<a href="./due">Due</a><a href="./venues">Venues</a>
 <a class="here">FAQ</a>
-<a href="./method.html">How this works</a></nav>
+<a href="./method">How this works</a></nav>
 <div class="rule2"></div>
-<header><h1><a href="./index.html">Possum <em>Logic</em></a></h1>
+<header><h1><a href="./">Possum <em>Logic</em></a></h1>
 <p class="show">FAQ</p>
 <p class="dek">What the numbers on this site mean, and what they deliberately
 do not.</p></header>
@@ -7021,7 +7033,7 @@ do not.</p></header>
 <nav class="toc" id="questions" tabindex="-1" aria-label="Questions on this page"><span class="cap">Questions on this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
-<footer><span><a href="./method.html">How this works</a></span>{theme_ui}
+<footer><span><a href="./method">How this works</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
 </div></body></html>
@@ -7099,7 +7111,7 @@ tidy ten-year habit ending in 2011, and would be ranked as running late against
 a band that has since played a thousand shows without it.</p>
 <p>Being late is not the same as being expected, though, and more late is not
 more expected. A song at six times its usual gap is not one anybody is waiting
-on; it is drifting out of rotation. So the <a href="./due.html">due page</a>
+on; it is drifting out of rotation. So the <a href="./due">due page</a>
 sorts songs into four:</p>
 <dl class="defs">
 <dt>Due</dt><dd>The band plays it at least every twenty shows or so, and it is
@@ -7113,7 +7125,7 @@ true.</dd>
 <dt>Out of rotation</dt><dd>No recent record at all, and gone a hundred shows or
 more. Nobody is expecting it, and ranking these would bury the songs somebody
 might actually shout for tonight &mdash; so they have
-<a href="./dormant.html">a page of their own</a>, grouped by the year they were
+<a href="./dormant">a page of their own</a>, grouped by the year they were
 last heard rather than by a lateness they cannot have.</dd>
 </dl>
 <p>That fourth group is three groups, and the difference matters more than the
@@ -7168,7 +7180,7 @@ hiatus.</dd>
 <p>They are used here for grouping and for counting a show&rsquo;s place inside
 its own era &mdash; the <span class="num">312th</span> show of 3.0 &mdash;
 because there is no honest count of where a show sits overall.
-<a href="./method.html#which-show-this-was">The method page says why.</a></p>"""),
+<a href="./method#which-show-this-was">The method page says why.</a></p>"""),
 
     ("not-part-of-a-tour", "Why do some shows say &ldquo;Not Part of a"
                           " Tour&rdquo;?", """
@@ -7190,7 +7202,7 @@ of the night.</p>
 <p>Nothing in the data says when a show has ended, so stability stands in for
 it: once the song count has stopped moving, the report stops calling itself
 provisional.
-<a href="./method.html#when-a-report-appears">The method page says how
+<a href="./method#when-a-report-appears">The method page says how
 long.</a></p>"""),
 )
 
@@ -7224,7 +7236,7 @@ def render_faq():
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
-                         "faq.html"))
+                         "faq"))
 
 
 # ------------------------------------------------------------------ cards ---
@@ -7607,13 +7619,13 @@ MOVED = ("2026-07-24", "2026-07-25")
 
 REDIRECT = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=./show/{date}.html">
-<link rel="canonical" href="{site}/show/{date}.html">
+<meta http-equiv="refresh" content="0; url=./show/{date}">
+<link rel="canonical" href="{site}/show/{date}">
 <title>{date} &mdash; Possum Logic</title>
 <style>body{{font-family:ui-monospace,monospace;margin:4rem auto;max-width:32rem;
 padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
 <body><p>This report has moved to
-<a href="./show/{date}.html">show/{date}.html</a>.</p></body></html>
+<a href="./show/{date}">show/{date}</a>.</p></body></html>
 """
 
 
@@ -7696,9 +7708,15 @@ def write_sitemap(site_dir):
             if rel in moved:
                 continue
             pages.append(rel.replace(os.sep, "/"))
-    # index.html serves the front page, and a crawler should be told about the
-    # directory rather than the file -- otherwise the same page is two URLs.
-    locs = sorted("%s/%s" % (SITE_URL, "" if p == "index.html" else p)
+    # Every page answers to two URLs: `/due` and `/due.html` both return 200,
+    # byte-identical, because Pages resolves the extension and -- unlike
+    # Netlify or Cloudflare -- does not redirect one form to the other. The
+    # site links the extensionless form, so that is the form listed here and
+    # the form share_meta declares canonical. Listing both, or listing the one
+    # the pages do not link, asks a crawler to index the same page twice.
+    # index.html is named as the directory, for the reason it always was.
+    locs = sorted("%s/%s" % (SITE_URL,
+                             "" if p == "index.html" else p[:-len(".html")])
                   for p in pages)
     body = "".join("<url><loc>%s</loc></url>" % html.escape(u, quote=False)
                    for u in locs)
@@ -9156,7 +9174,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         page, _ = site_paths(site_dir, date)
         prev, nxt = around.get(date, (None, None))
         if write_if_changed(page, render_html(
-                report, bar_scale=bar_scale, index_href="../index.html",
+                report, bar_scale=bar_scale, index_href="../",
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates,
                 sheet="../fonts.css", calendar=calendar,

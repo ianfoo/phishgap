@@ -12,9 +12,27 @@ holding current state and the work queue.
 
 Serve the built site with the `site` entry in `.claude/launch.json`, not over
 `file://` — `history.pushState` and other same-origin APIs behave differently
-there, which makes local verification lie.
+there, which makes local verification lie. That entry runs `tools/serve.py`
+rather than `python3 -m http.server`, for the reason in the first gotcha below.
 
 ## Gotchas
+
+**Links are extensionless, and the wrong form still works.** Pages are written
+to disk as `site/song/tweezer.html` and linked as `/song/tweezer`: GitHub Pages
+resolves the extension itself and, unlike Netlify or Cloudflare, does not
+redirect between the two forms, so both return 200 with identical bytes. That
+is the trap. Writing `href="./faq.html"` produces a link that works perfectly —
+no 404, no failed build, nothing to notice — while putting a second URL for the
+same page into circulation against a canonical tag naming the first. So the
+rule is checked deliberately: `tools/check_links.py` reports an internal href
+carrying `.html` as a problem, because it is the one kind of broken link that
+cannot announce itself. Plain `python3 -m http.server` 404s on every one of
+these links, which would make the local server disagree with production on
+every navigation; `tools/serve.py` adds the `.html` fallback, and the rule it
+shares with the link checker lives once in `tools/pathmap.py`. Verified against
+the live site on 2026-07-31. Untested, and worth settling before relying on it:
+what Pages serves for `/song/tweezer` when both `tweezer.html` and a
+`tweezer/` directory exist — which is what adding per-page sub-views would do.
 
 **There are still three base stylesheets, but what they share is now named.**
 `CSS` (show pages), `INDEX_CSS` and `SONG_CSS`; `SONGS_CSS`, `METHOD_CSS` and

@@ -133,6 +133,13 @@ python3 tools/check_links.py
 Walks all 1,310 built pages and fails on a link to a missing file, a fragment no
 element carries, or an id repeated within a page.
 
+It also fails on an internal link that still carries `.html`. Pages are written
+to disk with the extension and linked without it — `/song/tweezer`, not
+`/song/tweezer.html` — which the host resolves and `tools/serve.py` reproduces
+locally. Both forms return 200, so a link written the old way works and is
+still wrong: it puts a second URL for the same page into circulation against
+the `rel="canonical"` naming the first.
+
 ```sh
 python3 tools/check_few_plays.py
 ```
