@@ -137,6 +137,26 @@ anything tinted — `.toc a::before` sat on the index panel's `--rule-soft` wash
 at 4.13:1 light and 4.49:1 dark. **A token that passes on paper has not been
 checked until it is checked on the thing it actually sits on.**
 
+**The paper texture is on now, and `getComputedStyle` cannot see it.** The
+grain was generated, published, linked and *never painted* for its entire life,
+because `BODY_BOX_CSS` set the `background` shorthand one link after the sheet
+set `background-image`, and the shorthand resets it. Nothing caught that: the
+page is the right colour either way, just flat. Two more things were wrong
+underneath. `multiply` on cream and `screen` on near-black against a mid-grey
+tile are not a texture but a dimmer -- measured, they moved the light paper
+-20.8% and the dark paper +216% -- so the blend is `soft-light`, which is the
+identity at mid-grey and leaves the mean exactly where it was. And one tile
+cannot serve both palettes, because soft-light's swing depends on how far the
+backdrop sits from the extremes: the same band read sd(L*) 0.30 on cream and
+1.31 on near-black. `write_grain` now solves each palette its own spread from
+one perceptual target, `GRAIN_TARGET_DL`.
+**`tools/contrast_audit.html` is structurally blind to all of this** -- it reads
+`getComputedStyle().backgroundColor`, which returns the token, not the
+composite. `tools/check_paper.py` shoots the built pages headless and measures
+the painted pixels: the mean must stay within 2 levels of the palette's paper,
+and the texture must actually be there. Run it after touching the grain, the
+palette's paper, or anything that sets `background` on `body`.
+
 **And a clean sweep is true of the tree it ran on and nothing else.** Merging
 `main` into a branch that had just cleared the whole site brought nine fresh
 `color:var(--hot)` sites on small text — `.show a`, `.crumb a.sect`,

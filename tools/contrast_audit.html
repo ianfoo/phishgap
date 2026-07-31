@@ -57,7 +57,10 @@ const BASE = new URLSearchParams(location.search).get('base') || '';
 
 // One page per template, plus the two states that need a show in progress.
 const PAGES = [
-  '/index.html', '/songs.html', '/due.html', '/dormant.html', '/venues.html',
+  // No /dormant.html: it became a redirect stub when the page moved to
+  // out-of-rotation.html, so it is 121 bytes of CSS and nothing to audit.
+  // The freshness guard caught it sitting here, which is what it is for.
+  '/index.html', '/songs.html', '/due.html', '/venues.html',
   '/method.html', '/faq.html',
   // Added 2026-07-31 with the pages themselves. A page type missing from this
   // list is a page type nothing checks: the years, not-a-show and

@@ -536,7 +536,7 @@ FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
    were written: multiply on cream darkens the grain into the paper, screen on
    near-black lifts it, and neither shifts the paper colour the way painting
    opaque noise over it did. */
-body{background-image:url(grain.png);background-blend-mode:var(--grain-blend)}
+body{background-image:var(--grain);background-blend-mode:soft-light}
 """ % {"face": DISPLAY_FACE, "dir": FONT_DIR}
 
 # Plex Mono is the only thing still coming from Google: it is doing real work
@@ -948,7 +948,7 @@ LIGHT = {
     # .58 on the dark paper lands at 3.10:1.
     "band-opacity": ".85",
     "hover": "rgba(200,55,27,.055)", "edge": "#8d8676",
-    "grain-blend": "multiply",
+    "grain": "url(grain-light.png)",
 }
 DARK = {
     "paper": "#131210", "ink": "#ece5d5", "ink-soft": "#c4bcaa",
@@ -958,7 +958,7 @@ DARK = {
     "track": "rgba(236,229,213,.1)", "band": "#a89c85",
     "band-opacity": ".58",
     "hover": "rgba(255,107,69,.07)", "edge": "#6b5f4f",
-    "grain-blend": "screen",
+    "grain": "url(grain-dark.png)",
 }
 
 
@@ -1491,21 +1491,15 @@ dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
 
 #: The page box and its measure.
 #:
-#: `background`, the shorthand, and for now that is load-bearing: it resets
-#: `background-image`, which is where the paper texture hangs, so the grain has
-#: never painted -- not here and not on gh-pages, since the day it shipped.
-#: Ian remembered something being wrong with grain.png and this is it.
-#:
-#: Left switched off deliberately rather than fixed in passing. Turning it on
-#: is one word, and measured on the rendered pixels it costs the light paper
-#: 20.8% of its luminance (#f2ece0 -> #dad5ca) and lifts the dark paper by
-#: 216% (#131210 -> #262624), which moves every contrast ratio on the site --
-#: including several this branch just brought over the line. The tile is grey
-#: 108-148 and `multiply` against mid-grey is a heavy darkening; a texture
-#: meant to be felt rather than seen wants values close to white with a narrow
-#: spread, which is a retune, not a one-word fix. docs/TODO 8l.
+#: `background-color`, never the `background` shorthand. The shorthand resets
+#: every background longhand it does not mention, `background-image` among
+#: them, and the site sheet hangs the paper texture there one link earlier in
+#: the same <head>. That single word switched the grain off for its entire
+#: life -- generated, published, linked and never once painted, here or on
+#: gh-pages. It is also invisible in a screenshot, because the page is the
+#: right colour either way, just flat. tools/check_paper.py measures it now.
 BODY_BOX_CSS = """body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
-     background:var(--paper);color:var(--ink);
+     background-color:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 /* The measure in rem rather than px, so it travels with the type. Stated as
@@ -9160,45 +9154,98 @@ padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
 """
 
 
+#: How strong the paper texture is, as the standard deviation of CIE L* across
+#: the tile once it is blended onto the paper. A perceptual target rather than
+#: a pixel range, because the same pixel range is not the same texture on cream
+#: as on near-black: `soft-light` perturbs a mid backdrop far more than an
+#: extreme one, so the tile that had been specified for both read four times
+#: stronger in the dark palette. Each palette solves for its own spread below.
+#: 0.80 is "felt rather than seen" -- the dark palette shipped at 1.31 and the
+#: light at 0.30, and this sits between them.
+GRAIN_TARGET_DL = 0.80
+
+
+def _grain_spread(paper, target=GRAIN_TARGET_DL):
+    """The +/- band around mid-grey that hits `target` on this paper. """
+    def lstar(v):
+        v = max(0.0, min(255.0, v)) / 255
+        y = v / 12.92 if v <= .03928 else ((v + .055) / 1.055) ** 2.4
+        return 116 * (y ** (1 / 3)) - 16 if y > 0.008856 else 903.3 * y
+
+    def soft(cb, cs):
+        # The CSS/PDF soft-light. It is the identity at cs = 0.5, which is the
+        # whole reason the tile is centred on mid-grey: the paper's mean comes
+        # out exactly where it went in, whatever the spread.
+        if cs <= 0.5:
+            return cb - (1 - 2 * cs) * cb * (1 - cb)
+        d = ((16 * cb - 12) * cb + 4) * cb if cb <= 0.25 else math.sqrt(cb)
+        return cb + (2 * cs - 1) * (d - cb)
+
+    def sd(spread):
+        vals = [lstar(soft(paper / 255, g / 255) * 255)
+                for g in range(128 - spread, 128 + spread + 1)]
+        mean = sum(vals) / len(vals)
+        return (sum((v - mean) ** 2 for v in vals) / len(vals)) ** .5
+
+    lo, hi = 1, 120
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if sd(mid) < target:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
+
+
 def write_grain(site_dir, size=140):
-    """The paper texture, as a tile beside the site sheet. Skipped without Pillow.
+    """The paper texture: one tile per palette, beside the site sheet.
 
-    Monochrome and deliberately faint. The old SVG painted full-range noise --
-    single pixels from 19 to 232 on a 0-255 scale -- straight over the paper at
-    28% opacity, which lifted the dark palette's #131210 to a measured #2d2c2a
-    and muddied the light one. Texture should be felt rather than seen; this is
-    a narrow band around mid-grey, and the blend mode in the site sheet decides which
-    way it pushes.
+    Two things about this were wrong for its whole life, and neither was
+    visible, because it never painted at all -- BODY_BOX_CSS set the
+    `background` shorthand one link later and that resets `background-image`.
 
-    Deterministic, so a rebuild does not produce a new file and republish it.
+    The blend was `multiply` on cream and `screen` on near-black. Against a
+    mid-grey tile neither of those is a texture: multiply took the light paper
+    from #f2ece0 to a measured #dad5ca, 20.8% of its luminance, and screen took
+    the dark paper up 216%. `soft-light` is the identity at mid-grey, so the
+    paper's mean survives exactly and the tile only perturbs around it.
+
+    And one tile cannot serve both palettes, because soft-light's swing depends
+    on how far the backdrop is from the extremes: the same +/-20 band measured
+    sd(L*) 0.30 on cream and 1.31 on near-black, four times the texture in the
+    dark. Each palette gets a tile solved for GRAIN_TARGET_DL instead.
+
+    Deterministic, so a rebuild does not produce new files and republish them.
     """
-    path = os.path.join(site_dir, STATIC_DIR, "grain.png")
     try:
         from PIL import Image
     except ImportError:
         return None
-    # This wrote straight into the site root until the assets moved, so it had
-    # never needed a directory to exist. write_if_changed makes its own; this
-    # one saves through PIL and would fail on a fresh checkout without it.
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    rnd = random.Random(20260727)          # fixed: the tile must not change
-    img = Image.new("L", (size, size))
-    img.putdata([rnd.randint(108, 148) for _ in range(size * size)])
-    img = img.convert("RGBA")
-    img.putalpha(46)
-    scratch = path + ".tmp"
-    img.save(scratch, "PNG", optimize=True)
-    with open(scratch, "rb") as fh:
-        blob = fh.read()
-    os.remove(scratch)
-    if os.path.isfile(path):
-        with open(path, "rb") as fh:
-            if fh.read() == blob:
-                return path
-    with open(path, "wb") as fh:
-        fh.write(blob)
-    log("wrote %s (%d bytes)", path, len(blob))
-    return path
+    out = []
+    for name, palette in (("light", LIGHT), ("dark", DARK)):
+        paper = int(palette["paper"].lstrip("#")[:2], 16)
+        spread = _grain_spread(paper)
+        path = os.path.join(site_dir, STATIC_DIR, "grain-%s.png" % name)
+        # write_if_changed makes its own directory; this one saves through PIL.
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        rnd = random.Random(20260727)      # fixed: the tile must not change
+        img = Image.new("L", (size, size))
+        img.putdata([rnd.randint(128 - spread, 128 + spread)
+                     for _ in range(size * size)])
+        # Opaque. The alpha used to do the dimming that soft-light now does
+        # properly, and a translucent tile would only dilute the texture back
+        # towards the flat paper it is meant to relieve.
+        scratch = path + ".tmp"
+        img.convert("RGB").save(scratch, "PNG", optimize=True)
+        with open(scratch, "rb") as fh:
+            blob = fh.read()
+        os.remove(scratch)
+        if not (os.path.isfile(path) and open(path, "rb").read() == blob):
+            with open(path, "wb") as fh:
+                fh.write(blob)
+            log("wrote %s (%d bytes, spread +-%d)", path, len(blob), spread)
+        out.append(path)
+    return out
 
 
 def write_redirects(site_dir):

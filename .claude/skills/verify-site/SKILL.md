@@ -70,6 +70,22 @@ selector that could out-specify one. It resolves the cascade in each state,
 in both palettes, at both layouts, and reports anything under the AA floor for
 its own type size. Rebuild first; it reads built pages, not `possumlogic.py`.
 
+## Some things only exist in the painted pixels
+
+Two of this site's bugs were invisible to every text-based check and to
+`getComputedStyle`. The paper texture never painted for its whole life -- the
+page was the right colour, just flat -- and the first tuning of it moved the
+light paper -20.8% and the dark +216% while `contrast_audit.html` would still
+have printed "Pass", because it reads the background *token*, not the
+composite.
+
+`python3 tools/check_paper.py site` shoots the built pages headless and samples
+the pixels. Run it alongside the contrast audit whenever a background, a
+palette paper, or the grain changes. Reach for the same technique -- headless
+screenshot, sample with Pillow -- for anything blend modes, opacity or
+compositing can affect, because the CSSOM will confidently tell you the
+un-composited answer.
+
 ## Local build and published site are different questions
 
 The live site and a local build disagreed for over an hour while every local

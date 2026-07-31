@@ -3658,6 +3658,73 @@ saying why. Both checked-in guards pass on the merged tree
 (`check_links.py`: 1,313 pages, 108,207 links, 0 problems; `check_few_plays.py`
 ok).
 
+## 8l. The paper texture had never painted — Ian, 2026-07-31. DONE
+
+He asked what `grain.png` was, said he half-remembered "some sort of rendering
+error", and was right. It was generated on every build, published, linked from
+the shared sheet, and **never once painted** — here or on gh-pages, since the
+day it shipped. `BODY_BOX_CSS` set the `background` shorthand one link after
+the sheet set `background-image`, and the shorthand resets it.
+
+Nothing could have caught that. The page is the right colour either way, just
+flat, so no screenshot showed it, and `tools/contrast_audit.html` reads
+`getComputedStyle().backgroundColor` — the token, not the composite — so it is
+structurally blind to any texture.
+
+### Two more things were wrong underneath it
+
+**The blend was a dimmer, not a texture.** `multiply` on cream and `screen` on
+near-black against a mid-grey tile. Measured on rendered pixels, turning it on
+as written cost the light paper **20.8%** of its luminance (#f2ece0 → #dad5ca)
+and lifted the dark paper **216%** (#131210 → #262624) — which would have moved
+every ratio on the site, including several this branch had just brought over
+the line. `soft-light` is the identity at mid-grey, so a tile centred on 128
+leaves the paper's mean exactly where it was and only perturbs around it.
+
+**One tile cannot serve both palettes.** soft-light's swing depends on how far
+the backdrop sits from the extremes, so the same ±20 band measured sd(L*) 0.30
+on cream and 1.31 on near-black — four times the texture in the dark, which is
+the asymmetry Ian noticed in the specimen. `write_grain` now solves each
+palette its own spread from one perceptual target, `GRAIN_TARGET_DL = 0.80`:
+±54 for light, ±13 for dark. A perceptual target is the honest constant here;
+a pixel range is not the same texture on two different papers.
+
+Measured after, on the painted pixels:
+
+| | paper wanted | rendered mean | drift | sd(L*) |
+|---|---|---|---|---|
+| light | 242,236,224 | 241.4, 235.2, 222.8 | 1.2 | **0.82** |
+| dark | 19,18,16 | 19.7, 18.7, 16.7 | 0.7 | **0.83** |
+
+Same perceptual strength in both, and the paper's own colour survives to within
+about a level. Contrast is unchanged: the audit's 15 page states still pass.
+
+### `tools/check_paper.py`
+
+Enabling the grain put a live variable inside the one system this session spent
+its time hardening, and the contrast audit cannot see it. So the grain arrives
+with a check that can: it stamps a theme onto a copy of each built page, shoots
+it headless, and samples the painted pixels. It asserts the mean stays within
+2 levels of the palette's paper **and** that the texture is actually present.
+
+Both failure modes are covered by construction, and both have been demonstrated
+rather than assumed — switching the grain back off makes it report
+`sd(L*) 0.00 — the grain is not painting`, with `drift 0.0`, which is precisely
+why nothing else ever noticed.
+
+Three things it got wrong first, all fixed and all worth knowing:
+
+- **An iframe harness was three bugs at once** — the src resolved against the
+  wrong depth, the theme never reached the inner document, and the patch landed
+  on the harness rather than the page. It loads the page directly now, with the
+  theme stamped into a copy written *beside the original* so relative URLs still
+  resolve.
+- **`THEME_JS` wipes a stamped `data-theme`.** It runs inline at parse time and
+  calls `apply(localStorage.getItem(KEY))`, which with nothing stored *removes*
+  the attribute. The re-stamp has to run after it, from the end of `<body>`.
+- **The patch was sampling ink.** Bottom-right lands inside a table row on half
+  the page types; the top padding is paper on all of them.
+
 ## 9. Known and deliberately not fixed
 
 - GitHub Pages serves `cache-control: max-age=600` and cannot be configured,
