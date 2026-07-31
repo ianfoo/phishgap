@@ -72,6 +72,13 @@ detail is in §2k. Three things a fresh session should carry:
   button has been on screen permanently on every song page since it shipped.
   `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
   and prose pages as well, which is what Ian asked for.
+- **Open, and small: the IT remark is off the site and Ian has not ruled.**
+  The not-a-show page used to say the whole IT soundcheck is two songs in this
+  archive, so the versions people argue about from that afternoon cannot be
+  reached. That paragraph was replaced wholesale by the Bethel Woods one when
+  the real example turned up, and the IT fact is now nowhere on the site. It
+  is a fair caveat about phish.net's soundcheck coverage in general; it was
+  written about a wrong example. Put it back as a remark or leave it out.
 - **`show_kind` returns five kinds, not two** — soundcheck, tech rehearsal,
   television, radio, ceremony, with `session` as an honest fallback nothing
   currently reaches. It called the Bethel Woods tech rehearsal a soundcheck
