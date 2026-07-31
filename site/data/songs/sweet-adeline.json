@@ -151,7 +151,7 @@
   {"date": "1994-05-19", "venue": "Silva Concert Hall, Hult Center for the Performing Arts", "city": "Eugene", "state": "OR", "gap": 2, "set": "e", "note": "Without microphones.", "nb": 1, "prev": "Nellie Kane", "next": "Fire"},
   {"date": "1994-05-25", "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "gap": 5, "set": "1", "note": "Without microphones.", "nb": 1, "prev": "My Sweet One", "next": "Chalk Dust Torture"},
   {"date": "1994-06-14", "venue": "Civic Center", "city": "Des Moines", "state": "IA", "gap": 9, "set": "1", "note": "Without microphones.", "nb": 1, "prev": "Guelah Papyrus", "next": "Digital Delay Loop Jam"},
-  {"date": "1994-06-18", "venue": "The Loop 97.9 Studios", "city": "Chicago", "state": "IL", "gap": 0, "set": "1", "nb": 1, "first": 1, "next": "Wilson"},
+  {"date": "1994-06-18", "venue": "The Loop 97.9 Studios", "city": "Chicago", "state": "IL", "gap": 0, "set": "1", "nb": 1, "first": 1, "next": "Dog Faced Boy"},
   {"date": "1994-06-21", "venue": "Cincinnati Music Hall", "city": "Cincinnati", "state": "OH", "gap": 5, "set": "2", "note": "Without microphones.", "nb": 1, "prev": "Dog Faced Boy", "next": "Julius"},
   {"date": "1994-06-24", "venue": "Murat Theatre", "city": "Indianapolis", "state": "IN", "gap": 3, "set": "1", "note": "Without microphones.", "nb": 1, "prev": "Reba", "next": "Sample in a Jar"},
   {"date": "1994-07-05", "venue": "Congress Center", "city": "Ottawa", "state": "Ontario", "gap": 8, "set": "1", "note": "Without microphones.", "nb": 1, "prev": "Down with Disease", "xnext": "Punch You in the Eye"},

@@ -151,7 +151,7 @@
   {"date": "1993-12-31", "venue": "Worcester Centrum Centre", "city": "Worcester", "state": "MA", "gap": 3, "set": "2", "out": ">", "nb": 1, "prev": "Halley's Comet", "in": ">", "next": "It's Ice"},
   {"date": "1994-04-06", "venue": "Concert Hall", "city": "Toronto", "state": "Ontario", "gap": 3, "set": "1", "nb": 1, "prev": "Guelah Papyrus", "next": "Stash"},
   {"date": "1994-04-11", "venue": "Snively Arena, University of New Hampshire", "city": "Durham", "state": "NH", "gap": 4, "set": "1", "nb": 1, "prev": "Caravan", "in": ">", "next": "Foam"},
-  {"date": "1994-04-13", "venue": "Beacon Theatre", "city": "New York", "state": "NY", "gap": 1, "set": "1", "nb": 1, "prev": "Down with Disease", "next": "Rift"},
+  {"date": "1994-04-13", "venue": "Beacon Theatre", "city": "New York", "state": "NY", "gap": 1, "set": "1", "nb": 1, "prev": "Buried Alive", "in": ">", "next": "Stash"},
   {"date": "1994-04-16", "venue": "Mullins Center, University of Massachusetts", "city": "Amherst", "state": "MA", "gap": 3, "set": "2", "out": ">", "nb": 1, "prev": "Sample in a Jar", "next": "Tweezer"},
   {"date": "1994-04-18", "venue": "Bob Carpenter Center, University of Delaware", "city": "Newark", "state": "DE", "gap": 2, "set": "1", "out": ">", "nb": 1, "prev": "Glide", "in": ">", "next": "Julius"},
   {"date": "1994-04-20", "venue": "Virginia Horse Center", "city": "Lexington", "state": "VA", "gap": 1, "set": "2", "out": ">", "nb": 1, "xprev": "Suzy Greenberg", "next": "Run Like an Antelope"},

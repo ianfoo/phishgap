@@ -82,7 +82,7 @@
   {"date": "2013-11-02", "venue": "Boardwalk Hall", "city": "Atlantic City", "state": "NJ", "gap": 6, "set": "1", "nb": 1, "prev": "Funky Bitch", "in": ">", "next": "Theme from the Bottom"},
   {"date": "2013-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 3, "set": "1", "nb": 1, "prev": "Yarmouth Road", "next": "Lawn Boy"},
   {"date": "2014-04-26", "venue": "New Orleans Fairgrounds", "city": "New Orleans", "state": "LA", "gap": 2, "set": "1", "nb": 1, "prev": "Funky Bitch", "next": "The Line"},
-  {"date": "2014-06-24", "venue": "Ed Sullivan Theater", "city": "New York", "state": "NY", "gap": 1, "set": "1", "nb": 1, "first": 1, "next": "The Line"},
+  {"date": "2014-06-24", "venue": "Ed Sullivan Theater", "city": "New York", "state": "NY", "gap": 1, "set": "1", "nb": 1, "first": 1, "next": "Undermind"},
   {"date": "2014-07-04", "venue": "Saratoga Performing Arts Center", "city": "Saratoga Springs", "state": "NY", "gap": 3, "set": "1", "nb": 1, "prev": "Runaway Jim", "in": ">", "next": "Rift"},
   {"date": "2014-07-08", "venue": "The Mann Center for the Performing Arts", "city": "Philadelphia", "state": "PA", "gap": 2, "set": "2", "out": ">", "nb": 1, "xprev": "Walls of the Cave", "next": "Fuego"},
   {"date": "2014-07-12", "venue": "Randall's Island", "city": "New York", "state": "NY", "gap": 3, "set": "1", "nb": 1, "prev": "AC/DC Bag", "in": ">", "next": "Yarmouth Road"},

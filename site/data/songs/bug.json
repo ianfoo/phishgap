@@ -62,7 +62,7 @@
   {"date": "2003-07-18", "venue": "Alpine Valley Music Theatre", "city": "East Troy", "state": "WI", "gap": 14, "set": "2", "nb": 1, "prev": "Catapult", "next": "Secret Smile"},
   {"date": "2003-07-25", "venue": "Verizon Wireless Amphitheatre - Charlotte", "city": "Charlotte", "state": "NC", "gap": 5, "set": "e", "nb": 1, "prev": "The Star-Spangled Banner", "last": 1},
   {"date": "2003-07-30", "venue": "Tweeter Center at the Waterfront", "city": "Camden", "state": "NJ", "gap": 4, "set": "2", "nb": 1, "prev": "Twist", "next": "You Enjoy Myself"},
-  {"date": "2003-08-02", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 2, "set": "3", "nb": 1, "prev": "Spread It 'Round", "in": ">", "xnext": "Tower Jam"},
+  {"date": "2003-08-02", "venue": "Loring Commerce Centre", "city": "Limestone", "state": "ME", "gap": 2, "set": "3", "nb": 1, "prev": "Spread It 'Round", "in": ">", "xnext": "Dog Log"},
   {"date": "2003-12-02", "venue": "FleetCenter", "city": "Boston", "state": "MA", "gap": 5, "set": "e", "nb": 1, "xprev": "Waste", "last": 1},
   {"date": "2004-06-18", "venue": "KeySpan Park", "city": "Brooklyn", "state": "NY", "gap": 9, "set": "e", "out": ">", "nb": 1, "xprev": "Taste", "next": "Tweezer Reprise"},
   {"date": "2004-08-09", "venue": "Hampton Coliseum", "city": "Hampton", "state": "VA", "gap": 8, "set": "2", "out": ">", "nb": 1, "prev": "NICU", "next": "Contact"},

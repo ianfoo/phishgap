@@ -98,7 +98,7 @@
   {"date": "1999-07-13", "venue": "Tweeter Center", "city": "Mansfield", "state": "MA", "gap": 7, "set": "1", "nb": 1, "first": 1, "next": "The Curtain"},
   {"date": "1999-07-23", "venue": "Polaris Amphitheater", "city": "Columbus", "state": "OH", "gap": 7, "set": "1", "nb": 1, "prev": "Ya Mar", "next": "Back at the Chicken Shack"},
   {"date": "1999-07-26", "venue": "Deer Creek Music Center", "city": "Noblesville", "state": "IN", "gap": 3, "set": "1", "out": ">", "nb": 1, "prev": "Gumbo", "in": "->", "next": "Beauty of My Dreams"},
-  {"date": "1999-07-30", "venue": "Naeba Ski Resort", "city": "Niigata", "state": "Niigata", "gap": 2, "set": "1", "nb": 1, "prev": "Punch You in the Eye", "in": ">", "next": "Funky Bitch"},
+  {"date": "1999-07-30", "venue": "Naeba Ski Resort", "city": "Niigata", "state": "Niigata", "gap": 2, "set": "1", "nb": 1, "prev": "Stash", "next": "Funky Bitch"},
   {"date": "1999-09-19", "venue": "Irvine Meadows", "city": "Irvine", "state": "CA", "gap": 11, "set": "1", "out": ">", "nb": 1, "first": 1, "next": "Funky Bitch"},
   {"date": "1999-09-25", "venue": "Cynthia Woods Mitchell Pavilion", "city": "The Woodlands", "state": "TX", "gap": 4, "set": "2", "out": "->", "nb": 1, "xprev": "Wilson", "next": "David Bowie"},
   {"date": "1999-10-01", "venue": "Hilton Coliseum", "city": "Ames", "state": "IA", "gap": 4, "set": "2", "out": ">", "nb": 1, "xprev": "Cavern", "next": "Run Like an Antelope"},

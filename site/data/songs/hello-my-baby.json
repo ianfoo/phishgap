@@ -55,7 +55,7 @@
   {"date": "1998-11-14", "venue": "The Crown", "city": "Cincinnati", "state": "OH", "gap": 6, "set": "2", "nb": 1, "prev": "Julius", "xnext": "So Lonely"},
   {"date": "1998-11-29", "venue": "Worcester Centrum Centre", "city": "Worcester", "state": "MA", "gap": 10, "set": "e", "nb": 1, "prev": "Roggae", "last": 1},
   {"date": "1999-07-20", "venue": "Molson Amphitheatre", "city": "Toronto", "state": "Ontario", "gap": 19, "set": "e", "nb": 1, "prev": "Guyute", "last": 1},
-  {"date": "1999-07-30", "venue": "Naeba Ski Resort", "city": "Niigata", "state": "Niigata", "gap": 7, "set": "1", "nb": 1, "prev": "Waste", "next": "Ghost"},
+  {"date": "1999-07-30", "venue": "Naeba Ski Resort", "city": "Niigata", "state": "Niigata", "gap": 7, "set": "1", "nb": 1, "prev": "Waste", "last": 1},
   {"date": "1999-09-09", "venue": "GM Place", "city": "Vancouver", "state": "British Columbia", "gap": 3, "set": "2", "nb": 1, "prev": "You Enjoy Myself", "xnext": "Sample in a Jar"},
   {"date": "1999-09-14", "venue": "Boise State University Pavilion", "city": "Boise", "state": "ID", "gap": 4, "set": "e", "nb": 1, "prev": "Simple", "last": 1},
   {"date": "1999-09-19", "venue": "Irvine Meadows", "city": "Irvine", "state": "CA", "gap": 4, "set": "1", "nb": 1, "prev": "Stash", "xnext": "Twist"},

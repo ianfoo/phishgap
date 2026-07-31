@@ -59,7 +59,7 @@
   {"date": "1994-11-02", "venue": "Bangor Auditorium", "city": "Bangor", "state": "ME", "gap": 3, "set": "2", "nb": 1, "prev": "The Mango Song", "in": ">", "next": "Possum"},
   {"date": "1994-11-13", "venue": "Warner Theatre", "city": "Erie", "state": "PA", "gap": 4, "set": "1", "out": ">", "nb": 1, "prev": "Reba", "next": "It's Ice"},
   {"date": "1994-11-16", "venue": "Hill Auditorium, University of Michigan", "city": "Ann Arbor", "state": "MI", "gap": 2, "set": "1", "nb": 1, "prev": "Reba", "next": "The Lizards"},
-  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 4, "set": "1", "out": "->", "nb": 1, "prev": "Mountain Dew", "next": "The Man Who Stepped Into Yesterday"},
+  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 4, "set": "1", "out": "->", "nb": 1, "prev": "Paul and Silas", "next": "The Man Who Stepped Into Yesterday"},
   {"date": "1994-11-20", "venue": "Dane County Coliseum", "city": "Madison", "state": "WI", "gap": 1, "set": "2", "out": ">", "nb": 1, "prev": "Glide", "next": "Reba"},
   {"date": "1994-12-04", "venue": "Acker Gym, Chico State University", "city": "Chico", "state": "CA", "gap": 10, "set": "2", "out": ">", "nb": 1, "prev": "Reba", "next": "You Enjoy Myself"},
   {"date": "1994-12-08", "venue": "Spreckels Theatre", "city": "San Diego", "state": "CA", "gap": 3, "set": "2", "out": ">", "nb": 1, "prev": "My Mind's Got a Mind of its Own", "next": "Reba"},

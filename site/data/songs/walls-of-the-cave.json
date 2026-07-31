@@ -68,7 +68,7 @@
   {"date": "2015-07-25", "venue": "The Forum", "city": "Inglewood", "state": "CA", "gap": 5, "set": "1", "nb": 1, "prev": "Fuego", "in": ">", "xnext": "No Men In No Man's Land"},
   {"date": "2015-08-04", "venue": "Ascend Amphitheater", "city": "Nashville", "state": "TN", "gap": 6, "set": "1", "nb": 1, "prev": "Lawn Boy", "xnext": "Golden Age"},
   {"date": "2015-08-15", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 8, "set": "2", "nb": 1, "prev": "Tweezer", "in": ">", "xnext": "Sleeping Monkey"},
-  {"date": "2015-08-22", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 3, "set": "3", "nb": 1, "prev": "Wading in the Velvet Sea", "in": ">", "xnext": "Drive-In Jam"},
+  {"date": "2015-08-22", "venue": "Watkins Glen International", "city": "Watkins Glen", "state": "NY", "gap": 3, "set": "3", "nb": 1, "prev": "Wading in the Velvet Sea", "in": ">", "xnext": "Boogie On Reggae Woman"},
   {"date": "2015-09-04", "venue": "Dick's Sporting Goods Park", "city": "Commerce City", "state": "CO", "gap": 2, "set": "2", "nb": 1, "prev": "Wading in the Velvet Sea", "in": ">", "xnext": "Hold Your Head Up"},
   {"date": "2015-12-31", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 4, "set": "1", "nb": 1, "prev": "Reba", "xnext": "The Wedge"},
   {"date": "2016-06-22", "venue": "Xcel Energy Center", "city": "St. Paul", "state": "MN", "gap": 6, "set": "1", "nb": 1, "prev": "Halfway to the Moon", "xnext": "Mike's Song"},
