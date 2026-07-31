@@ -1607,6 +1607,69 @@ FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
 footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 """
 
+#: The way back to the navigation, for pages long enough to strand a reader.
+#:
+#: This was built for the song pages and stayed there for two days, which Ian
+#: found from the other end -- reading the due page: "there's no way to get
+#: back to the header without a long scroll to the top. We've talked about this
+#: before, and it was agreed we'd have some functionality to warp a user back
+#: to a navigation-dense area, but either it was applied to only one page, or
+#: not at all." It was the first, and the page that had it is not the one that
+#: needed it most: a song page runs to 629 rows at the outside, while the index
+#: is 692, the song index 589 and out of rotation 281 as a matter of course.
+#:
+#: One block and one script rather than a copy per shell. Seven shells want it,
+#: and the first paragraph of CLAUDE.md is about what a rule copied into three
+#: sheets has cost this file.
+#:
+#: The nav is the top of every one of these pages, so #top is the address of
+#: the navigation-dense area rather than merely of the beginning.
+TOTOP_CSS = """.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
+"""
+
+#: Hidden in the markup, so a reader with no JavaScript is never offered a
+#: control that would take them nowhere they are not already -- and never shown
+#: one pinned over the header it points at.
+TOTOP_HTML = ('<a class="totop" id="totop" href="#top" hidden'
+              ' aria-label="Back to the top">&uarr;</a>')
+
+#: Watch the header rather than a scroll offset: no magic number, and it stays
+#: right when the header wraps to more lines or a page grows a standfirst. The
+#: song pages do this inline because the same observer also drives their
+#: condensed header; these pages have nothing else to hang it on.
+#:
+#: The braces below are JavaScript's, and this string is passed to a shell's
+#: .format() as an argument rather than concatenated into it -- a replacement
+#: value is not re-scanned, so they need no doubling. Concatenating it would
+#: have made `{rootMargin:...}` a format field and raised KeyError at import.
+TOTOP_JS = TOTOP_HTML + """<script>
+(function(){
+  var b=document.getElementById('totop'), h=document.querySelector('header');
+  if(!b||!h||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){ b.hidden=e[0].isIntersecting; },
+    {rootMargin:'-8px 0px 0px 0px'}).observe(h);
+})();
+</script>"""
+
 CSS = BASE_CSS + """h1,h2,.title{text-wrap:balance}
 """ + BODY_BOX_CSS + """/* The header is a grid so the tour, which lives in the show line where there
    is room for it, can be lifted out to ride the breadcrumb row where there is
@@ -2369,6 +2432,18 @@ BUSTOUT_GAP = 100
 # a song was ever in rotation is answered by how many times they played it, not
 # by how long they had it lying around.
 ROTATION_PLAYS = 8
+
+#: The filename of the page holding all three groups.
+#:
+#: It was `dormant.html` for the three days between that page shipping and the
+#: night the split landed, and it stayed `dormant.html` for four more -- so the
+#: page was titled *Out of rotation*, headed *Out of rotation*, linked as *out
+#: of rotation*, and served from a URL naming one of the three things it keeps
+#: apart. Ian: "the artifact name did not update with the conceptual shift."
+#: Renaming a published URL is a thing to do once, so the name is a constant
+#: this time rather than a string in seven places; `dormant.html` stays behind
+#: as a forwarding page, since it is in the sitemap and on a preview card.
+ROTATION_PAGE = "out-of-rotation.html"
 
 # And below this many, the song never got going at all. Ian, on the first cut:
 # "We can't call two a 'one shot' ... but for most intents and purposes, they
@@ -3425,7 +3500,7 @@ header{padding-bottom:.9rem}
    venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
    while the identical class on a song page was 12px and dim. One class, two
    appearances, by accident. */
-""" + DEK_CSS + """.dek.foot{margin-top:1.4rem;max-width:64ch}
+""" + DEK_CSS + """
 /* The measurement detail, folded away. Three paragraphs used to stand open
    here: 835px of a 1,147px front matter on a phone, 73% of it, before the
    first due song. And the FAQ already carries 2,930 characters on the same
@@ -3650,7 +3725,7 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
   .count{margin-left:0}
   .theme{order:1;flex-basis:100%}
 }
-"""
+""" + TOTOP_CSS
 
 # Filtering is progressive enhancement: the rows are in the HTML, so the page
 # is a complete list with JavaScript off. The haystack lives in a data
@@ -3831,7 +3906,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a class="here">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -3864,6 +3939,7 @@ INDEX_SHELL = """<!DOCTYPE html>
 </ol>
 <p class="empty" id="empty" hidden>No shows match that search.</p>
 {aside}
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -4064,8 +4140,14 @@ def hero_cols(n):
 
     Four across is the widest that keeps a five-figure number on one line at
     the page's measure, so anything past four goes to three and wraps.
+
+    Three cards ask for three columns, not four. The old test only looked
+    upward -- anything not past four got the four-column grid -- which was
+    right for every hero that existed when it was written and wrong the moment
+    one lost a card: three cards in a four-track grid leave a quarter of the
+    row empty with the hero's bottom rule running on under nothing.
     """
-    return "hero-c3" if n > 4 else "hero-c4"
+    return "hero-c4" if n == 4 else "hero-c3"
 
 
 def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
@@ -4135,17 +4217,25 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # bad headline. It is reachable instead by sorting the archive on it, along
     # with the rating -- which answers the same kind of question and could not
     # be asked here at all before.
-    # The songs card doubles as the way to the song index, since a reader who
-    # has just noticed how many songs are logged is the reader who wants it.
+    #
+    # There was a fifth card here, "Song Performances", and it went for two
+    # reasons at once. The first is Ian's: five cards is a three-and-two hero,
+    # which is the ugliest shape the grid makes, and this was the card the
+    # page could most afford to lose. The second is worse and is why this one
+    # went rather than another. It summed every song slot across the reports
+    # *this page lists* -- 14,062 of them -- carried the same label as the
+    # songs index and linked straight to it, and that page says 37,169,
+    # because it counts every performance in every song's history across all
+    # 2,108 counted shows rather than the 692 written up here. One label, two
+    # populations, 2.6x apart, and a link from the smaller to the larger. It
+    # is the "Songs Logged" bug from a year ago exactly: that one was fixed by
+    # renaming the label, which left the two figures still disagreeing. A
+    # number that contradicts the page it points at is worse than no number,
+    # and the nav already carries a door to the songs index.
     cards = [
         (len(entries), "Reports", "", ""),
         (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
          page_href % peak["date"] if peak else ""),
-        # Performances, not songs: this sums every song slot across every
-        # report. Labelled "Songs Logged" it read 4,593 and linked to a
-        # page saying 379, which is the same word counting two things.
-        ("{:,}".format(sum(e["songs"] for e in entries)),
-         "Song Performances", "", "./songs.html"),
         (len({e["venue"] for e in entries if e["venue"]}), "Venues", "",
          "./venues.html"),
     ]
@@ -4216,7 +4306,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=INDEX_CSS, js=INDEX_JS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
+        css=INDEX_CSS, js=INDEX_JS, totop=TOTOP_JS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         hero=hero, hero_cls=hero_cols(len(cards)), years=chips,
         count=len(entries), rows="\n".join(rows) or "",
@@ -4686,12 +4776,7 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
 .perfs>li.landed{animation:landed 3.4s ease-out both}
 @media (prefers-reduced-motion:reduce){
   .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
-.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
-  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
-  justify-content:center;background:var(--paper);border:1px solid var(--edge);
-  color:var(--ink-soft);text-decoration:none;font-size:1rem}
-.totop:hover{color:var(--hot);border-color:var(--hot)}
-""" + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
+""" + TOTOP_CSS + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
    being columns, so nothing has to be squeezed or hidden. Higher than the 620
@@ -5638,9 +5723,19 @@ SONGS_CSS = INDEX_CSS + """
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
 .r-stats .score{color:var(--hot-text)}
-/* The song the top score belongs to, under its label. */
+/* Which song the figure above belongs to, under its label. */
 .lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
    text-transform:none;font-size:.75rem}
+/* The inherited arrow lands in the wrong place on this one card, and it is the
+   block that does it: `a.card .lbl::after` appends to the end of the label,
+   and the last thing in this label is a display:block song name, so the arrow
+   opened a line of its own and sat alone under it. Moved onto the name, which
+   is also the more honest target -- the card goes to that song's page, not to
+   a page about longest gaps. `.of` states its own colour, so it does not
+   inherit the label's hover and has to be named again here. */
+a.card .lbl::after{content:none}
+a.card .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card:hover .lbl .of,a.card:hover .lbl .of::after{color:var(--hot-text)}
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr}
   .r-when{white-space:normal}
@@ -5656,7 +5751,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a class="here">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -5684,6 +5779,7 @@ SONGS_SHELL = """<!DOCTYPE html>
 {rows}
 </ol>
 <p class="empty" id="empty" hidden>No songs match that search.</p>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -5764,9 +5860,9 @@ not more expected. A song at six times its usual gap is not one anybody is
 waiting on &mdash; it is drifting out of rotation. So past {mult}&times; a song
 is <a href="#slipping">slipping</a> rather than due, past {cap} shows it is
 <a href="#shelf">on the shelf</a>, and with no recent habit at all it is
-<a href="./dormant.html">dormant</a>. The first three are below; the dormant
-have a page of their own, because there are more of them than of everything
-else here put together.</p>
+<a href="#rotation">out of rotation</a>. All four are below, though the fourth
+is a count and a door rather than a list: there are more songs in it than in
+the other three put together, so they have a page to themselves.</p>
 <p class="dek">None of this knows what the band has planned. A themed night
 overrides every figure here &mdash; the 2021 Halloween runs built around
 numbers and animals, the elements nights of the first Sphere run, a run played
@@ -5785,7 +5881,8 @@ length</a>, including why a song gone for years is not on the list.</p>
 </ol>
 </section>
 {shelf}
-<p class="dek foot">{dormant}</p>
+{dormant}
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -6068,21 +6165,24 @@ def render_due(docs, counting, since, card=None):
         shelved)
 
     # The same hero vocabulary the index uses, counting the four categories and
-    # linking to all four. Dormant is the odd one -- it is a page rather than a
-    # section, because 281 rows is more than the other two lists put together --
-    # and until that page existed this cell stated a figure and led nowhere,
-    # which made it the only dead card on the site.
+    # linking to all four. All four land on this page now, which is the point:
+    # three of these cells took a reader to a section and the fourth left the
+    # site's longest page for another one, so the hero was three doors and an
+    # exit dressed the same.
     #
-    # It counts the songs that were in rotation and left it, not everything on
-    # that page: 281 was two other populations wearing the word, and the cell
-    # is the one place on this site the word appears without its page around it
-    # to qualify it. Straight to the section rather than the page top, so the
-    # figure and what it lands on are the same set.
+    # The fourth cell used to read "Dormant 54", and that was the figure being
+    # careful while the label was not. It counted only the songs that were in
+    # rotation and left it -- correct for the word, but it sat above a
+    # paragraph about 281 songs and beside a link to a page titled *Out of
+    # rotation*, so the one number on screen was the one nothing else on the
+    # page was talking about. Under the umbrella term the count is the
+    # umbrella's: 281, matching the section it now opens, which then hands off
+    # to the page that separates the three.
     stopped, rare, few = rotation_split(dormant)
     cards = [(len(due), "Due", " hot", "#main"),
              (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
-             (len(stopped), "Dormant", "", "./dormant.html#dormant")]
+             (len(dormant), "Out of rotation", "", "#rotation")]
     hero = "".join(
         ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
         + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
@@ -6092,19 +6192,55 @@ def render_due(docs, counting, since, card=None):
     n_due = len(due)
     subtitle = ("%d song%s you might reasonably expect tonight"
                 % (n_due, "" if n_due == 1 else "s"))
-    tail = ("A further %s are <a href=\"./dormant.html\">out of rotation</a> "
-            "&mdash; gone long enough to be bustouts, with no recent habit to "
-            "be late against at all. They are not due, they are the largest "
-            "part of the catalogue, and they are not one thing: %d were in "
-            "rotation and left it, %d were given a run that did not take, and "
-            "%d turned up on %s in the band&rsquo;s whole life and never "
-            "again. That page keeps them apart."
-            % ("{:,}".format(len(dormant)), len(stopped), len(rare), len(few),
-               FEW_TITLE.lower())) if dormant else ""
+    # The fourth group, promoted out of the trailing paragraph it had been
+    # bolted to. It was the only one of this page's four with no heading, no
+    # rule above it and no place in the hero -- so a reader who had scrolled
+    # 38 rows of Slipping and On the shelf met the largest group on the page as
+    # an unannounced sentence after the last list, or, far more likely, never
+    # scrolled that far and never met it. Ian: "a reader would have to scroll
+    # all the way down to the end to happen upon them. And then there's not
+    # even a section heading to call out what they're about to read." Same
+    # furniture as the two sections above it, so it reads as the fourth thing
+    # rather than as a footnote about the third.
+    #
+    # Two copy repairs while it moved, both of them Ian's:
+    #
+    # "That page keeps them apart" -- a demonstrative with two candidate
+    # referents and a stiff one at that, in the last sentence of the page. The
+    # link now says where it goes and what is there, which is what the sentence
+    # was reaching for.
+    #
+    # "%d turned up on %s" was grammatical when FEW_TITLE read "one or two
+    # nights". It has read "once or twice" since Ian objected to the nights
+    # lexicon, and the preposition was left behind: the published page says
+    # "174 turned up on once or twice in the band's whole life". This is the
+    # cost of interpolating a phrase whose grammar the sentence depends on --
+    # the constant changed, every sentence built on it compiled fine, and one
+    # of them stopped being English. It reads "were played once or twice" now,
+    # which survives the phrase growing a third clause.
+    tail = ""
+    if dormant:
+        tail = (
+            "<section class='rot'>"
+            "<h2 class='shelf-h' id='rotation'>Out of rotation</h2>"
+            "<p class='dek'>Gone long enough that a return would be a "
+            "bustout, and with no recent record left to be late against "
+            "&mdash; so there is no lateness here to rank, and none of it is "
+            "due. There are more of these than in the three lists above put "
+            "together, and they are not one population: %d were in rotation "
+            "and left it, %d were played a few times across the "
+            "band&rsquo;s whole life and never became a habit, and %d were "
+            "played %s and never again.</p>"
+            "<p class='dek'><a href='./%s'>All %s, grouped by the year each "
+            "was last heard</a></p>"
+            "<p class='backtop'><a href='#top'>&uarr; Back to top</a></p>"
+            "</section>"
+            % (len(stopped), len(rare), len(few), FEW_TIMES,
+               ROTATION_PAGE, "{:,}".format(len(dormant))))
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         mult=_stat(DUE_MULTIPLE), hero=hero, hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, rows="\n".join(out), shelf=shelf, dormant=tail,
@@ -6200,6 +6336,7 @@ graveyard.</p></header>
 <div id="main" tabindex="-1">
 {rows}
 </div>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -6253,10 +6390,16 @@ ROTATION_SECTIONS = (
      "archive that began after {floor} or more performances, {rate}% has since "
      "been ended by another one."),
     ("rarities", "Rarities", "rarity",
-     "More than {few} performances and fewer than {floor}. The band gave these "
-     "a run and it did not take &mdash; enough of a habit to notice, never "
-     "enough to break. Some are covers taken out for one tour; some are "
-     "originals that never found a place in a set. {rate}% have come back."
+     # "The band gave these a run and it did not take" went at Ian's reading:
+     # it casts every performance as a trial aimed at sticking, and files the
+     # outcome as a failure at something nobody said was being attempted. A
+     # cover played twice on one tour was not an audition. What the archive
+     # supports is the count and nothing about intent, which is what the clause
+     # that survived already said.
+     "More than {few} performances and fewer than {floor} &mdash; enough of a "
+     "habit to notice, never enough to break. Some are covers taken out for "
+     "one tour; some are originals that never found a place in a set. "
+     "{rate}% have come back."
      "</p><p class='dek'>This is the one section where <em>when</em> the plays happened "
      "changes the answer. Read the years at the right of each row: a song "
      "whose handful of performances sat close together came back {tight}% of "
@@ -6394,19 +6537,24 @@ def render_dormant(docs, counting, since):
         for val, lbl, cls, href in cards)
 
     n = len(dormant)
-    subtitle = ("%s song%s the band is not playing, in three kinds"
+    # "in three kinds" was Ian's: "'of three types,' or 'in three categories,'
+    # maybe, but 'in three kinds' feels like an awkward phrase." It is -- kind
+    # takes *of*, and the page's own furniture already had the plain word for
+    # what these are, since the three things below this line are three groups
+    # of rows.
+    subtitle = ("%s song%s the band is not playing, in three groups"
                 % ("{:,}".format(n), "" if n == 1 else "s"))
     blurb = ("Every Phish song that has dropped out of rotation, split by "
              "whether it ever had one.")
     return DORMANT_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=DORMANT_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=DORMANT_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         floor=MIN_HISTORY, years_n=RECENT_YEARS,
         hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         rows="\n".join(body),
         share=share_meta("Out of rotation &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "dormant.html"),
+                         html.escape(blurb, quote=True), ROTATION_PAGE),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -6419,7 +6567,7 @@ VENUES_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a class="here">Venues</a>
@@ -6439,6 +6587,7 @@ over what span, and the longest gap the room has heard.</p></header>
 <ol class="vn" id="main" tabindex="-1">
 {rows}
 </ol>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>{stamp}</span></footer>
 {analytics}
@@ -6501,7 +6650,7 @@ def render_venues(reports, card=None):
              % (n, "{:,}".format(total)))
     return VENUES_SHELL.format(
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(rows),
         share=share_meta("Venues &mdash; Possum Logic",
@@ -6535,13 +6684,17 @@ def render_songs(docs, stamp=None, card=None):
         perfs = doc.get("performances") or []
         if not perfs:
             continue
-        gaps = [p["gap"] for p in perfs[1:] if p["gap"] is not None]
+        # (gap, the night that gap ended) rather than the gap alone, because
+        # the hero has to order the songs that tie on the figure -- see below.
+        gaps = [(p["gap"], p["date"]) for p in perfs[1:] if p["gap"] is not None]
         best = (doc.get("best") or [None])[0]
+        peak = max(gaps) if gaps else None
         entries.append({
             "song": doc["song"], "slug": doc["slug"], "played": len(perfs),
             "last": perfs[-1]["date"], "first": perfs[0]["date"],
-            "median": _median(gaps) if gaps else None,
-            "longest": max(gaps) if gaps else None,
+            "median": _median([g for g, _ in gaps]) if gaps else None,
+            "longest": peak[0] if peak else None,
+            "longest_on": peak[1] if peak else "",
             "score": best["score"] if best else None,
             "best_date": best["date"] if best else "",
         })
@@ -6574,35 +6727,86 @@ def render_songs(docs, stamp=None, card=None):
                e["last"], stats))
 
     total = sum(e["played"] for e in entries)
-    top = max(entries, key=lambda e: e["score"] or -1) if entries else None
+    # The song that holds the longest gap, so the figure can point at it. The
+    # index has done this since it was built and says why: a figure in the hero
+    # that cannot be followed is an advertisement for a page that does not
+    # exist. This page had four such figures and no links at all -- the reader
+    # was shown 1,468 and left to guess which of 589 songs it belonged to.
+    #
+    # Every song holding the record, not just one, because right now two do:
+    # Cold as Ice came back after 1,468 shows on 2026-07-22 and Gone after
+    # 1,468 on 2009-12-30. A bare `max()` would have named whichever sorted
+    # first and stated it as *the* answer, and this site's rule is that a wrong
+    # figure is worse than a missing one -- "Cold as Ice, 1,468" under the
+    # words LONGEST GAP is a claim of uniqueness the archive does not support.
+    # So the card names the most recent holder, links to it, and says how many
+    # others there are. (The index's version of this card is safe by accident
+    # and not by design: measured across the 692 archived reports, 2026-07-22
+    # holds 1,468 alone -- Gone's night is outside them. Same latent bug, one
+    # tie away.)
+    #
+    # Most recent first, because among equals it is the one a reader has a
+    # chance of remembering, and because the ordering has to come from the
+    # data rather than from where a song happens to sit in the list.
+    top_gap = max((e["longest"] for e in entries if e["longest"]), default=None)
+    holders = sorted((e for e in entries if e["longest"] == top_gap),
+                     key=lambda e: e["longest_on"],
+                     reverse=True) if top_gap else []
+    peak = holders[0] if holders else None
+    if len(holders) == 1:
+        shared = ""
+    elif len(holders) == 2:
+        shared = ", tied with %s" % html.escape(holders[1]["song"])
+    else:
+        shared = ", tied with %d others" % (len(holders) - 1)
     # "Performances" on a page listing songs can be read as the band's, and
     # 27,966 of those would be some tour. The count is of songs played, so it
-    # says so -- and the best version is some particular song's, so it names it
-    # rather than leaving a bare 97 to be a superlative about nothing.
+    # says so.
+    #
+    # There was a fourth card, "Best Rated Version", and it is gone. Three
+    # things were wrong with it and they are separable. It named a superlative
+    # about one song on a page whose whole job is the other 588. Its phrasing
+    # only parses if you already know it means "the best-rated version on the
+    # site", which is a sentence this page never says. And the score is
+    # fouldomain's, not this archive's -- a hero is where a site states what it
+    # thinks, and that cell handed the largest type on the page to someone
+    # else's judgement of one performance. None of that removes the fact from
+    # the site: every row still carries its own best score, and "Highest rated"
+    # is one of the five sorts directly below. A sort answers this for all 589
+    # songs, which is the right shape for the question; a hero answered it for
+    # one.
     cards = [
-        (len(entries), "Songs", ""),
-        ("{:,}".format(total), "Song Performances", ""),
-        (_stat(max((e["longest"] or 0) for e in entries)) if entries else "n/a",
-         "Longest Gap", " hot"),
-        (top["score"] if top and top["score"] else "n/a",
-         "Best Rated Version%s" % ("<span class='of'>%s</span>"
-                                   % html.escape(top["song"])
-                                   if top and top["score"] else ""), ""),
+        (len(entries), "Songs", "", ""),
+        ("{:,}".format(total), "Song Performances", "", ""),
+        (_stat(peak["longest"]) if peak else "n/a",
+         "Longest Gap%s" % ("<span class='of'>%s%s</span>"
+                            % (html.escape(peak["song"]), shared)
+                            if peak else ""),
+         " hot", "./song/%s.html" % peak["slug"] if peak else ""),
     ]
     hero = "".join(
-        "<div class='card'><div class='lbl'>%s</div>"
-        "<div class='num%s'>%s</div></div>" % (lbl, cls, val)
-        for val, lbl, cls in cards)
-    subtitle = ("%d song%s, played %s time%s"
+        ("<a class='card' href='%s'>" % html.escape(href, quote=True)
+         if href else "<div class='card'>")
+        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
+        + ("</a>" if href else "</div>")
+        for val, lbl, cls, href in cards)
+    # "589 songs, played 37,169 times" attaches the verb to the nearest noun a
+    # reader can find, and the nearest noun is singular: it reads as one song
+    # played 37,169 times. The count is of performances across the catalogue,
+    # so it says performances, and "between them" puts the 589 back in charge
+    # of the number.
+    subtitle = ("%d song%s &middot; %s performance%s between them"
                 % (len(entries), "" if len(entries) == 1 else "s",
                    "{:,}".format(total), "" if total == 1 else "s"))
-    blurb = ("Every song in the archive: %d of them, played %s times."
-             % (len(entries), "{:,}".format(total)))
+    # Same correction as the subtitle, and it matters more here: this is the
+    # line a link preview shows, with no page around it to disambiguate.
+    blurb = ("Every song in the archive: %d of them, %s performances between "
+             "them." % (len(entries), "{:,}".format(total)))
     return SONGS_SHELL.format(
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONGS_CSS, js=SONGS_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        css=SONGS_CSS, js=SONGS_JS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, hero=hero, hero_cls=hero_cols(len(cards)),
         count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
@@ -6729,7 +6933,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -6743,6 +6947,7 @@ METHOD_SHELL = """<!DOCTYPE html>
 <nav class="toc" id="sections" tabindex="-1" aria-label="Sections on this page"><span class="cap">Sections on this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
+{totop}
 <footer><span><a href="./index.html">All reports</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
@@ -6892,7 +7097,7 @@ written can reach the threshold.</p>"""),
     # quarter percent signs, and every one of them would have needed doubling.
     ('rotation', 'Dormant, rarity, %s' % FEW_TITLE.lower(), """
 <p>Songs with no recent record that have been gone a hundred shows or more sit
-<a href="./dormant.html">on their own page</a>, because there is nothing left
+<a href="./{page}">on their own page</a>, because there is nothing left
 to rank them by. For a long time that page called all
 <b class="num">281</b> of them <b>dormant</b>, and for
 <b class="num">174</b> of them that was false. Dormant means a song used to be
@@ -6902,8 +7107,9 @@ exactly once in this archive were played on a Halloween night.</p>
 <p>So the page splits on how many times the band ever played the song:
 <b class="num">{floor}</b> or more and it was in rotation and left, which is
 <span class="verdict">dormant</span>; <b class="num">{lo}</b> to
-<b class="num">{hi}</b> is a <b>rarity</b>, given a run that did not take;
-<b>{few_times}</b> and it never got going at all.</p>
+<b class="num">{hi}</b> is a <b>rarity</b>, enough performances to notice and
+never enough to become a habit; <b>{few_times}</b> and it never got going at
+all.</p>
 <p>The archive decides where that line goes rather than taste. Take every
 silence of a hundred shows or more it holds &mdash; <b class="num">774</b> of
 them &mdash; group them by how many times the song had been played when it fell
@@ -6930,8 +7136,8 @@ splitting <b>1 / 2&ndash;7 / 8+</b> the three groups return 28%, 55% and 84%,
 while splitting <b>1&ndash;2 / 3&ndash;7 / 8+</b> they return 30%, 65% and 84%.
 Merging widens the gap at the bottom boundary from 27 points to 35 and costs
 nothing at the top. On the evidence, a song played twice and dropped is the
-same object as a song played once and dropped &mdash; which is why the section
-is named for the nights rather than for a count.</p>
+same object as a song played once and dropped &mdash; which is why one heading
+covers both counts rather than a number naming either.</p>
 <p><b>When those few plays happened matters too, but only for the rarities.</b>
 Take how many shows passed per performance, and split at two hundred. A rarity
 whose handful of plays sat close together came back <b class="num">70%</b> of
@@ -6964,7 +7170,8 @@ quiet again for good <b class="num">43%</b> of the time; those played two to
 seven times, <b class="num">27%</b>; those played eight or more,
 <b class="num">7%</b>.</p>""".format(
         floor=ROTATION_PLAYS, lo=FEW_PLAYS + 1, hi=ROTATION_PLAYS - 1,
-        few_times=FEW_TIMES, few_title=FEW_TITLE.lower())),
+        few_times=FEW_TIMES, few_title=FEW_TITLE.lower(),
+        page=ROTATION_PAGE)),
     ('ratings-and-jam-charts', 'Ratings and jam charts', """
 <p>Version scores and the Phish.net show rating both come by way of
 <b>fouldomain</b>, which is the only place the latter is exposed
@@ -7016,7 +7223,7 @@ def render_method():
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=METHOD_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=METHOD_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
@@ -7062,7 +7269,7 @@ FAQ_SHELL = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{fonts}" rel="stylesheet">
 {sheet}
-<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body><div class="wrap">
+<style>{css}</style>{theme_js}{keys_js}{ago_js}{new_rows_js}</head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <nav class="crumb"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a>
 <a href="./due.html">Due</a><a href="./venues.html">Venues</a>
@@ -7078,6 +7285,7 @@ do not.</p></header>
 <nav class="toc" id="questions" tabindex="-1" aria-label="Questions on this page"><span class="cap">Questions on this page</span>
 <ol>{toc}</ol></nav>
 {body}</div>
+{totop}
 <footer><span><a href="./method.html">How this works</a></span>{theme_ui}
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 {analytics}
@@ -7170,7 +7378,7 @@ true.</dd>
 <dt>Out of rotation</dt><dd>No recent record at all, and gone a hundred shows or
 more. Nobody is expecting it, and ranking these would bury the songs somebody
 might actually shout for tonight &mdash; so they have
-<a href="./dormant.html">a page of their own</a>, grouped by the year they were
+<a href="./{page}">a page of their own</a>, grouped by the year they were
 last heard rather than by a lateness they cannot have.</dd>
 </dl>
 <p>That fourth group is three groups, and the difference matters more than the
@@ -7205,7 +7413,8 @@ own usual gap &mdash; the figure on the right of every row &mdash; not how many
 shows it has been gone, since a hundred shows is nothing for one song and a
 decade for another.</p>""".format(
         floor=ROTATION_PLAYS, lo=FEW_PLAYS + 1, hi=ROTATION_PLAYS - 1,
-        few_times=FEW_TIMES, few_title=FEW_TITLE.lower())),
+        few_times=FEW_TIMES, few_title=FEW_TITLE.lower(),
+        page=ROTATION_PAGE)),
 
     ("eras", "What are the eras &mdash; 1.0, 2.0, 3.0 and 4.0?", """
 <p><em>Era</em> is the word this site uses for them, and the one on the chips
@@ -7277,7 +7486,7 @@ def render_faq():
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=FAQ_CSS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=FAQ_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
@@ -7585,14 +7794,20 @@ def index_card(reports):
 
 
 def songs_card(docs):
+    # The same three figures the page's hero now carries, and for the same
+    # reasons -- see render_songs on why the top fouldomain score is not one of
+    # them. It was worse here than on the page: the card had room for the
+    # number and not for the song, so it published a bare 97 under "Best rated
+    # version" with nothing anywhere to say whose.
     total = sum(len(d["performances"]) for d in docs)
-    best = max((v["score"] for d in docs for v in (d.get("best") or [])),
-               default=None)
+    longest = max((p["gap"] for d in docs for p in d["performances"][1:]
+                   if p["gap"] is not None), default=None)
     return card_markup(
         "Every song", "Possum <em>Logic</em>", "One page per song, all the way back",
         (("%d" % len(docs), "Songs", ""),
          ("{:,}".format(total), "Song performances", ""),
-         (("%s" % best) if best else "&mdash;", "Best rated version", "hot")))
+         (_stat(longest) if longest is not None else "&mdash;",
+          "Longest gap", "hot")))
 
 
 # ------------------------------------------------------------------- site ---
@@ -7662,15 +7877,20 @@ def migrate_show_data(site_dir):
 # the move for free; these two are out in a chat somewhere and cannot.
 MOVED = ("2026-07-24", "2026-07-25")
 
+#: Pages that changed filename, and what they became. Same argument as MOVED
+#: and a stronger one: this URL is in the published sitemap, so it is not only
+#: possibly remembered, it has been handed to crawlers as a page that exists.
+#: See ROTATION_PAGE for why it moved.
+MOVED_PAGES = {"dormant.html": (ROTATION_PAGE, "Out of rotation")}
+
 REDIRECT = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=./show/{date}.html">
-<link rel="canonical" href="{site}/show/{date}.html">
-<title>{date} &mdash; Possum Logic</title>
+<meta http-equiv="refresh" content="0; url=./{href}">
+<link rel="canonical" href="{site}/{href}">
+<title>{title} &mdash; Possum Logic</title>
 <style>body{{font-family:ui-monospace,monospace;margin:4rem auto;max-width:32rem;
 padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
-<body><p>This report has moved to
-<a href="./show/{date}.html">show/{date}.html</a>.</p></body></html>
+<body><p>{what} has moved to <a href="./{href}">{href}</a>.</p></body></html>
 """
 
 
@@ -7712,12 +7932,25 @@ def write_grain(site_dir, size=140):
 
 
 def write_redirects(site_dir):
-    """Leave a forwarding note where the two shared links used to point."""
+    """Leave a forwarding note wherever an old link used to point."""
     for date in MOVED:
         if not os.path.isfile(site_paths(site_dir, date)[1]):
             continue
-        write_if_changed(os.path.join(site_dir, "%s.html" % date),
-                         REDIRECT.format(date=date, site=SITE_URL))
+        write_if_changed(
+            os.path.join(site_dir, "%s.html" % date),
+            REDIRECT.format(href="%s/%s.html" % (SHOW_DIR, date),
+                            site=SITE_URL, title=date, what="This report"))
+    # Only once the destination is on disk. A forwarding page written ahead of
+    # the page it forwards to would replace a working document with a bounce
+    # to a 404 -- and this one overwrites the old build's real dormant.html, so
+    # there would be nothing left to fall back to.
+    for old, (new, title) in MOVED_PAGES.items():
+        if not os.path.isfile(os.path.join(site_dir, new)):
+            continue
+        write_if_changed(
+            os.path.join(site_dir, old),
+            REDIRECT.format(href=new, site=SITE_URL, title=title,
+                            what="This page"))
 
 
 def write_sitemap(site_dir):
@@ -7738,11 +7971,14 @@ def write_sitemap(site_dir):
     omitted for the simpler reason that Google has said for years it ignores
     them.
 
-    The two forwarding pages left where old shared links used to point are
+    The forwarding pages left where old shared links used to point are
     excluded: a redirect is not a page, and listing one asks a crawler to index
-    a document whose only content is a meta refresh.
+    a document whose only content is a meta refresh. dormant.html has to be
+    taken out by name as well as written by name -- it was in the last sitemap
+    as a real page, so leaving it in would be this file publishing a claim it
+    had just stopped being true.
     """
-    moved = {"%s.html" % d for d in MOVED}
+    moved = {"%s.html" % d for d in MOVED} | set(MOVED_PAGES)
     pages = []
     for root, dirs, files in os.walk(site_dir):
         dirs[:] = [d for d in dirs if d not in ("data", "card", "font")]
@@ -9261,7 +9497,6 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     if rebuilt:
         log("re-rendered %d unchanged-content page(s) after a template change",
             rebuilt)
-    write_redirects(site_dir)
     # Before the cards are shot, and it has to stay that way: `shoot_cards`
     # points the card renderer at this exact file, so a build that drew cards
     # first would set every one of them in whatever face the machine happened
@@ -9307,10 +9542,15 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         # fourth of that page's four lists, and its only door is the hero cell
         # there. Both are built from one due_rows() call's worth of definitions,
         # so the figure on the card and the length of the page cannot disagree.
-        dormant_page = os.path.join(site_dir, "dormant.html")
-        if write_if_changed(dormant_page,
+        rotation_page = os.path.join(site_dir, ROTATION_PAGE)
+        if write_if_changed(rotation_page,
                             render_dormant(docs, counting, since)):
-            log("wrote %s", dormant_page)
+            log("wrote %s", rotation_page)
+
+    # After the pages, because a forwarding note is only honest once the page
+    # it points at is on disk -- and the note for dormant.html lands on top of
+    # the previous build's copy of that page.
+    write_redirects(site_dir)
 
     method = os.path.join(site_dir, "method.html")
     if write_if_changed(method, render_method()):

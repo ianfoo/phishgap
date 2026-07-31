@@ -40,6 +40,17 @@ Anchor on a neighbouring line that differs and assert the match count. Four
 bugs have come out of the copies: a nav that could not wrap, a footer link in
 the browser's default blue, a sticky-header hide out-specified by a modifier
 class, and tabular figures on show pages only. `docs/TODO.md` §8e.
+`TOTOP_CSS` was the sixth block to be named, on 2026-07-30, when the floating
+back-to-top control went from one sheet to all of them.
+
+**A `hidden` attribute loses to any author `display`.** The browser hides
+`[hidden]` with a *user-agent* rule, and a user-agent rule loses to an author
+declaration outright — specificity does not enter into it. `.totop` declared
+`display:flex`, so `hidden` did nothing, and the back-to-top button sat on
+every song page permanently, pinned over the header it exists to replace, from
+the day it shipped. The script had been setting `.hidden` correctly the whole
+time. **Prove the state you are claiming, not its opposite**: every screenshot
+of that button showed it working. `docs/TODO.md` §2k.
 
 **Drawing preview cards locally poisons CI.** `site/data/cards.json` records
 what each card was drawn from and is tracked; `site/card/*.png` is gitignored.

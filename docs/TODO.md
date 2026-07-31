@@ -54,7 +54,31 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### Newest first: the 2026-07-30 session — "a one-off is not dormant"
+### Newest first: the 2026-07-30 review of songs, home, due and dormant
+
+Ian read four pages and sent nine notes. All nine are done and pushed; the
+detail is in §2k. Three things a fresh session should carry:
+
+- **`ROTATION_PAGE` is the filename of the out-of-rotation page**, and
+  `dormant.html` is a forwarding stub in `MOVED_PAGES`. The page had been
+  titled *Out of rotation* for a week while still being served from
+  `dormant.html` — Ian: "the artifact name did not update with the conceptual
+  shift." Renaming a published URL is a thing to do once, so it is a constant
+  now rather than a string in seven places.
+- **The floating back-to-top control had never been visible-when-wanted, and
+  never hidden when not.** `hidden` hides an element through the browser's own
+  `[hidden]{display:none}`, which any *author* `display` declaration beats
+  regardless of specificity — and `.totop` declares `display:flex`. So the
+  button has been on screen permanently on every song page since it shipped.
+  `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
+  and prose pages as well, which is what Ian asked for.
+- **The Browser pane cannot verify anything that uses IntersectionObserver.**
+  Its top-level document reports `innerWidth`/`innerHeight` of 0, so IO has no
+  root and never fires — not even the initial callback. The site's own sticky
+  header does not activate there either. Use headless Chrome; the recipe is in
+  the `verify-site` skill.
+
+### The 2026-07-30 session — "a one-off is not dormant"
 
 **§2j is the whole of it, and it supersedes parts of §2f.** Ian read the
 dormant page and objected that 126 of its 281 rows had been played exactly
@@ -1552,6 +1576,65 @@ reported:
 measurement, and it cost a correct link. Neither is "I checked the links" when
 the checker only saw 9 of 1,310 pages — that was mine, and it is why the check
 is in `tools/` now instead of a scratch file.
+
+## 2k. Ian's review of songs, home, due and dormant — 2026-07-30. DONE
+
+Nine notes across four pages. All nine are done. Two bugs fell out of them
+that he had not asked about, and one of those had been shipping for two days.
+
+| # | his note | what happened |
+|---|---|---|
+| 1 | "589 songs, played 37,169 times" reads as one song played 37,169 times | now "589 songs · 37,169 performances between them"; the share blurb too, where there is no page around it to disambiguate |
+| 2 | the songs heroes advertise figures with no way to follow them | Longest Gap names its holder and links to that song page. The index has done this since it was built, and its comment says why |
+| 3 | "best rated version" is a strange thing to headline on a page about all 589 | card removed. The score is fouldomain's, and a hero is where a site states what *it* thinks. The fact is not lost: every row carries its own best score and "Highest rated" is one of the five sorts |
+| 4 | five-column hero on the home page, "and it's ugly anyway" | dropped to four — see below for which card went and why |
+| 5 | the home heroes duplicate the nav | **measured, not acted on.** He said "I don't necessarily want to remove that". Of the four cards left, three point at pages in the nav and one (Longest Gap) at a show page that is reachable no other way |
+| 6 | the due page's dormant note is bolted to the bottom with no heading | promoted to a fourth section with the same furniture as Slipping and On the shelf, and the hero's fourth cell now opens it rather than leaving the page |
+| 7 | "That page"; "a run that did not take" everywhere it appears | rewritten in all three places. "Did not take" casts every performance as a trial aimed at sticking and files the outcome as a failure at something nobody said was being attempted |
+| 8 | no way back to the navigation without a long scroll, on any page | the floating control is on all seven list and prose pages. It had never worked anywhere — see below |
+| 9 | "in three kinds" is awkward; and the page is `dormant.html` while its headline is *Out of rotation* | "in three groups"; and the page is `out-of-rotation.html` with a forwarding stub left behind |
+
+**Which home card went, and it was not the obvious one.** The cheapest way to
+four is to drop the card that repeats the subtitle, which is Reports. What went
+instead is **Song Performances**, because it was wrong. It summed every song
+slot across the 692 reports *that page lists* — 14,062 — carried the same label
+as the songs index, and linked straight to it. That page says **37,169**,
+because it counts every performance in every song's history across all 2,108
+counted shows. One label, two populations, 2.6× apart, and a link from the
+smaller to the larger. This is the "Songs Logged" bug from §3 again: that one
+was fixed by renaming the label, which left the two figures still disagreeing.
+The nav already carries a door to the songs index, so nothing was lost.
+
+**The back-to-top control had never once worked, on any page.** `hidden` hides
+an element through the UA rule `[hidden]{display:none}`. Any author `display`
+declaration beats a UA rule outright, whatever the specificity — and `.totop`
+declares `display:flex` two lines above. So the attribute has been inert since
+the control shipped, the script has been setting `.hidden` correctly the whole
+time, and every song page has carried a permanent floating arrow pinned over a
+header it was written to appear only in the *absence* of. Verified against the
+published sheet, not the local one. `.totop[hidden]{display:none}` is the fix,
+and the rules now live in one `TOTOP_CSS` block rather than in one sheet of
+three. **A control that hides itself needs its hidden state proved, not its
+visible one** — a screenshot of it working is a screenshot of the bug.
+
+**And the longest gap is a tie, which a `max()` would have hidden.** Two songs
+have come back after 1,468 shows: Cold as Ice on 2026-07-22 and Gone on
+2009-12-30. Naming one of them under the words LONGEST GAP is a claim of
+uniqueness the archive does not support, and this site's rule is that a wrong
+figure is worse than a missing one. The card names the most recent holder,
+links to it, and says how many others there are. **The index's version of the
+same card is safe by accident**: across the 692 archived reports, 2026-07-22
+holds 1,468 alone, because Gone's night is outside them. Same latent bug, one
+tie away — worth fixing there before it fires.
+
+**Two smaller things repaired in passing, both left by the same rename.** When
+`FEW_TITLE` went from "One or two nights" to "Once or twice" at Ian's request,
+two sentences built on it were left behind: the due page published "174 turned
+up **on** once or twice in the band's whole life", and the method page still
+explained that the section "is named for the nights rather than for a count",
+which is now exactly backwards. Interpolating a phrase whose grammar the
+sentence depends on has this failure mode — the constant changes, every
+sentence built on it compiles, and one of them stops being English.
 
 ## 2c. `site/data` layout — Ian, 2026-07-28. DONE
 
