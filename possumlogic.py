@@ -1611,11 +1611,24 @@ ROTATION_PAGE = "out-of-rotation.html"
 #: been played at one.
 NOT_A_SHOW_PAGE = "not-a-show.html"
 
-#: The six lists that are the archive, then the two pages about it. Ian,
-#: 2026-07-30, on the order: "songs should come before years. I feel like
-#: Years and Venues go together. Due and Dormant go together as well."
+#: The four ways into the archive, then the two pages about it.
+#:
+#: It held six until 2026-07-31, and the two that left are the reason this
+#: comment exists. Ian: "we are starting to really crowd that nav bar… I don't
+#: think the mobile widths could survive another addition." Measured at 390px
+#: he was right with room to spare -- one line holds 336px, the six labels
+#: came to 400px, and "Out of rotation" alone was 130px of it, more than
+#: Shows, Songs and Years put together.
+#:
+#: The four that stayed are the ones that are *ways in*: every show, every
+#: song, every year, every venue. What left -- Due, Out of rotation, Not a
+#: show -- are questions asked *about* that archive, and each has a parent
+#: that owns it: Due and Out of rotation are two rotation states of songs, so
+#: they hang off the songs page; Not a show is the show calendar's own
+#: boundary, so it hangs off the index. They are hero cards there, which is a
+#: door this site already knows how to draw, and they mark their parent as
+#: their section so a reader who arrives at one still sees where they are.
 NAV_LISTS = (("Shows", "index.html"), ("Songs", "songs.html"),
-             ("Due", "due.html"), ("Out of rotation", ROTATION_PAGE),
              ("Years", "years.html"), ("Venues", "venues.html"))
 NAV_META = (("FAQ", "faq.html"), ("How this works", "method.html"))
 
@@ -4485,8 +4498,14 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
          page_href % peak["date"] if peak else "",
          (peak["date"] + tied_with([e["date"] for e in holders[1:]]))
          if peak else ""),
-        (len({e["venue"] for e in entries if e["venue"]}), "Venues", "",
-         "./venues.html"),
+        # Was Venues, and went for the same reason the card above it names:
+        # the nav carries a door to the venues page from every page on the
+        # site, so a hero cell spending itself on that destination is spending
+        # the widest row on the front page to repeat the strip above it. Not a
+        # show has no nav entry at all now that the strip is four browse
+        # spines -- this card and the note below it are its only two doors,
+        # and it is the one destination here that needs one.
+        (len(aside), "Not a Show", "", "./" + NOT_A_SHOW_PAGE),
     ]
     # What is overdue going into tonight, counted once by due_rows() and shown
     # here only if the due page was actually built -- a card offering a figure
@@ -6467,7 +6486,7 @@ def render_due(docs, counting, since, card=None):
                ROTATION_PAGE, "{:,}".format(len(dormant))))
     blurb = "Phish songs that are overdue, measured against their own habits."
     return DUE_SHELL.format(
-        crumb=nav_strip(here="Due", mark=True),
+        crumb=nav_strip(section="Songs", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
@@ -6790,7 +6809,7 @@ def render_dormant(docs, counting, since):
     blurb = ("Every Phish song that has dropped out of rotation, split by "
              "whether it ever had one.")
     return DORMANT_SHELL.format(
-        crumb=nav_strip(here="Out of rotation", mark=True),
+        crumb=nav_strip(section="Songs", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=DORMANT_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
@@ -7176,7 +7195,8 @@ def due_card(docs, counting, since):
         size=104)
 
 
-def render_songs(docs, stamp=None, card=None, counting=None):
+def render_songs(docs, stamp=None, card=None, counting=None,
+                 n_due=None, n_rotation=None):
     """One page listing every song the archive holds a history for.
 
     Every figure here counts *shows*, which is what the rest of the site
@@ -7296,14 +7316,28 @@ def render_songs(docs, stamp=None, card=None, counting=None):
     # is one of the five sorts directly below. A sort answers this for all 589
     # songs, which is the right shape for the question; a hero answered it for
     # one.
+    # Four, and two of them are doors. This hero is how Due and Out of rotation
+    # are reached now that the nav carries only the four ways into the archive,
+    # so the room for them had to come from somewhere -- and it came from
+    # "Song Performances", which was the one figure here that the line directly
+    # above it already gives: the subtitle reads "589 songs, 36,958
+    # performances between them". A hero cell that repeats the sentence over it
+    # is spending the widest row on the page saying a number twice.
+    #
+    # Both doors are left out entirely when their figure is not known, rather
+    # than drawn as a card with no number: a due page that did not get built is
+    # a link to a page that is not there.
     cards = [
         (len(entries), "Songs", "", ""),
-        ("{:,}".format(total), "Song Performances", "", ""),
         (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
          "./song/%s.html" % peak["slug"] if peak else "",
          (peak["song"] + tied_with([e["song"] for e in holders[1:]]))
          if peak else ""),
     ]
+    if n_due is not None:
+        cards.append((n_due, "Due", "", "./due.html"))
+    if n_rotation is not None:
+        cards.append((n_rotation, "Out of Rotation", "", "./" + ROTATION_PAGE))
     hero = hero_html(cards)
     # "589 songs, played 37,169 times" attaches the verb to the nearest noun a
     # reader can find, and the nearest noun is singular: it reads as one song
@@ -10646,15 +10680,6 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         log("song pages: %d rendered, %d changed",
             considered, wrote)
 
-    if docs:
-        songs_page = os.path.join(site_dir, "songs.html")
-        moved = write_if_changed(songs_page,
-                                 render_songs(docs, card="songs",
-                                              counting=counting))
-        if moved:
-            log("wrote %s (%d songs)", songs_page, len(docs))
-        want_card("songs", songs_card(docs, counting))
-
     if rebuilt:
         log("re-rendered %d unchanged-content page(s) after a template change",
             rebuilt)
@@ -10691,7 +10716,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # Stays None when the due page was not built, so the index hero leaves the
     # card out rather than offering a figure and a link to a page that is not
     # there.
-    n_due = None
+    n_due = n_rotation = None
     if docs and since:
         due_page = os.path.join(site_dir, "due.html")
         if write_if_changed(due_page, render_due(docs, counting, since,
@@ -10707,6 +10732,25 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         if write_if_changed(rotation_page,
                             render_dormant(docs, counting, since)):
             log("wrote %s", rotation_page)
+        n_rotation = len(due_rows(docs, counting, since)[3])
+
+    # After the due figures, and for the same reason the index waits for them:
+    # this page is the door to Out of rotation now that the nav is four browse
+    # spines, and a door with no figure on it is the one card on this site that
+    # would not say how much is behind it. Written here rather than earlier so
+    # the count comes from the same due_rows() call the page itself is built
+    # from -- the alternative was a second definition of "out of rotation"
+    # living on a different page, which is how the songs index came to disagree
+    # with the song pages about 127 songs.
+    if docs:
+        songs_page = os.path.join(site_dir, "songs.html")
+        moved = write_if_changed(songs_page,
+                                 render_songs(docs, card="songs",
+                                              counting=counting, n_due=n_due,
+                                              n_rotation=n_rotation))
+        if moved:
+            log("wrote %s (%d songs)", songs_page, len(docs))
+        want_card("songs", songs_card(docs, counting))
 
     # After the pages, because a forwarding note is only honest once the page
     # it points at is on disk -- and the note for dormant.html lands on top of

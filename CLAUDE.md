@@ -37,7 +37,15 @@ function too**, `nav_strip()`, after ten hand-written copies left every show
 and song page — 1,302 of 1,310 — marking no current location at all while the
 other eight marked themselves. A nav in ten copies is ten chances to be
 inconsistent about the one thing a nav must be right about, and the tenth
-arrived on `main` while the ninth was being removed on a branch.
+arrived on `main` while the ninth was being removed on a branch. **The strip
+is four destinations**, and it is four on purpose: Due, Out of rotation and
+Not a show are questions asked *about* the archive rather than ways into it,
+so each hangs off the parent that owns it as a hero card and marks that
+parent as its section. Adding a fifth is a decision about the whole strip's
+width rather than a one-line edit — at 390px one line holds 336px and the
+four spines use 219px of it. **Taking one out is the riskier edit**: it can
+strand a page while every link on the site still resolves, so assert that
+anything off the strip still has a door from a page on it.
 **Everything else is still copied**: 32–46 rules repeat pairwise, and the
 near-miss `.hero{…}` (flex in one sheet, grid in another) differs by a real
 amount. `footer{…}` was listed with them and had stopped differing: measured
