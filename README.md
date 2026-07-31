@@ -143,6 +143,24 @@ nothing and touches no API:
 ./possumlogic.py --site site --rebuild
 ```
 
+Two checks answer questions about the built site that are otherwise settled by
+reading it, which has been wrong both ways — a working link reported broken, and
+a broken one reported fine:
+
+```sh
+python3 tools/check_links.py
+```
+
+Walks all 1,310 built pages and fails on a link to a missing file, a fragment no
+element carries, or an id repeated within a page.
+
+```sh
+python3 tools/check_few_plays.py
+```
+
+Fails if the words on the out-of-rotation page stop tracking `FEW_PLAYS`, the
+constant that decides how few performances counts as never having got going.
+
 ### Single files
 
 ```sh
@@ -153,9 +171,15 @@ nothing and touches no API:
 and falls back to the `weasyprint` CLI, then to headless Chrome. `--single-page`
 emits one continuous page instead of paginating for letter paper.
 
-Pages inline everything they can — CSS, favicons, the lot — so a file handed to
-someone in a chat still renders offline. Web fonts are the exception: they need
-the network, and fall back to Georgia and the system monospace without it.
+The file is one document — CSS, scripts, the favicon and the three source
+badges are inlined. It is not self-contained: three references to Google's font
+hosts fetch IBM Plex Mono and Literata. Since `body` is Plex Mono site-wide,
+essentially every word depends on the network; offline the page falls back to
+the system monospace and Georgia. The display face is inlined as a 13 KB
+`data:font/otf` only for a show still being played, which is the one page here
+with a rule that asks for it — a settled show is 17 KB lighter for it. There is
+no paper grain either: the grain lives in `fonts.css`, and this path emits the
+inline face instead of the sheet.
 
 ## Publishing
 
