@@ -32,7 +32,7 @@
   {"date": "2009-06-02", "venue": "Nikon at Jones Beach Theater", "city": "Wantagh", "state": "NY", "gap": 42, "set": "1", "nb": 1, "prev": "Cities", "next": "Reba"},
   {"date": "2009-08-08", "venue": "Gorge Amphitheatre", "city": "George", "state": "WA", "gap": 20, "set": "1", "nb": 1, "prev": "Tweezer", "next": "Twenty Years Later"},
   {"date": "2009-10-29", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 0, "set": "1", "nb": 1, "prev": "Back on the Train", "xnext": "Jam"},
-  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 8, "set": "e", "note": "Acoustic.", "nb": 1, "xprev": "Slave to the Traffic Light", "next": "Talk"},
+  {"date": "2009-11-01", "venue": "Empire Polo Club", "city": "Indio", "state": "CA", "gap": 8, "set": "e", "note": "Acoustic.", "nb": 1, "xprev": "McGrupp and the Watchful Hosemasters", "next": "Talk"},
   {"date": "2009-11-27", "venue": "Times Union Center", "city": "Albany", "state": "NY", "gap": 7, "set": "1", "nb": 1, "prev": "Maze", "next": "My Mind's Got a Mind of its Own"},
   {"date": "2009-12-29", "venue": "American Airlines Arena", "city": "Miami", "state": "FL", "gap": 8, "set": "1", "nb": 1, "prev": "Maze", "next": "The Connection"},
   {"date": "2010-12-30", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 49, "set": "1", "nb": 1, "prev": "Maze", "next": "Bathtub Gin"},

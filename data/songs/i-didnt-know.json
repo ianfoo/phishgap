@@ -201,7 +201,7 @@
   {"date": "1993-03-24", "venue": "Luther Burbank Center for the Arts", "city": "Santa Rosa", "state": "CA", "gap": 4, "set": "1", "note": "Fish on trombone.", "nb": 1, "prev": "Maze", "next": "Sample in a Jar"},
   {"date": "1993-03-27", "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "gap": 3, "set": "1", "note": "Fish on trombone.", "nb": 1, "prev": "Sample in a Jar", "next": "David Bowie"},
   {"date": "1993-03-31", "venue": "Roseland Theater", "city": "Portland", "state": "OR", "gap": 3, "set": "1", "note": "Fish on washboard.", "nb": 1, "prev": "Reba", "next": "David Bowie"},
-  {"date": "1993-04-01", "venue": "Gov. Tom McCall Waterfront Park", "city": "Portland", "state": "OR", "gap": 2, "set": "1", "note": "a cappella", "nb": 1, "prev": "Llama", "next": "Guelah Papyrus"},
+  {"date": "1993-04-01", "venue": "Gov. Tom McCall Waterfront Park", "city": "Portland", "state": "OR", "gap": 2, "set": "1", "note": "a cappella", "nb": 1, "prev": "Amazing Grace", "last": 1},
   {"date": "1993-04-02", "venue": "Mt. Baker Theatre", "city": "Bellingham", "state": "WA", "gap": 1, "set": "1", "note": "Fish on washboard.", "nb": 1, "prev": "Divided Sky", "next": "It's Ice"},
   {"date": "1993-04-09", "venue": "State Theatre", "city": "Minneapolis", "state": "MN", "gap": 3, "set": "1", "note": "Fish on Madonna washboard.", "nb": 1, "prev": "Maze", "next": "It's Ice"},
   {"date": "1993-04-14", "venue": "American Theater", "city": "St. Louis", "state": "MO", "gap": 4, "set": "1", "note": "Fish on Madonna washboard.", "nb": 1, "prev": "Divided Sky", "next": "Golgi Apparatus"},

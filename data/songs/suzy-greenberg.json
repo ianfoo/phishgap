@@ -311,7 +311,7 @@
   {"date": "1994-11-04", "venue": "Onondaga War Memorial Auditorium", "city": "Syracuse", "state": "NY", "gap": 2, "set": "1", "out": ">", "nb": 1, "prev": "Scent of a Mule", "next": "Chalk Dust Torture"},
   {"date": "1994-11-13", "venue": "Warner Theatre", "city": "Erie", "state": "PA", "gap": 2, "set": "2", "out": ">", "nb": 1, "xprev": "Run Like an Antelope", "next": "Divided Sky"},
   {"date": "1994-11-16", "venue": "Hill Auditorium, University of Michigan", "city": "Ann Arbor", "state": "MI", "gap": 2, "set": "e", "nb": 1, "prev": "Amazing Grace", "last": 1},
-  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 4, "set": "2", "out": ">", "nb": 1, "xprev": "Will the Circle Be Unbroken?", "next": "Sparkle"},
+  {"date": "1994-11-19", "venue": "Indiana University Auditorium", "city": "Bloomington", "state": "IN", "gap": 4, "set": "2", "out": ">", "nb": 1, "xprev": "My Long Journey Home", "next": "Sparkle"},
   {"date": "1994-11-23", "venue": "The Fox Theatre", "city": "St. Louis", "state": "MO", "gap": 3, "set": "1", "nb": 1, "prev": "The Oh Kee Pa Ceremony", "in": ">", "next": "Divided Sky"},
   {"date": "1994-11-28", "venue": "Brick Breeden Fieldhouse, Montana State University", "city": "Bozeman", "state": "MT", "gap": 3, "set": "2", "out": ">", "nb": 1, "xprev": "Sweet Adeline", "next": "NICU"},
   {"date": "1994-12-02", "venue": "Recreation Hall, University of California-Davis", "city": "Davis", "state": "CA", "gap": 3, "set": "2", "note": "Cosmic Country Horns.", "nb": 1, "prev": "Caravan", "xnext": "Cavern"},

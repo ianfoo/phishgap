@@ -147,7 +147,7 @@
   {"date": "1993-03-22", "venue": "Crest Theatre", "city": "Sacramento", "state": "CA", "gap": 3, "set": "1", "nb": 1, "prev": "Chalk Dust Torture", "next": "Uncle Pen"},
   {"date": "1993-03-25", "venue": "Santa Cruz Civic Auditorium", "city": "Santa Cruz", "state": "CA", "gap": 2, "set": "1", "nb": 1, "prev": "Chalk Dust Torture", "next": "It's Ice"},
   {"date": "1993-03-27", "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "gap": 2, "set": "1", "nb": 1, "prev": "Llama", "next": "Rift"},
-  {"date": "1993-04-01", "venue": "Roseland Theater", "city": "Portland", "state": "OR", "gap": 5, "set": "1", "nb": 1, "prev": "I Didn't Know", "next": "Rift"},
+  {"date": "1993-04-01", "venue": "Roseland Theater", "city": "Portland", "state": "OR", "gap": 5, "set": "1", "nb": 1, "prev": "Llama", "next": "Rift"},
   {"date": "1993-04-03", "venue": "86th Street Music Hall", "city": "Vancouver", "state": "British Columbia", "gap": 2, "set": "1", "nb": 1, "prev": "Rift", "next": "Sparkle"},
   {"date": "1993-04-09", "venue": "State Theatre", "city": "Minneapolis", "state": "MN", "gap": 2, "set": "1", "nb": 1, "prev": "Sparkle", "next": "Stash"},
   {"date": "1993-04-13", "venue": "Memorial Hall", "city": "Kansas City", "state": "KS", "gap": 3, "set": "1", "nb": 1, "prev": "Chalk Dust Torture", "next": "Caravan"},

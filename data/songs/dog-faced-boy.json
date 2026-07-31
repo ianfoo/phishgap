@@ -41,7 +41,7 @@
   {"date": "1994-05-22", "venue": "Vogue Theatre", "city": "Vancouver", "state": "British Columbia", "gap": 2, "set": "1", "note": "Acoustic and without microphones.", "nb": 1, "prev": "Ginseng Sullivan", "next": "Axilla (Part II)"},
   {"date": "1994-05-26", "venue": "Warfield Theatre", "city": "San Francisco", "state": "CA", "gap": 3, "set": "2", "note": "Acoustic and without microphones.", "nb": 1, "prev": "Ginseng Sullivan", "next": "You Enjoy Myself"},
   {"date": "1994-06-16", "venue": "State Theatre", "city": "Minneapolis", "state": "MN", "gap": 9, "set": "1", "nb": 1, "prev": "The Curtain", "in": ">", "next": "Stash"},
-  {"date": "1994-06-18", "venue": "The Loop 97.9 Studios", "city": "Chicago", "state": "IL", "gap": 2, "set": "1", "times": 2, "note": "Acoustic.", "nb": 1, "prev": "Wilson", "in": ">", "next": "Rift"},
+  {"date": "1994-06-18", "venue": "The Loop 97.9 Studios", "city": "Chicago", "state": "IL", "gap": 2, "set": "1", "times": 2, "note": "Acoustic.", "nb": 1, "prev": "It's Ice", "next": "Divided Sky"},
   {"date": "1994-06-21", "venue": "Cincinnati Music Hall", "city": "Cincinnati", "state": "OH", "gap": 2, "set": "2", "note": "Acoustic; without microphones.", "nb": 1, "prev": "Big Black Furry Creature from Mars", "next": "Sweet Adeline"},
   {"date": "1994-06-24", "venue": "Murat Theatre", "city": "Indianapolis", "state": "IN", "gap": 3, "set": "2", "note": "Acoustic; without microphones.", "nb": 1, "prev": "Llama", "next": "Poor Heart"},
   {"date": "1994-06-26", "venue": "Municipal Auditorium", "city": "Charleston", "state": "WV", "gap": 2, "set": "2", "out": ">", "nb": 1, "prev": "Scent of a Mule", "next": "Demand"},
