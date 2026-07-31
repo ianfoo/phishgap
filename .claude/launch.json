@@ -10,6 +10,16 @@
         "exec python3 -m http.server \"${PORT:-8769}\" --bind 127.0.0.1 --directory site"
       ],
       "port": 8769
+    },
+    {
+      "name": "audit",
+      "autoPort": true,
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "exec python3 -m http.server \"${PORT:-8770}\" --bind 127.0.0.1 --directory ."
+      ],
+      "port": 8770
     }
   ]
 }

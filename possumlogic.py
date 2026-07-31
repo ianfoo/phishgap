@@ -459,18 +459,31 @@ def foul(path, cache_dir=DEFAULT_CACHE, refresh=False, **params):
 # linked file is fetched once and cached for the whole visit. The single-file
 # --html output keeps its own inlined fonts, since that one is still meant to
 # survive being handed to somebody.
+#: Everything the pages load that is not a page. The site root is for the
+#: files that have to be there -- CNAME, robots.txt, sitemap.xml, .nojekyll --
+#: and for the pages themselves; assets lie under here. The sheet, the face and
+#: the paper texture are one group and they move as one, which is what makes
+#: the relative url()s below work from any depth without a second thought.
+STATIC_DIR = "static"
+#: Relative to STATIC_DIR, because the @font-face url() resolves against the
+#: sheet and both live in there.
 FONT_DIR = "font"
 DISPLAY_FACE = "Bagnard"
 FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                         "site", FONT_DIR, "Bagnard.otf")
+                         "site", STATIC_DIR, FONT_DIR, "Bagnard.otf")
+#: Not "fonts.css". It defines `body`, which a file named for the fonts has no
+#: business doing -- Ian called that a smell and it was: the name described the
+#: first thing put in it rather than what it is, which is the one stylesheet
+#: every page links.
+SITE_SHEET = "site.css"
 
 
 def sheet_links(sheet):
     """The stylesheet link, and a head start on the face it is going to ask for.
 
-    Without the preload the face cannot begin loading until fonts.css has been
+    Without the preload the face cannot begin loading until the sheet has been
     fetched *and parsed*, because that is where its url() lives. Measured on
-    localhost, where there is no latency to hide behind: fonts.css starts at
+    localhost, where there is no latency to hide behind: the sheet starts at
     9.3ms and Bagnard.otf at 24.1ms, initiated by the stylesheet rather than by
     the document. On the live site that gap is a whole round trip, and
     `font-display:swap` spends it painting Georgia and then swapping -- which
@@ -523,7 +536,7 @@ FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
    were written: multiply on cream darkens the grain into the paper, screen on
    near-black lifts it, and neither shifts the paper color the way painting
    opaque noise over it did. */
-body{background-image:url(grain.png);background-blend-mode:var(--grain-blend)}
+body{background-image:var(--grain);background-blend-mode:soft-light}
 """ % {"face": DISPLAY_FACE, "dir": FONT_DIR}
 
 # Plex Mono is the only thing still coming from Google: it is doing real work
@@ -572,7 +585,18 @@ GOATCOUNTER = (env_value("GOATCOUNTER", quiet=True) or "")
 ANALYTICS = ('<script data-goatcounter="https://%s.goatcounter.com/count" '
              'async src="//gc.zgo.at/count.js"></script>' % GOATCOUNTER
              if GOATCOUNTER else "")
-OG_IMAGE = "og.png"
+#: Where the drawn cards go. Up here rather than with the drawing code,
+#: because the share tags below name it and Python reads top to bottom.
+CARD_DIR = "card"
+
+#: The house card, for a page that has none of its own. It is `card/index.png`
+#: rather than a committed og.png because that file was the one image on the
+#: site drawn by nothing: hand-made once, tracked in git, outside card_print's
+#: hashing and CARD_REVISION, and therefore unreachable by every fix that
+#: corrected the other 1,304 cards. It ended up two names and 420 songs out of
+#: date on six live pages. index.png is redrawn from the archive whenever the
+#: archive moves, so the worst this fallback can now be is generic.
+OG_IMAGE = "%s/index.png" % CARD_DIR
 
 
 def share_meta(title, description, path="", image=OG_IMAGE, card=None):
@@ -924,7 +948,7 @@ LIGHT = {
     # .58 on the dark paper lands at 3.10:1.
     "band-opacity": ".85",
     "hover": "rgba(200,55,27,.055)", "edge": "#8d8676",
-    "grain-blend": "multiply", "grain-opacity": ".45",
+    "grain": "url(grain-light.png)",
 }
 DARK = {
     "paper": "#131210", "ink": "#ece5d5", "ink-soft": "#c4bcaa",
@@ -934,7 +958,7 @@ DARK = {
     "track": "rgba(236,229,213,.1)", "band": "#a89c85",
     "band-opacity": ".58",
     "hover": "rgba(255,107,69,.07)", "edge": "#6b5f4f",
-    "grain-blend": "screen", "grain-opacity": ".2",
+    "grain": "url(grain-dark.png)",
 }
 
 
@@ -1388,7 +1412,7 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
    today is precisely how the other four happened. */
 .show a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.show a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.show a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The skip link's landing spot takes focus so the next Tab continues from
    the content rather than from the top of the page again -- but it is a
    place, not a control, so it does not wear the control's ring. */
@@ -1429,7 +1453,7 @@ body{font-variant-numeric:tabular-nums}
    text-transform:uppercase;color:var(--dim);background:none;
    border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
    cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
-.keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.keyhint:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Not on a touch device. It is a discovery aid for keys, and a phone has
    none -- so it sat in the footer of every page offering "[ and ] to step
    between shows" to a reader with no way to press either, and "Keys ?" is
@@ -1461,13 +1485,21 @@ dialog.keys form{margin:1rem 0 0;text-align:right}
 dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim);background:none;
    border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
-dialog.keys button:hover{color:var(--hot);border-color:var(--hot)}
+dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
 @media print{.keyhint,dialog.keys{display:none}}
 """
 
 #: The page box and its measure.
+#:
+#: `background-color`, never the `background` shorthand. The shorthand resets
+#: every background longhand it does not mention, `background-image` among
+#: them, and the site sheet hangs the paper texture there one link earlier in
+#: the same <head>. That single word switched the grain off for its entire
+#: life -- generated, published, linked and never once painted, here or on
+#: gh-pages. It is also invisible in a screenshot, because the page is the
+#: right colour either way, just flat. tools/check_paper.py measures it now.
 BODY_BOX_CSS = """body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
-     background:var(--paper);color:var(--ink);
+     background-color:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 /* The measure in rem rather than px, so it travels with the type. Stated as
@@ -1529,8 +1561,10 @@ NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
 .crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
    padding-bottom:.15rem;border-bottom:2px solid transparent}
 .crumb .meta a{color:var(--dim)}
-.crumb a:hover,.crumb a:focus-visible{color:var(--hot);
-   border-bottom-color:var(--hot)}
+/* --hot-text, not --hot: these are 12px and 10px, so they want the 4.5 floor
+   and --hot is 4.44 on paper. See the palette note. */
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 /* The site's name, not a link. It used to go where "Shows" goes, so the strip
    offered the same destination twice under two labels. */
@@ -1582,8 +1616,8 @@ NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
    thing to a screen reader -- aria-current="page" for the page, plain "true"
    for the item in the set that contains it. */
 .crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
-.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot);
-   border-bottom-color:var(--hot)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 @media print{.crumb .meta{display:none}}
 """
 
@@ -1611,6 +1645,20 @@ ROTATION_PAGE = "out-of-rotation.html"
 #: been played at one.
 NOT_A_SHOW_PAGE = "not-a-show.html"
 
+#: A page's card is named for the page. Derived rather than written twice: the
+#: name appears in the <meta og:image> of the page and in the filename the
+#: shooter writes, and a card whose name has drifted from its page is a
+#: preview that 404s -- which is exactly the failure og.png was papering over.
+def card_name(page):
+    return page[:-len(".html")] if page.endswith(".html") else page
+
+
+ROTATION_CARD = card_name(ROTATION_PAGE)
+NOT_A_SHOW_CARD = card_name(NOT_A_SHOW_PAGE)
+
+#: The six lists that are the archive, then the two pages about it. Ian,
+#: 2026-07-30, on the order: "songs should come before years. I feel like
+#: Years and Venues go together. Due and Dormant go together as well."
 #: The four ways into the archive, then the two pages about it.
 #:
 #: It held six until 2026-07-31, and the two that left are the reason this
@@ -1714,7 +1762,7 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
    with a browser underline, on the one page on the site that has them. */
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.dek a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 """
 
 #: Footer links, drawn the way every other link on the site is drawn.
@@ -1772,7 +1820,7 @@ FOOTER_BOX_CSS = """footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px so
 
 FOOTER_LINK_CSS = """footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 """
 
 #: The way back to the navigation, for pages long enough to strand a reader.
@@ -1796,7 +1844,9 @@ TOTOP_CSS = """.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8
   z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
   justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
-.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* --hot-text: this is 18px, under the 24px the display accent is cleared for,
+   and --hot is 4.44:1 on paper. See the palette note. */
+.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
 /* And this line is the whole control. `hidden` hides an element by way of the
    browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
    any author declaration of `display` beats it outright, whatever the
@@ -1856,7 +1906,7 @@ header{padding-bottom:.9rem}
        gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
        text-transform:uppercase}
 .crumb.pager a{color:var(--dim);border-bottom:1px solid var(--rule)}
-.crumb.pager a:hover{border-bottom-color:var(--hot)}
+.crumb.pager a:hover{border-bottom-color:var(--hot-text)}
 .crumb .prev{grid-column:1;justify-self:start}
 .crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
@@ -1923,8 +1973,8 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    that has happened here: a new link in a sheet with no rule for it. */
 .where .v-name a,.show .tour a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.where .v-name a:hover,.show .tour a:hover{color:var(--hot);
-   border-bottom-color:var(--hot)}
+.where .v-name a:hover,.show .tour a:hover{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 /* Two elements, so there is no separator to strand. The locality steps back
    rather than being joined by punctuation that has nowhere safe to break. */
 .where .v-name{display:block}
@@ -2011,16 +2061,49 @@ td{padding:.5rem .6rem;border-bottom:1px solid var(--rule-soft);
 .seg.tight{letter-spacing:-.06em}
 .seg{margin-left:.3rem;font-family:'IBM Plex Mono',ui-monospace,monospace;
    font-weight:600;color:var(--dim);white-space:nowrap}
+/* One colour, not two. The border was --hot while the text was --hot-text,
+   which is invisible at rest and becomes a lighter ring around a darker fill
+   the moment the chip reverses. */
 .jc-chip{display:inline-block;margin-left:.5rem;padding:.1rem .32rem;
-   border:1px solid var(--hot);color:var(--hot-text);font-size:.625rem;
+   border:1px solid var(--hot-text);color:var(--hot-text);font-size:.625rem;
    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
    line-height:1.15;vertical-align:.12em;white-space:nowrap}
 a.jc-chip{text-decoration:none}
-td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper);
+/* The selector this replaces was `td.song a:hover .jc-chip,a.jc-chip:hover`,
+   and the first half of that was dead: the chip is a *sibling* of the title
+   link, never a descendant of it, so that half had never matched anything.
+   What it did do was make the hover look handled, while the half that does
+   match -- a.jc-chip:hover, 0-2-1 -- lost the colour to `td.song a:hover` at
+   0-2-2 further down this sheet. The chip therefore hovered to var(--hot) on
+   var(--hot): 1.00:1, a solid red block where a word had been. Ian caught it.
+   Fixed at the other end, by excluding the chip there rather than escalating
+   here -- see the note on that rule. Same shape as .live span:not(.since-you),
+   the sticky-header hide and .backtop: a modifier class losing to a descendant
+   selector, four times now.
+
+   The fill is --ink, not the accent, and that is a hierarchy decision rather
+   than a contrast one. A red block of reversed 10px caps is the bustout's
+   costume: it is the headline of a show and is struck twice and set two
+   degrees off true to say so. This chip is a pointer to a paragraph on
+   another page. Reversing it into the same red made the two marks read at the
+   same weight one row apart -- Ian caught that too.
+
+   It was never visible before. The chip has always been specified to fill on
+   hover, and always with the accent, but the rule above it painted the text
+   the colour of the fill, so what shipped was a featureless block. Making the
+   word legible is what exposed the collision underneath it.
+
+   Ink, specifically, because the site already reverses to ink for a state
+   rather than a claim -- .yr h2 .tab and the tooltip both do. Red says
+   something about the music; ink says the pointer is under your pointer.
+   15.5:1 light, 14.9:1 dark, and it leaves the red stamp to the bustout
+   alone, which is now the only filled red thing on a report. */
+a.jc-chip:hover{background:var(--ink);border-color:var(--ink);
+   color:var(--paper);
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1.5rem;line-height:1;
      white-space:nowrap}
-.gap.big{color:var(--hot)}
+.gap.big{color:var(--hot-text)}
 .gap.small{color:var(--cool)}
 /* The number carries the gap; these carry how the song usually behaves. Sized
    into the same family as the venue text under a date, which is the smallest
@@ -2045,10 +2128,15 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    two degrees off true. The right margin buys the rotation its clearance. This
    is the only rotated thing on the site; the moment there are two, it reads as
    a theme rather than a stamp. */
+/* --hot-text, like every other reversed stamp on the site. The palette note
+   names this case exactly -- "the 10px chips and verdicts it is also used on"
+   -- and this one had kept the display accent anyway: paper on --hot is
+   4.44:1, and this is 10px. --hot-text lands at 5.79. Dark is unaffected; the
+   two are the same colour there. */
 .verdict.bustout{display:inline-block;margin:0 .6rem .1rem .5rem;
-   background:var(--hot);color:var(--paper);padding:.16rem .4rem;
+   background:var(--hot-text);color:var(--paper);padding:.16rem .4rem;
    font-size:.625rem;font-weight:600;letter-spacing:.14em;line-height:1.15;
-   box-shadow:0 0 0 1.5px var(--paper),0 0 0 3px var(--hot);
+   box-shadow:0 0 0 1.5px var(--paper),0 0 0 3px var(--hot-text);
    transform:rotate(-2deg);transform-origin:left center;
    print-color-adjust:exact;-webkit-print-color-adjust:exact}
 /* Our own tooltip, because the browser's waits about a second before showing
@@ -2211,7 +2299,12 @@ tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
    them would stripe the table, so it colors on hover instead. */
 td.n,td.song{vertical-align:baseline}
 td.song a{color:inherit;text-decoration:none}
-td.song a:hover{color:var(--hot)}
+/* :not(.jc-chip), because this cell holds two links and only one of them is a
+   title. This rule is 0-2-2 and the chip's own hover is 0-2-1, so without the
+   exclusion this one won and painted the chip's text the colour of its own
+   fill. Excluding it here rather than escalating there is deliberate: a bigger
+   selector on the chip would only move the race one round on. */
+td.song a:not(.jc-chip):hover{color:var(--hot-text)}
 .place{color:var(--dim);font-size:.75rem;line-height:1.2rem;white-space:nowrap}
 .none{color:var(--dim);font-style:italic}
 /* The show's own notes: the other block of real prose on the site, and set in
@@ -2219,7 +2312,7 @@ td.song a:hover{color:var(--hot)}
 .notes{margin:2.2rem 0 0;padding:1rem 1.1rem;border-left:3px solid var(--rule);
        font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
        font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:68ch}
-.notes a{color:var(--hot)}
+.notes a{color:var(--hot-text)}
 """ + FOOTER_BOX_CSS + FOOTER_LINK_CSS + """@media screen{
   .bar .fill{animation:grow .7s cubic-bezier(.2,.8,.3,1) both}
   @keyframes grow{from{transform:scaleX(0);transform-origin:left}}
@@ -2445,6 +2538,21 @@ SHOW_LINKS = (
 )
 
 
+def _badge(label, url, icon, flip):
+    """One outbound chip, wearing the favicon of wherever it lands.
+
+    The one copy of this markup. Show pages and song pages carry the same row
+    of chips and built it from two copies until 2026-07-31, which is the shape
+    that has cost this project five bugs elsewhere -- and the two had already
+    drifted, in that neither escaped the href but only one was interpolating
+    anything an escape would matter to. Escaped here, once.
+    """
+    return ("<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
+            "<img class='%s' src='data:image/png;base64,%s' alt='' "
+            "width='13' height='13'><span>%s</span></a>"
+            % (html.escape(url, quote=True), "flip" if flip else "", icon, label))
+
+
 def _show_links(date, on_phishin=None):
     """Badge links out to the sites that hold the rest of the story.
 
@@ -2455,10 +2563,7 @@ def _show_links(date, on_phishin=None):
     missing local file is not evidence of a missing recording.
     """
     return "".join(
-        "<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
-        "<img class='%s' src='data:image/png;base64,%s' alt='' "
-        "width='13' height='13'><span>%s</span></a>"
-        % (url % date, "flip" if flip else "", icon, label)
+        _badge(label, url % date, icon, flip)
         for label, url, icon, flip in SHOW_LINKS
         if label != "phish.in" or on_phishin is None or date in on_phishin)
 
@@ -2978,7 +3083,7 @@ def _ordinal(n):
 
 def render_html(report, bar_scale="linear", index_href=None,
                 prev_date=None, next_date=None, songs=(), card=None,
-                archived_show=(), sheet="../fonts.css", calendar=(),
+                archived_show=(), sheet="../%s/%s" % (STATIC_DIR, SITE_SHEET), calendar=(),
                 on_phishin=None, unlinkable_tours=()):
     # Whether this is a show at all. A soundcheck's songs are real and its
     # gaps are phish.net's, but nothing here feeds the rest of the site, and a
@@ -3560,7 +3665,7 @@ header{padding-bottom:.9rem}
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
-.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -3636,10 +3741,13 @@ header{padding-bottom:.9rem}
 .onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
    margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
    border-left:4px solid var(--hot);background:var(--hover)}
-.onstage:hover{background:var(--hot);color:var(--paper)}
+/* --hot-text and the left edge with it, so the reversed block is one colour
+   rather than a 4px stripe of the display accent against a darker fill. Same
+   4.44-at-10px argument as .jc-chip and .verdict.bustout. */
+.onstage:hover{background:var(--hot-text);border-left-color:var(--hot-text);
+   color:var(--paper)}
 .onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text);font-weight:600}
-.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
 .onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
 .onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
    text-transform:none;letter-spacing:0}
@@ -3647,6 +3755,26 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Everything inside a reversed block comes with it. This used to be a list of
+   the three children that pin a colour -- .k, .n b, .p -- and the list was
+   missing .n itself, whose own text is the words "songs so far". They stayed
+   var(--dim) on the fill: 1.12:1 light, 1.08:1 dark, which is not dim, it is
+   gone. Exactly the numbers the .live span bug produced, in the same week, on
+   the banner that only ever appears while a show is being played -- so the
+   one state nobody browsing the archive can stumble into.
+
+   A list of children is a list a fourth child is not on; `*` cannot be
+   incomplete.
+
+   The class is doubled because the first attempt at this was `.onstage:hover
+   *` and it did not work on all of them. `*` contributes *nothing* to
+   specificity, so that selector is 0-2-0: it beat .k and .p at 0-2-0 on order
+   alone and lost to .onstage .n b at 0-2-1, leaving the song count as var
+   (--ink) on the fill, 2.68:1 light and 2.25:1 dark. Repeating .onstage buys
+   the third class the element in `.n b` would otherwise win with, so this is
+   0-3-0 and no descendant rule in the block can reach it -- and it does not
+   have to be kept in any particular place in the sheet to stay true. */
+.onstage:hover.onstage *{color:inherit}
 /* Structural, and load-bearing rather than tidiness. Every list section on the
    due and out-of-rotation pages is wrapped in one of these so that its
    position:sticky column header is held by the section instead of by the page:
@@ -3670,13 +3798,13 @@ header{padding-bottom:.9rem}
    so the two cannot drift apart the next time one gains a header. */
 .row:not(.head):hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
-.due .row:hover .d-song{color:var(--hot)}
+.due .row:hover .d-song{color:var(--hot-text)}
 .d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;white-space:nowrap}
 .d-where{display:block;color:var(--dim);font-size:.75rem}
 .d-n{text-align:right}
 .d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
+   font-size:1.5rem;line-height:1;color:var(--hot-text);white-space:nowrap}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
 .d-n .typ span{display:block;white-space:nowrap}
 /* Same rule the song pages carry, and it has to be stated here too because
@@ -3721,7 +3849,7 @@ details.how > summary{display:block;width:max-content;
 details.how > summary::-webkit-details-marker{display:none}
 details.how > summary::after{content:" \\2193"}
 details.how[open] > summary::after{content:" \\2191"}
-details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
+details.how > summary:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* A section heading, under the due list. At 1.5rem it was barely larger than
    the 1rem song titles it headed, which made a new section read as another
    row. 2.125rem sits clearly between the page title and the data. */
@@ -3744,7 +3872,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .backtop a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule);position:relative;display:inline-block}
-.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .backtop a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media print{.backtop{display:none}}
@@ -3765,7 +3893,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
    so the two cannot drift apart the next time one gains a header. */
 .row:not(.head):hover{background:var(--hover)}
 .vn-venue{font-size:1rem;font-weight:500}
-.vn .row:hover .vn-venue{color:var(--hot)}
+.vn .row:hover .vn-venue{color:var(--hot-text)}
 .vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
 .vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
    color:var(--dim);white-space:nowrap}
@@ -3822,7 +3950,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .aside b{color:var(--ink);font-weight:400}
 .aside a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.aside a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.aside a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The list itself, which moved to a page of its own. Named rather than
    scoped to `.aside`, because it now has two homes and the version in this
    file has been the wrong shape twice for want of one name. */
@@ -3832,7 +3960,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .ax-row{display:contents;color:inherit;text-decoration:none}
 .ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
    border-bottom:1px solid var(--rule)}
-a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
+a.ax-row:hover .ax-date{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
@@ -3846,7 +3974,7 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
    font-family:'Literata',Georgia,serif;font-size:.8125rem;line-height:1.5;
    font-variation-settings:'opsz' 13;color:var(--ink-soft)}
 .ax-note a{color:var(--ink-soft);border-bottom:1px solid var(--rule)}
-.ax-note a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.ax-note a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .axlist .for{color:var(--dim)}
 .axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
@@ -4572,7 +4700,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=INDEX_CSS, js=INDEX_JS, totop=TOTOP_JS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
-        fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         hero=hero, hero_cls=hero_cols(len(cards)), years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         aside=aside_html, subtitle=subtitle, onstage=onstage,
@@ -4650,11 +4778,11 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    narrow screen breaks it between middots instead of stacking four boxes. */
 .best .v{display:inline}
 .best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
-.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot);
+.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot-text);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
-.best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.best a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Up under the title, and captioned. These are links about the *song*, and
    they used to sit directly beneath the best-version block -- so Ian read them
    as being about that one performance and could not tell without clicking.
@@ -4699,17 +4827,17 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .era-chip b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
 .era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
-.era-chip:hover b{color:var(--hot)}
+.era-chip:hover b{color:var(--hot-text)}
 /* Shown only once there is something to clear. */
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
-.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 /* A venue is a filter waiting to happen: click it to see every other night
    the song was played there. */
 .r-venue{cursor:pointer}
-.r-venue:hover{color:var(--hot)}
+.r-venue:hover{color:var(--hot-text)}
 .count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
@@ -4758,7 +4886,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-family:'IBM Plex Mono',ui-monospace,monospace;
    letter-spacing:0;text-transform:none;color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule);white-space:nowrap}
-.head .marks:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.head .marks:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .head .ghead{grid-column:4/-1;text-align:right}
 /* Every row is its own grid, so an `auto` last column sizes to its own content
    and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
@@ -4779,7 +4907,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:1rem;line-height:1.3rem;white-space:nowrap}
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.r-date a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.r-date a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* One copy of each favicon for the whole page, worn by class.
    No blanket opacity: these icons do not agree about their own. phish.net's is
    fully opaque, phish.in's averages an alpha of 130 and fouldomain's 137, so a
@@ -4865,7 +4993,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .card.since.over .v{color:var(--hot-text);text-transform:uppercase;
    letter-spacing:.14em}
 .card.since.dormant .num{color:var(--ink-soft)}
-.gap.big{color:var(--hot)}
+.gap.big{color:var(--hot-text)}
 .gap.none{color:var(--dim)}
 /* A soundcheck or a television session. It happened and it is listed,
    but phish.net does not count it toward a gap and neither do we, so
@@ -4884,8 +5012,16 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    came after -- and each is its own line. The transition mark now lives in
    a span inside one of them, and a blanket rule here made that mark a
    block too, so a row read "->" and "Golden Age" on separate lines. */
-.nb>span{display:block;overflow:hidden;text-overflow:ellipsis;
-   white-space:nowrap}
+/* Wraps rather than truncates. This track is a fixed 9rem, so `nowrap` plus
+   an ellipsis meant a long title was cut at every viewport width and widening
+   the window did nothing -- "A Song I Heard the Ocean Sing" was unreadable on
+   a 27-inch screen, which is how Ian found it. The comment this replaces said
+   the truncation kept the gap figures from being pushed around; it does not,
+   because wrapping inside a fixed grid track cannot move the track. It only
+   makes that one row taller, which the venue and the notes already do. The
+   narrow layout had been overriding this back to `normal` all along, so the
+   phone has been showing the full title while the desktop hid it. */
+.nb>span{display:block}
 /* Doubled backslashes: this is a Python string, and "\2190" is read as the
    octal escape \21 followed by "90", which reaches the browser as a control
    character and renders as a box. */
@@ -4952,7 +5088,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 .mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.mark a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.mark a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* phish.net's note on the version, set under the venue rather than across the
    row: spanning every column put it against the page's left edge, where it
    read as something stuck on afterwards rather than as part of the entry.
@@ -4990,7 +5126,7 @@ details.note summary::after{content:"More";display:inline-block;margin-top:.2rem
 details.jam[open] summary::after,
 details.note[open] summary::after{content:"Less"}
 details.jam summary:hover::after,
-details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot)}
+details.note summary:hover::after{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
 .empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
@@ -5055,7 +5191,6 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   .pair .cap{margin-top:.35rem}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.35rem}
-  .nb>span{white-space:normal;overflow:visible}
   .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
      text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
@@ -5353,10 +5488,66 @@ SONG_TOOLS = """<div class="tools" id="main" tabindex="-1">
 <span class="count"><b id="shown">{count}</b> of {count} shows</span>
 </div>"""
 
+# Last field is which identifier the URL wants -- see foul_song_slug for why
+# fouldomain cannot take the one the other two share.
 SONG_LINKS = (
-    ("phish.net", "https://phish.net/song/%s", ICON_PNET, False),
-    ("phish.in", "https://phish.in/songs/%s", ICON_PIN, True),
+    ("phish.net", "https://phish.net/song/%s", ICON_PNET, False, "slug"),
+    ("phish.in", "https://phish.in/songs/%s", ICON_PIN, True, "slug"),
+    ("fouldomain", "https://fouldomain.com/songs/%s", ICON_FOUL, False, "foul"),
 )
+
+
+def foul_song_slug(title):
+    """fouldomain's slug for a song, derived from its title.
+
+    Not phish.net's slug, which is what every other identifier on this site
+    keys on. Measured against all 589 songs here, phish.net's slug lands on
+    fouldomain's "Song Not Found" for 13 of them: phish.net drops punctuation
+    fouldomain keeps as a separator (AC/DC Bag is `acdc-bag` there and
+    `ac-dc-bag` here, L.A. Woman `la-woman` against `l-a-woman`), carries
+    disambiguation suffixes fouldomain has no need of (`gloria-branigan`,
+    `invisible-2`, `timber-haunted`), and in one case has an `<em>` baked into
+    it -- `theme-from-emnew-york-new-yorkem`.
+
+    An apostrophe is *dropped* rather than separated on, and that is the whole
+    of what a first pass got wrong: `mike-s-song` is a 404 where `mikes-song`
+    is the page, and 24 songs turn on it. Derived this way all 589 resolve,
+    and each lands on a page whose og:title is this song's exact title -- the
+    check worth repeating if fouldomain ever changes its routing, because
+    "the page exists" and "the page is about this song" are different claims
+    and only the second one is the one being made here.
+    """
+    return re.sub(r"[^a-z0-9]+", "-", re.sub(r"['’]", "", title.lower())).strip("-")
+
+
+# The one entry whose *title* is not the entry. phish.net files one-off and
+# unlisted titles under `custom`, and this archive shows the page as Dog Log
+# because Dog Log is one of the nine -- so a chip matched on title lands on
+# fouldomain's page for the actual Dog Log and says the other eight are
+# versions of it. The slug-matched chips beside it point at phish.net's own
+# catch-all and keep the aggregate, which is why this is about fouldomain
+# rather than about the page.
+#
+# Not NOT_A_SONG, which was the first gate here and was too wide by one: `jam`
+# is the other page that is not a composition, but its title names the bucket
+# rather than one of the things in it, and fouldomain files unnamed
+# improvisation under the same word. Ian's call, and it holds -- the test is
+# whether a title match lands on the same set, not whether the page is a song.
+TITLE_NOT_THE_ENTRY = frozenset({"custom"})
+
+
+def _song_links(doc):
+    """The chips under a song's title, for the sites that hold the rest of it.
+
+    fouldomain matches on title where the other two match on slug, so it is
+    left off wherever those two disagree about what the page is -- see
+    TITLE_NOT_THE_ENTRY, which is one page.
+    """
+    ids = {"slug": doc["slug"], "foul": foul_song_slug(doc["song"])}
+    return "".join(
+        _badge(label, url % ids[key], icon, flip)
+        for label, url, icon, flip, key in SONG_LINKS
+        if key != "foul" or doc["slug"] not in TITLE_NOT_THE_ENTRY)
 
 
 def _ext(url, label, cls):
@@ -5933,12 +6124,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
     if best:
         blurb += ". Best version %s (%s)" % (best[0]["date"], best[0]["score"])
 
-    links = "".join(
-        "<a class='badge' href='%s' target='_blank' rel='noopener noreferrer'>"
-        "<img class='%s' src='data:image/png;base64,%s' alt='' width='13'"
-        " height='13'><span>%s</span></a>"
-        % (url % doc["slug"], "flip" if flip else "", icon, label)
-        for label, url, icon, flip in SONG_LINKS)
+    links = _song_links(doc)
 
     # `countable`, not `perfs`. The sticky bar counted every archived row where
     # the hero, the subtitle and the counter all count only the rows that count
@@ -5955,7 +6141,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../fonts.css"),
+        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../%s/%s" % (STATIC_DIR, SITE_SHEET)),
         cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
         hero=hero, best=top, links=links, tools=tools, listattrs=listattrs,
@@ -6488,7 +6674,7 @@ def render_due(docs, counting, since, card=None):
     return DUE_SHELL.format(
         crumb=nav_strip(section="Songs", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         mult=_stat(DUE_MULTIPLE), hero=hero, hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, rows="\n".join(out), shelf=shelf, dormant=tail,
@@ -6521,7 +6707,7 @@ YEAR_STRIP_CSS = """/* The years, as a strip. Generated from the same grouping a
 .years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
    line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
    color:var(--ink-soft);text-decoration:none;white-space:nowrap}
-.years a:hover{color:var(--hot);border-color:var(--hot)}
+.years a:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
 """
 
@@ -6545,7 +6731,7 @@ DORMANT_CSS = INDEX_CSS + """
    border-bottom:1px solid var(--rule);position:relative}
 .yr .up::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
-.yr .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.yr .up:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The strip of jump links that used to sit here is gone with the years it
    pointed at. Eighteen years needed a strip; three sections do not, and the
    hero directly under it already names all three, counts them and links to
@@ -6728,7 +6914,7 @@ def _rotation_years(rows, anchor):
     return "\n".join(body)
 
 
-def render_dormant(docs, counting, since):
+def render_dormant(docs, counting, since, card=None):
     """Every song out of rotation, split by whether it ever had one."""
     parts = rotation_split(due_rows(docs, counting, since)[3])
 
@@ -6811,13 +6997,13 @@ def render_dormant(docs, counting, since):
     return DORMANT_SHELL.format(
         crumb=nav_strip(section="Songs", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=DORMANT_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=DORMANT_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         floor=MIN_HISTORY, years_n=RECENT_YEARS,
         hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         rows="\n".join(body),
         share=share_meta("Out of rotation &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), ROTATION_PAGE),
+                         html.escape(blurb, quote=True), ROTATION_PAGE, card=card),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -6953,7 +7139,8 @@ def rated_off_stage(docs, counting):
     return rows
 
 
-def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
+def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html",
+                      card=None):
     """Everything the band played that was not a show, and what came of it."""
     counting = set(calendar)
     _, aside = split_archive(reports, calendar)
@@ -7069,12 +7256,12 @@ def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
         crumb=nav_strip(section="Shows", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS,
-        sheet=sheet_links("./fonts.css"),
+        sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         hero=hero_html(cards), hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, body=body,
         share=share_meta("Not a show &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), NOT_A_SHOW_PAGE),
+                         html.escape(blurb, quote=True), NOT_A_SHOW_PAGE, card=card),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -7168,7 +7355,7 @@ def render_venues(reports, card=None):
     return VENUES_SHELL.format(
         crumb=nav_strip(here="Venues", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(rows),
         share=share_meta("Venues &mdash; Possum Logic",
@@ -7356,7 +7543,7 @@ def render_songs(docs, stamp=None, card=None, counting=None,
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONGS_CSS, js=SONGS_JS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        css=SONGS_CSS, js=SONGS_JS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, hero=hero, hero_cls=hero_cols(len(cards)),
         count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
@@ -7647,7 +7834,7 @@ YEARS_CSS = INDEX_CSS + YEAR_STRIP_CSS + """
    border-bottom:1px solid var(--rule);position:relative}
 .yh .up::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
-.yh .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.yh .up:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The four figures, as a grid rather than a sentence with middots in it.
    Set as running text they stranded a separator at the end of every wrapped
    line; a grid cell cannot strand punctuation it does not carry. */
@@ -7673,10 +7860,10 @@ YEARS_CSS = INDEX_CSS + YEAR_STRIP_CSS + """
 .chips{display:flex;flex-wrap:wrap;gap:.35rem}
 .chips a,.chips span{font-size:.8125rem;line-height:1.15;padding:.3rem .45rem;
    border:1px solid var(--edge);color:var(--ink-soft);text-decoration:none}
-.chips a:hover{color:var(--hot);border-color:var(--hot)}
+.chips a:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .chips b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    color:var(--dim);margin-left:.35rem;font-variant-numeric:tabular-nums}
-.chips a:hover b{color:var(--hot)}
+.chips a:hover b{color:var(--hot-text)}
 /* Not a chip: it is one sentence about two songs, and breaking it into two
    enclosures would hide the only thing it says, which is the arrow. */
 .habit{margin:0;font-size:.8125rem;line-height:1.35;color:var(--ink-soft)}
@@ -7815,7 +8002,7 @@ def _year_block(profile, pages):
     return "".join(body)
 
 
-def render_years(profiles, missing, pages=()):
+def render_years(profiles, missing, pages=(), card=None):
     """Forty years of this band, one block each, newest first."""
     read = sum(p["known"] for p in profiles)
     strip = "".join(
@@ -7847,7 +8034,7 @@ def render_years(profiles, missing, pages=()):
     return YEARS_SHELL.format(
         crumb=nav_strip(here="Years", mark=True),
         analytics=ANALYTICS, css=YEARS_CSS, fonts=WEB_FONTS,
-        sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, years=strip, hero=hero,
         hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         sample=YEARS_SAMPLE, read="{:,}".format(read),
@@ -7858,7 +8045,7 @@ def render_years(profiles, missing, pages=()):
                              if p["year"] == "2017"), 0),
         blocks="\n".join(_year_block(p, pages) for p in profiles),
         share=share_meta("Years &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "years.html"),
+                         html.escape(blurb, quote=True), "years.html", card=card),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -7882,9 +8069,15 @@ METHOD_CSS = INDEX_CSS + """
 .prose b{color:var(--ink)}
 .prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
-.prose .overdue{color:var(--hot)}
+/* The same two stamps the show pages carry, and they had drifted: there
+   .verdict.overdue is --hot-text and here .overdue was still --hot, so the
+   page that exists to explain the marks showed them in a different red from
+   the marks themselves -- and at 4.44:1, under the floor for 10px caps. Both
+   copies now say --hot-text. `.crumb` and `.hero` differ between sheets for
+   real reasons; these two never did. */
+.prose .overdue{color:var(--hot-text)}
 .prose .premature{color:var(--cool)}
-.prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;
+.prose .bust{background:var(--hot-text);color:var(--paper);padding:.1rem .3rem;
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
@@ -7913,7 +8106,7 @@ METHOD_CSS = INDEX_CSS + """
    would have come out in the browser's default blue. */
 .prose a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.prose a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The contents block, shared by both prose pages. Generated from the same
    list the sections are, so it cannot name one the page does not have or miss
    one it does -- the FAQ has worked this way since it was built and the method
@@ -7943,10 +8136,16 @@ METHOD_CSS = INDEX_CSS + """
    padding:.4rem 0;font-family:'Literata',Georgia,serif;
    font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
    color:var(--ink-soft);text-decoration:none;border:0}
+/* --ink-soft, not --dim. This is the one place on the site where --dim sits on
+   something other than paper: the panel above carries a --rule-soft wash, which
+   takes --dim from 4.98:1 on bare paper to 4.13:1 here, and 4.49:1 in the dark
+   -- both under the floor for 12px. The mono face and the smaller size were
+   always doing the work of separating the enumerator from the entry; being
+   dimmer as well was belt and braces that cost the contrast. */
 .toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
-   font-size:.75rem;font-weight:600;color:var(--dim)}
-.toc a:hover{color:var(--hot)}
-.toc a:hover::before{color:var(--hot)}
+   font-size:.75rem;font-weight:600;color:var(--ink-soft)}
+.toc a:hover{color:var(--hot-text)}
+.toc a:hover::before{color:var(--hot-text)}
 /* The way back up. Every answer and every section gets one, because the point of an index is
    being able to pick a second question after the first -- and without this the
    only route was scrolling back yourself. Mono and small: it is a control, not
@@ -7963,7 +8162,7 @@ METHOD_CSS = INDEX_CSS + """
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .backtop a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* 24x24, the same floor the nav links were held to, without moving the ink. */
 .backtop a{position:relative;display:inline-block}
 .backtop a::before{content:"";position:absolute;left:50%;top:50%;
@@ -8247,7 +8446,7 @@ timeline.</p>"""),
 )
 
 
-def render_method():
+def render_method(card=None):
     """The page the footers point at when a number wants explaining."""
     # The heading goes inside a span of its own, for the reason render_faq
     # records: .toc a is a two-column grid, and a grid container makes every
@@ -8268,11 +8467,11 @@ def render_method():
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=METHOD_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=METHOD_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
-                         "method.html"))
+                         "method.html", card=card))
 
 
 # -------------------------------------------------------------------- faq ---
@@ -8503,7 +8702,7 @@ long.</a></p>"""),
 )
 
 
-def render_faq():
+def render_faq(card=None):
     """Short answers, deep-linkable, with the long reasoning left on method."""
     # The question goes inside a span of its own. The anchor is a two-column
     # grid -- number, question -- and a grid container makes *every* child a
@@ -8529,17 +8728,16 @@ def render_faq():
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=FAQ_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=FAQ_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
-                         "faq.html"))
+                         "faq.html", card=card))
 
 
 # ------------------------------------------------------------------ cards ---
 
 CARD_W, CARD_H = 1200, 630
-CARD_DIR = "card"
 # How many cards go into one browser launch. Each launch costs about 2.7s of
 # startup and a font fetch, so doing them one at a time put eight minutes on a
 # full rebuild; stacked and sliced, the same 185 take about twenty seconds.
@@ -8630,8 +8828,14 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;line-height:.94;
    sets it in Aleo, so a link and the page behind it speak the same way. */
 h1.data{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;letter-spacing:-.01em}
 h1 em{font-style:normal;color:#c8371b}
+/* Wraps. It was nowrap + text-overflow:ellipsis, which cut 212 of the drawn
+   cards mid-venue -- "Bonnaroo Music & Arts Festival, Manchest…" -- and looked
+   deliberate doing it. A preview card is a thing people see instead of the
+   page, so it is the last place that should be quietly dropping words. Two
+   lines is fine here: the content is centred in a box that stops short of the
+   wordmark strip, so a second line moves the block, not the brand. */
 .sub{font-size:30px;letter-spacing:.14em;text-transform:uppercase;color:#413c31;
-  margin-top:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  margin-top:20px;line-height:1.25}
 .rule{height:7px;background:#17150f;margin-top:38px}
 .stats{display:flex;gap:58px;margin-top:30px;font-size:23px;letter-spacing:.14em;
   text-transform:uppercase;color:#877e6e}
@@ -8649,8 +8853,43 @@ CARDS_SHELL = """<!DOCTYPE html><html><head><meta charset="utf-8">
 <style>%s</style></head><body>__CARDS__</body></html>""" % CARD_CSS
 
 
+#: What .sub can hold now that it wraps: two lines rather than one. The card is
+#: 1200px with 84px of padding each side and .sub is 30px mono tracked .14em,
+#: which measures about 22.1px per character -- 46 to a line, so 92 to two, and
+#: 88 leaves a couple of characters of slack. Nothing on the site comes near
+#: it; the longest venue in the archive is 46. It is a backstop against a
+#: subtitle long enough to push the figures into the wordmark, not a line
+#: anything is expected to sit against.
+CARD_SUB_MAX = 88
+
+
+def card_sub(text):
+    """A subtitle that fits .sub, trimmed on a word boundary when it does not.
+
+    An assert was the first shape of this and it was wrong: it stopped the
+    build on "Bonnaroo Music & Arts Festival, Manchester, TN", which is a
+    venue, which is data. Not everything that overflows is a sentence somebody
+    can rewrite.
+
+    Two things it does that leaving it to CSS did not. It measures *rendered*
+    glyphs -- html.unescape first, because "&amp;" is five characters and one
+    glyph, and counting the source called that venue 50 wide when it is 45.
+    And it cuts on a word boundary and says so in the log, where
+    `text-overflow:ellipsis` cut mid-character and said nothing: some published
+    show cards have carried a chopped venue since the day they were drawn and
+    nothing anywhere reported it.
+    """
+    plain = html.unescape(text)
+    if len(plain) <= CARD_SUB_MAX:
+        return text
+    cut = plain[:CARD_SUB_MAX - 1].rsplit(" ", 1)[0].rstrip(" ,;-") + "\u2026"
+    log("card subtitle trimmed to fit: %r -> %r", plain, cut)
+    return html.escape(cut)
+
+
 def card_markup(kind, title, subtitle, stats, size=96, data=False):
     """One 1200x630 card: what it is, what it is called, and three figures."""
+    subtitle = card_sub(subtitle)
     figures = "".join(
         "<span><b class='%s'>%s</b>%s</span>" % (cls, val, lbl)
         for val, lbl, cls in stats)
@@ -8693,13 +8932,13 @@ def shoot_cards(exe, jobs, site_dir):
         # been drawn in fallbacks.
         #
         # The sheet is addressed absolutely: the markup is written to a temp
-        # directory, so a relative "fonts.css" resolves next to the temp file
+        # directory, so a relative sheet name resolves next to the temp file
         # and never to the built site.
         page = (CARDS_SHELL
                 .replace("{fonts}", WEB_FONTS)
                 .replace("{sheet}", sheet_links(
                     "file://" + urllib.parse.quote(
-                        os.path.abspath(os.path.join(site_dir, "fonts.css")))))
+                        os.path.abspath(os.path.join(site_dir, STATIC_DIR, SITE_SHEET)))))
                 .replace("__CARDS__", "".join(m for _, m in batch)))
         with tempfile.TemporaryDirectory() as tmp:
             src = os.path.join(tmp, "cards.html")
@@ -8857,6 +9096,80 @@ def songs_card(docs, counting=None):
           "Longest gap", "hot")))
 
 
+# The six pages that had no card of their own. Every one of them fell back to
+# a hand-made og.png committed once in July 2026 and never regenerated: it said
+# "Gap Reports" in a face this site does not use and claimed 169 songs against
+# the 589 it now has. A fallback that cannot be rebuilt from the data is a
+# figure with no source, and it was the last one on the site -- see docs/TODO
+# 8k. These are drawn by the same pipeline as the other 1,304, so they cannot
+# go stale without the index noticing.
+#
+# Each takes what its page takes and recomputes from it, the way due_card and
+# songs_card already do, rather than having the render function hand its
+# workings back. The labels come from the same constants the page headings do,
+# so a card cannot name a section the page calls something else.
+
+def venues_card(reports):
+    by_venue = {}
+    for e in (summarize(r) for r in reports):
+        if e["venue"]:
+            by_venue.setdefault(e["venue"], []).append(e)
+    most = max((len(v) for v in by_venue.values()), default=0)
+    return card_markup(
+        "Every venue", "Possum <em>Logic</em>", "Where the shows happened",
+        (("{:,}".format(len(by_venue)), "Venues", ""),
+         ("{:,}".format(sum(len(v) for v in by_venue.values())), "Shows", ""),
+         ("%d" % most, "Most at one room", "hot")))
+
+
+def rotation_card(docs, counting, since):
+    parts = rotation_split(due_rows(docs, counting, since)[3])
+    return card_markup(
+        "Out of rotation", "Possum <em>Logic</em>",
+        "What the band has stopped playing",
+        tuple(("%d" % len(rows), ROTATION_SECTIONS[i][1],
+               "hot" if i == 0 else "")
+              for i, rows in enumerate(parts)))
+
+
+def not_a_show_card(reports, docs, calendar):
+    counting = set(calendar)
+    _, aside = split_archive(reports, calendar)
+    return card_markup(
+        "Not a show", "Possum <em>Logic</em>",
+        "Soundchecks, sessions, and the rest",
+        (("%d" % len(aside), "Entries", ""),
+         ("%d" % len(never_at_a_show(docs, counting)), "Never at a show", ""),
+         ("%d" % len(rated_off_stage(docs, counting)), "Rated versions",
+          "hot")))
+
+
+def years_card(profiles):
+    busiest = max(profiles, key=lambda p: p["shows"]) if profiles else None
+    return card_markup(
+        "Every year", "Possum <em>Logic</em>", "What each year sounded like",
+        (("%d" % len(profiles), "Years", ""),
+         ("{:,}".format(sum(p["shows"] for p in profiles)), "Shows", ""),
+         (("%s" % busiest["year"]) if busiest else "&mdash;", "Busiest year",
+          "hot")))
+
+
+def explainer_card(kind, subtitle, reports):
+    """method and faq: pages about the archive rather than views of it.
+
+    They carry the archive's own three figures rather than invented ones. The
+    alternative was a card with no numbers on a template built around three,
+    and the alternative to that was making some up.
+    """
+    entries = [summarize(r) for r in reports]
+    longest = max((e["longest"] or 0) for e in entries) if entries else 0
+    return card_markup(
+        kind, "Possum <em>Logic</em>", subtitle,
+        (("%d" % len(entries), "Shows", ""),
+         ("{:,}".format(sum(e["songs"] for e in entries)), "Songs logged", ""),
+         (_stat(longest) if longest else "&mdash;", "Longest gap", "hot")))
+
+
 # ------------------------------------------------------------------- site ---
 
 SHOW_DIR = "show"
@@ -8941,41 +9254,98 @@ padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
 """
 
 
+#: How strong the paper texture is, as the standard deviation of CIE L* across
+#: the tile once it is blended onto the paper. A perceptual target rather than
+#: a pixel range, because the same pixel range is not the same texture on cream
+#: as on near-black: `soft-light` perturbs a mid backdrop far more than an
+#: extreme one, so the tile that had been specified for both read four times
+#: stronger in the dark palette. Each palette solves for its own spread below.
+#: 0.80 is "felt rather than seen" -- the dark palette shipped at 1.31 and the
+#: light at 0.30, and this sits between them.
+GRAIN_TARGET_DL = 0.80
+
+
+def _grain_spread(paper, target=GRAIN_TARGET_DL):
+    """The +/- band around mid-grey that hits `target` on this paper. """
+    def lstar(v):
+        v = max(0.0, min(255.0, v)) / 255
+        y = v / 12.92 if v <= .03928 else ((v + .055) / 1.055) ** 2.4
+        return 116 * (y ** (1 / 3)) - 16 if y > 0.008856 else 903.3 * y
+
+    def soft(cb, cs):
+        # The CSS/PDF soft-light. It is the identity at cs = 0.5, which is the
+        # whole reason the tile is centred on mid-grey: the paper's mean comes
+        # out exactly where it went in, whatever the spread.
+        if cs <= 0.5:
+            return cb - (1 - 2 * cs) * cb * (1 - cb)
+        d = ((16 * cb - 12) * cb + 4) * cb if cb <= 0.25 else math.sqrt(cb)
+        return cb + (2 * cs - 1) * (d - cb)
+
+    def sd(spread):
+        vals = [lstar(soft(paper / 255, g / 255) * 255)
+                for g in range(128 - spread, 128 + spread + 1)]
+        mean = sum(vals) / len(vals)
+        return (sum((v - mean) ** 2 for v in vals) / len(vals)) ** .5
+
+    lo, hi = 1, 120
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if sd(mid) < target:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
+
+
 def write_grain(site_dir, size=140):
-    """The paper texture, as a tile beside fonts.css. Skipped without Pillow.
+    """The paper texture: one tile per palette, beside the site sheet.
 
-    Monochrome and deliberately faint. The old SVG painted full-range noise --
-    single pixels from 19 to 232 on a 0-255 scale -- straight over the paper at
-    28% opacity, which lifted the dark palette's #131210 to a measured #2d2c2a
-    and muddied the light one. Texture should be felt rather than seen; this is
-    a narrow band around mid-gray, and the blend mode in fonts.css decides which
-    way it pushes.
+    Two things about this were wrong for its whole life, and neither was
+    visible, because it never painted at all -- BODY_BOX_CSS set the
+    `background` shorthand one link later and that resets `background-image`.
 
-    Deterministic, so a rebuild does not produce a new file and republish it.
+    The blend was `multiply` on cream and `screen` on near-black. Against a
+    mid-grey tile neither of those is a texture: multiply took the light paper
+    from #f2ece0 to a measured #dad5ca, 20.8% of its luminance, and screen took
+    the dark paper up 216%. `soft-light` is the identity at mid-grey, so the
+    paper's mean survives exactly and the tile only perturbs around it.
+
+    And one tile cannot serve both palettes, because soft-light's swing depends
+    on how far the backdrop is from the extremes: the same +/-20 band measured
+    sd(L*) 0.30 on cream and 1.31 on near-black, four times the texture in the
+    dark. Each palette gets a tile solved for GRAIN_TARGET_DL instead.
+
+    Deterministic, so a rebuild does not produce new files and republish them.
     """
-    path = os.path.join(site_dir, "grain.png")
     try:
         from PIL import Image
     except ImportError:
         return None
-    rnd = random.Random(20260727)          # fixed: the tile must not change
-    img = Image.new("L", (size, size))
-    img.putdata([rnd.randint(108, 148) for _ in range(size * size)])
-    img = img.convert("RGBA")
-    img.putalpha(46)
-    scratch = path + ".tmp"
-    img.save(scratch, "PNG", optimize=True)
-    with open(scratch, "rb") as fh:
-        blob = fh.read()
-    os.remove(scratch)
-    if os.path.isfile(path):
-        with open(path, "rb") as fh:
-            if fh.read() == blob:
-                return path
-    with open(path, "wb") as fh:
-        fh.write(blob)
-    log("wrote %s (%d bytes)", path, len(blob))
-    return path
+    out = []
+    for name, palette in (("light", LIGHT), ("dark", DARK)):
+        paper = int(palette["paper"].lstrip("#")[:2], 16)
+        spread = _grain_spread(paper)
+        path = os.path.join(site_dir, STATIC_DIR, "grain-%s.png" % name)
+        # write_if_changed makes its own directory; this one saves through PIL.
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        rnd = random.Random(20260727)      # fixed: the tile must not change
+        img = Image.new("L", (size, size))
+        img.putdata([rnd.randint(128 - spread, 128 + spread)
+                     for _ in range(size * size)])
+        # Opaque. The alpha used to do the dimming that soft-light now does
+        # properly, and a translucent tile would only dilute the texture back
+        # towards the flat paper it is meant to relieve.
+        scratch = path + ".tmp"
+        img.convert("RGB").save(scratch, "PNG", optimize=True)
+        with open(scratch, "rb") as fh:
+            blob = fh.read()
+        os.remove(scratch)
+        if not (os.path.isfile(path) and open(path, "rb").read() == blob):
+            with open(path, "wb") as fh:
+                fh.write(blob)
+            log("wrote %s (%d bytes, spread +-%d)", path, len(blob), spread)
+        out.append(path)
+    return out
 
 
 def write_redirects(site_dir):
@@ -10678,7 +11048,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 report, bar_scale=bar_scale, index_href="../index.html",
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates,
-                sheet="../fonts.css", calendar=calendar,
+                sheet="../%s/%s" % (STATIC_DIR, SITE_SHEET), calendar=calendar,
                 on_phishin=on_phishin, unlinkable_tours=no_tour_link)):
             if date in fresh:
                 log("wrote %s", page)
@@ -10727,7 +11097,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # first would set every one of them in whatever face the machine happened
     # to have -- silently, since a fallback is not an error. That is the bug
     # the "{sheet}" fix was half of.
-    write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
+    write_if_changed(os.path.join(site_dir, STATIC_DIR, SITE_SHEET),
+                     FONTS_CSS)
     write_grain(site_dir)
     # Regenerated every publish, because every publish would otherwise remove
     # it. Never deleted when DOMAIN is empty: an unset variable in one
@@ -10769,8 +11140,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         # so the figure on the card and the length of the page cannot disagree.
         rotation_page = os.path.join(site_dir, ROTATION_PAGE)
         if write_if_changed(rotation_page,
-                            render_dormant(docs, counting, since)):
+                            render_dormant(docs, counting, since,
+                                           card=ROTATION_CARD)):
             log("wrote %s", rotation_page)
+        want_card(ROTATION_CARD, rotation_card(docs, counting, since))
         n_rotation = len(due_rows(docs, counting, since)[3])
 
     # After the due figures, and for the same reason the index waits for them:
@@ -10797,11 +11170,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     write_redirects(site_dir)
 
     method = os.path.join(site_dir, "method.html")
-    if write_if_changed(method, render_method()):
+    if write_if_changed(method, render_method(card="method")):
         log("wrote %s", method)
 
     faq = os.path.join(site_dir, "faq.html")
-    if write_if_changed(faq, render_faq()):
+    if write_if_changed(faq, render_faq(card="faq")):
         log("wrote %s", faq)
 
     index = os.path.join(site_dir, "index.html")
@@ -10813,8 +11186,16 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # comment is a figure like any other, and it went stale the ordinary way.)
     shows, aside = split_archive(known, load_calendar(site_dir))
     venues_page = os.path.join(site_dir, "venues.html")
-    if write_if_changed(venues_page, render_venues(shows)):
+    if write_if_changed(venues_page, render_venues(shows, card="venues")):
         log("wrote %s", venues_page)
+    want_card("venues", venues_card(shows))
+    # These two are pages about the archive rather than views of it, so they
+    # carry its figures; both are built here because `shows` is what they need
+    # and it is not settled until split_archive above.
+    want_card("method", explainer_card(
+        "How this works", "What the numbers mean", shows))
+    want_card("faq", explainer_card(
+        "Questions", "Short answers, deep-linkable", shows))
 
     # The one page whose input is the running order rather than the gaps, so
     # the one page that reads the extract at build time. A checkout without it
@@ -10825,20 +11206,24 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     read = year_order(setlist_order(site_dir), counting, known)
     if read:
         years_page = os.path.join(site_dir, "years.html")
+        profiles = year_profiles(read, counting, docs)
         if write_if_changed(years_page, render_years(
-                year_profiles(read, counting, docs), len(counting) - len(read),
-                pages={doc["slug"] for doc in docs})):
+                profiles, len(counting) - len(read),
+                pages={doc["slug"] for doc in docs}, card="years")):
             log("wrote %s (%d of %d counting nights read)",
                 years_page, len(read), len(counting))
+        want_card("years", years_card(profiles))
 
     # Needs the song histories as well as the reports, so it is built here
     # rather than beside the due page: the entries are reports, the songs that
     # exist only at them and the versions of them that got out are not.
     if docs:
         nas = os.path.join(site_dir, NOT_A_SHOW_PAGE)
-        if write_if_changed(nas, render_not_a_show(known, docs,
-                                                   load_calendar(site_dir))):
+        calendar = load_calendar(site_dir)
+        if write_if_changed(nas, render_not_a_show(known, docs, calendar,
+                                                   card=NOT_A_SHOW_CARD)):
             log("wrote %s", nas)
+        want_card(NOT_A_SHOW_CARD, not_a_show_card(known, docs, calendar))
     changed = write_if_changed(
         index, render_index(shows, card="index", aside=aside, n_due=n_due))
     want_card("index", index_card(shows))

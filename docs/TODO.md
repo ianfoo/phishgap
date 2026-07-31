@@ -54,7 +54,53 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### Newest first: the 2026-07-30 review of songs, home, due and dormant
+### Newest first: 2026-07-31, the fouldomain chip on song pages
+
+Ian asked for the chip song pages were missing — show pages have carried
+phish.net, phish.in and fouldomain since the badges shipped, song pages had
+only the first two. Done and verified; the detail worth carrying:
+
+- **fouldomain keys songs on the title, not on phish.net's slug**, and the
+  difference is 13 of the 589 songs. `foul_song_slug` derives it, and the one
+  detail that decides it is the apostrophe: fouldomain drops it where a naive
+  slugifier separates on it, so `mike-s-song` is a 404 and `mikes-song` is the
+  page. A first pass that separated on apostrophes fixed the original 13 and
+  broke 24 others, and would have shipped looking like an improvement.
+- **The check was identity, not existence.** Nine fouldomain song pages answer
+  with a `<title>` of `1993 · 6:16`, so "not Song Not Found" is not evidence
+  the page is about this song; `og:title` names it. All 589 derived slugs were
+  confirmed against the live site to land on a page naming that exact song, and
+  the built pages were then asserted against the *published* copies: every one
+  of the 712 show pages has a byte-identical chip row, and every song page is
+  its published row plus one fouldomain chip.
+- **One page carries no fouldomain chip: `custom`.** A title match cannot
+  preserve an aggregate — phish.net files one-off and unlisted titles under
+  that entry and the archive shows the page as Dog Log, one of the nine, so
+  the chip would have claimed the other eight were versions of Dog Log. The
+  phish.net and phish.in chips beside it key on the slug, point at phish.net's
+  own catch-all, and stay. `TITLE_NOT_THE_ENTRY` is the gate.
+- **The first gate was `NOT_A_SONG`, and Ian corrected it: `jam` keeps its
+  chip.** fouldomain has a jam page, and its title names the bucket rather than
+  one of the things in the bucket — which is the actual test, and it is not the
+  same test as "is this page a composition". Both readings of the rule agree on
+  `custom` and only the narrow one is right about `jam`.
+- **Their Jam is a superset of ours in recordings, not in shows**, measured
+  2026-07-31 off the page itself. Their *performance timeline* is 92 dates and
+  every one is in our 93 — the entry is phish.net's, same as ours; our 93rd is
+  the 1984-11-03 debut, which they carry as the song's `dateCreated` rather
+  than as a timeline row. Their *scored tracks* are 117 rows across 94 dates,
+  and that is where the breadth is: 30 dates carry a scored jam our record does
+  not file as Jam at all (2024-08-16 at Mondegreen, 2013-07-30 and 07-31,
+  2016-09-02, 2017-09-01, 2023-04-18…), and 18 nights carry more than one where
+  our archive holds at most one row per date — five for 2000-06-16, three each
+  for 1999-12-29 and 1997-12-07. So the chip shows a reader everything our page
+  lists and more, and contradicts nothing it claims. Their coverage of the
+  secret sets is partial too: 2003-08-02 is in both records and 2003-08-03 is
+  in neither.
+- `_badge` is the one copy of the chip markup now, shared by both page types,
+  and the one place its href is escaped.
+
+### The 2026-07-30 review of songs, home, due and dormant
 
 Ian read four pages and sent nine notes. All nine are done and pushed; the
 detail is in §2k. Three things a fresh session should carry:
@@ -3522,6 +3568,266 @@ differentiation strategy** beyond "Song — Possum Logic". The honest question
 before any of it is what someone would be searching for that this site answers
 better than phish.net, since the answer is probably a *phrase* ("how long has
 it been since Phish played X") rather than a song name.
+
+## 8j. Hovering the Jam chart stamp made it vanish — Ian, 2026-07-30. DONE
+
+He sent a screenshot of a setlist row where the chip beside "Mercury >" was a
+solid red block, said this was the same thing as the "new since you last
+looked" tag the night before, and asked for the whole class to be swept rather
+than found one at a time. It was the right instinct: there was a second live
+one, on a banner he could not have stumbled into.
+
+### What was wrong
+
+**1. The chip — 1.00:1, both palettes.** `a.jc-chip:hover` sets
+`background:var(--hot);color:var(--paper)` at 0-2-1. `td.song a:hover{color:
+var(--hot)}`, 190 lines further down the same sheet, is 0-2-2 and took the
+`color` — so the chip painted `--hot` on `--hot`. What made it look handled was
+the other half of its own selector, `td.song a:hover .jc-chip`, which had
+**never matched anything**: the chip is a *sibling* of the title link, not a
+descendant. Fixed at the far end — `td.song a:not(.jc-chip):hover` — rather
+than by escalating the chip, which only moves the race one round on. That is
+the fifth modifier-class-loses-to-descendant-selector bug, after the
+sticky-header hide, `.backtop` and `.live span`.
+
+**2. "On stage now" — 1.12:1 light, 1.08:1 dark.** `.onstage:hover` reverses
+the whole banner onto a solid fill and then repaints exactly three children:
+`.k`, `.n b`, `.p`. It missed `.n` itself, whose own text is the words "songs
+so far", so they stayed `var(--dim)` on the fill. Identical numbers to the
+`.live span` bug in §"N new since you last looked". **This banner only exists
+while a show is being played**, so no page in the archive carries it and
+nothing that reads built HTML could have found it.
+
+**3. The stamps had drifted from the palette's own rule.** `--hot-text` exists
+because "the accent reads at 4.44:1 on paper — fine for a 36px figure, under
+the bar for the 10px chips and verdicts it is also used on." Three of the four
+reversed stamps were still filling with `--hot`: the chip's hover,
+`.verdict.bustout`, and `.prose .bust` on the method page. `.prose .overdue`
+was `--hot` where the show pages' `.verdict.overdue` was already `--hot-text` —
+the same stamp, two sheets, one of them fixed. All now `--hot-text`: 5.78:1
+light, 6.63:1 dark, and a no-op in the dark palette where the two are one
+colour.
+
+### The `*` trap, which cost a round
+
+The first fix for `.onstage` was `.onstage:hover *{color:inherit}` — a list of
+children is a list a fourth child is not on, so name none of them. It fixed
+`.k`, `.p` and `.n` and **not** `.n b`, which stayed at 2.68:1 / 2.25:1. `*`
+contributes *nothing* to specificity, so that selector is 0-2-0: it beat the
+0-2-0 rules on source order alone and lost to `.onstage .n b` at 0-2-1. It is
+`.onstage:hover.onstage *` now — 0-3-0, which no descendant rule in the block
+can reach and which does not depend on where it sits in the sheet.
+
+The audit below is what caught that. It is worth saying plainly: the tool
+caught the *fix* being wrong, not just the bug.
+
+### `tools/contrast_audit.html`
+
+None of this is visible in the source, in a resting screenshot, or to anything
+that reads the CSS. The cascade has to be resolved *in the state*, which means
+a browser. The tool rewrites `:hover`, `:focus-visible`, `:target` and
+`:active` to classes of **identical specificity** (a pseudo-class and a class
+are both 0-1-0), in place in the same `<style>` element, so cascade order and
+specificity are exactly what a real pointer produces; then it walks every
+element and pseudo-element, composites the translucent backgrounds down to
+what is actually painted, and compares against the AA floor for that element's
+own type size. Both palettes, 1280 and 390. The two live-show states are
+reconstructed, since no built page carries them.
+
+Served from the repo root by the `audit` entry in `.claude/launch.json`, so it
+cannot end up published. Run it after touching a palette token, a `:hover` or
+`:focus` rule, or any selector that could out-specify one.
+
+Three things it got wrong first, all now guarded in the file:
+
+- **Reading `.sheet.cssRules` right after rewriting `textContent`** returns the
+  rule list from *before* the rewrite, or an empty one. It reported a clean
+  pass on a page with a known 1.00:1 bug. Selectors are parsed out of the text.
+- **`python -m http.server` sends no `Cache-Control`,** so a run straight after
+  a `--rebuild` measured the *previous* build and reported the bug just fixed
+  as still present. Every load now carries its own query string.
+- **A 404 fires `onload` like any other page,** giving a document with no
+  stylesheet, no findings, and a green report. It now throws if the loaded
+  document has under 1000 bytes of CSS.
+
+### The `--hot`/`--hot-text` line outside the stamps — Ian said fix it. DONE
+
+The stamp fixes left **one band standing, all of it in the light palette**
+(dark is unaffected: `--hot` and `--hot-text` are the same colour there): 42
+findings between 3.68 and 4.49, none of them a bug so much as the palette's own
+rule — "Display keeps the brighter one; anything small takes the darker" — not
+being applied outside the stamps. Raised as his call because it darkens the
+site's hover red everywhere; he took it.
+
+**31 `color:var(--hot)` sites moved to `--hot-text`,** with the 15
+`border-bottom-color` and 4 `border-color` declarations in those same hover
+rules following, so a hovered link is not two different reds. Backgrounds,
+focus outlines, the `.bar .at.late` mark and the structural `border-left`
+accents were deliberately left alone: those are non-text and pass 3:1 easily.
+
+**Three sites keep the display accent, which is the rule working as written:**
+`.num.hot` (the hero figures, 40.5px), `h1 em` (the wordmark) and
+`.card.since.over .num`. `.num.hot` measures 4.44:1 against a floor of 3 — it
+is exactly the "36px figure" the palette note is about.
+
+One site was not a `--hot` problem at all. **`.toc a::before` is the only place
+on the site where `--dim` sits on something other than paper**: the index panel
+carries a `--rule-soft` wash, which takes `--dim` from 4.98:1 on bare paper to
+4.13:1 there, and 4.49:1 in the dark — under the floor in *both* palettes, the
+only resting failure in the set. It is `--ink-soft` now. The mono face and the
+smaller size were always what separated the enumerator from the entry text;
+being dimmer as well was belt and braces that cost the contrast.
+
+Measured after (all light unless noted):
+
+| | before | after |
+|---|---|---|
+| `.d-song` on the row-hover tint | 4.12 | **5.36** |
+| `.d-n b`, 27px | 4.12 | **5.36** |
+| `.toc a` label, in the panel | 3.68 | **4.79** |
+| `.toc a::before` number | 4.13 / 4.49 dark | **7.72 / 7.24 dark** |
+| `.crumb a` hover | 4.44 | **5.78** |
+| `.num.hot` hero figure | 4.44 (floor 3) | unchanged, deliberate |
+
+A full sweep of all 13 page states, both palettes, both layouts now reports
+**nothing below its AA floor** — the tool prints "Pass."
+
+### Then the fixed chip turned out to be wearing the bustout's costume
+
+Ian looked at the before/after and asked whether the Jam chart chip was now
+reading nearly as loud as the bustout stamp. He was right, in the hovered
+state, and the reason is worth writing down: **the chip has always been
+specified to fill on hover, and always with the accent** — the same fill the
+bustout uses. Nobody could see it, because the rule above it painted the text
+the colour of the fill. Making the word legible is what exposed a hierarchy
+collision that had been sitting in the CSS the whole time. Fixing a bug can
+reveal a design decision that was never actually visible enough to review.
+
+Hovered, the chip and the bustout were two filled red stamps of reversed 10px
+caps, one row apart. The bustout is meant to dominate a report — it is struck
+twice and set two degrees off true precisely so it cannot be mistaken for
+anything else, and a chip pointing at a paragraph on another page has no
+business borrowing that.
+
+The chip now reverses to **`--ink`**, not the accent: 15.51:1 light and
+14.92:1 dark, and the red stamp belongs to the bustout alone, which is once
+again the only filled red thing on a report. Ink was already the site's way of
+saying "this is a state, not a claim" — `.yr h2 .tab` and the tooltip both
+reverse to it. Red says something about the music; ink says the pointer is
+under your pointer.
+
+### The bustout itself: specimened, and left alone — [ruling, Ian's]
+
+He asked to see the bustout in the configurations under discussion before
+deciding, which was the right instinct: the arithmetic and the picture said
+different things.
+
+| | fill | size | ratio | floor | |
+|---|---|---|---|---|---|
+| **A** shipping | `--hot-text` | 11.25px/600 | 5.78 light, 6.63 dark | 4.5 | passes |
+| **B** brighter | `--hot` | 11.25px/600 | 4.44 light | 4.5 | fails |
+| **C** brighter, bigger | `--hot` | 19px/700 | 4.44 | 3 | passes |
+| **D1** heavier strike | `--hot-text` | 11.25px/600 | unchanged | 4.5 | passes |
+
+**A stays.** Three things the specimen showed that the numbers did not. In the
+dark palette **A and B are the same image** — the two tokens are one colour
+there — so the whole vividness question is light-only. In light, A and B differ
+by less than the failing ratio is worth. And **C breaks the row**: at 19px the
+stamp no longer fits beside the title in `td.song`, wraps to a second line, and
+makes every bustout row taller than its neighbours. It is a layout change, not
+a size bump.
+
+The fourth lever, if presence is ever wanted without touching colour or size:
+thicken the double-strike. Measured clearance from the ring to the song title —
+**A 5.7px, D1 (2px/4.5px) 4.2px, D2 (2.5px/6px) 2.7px**. D1 is a real gain for
+one line and no reflow; at D2 the ring starts reading as the title's spacing.
+Not applied.
+
+### Landing it found nine more, which is the argument for the tool
+
+`main` had moved 27 commits while this branch was out, including a nav
+rewritten into `NAV_CSS`, a `TOTOP_CSS` extraction, and three new page types
+(`years.html`, `not-a-show.html`, `out-of-rotation.html`). The merge conflicted
+in exactly the three places this branch had swapped the token, which is the
+benign case — resolved by taking main's structure and re-applying the swap.
+
+The part worth recording is what did **not** conflict. Main's new code carried
+**nine fresh `color:var(--hot)` sites on small text** — `.show a`,
+`.crumb a.sect`, `details.how > summary`, `.aside a`, `.ax-note a`, `.years a`,
+`.yh .up`, `.chips a`, `.chips a:hover b` — none of which git had any reason to
+flag. Two of the new pages had never been audited at all. **A clean sweep is
+true of the tree it ran on and nothing else**, and the audit's own page list is
+a thing that goes stale: it now names the three new pages, with a comment
+saying why. Both checked-in guards pass on the merged tree
+(`check_links.py`: 1,313 pages, 108,207 links, 0 problems; `check_few_plays.py`
+ok).
+
+## 8l. The paper texture had never painted — Ian, 2026-07-31. DONE
+
+He asked what `grain.png` was, said he half-remembered "some sort of rendering
+error", and was right. It was generated on every build, published, linked from
+the shared sheet, and **never once painted** — here or on gh-pages, since the
+day it shipped. `BODY_BOX_CSS` set the `background` shorthand one link after
+the sheet set `background-image`, and the shorthand resets it.
+
+Nothing could have caught that. The page is the right colour either way, just
+flat, so no screenshot showed it, and `tools/contrast_audit.html` reads
+`getComputedStyle().backgroundColor` — the token, not the composite — so it is
+structurally blind to any texture.
+
+### Two more things were wrong underneath it
+
+**The blend was a dimmer, not a texture.** `multiply` on cream and `screen` on
+near-black against a mid-grey tile. Measured on rendered pixels, turning it on
+as written cost the light paper **20.8%** of its luminance (#f2ece0 → #dad5ca)
+and lifted the dark paper **216%** (#131210 → #262624) — which would have moved
+every ratio on the site, including several this branch had just brought over
+the line. `soft-light` is the identity at mid-grey, so a tile centred on 128
+leaves the paper's mean exactly where it was and only perturbs around it.
+
+**One tile cannot serve both palettes.** soft-light's swing depends on how far
+the backdrop sits from the extremes, so the same ±20 band measured sd(L*) 0.30
+on cream and 1.31 on near-black — four times the texture in the dark, which is
+the asymmetry Ian noticed in the specimen. `write_grain` now solves each
+palette its own spread from one perceptual target, `GRAIN_TARGET_DL = 0.80`:
+±54 for light, ±13 for dark. A perceptual target is the honest constant here;
+a pixel range is not the same texture on two different papers.
+
+Measured after, on the painted pixels:
+
+| | paper wanted | rendered mean | drift | sd(L*) |
+|---|---|---|---|---|
+| light | 242,236,224 | 241.4, 235.2, 222.8 | 1.2 | **0.82** |
+| dark | 19,18,16 | 19.7, 18.7, 16.7 | 0.7 | **0.83** |
+
+Same perceptual strength in both, and the paper's own colour survives to within
+about a level. Contrast is unchanged: the audit's 15 page states still pass.
+
+### `tools/check_paper.py`
+
+Enabling the grain put a live variable inside the one system this session spent
+its time hardening, and the contrast audit cannot see it. So the grain arrives
+with a check that can: it stamps a theme onto a copy of each built page, shoots
+it headless, and samples the painted pixels. It asserts the mean stays within
+2 levels of the palette's paper **and** that the texture is actually present.
+
+Both failure modes are covered by construction, and both have been demonstrated
+rather than assumed — switching the grain back off makes it report
+`sd(L*) 0.00 — the grain is not painting`, with `drift 0.0`, which is precisely
+why nothing else ever noticed.
+
+Three things it got wrong first, all fixed and all worth knowing:
+
+- **An iframe harness was three bugs at once** — the src resolved against the
+  wrong depth, the theme never reached the inner document, and the patch landed
+  on the harness rather than the page. It loads the page directly now, with the
+  theme stamped into a copy written *beside the original* so relative URLs still
+  resolve.
+- **`THEME_JS` wipes a stamped `data-theme`.** It runs inline at parse time and
+  calls `apply(localStorage.getItem(KEY))`, which with nothing stored *removes*
+  the attribute. The re-stamp has to run after it, from the end of `<body>`.
+- **The patch was sampling ink.** Bottom-right lands inside a table row on half
+  the page types; the top padding is paper on all of them.
 
 ## 9. Known and deliberately not fixed
 
