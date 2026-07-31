@@ -31,7 +31,7 @@
 .theme button.on{background:var(--ink);color:var(--paper);
    border-color:var(--ink)}
 /* The selected one is already ink-on-paper reversed, so hovering it must not
-   set the text to the colour it is sitting on. It brightens its edge instead. */
+   set the text to the color it is sitting on. It brightens its edge instead. */
 .theme button.on:hover:not(:disabled){color:var(--paper);
    box-shadow:0 0 0 2px var(--hot)}
 .theme button:disabled{opacity:.45;cursor:default}
@@ -206,7 +206,7 @@ html,body{overflow-x:clip}
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, and never narrower
+   area grows -- a pseudo-element centered on the label, and never narrower
    than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
@@ -222,7 +222,7 @@ html,body{overflow-x:clip}
    settings, .6875rem at .1em is 269px and fits, and it is still a size and a
    half up on the 11.25px this strip used to be set at. Under about 340px it
    goes back to two rows, which is why the row gap is what it is: 44px targets
-   need 44px between their centres, and the gap is the only thing providing it.
+   need 44px between their centers, and the gap is the only thing providing it.
 
    The meta pair keeps 24px, the AA floor. They are the two least-used links on
    the site and buying them 44px each costs another 20px of every phone screen.
@@ -244,7 +244,7 @@ html,body{overflow-x:clip}
    it would also take away the link, stranding the one route back to the list.
 
    So there are three states and not two: nothing, the section you are in
-   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   (still a link, ink instead of soft ink, a rule in the edge color), and the
    page you are on (not a link, full ink, full rule). The markup says the same
    thing to a screen reader -- aria-current="page" for the page, plain "true"
    for the item in the set that contains it. */
@@ -283,7 +283,7 @@ a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
    `.named` is written by hero_html rather than inferred here with `:has(.of)`,
    because an unsupported selector is dropped in silence -- which would leave
    the arrow where it was *and* add a second one below it, on exactly the
-   browsers nobody is testing. `.of` states its own colour, so it does not
+   browsers nobody is testing. `.of` states its own color, so it does not
    inherit the label's hover and has to be named again. */
 a.card.named .lbl::after{content:none}
 a.card.named .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
@@ -379,7 +379,7 @@ header{padding-bottom:.9rem}
    background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
 /* Matching the era chips beside it, which is the whole point of the exercise. */
 .sort:hover{color:var(--ink);border-color:var(--ink-soft)}
-/* It ships disabled and is enabled by script; without this the UA greys out
+/* It ships disabled and is enabled by script; without this the UA grays out
    text the reader can see for the split second before that happens. */
 .sort:disabled{opacity:1;color:var(--ink)}
 .sort option{background:var(--paper);color:var(--ink)}
@@ -517,7 +517,7 @@ header{padding-bottom:.9rem}
    the page, which is the objection to sending it to the FAQ outright.
    Nothing is remembered per reader. A flag that says "you have read this"
    fails asymmetrically -- set wrongly it shows a first-time reader an
-   unlabelled table of multipliers, unset wrongly it costs one line -- and a
+   unlabeled table of multipliers, unset wrongly it costs one line -- and a
    reference archive should not serve two different pages at one URL. The
    site's own precedent argues the same way: the last per-reader flag here
    shipped broken and stayed invisible for weeks.
@@ -727,7 +727,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
      child -- the song name follows it -- so a trailing separator was left
      stranded at the end of the line with the name wrapped beneath it. */
   .r-stats .st:empty{display:none}
-  /* --dim, not --rule: rule is a hairline colour and a glyph drawn in it is
+  /* --dim, not --rule: rule is a hairline color and a glyph drawn in it is
      invisible on the dark paper, the way the separators were. */
   .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\00b7";
     color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
@@ -1136,7 +1136,7 @@ it; nothing here is counted a second time.</p>
 <p>Under each gap is that song's usual one &mdash; the median of its gaps over
 the <b>ten years</b> before the show, not over all of history. Forty years of a
 working band is several different bands. The 1990s dominate any all-time
-figure, when they played far more shows a year out of a smaller catalogue, so
+figure, when they played far more shows a year out of a smaller catalog, so
 all-time gaps run much shorter and better than half of everything came out
 overdue &mdash; a word that means nothing if it fits three songs in five.</p>
 <p>Counting a fixed number of past performances instead does not fix it: twenty
@@ -1219,7 +1219,7 @@ defensible totals for how many shows the band has played: <span
 class="num">2,239</span> entries listed, <span class="num">2,114</span> that
 count toward statistics, and <span class="num">2,106</span> distinct dates
 among those. They differ by soundchecks, television and radio sessions,
-cancelled dates, and nights when two separate shows were played.</p>
+canceled dates, and nights when two separate shows were played.</p>
 <p>The disagreement reaches the beginning. <b>1983-10-30</b>, the show
 generally called Phish's first, is one phish.net excludes from statistics, so a
 count built on that flag declares the <em>second</em> show to be number one and
@@ -1257,7 +1257,7 @@ both were overdue rather than bustouts, because both were still in the band's
 rotation.</p>
 <p>Within the bustout branch the gap alone decides it, with no test on how
 often the song was ever played: a gap counts shows, so a large one already
-proves the song has been in the catalogue a long while, and nothing newly
+proves the song has been in the catalog a long while, and nothing newly
 written can reach the threshold.</p>
 <p class="backtop"><a href="#sections">&uarr; All sections</a></p>
 <h2 id="rotation">Dormant, rarity, once or twice</h2>
@@ -1373,7 +1373,7 @@ timeline.</p>
     {rootMargin:'-8px 0px 0px 0px'}).observe(h);
 })();
 </script>
-<footer><span><a href="./index.html">All reports</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="./index.html">All reports</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Data: Phish.net &middot; ratings fouldomain &middot; not affiliated with Phish</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div></body></html>

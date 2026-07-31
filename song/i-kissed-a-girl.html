@@ -31,7 +31,7 @@
 .theme button.on{background:var(--ink);color:var(--paper);
    border-color:var(--ink)}
 /* The selected one is already ink-on-paper reversed, so hovering it must not
-   set the text to the colour it is sitting on. It brightens its edge instead. */
+   set the text to the color it is sitting on. It brightens its edge instead. */
 .theme button.on:hover:not(:disabled){color:var(--paper);
    box-shadow:0 0 0 2px var(--hot)}
 .theme button:disabled{opacity:.45;cursor:default}
@@ -196,7 +196,7 @@ html,body{overflow-x:clip}
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, and never narrower
+   area grows -- a pseudo-element centered on the label, and never narrower
    than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
@@ -212,7 +212,7 @@ html,body{overflow-x:clip}
    settings, .6875rem at .1em is 269px and fits, and it is still a size and a
    half up on the 11.25px this strip used to be set at. Under about 340px it
    goes back to two rows, which is why the row gap is what it is: 44px targets
-   need 44px between their centres, and the gap is the only thing providing it.
+   need 44px between their centers, and the gap is the only thing providing it.
 
    The meta pair keeps 24px, the AA floor. They are the two least-used links on
    the site and buying them 44px each costs another 20px of every phone screen.
@@ -234,7 +234,7 @@ html,body{overflow-x:clip}
    it would also take away the link, stranding the one route back to the list.
 
    So there are three states and not two: nothing, the section you are in
-   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   (still a link, ink instead of soft ink, a rule in the edge color), and the
    page you are on (not a link, full ink, full rule). The markup says the same
    thing to a screen reader -- aria-current="page" for the page, plain "true"
    for the item in the set that contains it. */
@@ -303,7 +303,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
    number. */
-/* A stub, not a callout. The tinted panel with a coloured left border was the
+/* A stub, not a callout. The tinted panel with a colored left border was the
    one object on the site that looked like a framework component; it reads in
    the same field language as the row above it now -- label, value, no fill. */
 .best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;
@@ -337,7 +337,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft)}
-/* Below the best version now, beside the list it summarises: "most often out
+/* Below the best version now, beside the list it summarizes: "most often out
    of / into" is a reading of the Before / after column, so it belongs next to
    that column rather than between the title and the figures. */
 .pairs{margin:1.4rem 0 0}
@@ -360,7 +360,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
 /* Matching the era chips beside it, which is the whole point of the exercise. */
 .sort:hover{color:var(--ink);border-color:var(--ink-soft)}
-/* It ships disabled and is enabled by script; without this the UA greys out
+/* It ships disabled and is enabled by script; without this the UA grays out
    text the reader can see for the split second before that happens. */
 .sort:disabled{opacity:1;color:var(--ink)}
 .sort option{background:var(--paper);color:var(--ink)}
@@ -545,7 +545,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    color:var(--dim);margin-right:.4rem}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 /* The one card whose number arrives after the page does. Same shape as its
-   four neighbours so its appearance is a card filling in, not the row
+   four neighbors so its appearance is a card filling in, not the row
    reflowing around a new one. */
 .card.since.over .num{color:var(--hot)}
 /* The verdict rides in the label, which the hero can now afford to let wrap:
@@ -687,7 +687,7 @@ details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
 .empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
 /* The header a reader keeps once the real one has scrolled away. Landing on a
-   row from a report's link otherwise drops you into an unlabelled list of
+   row from a report's link otherwise drops you into an unlabeled list of
    dates with no way to tell what page you are on. It carries the song and the
    figure the page exists for, and nothing else. */
 .stuck{position:fixed;top:0;left:0;right:0;z-index:20;
@@ -1069,7 +1069,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 </ol>
 <p class="empty" id="empty" hidden>No performances match that search.</p>
 <a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Current through 2009-08-16</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

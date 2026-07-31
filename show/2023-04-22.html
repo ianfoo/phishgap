@@ -31,7 +31,7 @@
 .theme button.on{background:var(--ink);color:var(--paper);
    border-color:var(--ink)}
 /* The selected one is already ink-on-paper reversed, so hovering it must not
-   set the text to the colour it is sitting on. It brightens its edge instead. */
+   set the text to the color it is sitting on. It brightens its edge instead. */
 .theme button.on:hover:not(:disabled){color:var(--paper);
    box-shadow:0 0 0 2px var(--hot)}
 .theme button:disabled{opacity:.45;cursor:default}
@@ -201,7 +201,7 @@ header{padding-bottom:.9rem}
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, and never narrower
+   area grows -- a pseudo-element centered on the label, and never narrower
    than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
@@ -217,7 +217,7 @@ header{padding-bottom:.9rem}
    settings, .6875rem at .1em is 269px and fits, and it is still a size and a
    half up on the 11.25px this strip used to be set at. Under about 340px it
    goes back to two rows, which is why the row gap is what it is: 44px targets
-   need 44px between their centres, and the gap is the only thing providing it.
+   need 44px between their centers, and the gap is the only thing providing it.
 
    The meta pair keeps 24px, the AA floor. They are the two least-used links on
    the site and buying them 44px each costs another 20px of every phone screen.
@@ -239,7 +239,7 @@ header{padding-bottom:.9rem}
    it would also take away the link, stranding the one route back to the list.
 
    So there are three states and not two: nothing, the section you are in
-   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   (still a link, ink instead of soft ink, a rule in the edge color), and the
    page you are on (not a link, full ink, full rule). The markup says the same
    thing to a screen reader -- aria-current="page" for the page, plain "true"
    for the item in the set that contains it. */
@@ -320,7 +320,7 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    text-transform:uppercase;color:var(--ink)}
 /* The venue and the tour are links now -- to the index filtered to that room
    or that run -- and a masthead link is drawn differently from a link in
-   prose. It keeps its own colour and weight, because demoting it to --dim
+   prose. It keeps its own color and weight, because demoting it to --dim
    would demote the venue in the masthead, and takes only the hairline every
    other link on this site wears. Without this rule both came out in the
    browser's default blue with a browser underline, which is the fifth time
@@ -452,7 +452,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .verdict.at-gap{display:block;margin:.1rem 0 0}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
-   than merely coloured. print-color-adjust keeps the fill when a browser prints
+   than merely colored. print-color-adjust keeps the fill when a browser prints
    it; WeasyPrint keeps backgrounds anyway. */
 /* A filled edge reads tighter than text does at the same distance, so the chip
    needs more room above it than the plain tags to sit on the same rhythm. */
@@ -530,8 +530,8 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    box-shadow:0 0 0 2px var(--paper)}
 .bar .at.late{background:var(--hot)}
 .bar .at.early{background:var(--cool)}
-/* Inside its own band is the ordinary case and gets no colour at all -- ink,
-   like the figures. Two thirds of rows land here, and colouring them would
+/* Inside its own band is the ordinary case and gets no color at all -- ink,
+   like the figures. Two thirds of rows land here, and coloring them would
    spend the palette on "nothing to report". */
 .bar .at.usual{background:var(--ink)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
@@ -556,7 +556,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    scroll, which is why the other jump targets on this site carry a link. */
 tbody tr:target td{background:var(--hover)}
 tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
-/* The date links when we hold that show. Underlined rather than coloured, so
+/* The date links when we hold that show. Underlined rather than colored, so
    a column of them does not turn the right-hand side of the table orange. */
 .last .date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -603,13 +603,13 @@ tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
    is 4.44:1, and this is 10px uppercase, so it wants the 4.5 floor. The
    palette already carries the darker accent for exactly this ("anything small
    takes the darker") and it lands at 5.78:1. In the dark palette the two are
-   the same colour, so this is a no-op there and stays at 6.63:1. */
+   the same color, so this is a no-op there and stays at 6.63:1. */
 .since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
    background:var(--hot-text);padding:.15rem .4rem}
 /* It is an anchor now -- the count doubles as the jump to the first new row.
-   text-decoration has to be said out loud: the colour above already beats the
-   UA link colour, so this would not have come out browser blue, but it would
+   text-decoration has to be said out loud: the color above already beats the
+   UA link color, so this would not have come out browser blue, but it would
    have come out underlined, and four links on this site have shipped wearing
    a default the author sheet never overrode. The ring is not set here either;
    a:focus-visible in BASE_CSS already draws it in --hot. */
@@ -626,7 +626,7 @@ tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 .aside-note span{font-family:'Literata',Georgia,serif;font-size:.9375rem;
    line-height:1.5;font-variation-settings:'opsz' 14;color:var(--ink-soft)}
 /* The title carries the link to the song's own page; underlining every one of
-   them would stripe the table, so it colours on hover instead. */
+   them would stripe the table, so it colors on hover instead. */
 td.n,td.song{vertical-align:baseline}
 td.song a{color:inherit;text-decoration:none}
 td.song a:hover{color:var(--hot)}
@@ -727,7 +727,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
      text-transform:uppercase;color:var(--dim);margin-bottom:.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
-  /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
+  /* --dim rather than --rule. A hairline color is for hairlines: at #413a30
      on #131210 this separator was invisible on the dark palette. */
   .last .venue::before,.last .place::before{content:" · ";color:var(--dim);
     opacity:.7}
@@ -1090,7 +1090,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <table><colgroup><col class='c-song'><col class='c-last'><col class='c-bar'><col class='c-gap'></colgroup><thead><tr><th>Song</th><th>Last Performed</th><th></th><th class='n'>Gap</th></tr></thead><tbody>
 <tr id='run-like-an-antelope'><td class='song'><a href='../song/run-like-an-antelope.html#2023-04-22'>Run Like an Antelope</a></td><td class='last'><span class='cap'>Last performed</span><span class='date'><a href='./2022-12-30.html'>2022-12-30</a></span><span class='venue'>Madison Square Garden</span><span class='place'>New York, NY</span></td><td class='bar' data-tip='12 shows; usually 3 to 8'><span class='track'><span class='band'></span><span class='mid'></span><span class='at late' style='left:78.47%'></span></span></td><td class='n' data-tip='12 shows; usually 3 to 8'><span class='cap'>Gap</span><span class='gap small'>12</span><span class='typ'>med 5</span><span class='verdict overdue at-gap'>overdue</span><span class='sr'>12 shows; usually 3 to 8</span></td></tr>
 </tbody></table><div class='notes'>Chalk Dust Torture was unfinished. Trey teased Johnny B. Goode in Back on the Train.</div>
-<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<footer><span><a href="../method.html">How this works</a></span><span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
 <span>Updated 2026-07-26</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div><script>

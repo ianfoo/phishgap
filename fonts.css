@@ -1,11 +1,11 @@
 /* Bagnard -- Sebastien Sanfilippo, SIL Open Font License 1.1.
-   Licence text: ./font/OFL.txt */
+   License text: ./font/OFL.txt */
 @font-face{font-family:'Bagnard';src:url('./font/Bagnard.otf') format('opentype');
   font-weight:400;font-style:normal;font-display:swap}
 /* The paper's texture. It lives here rather than inline in every page for two
    reasons. It was an SVG feTurbulence data URI, which the browser has to run a
    filter over before it can paint -- about a quarter of a second, during which
-   the page showed flat colour and then visibly changed under the reader. A PNG
+   the page showed flat color and then visibly changed under the reader. A PNG
    decodes immediately. And as one cached file it costs 640 pages nothing,
    where a data URI large enough to look good would have been carried by each
    of them.
@@ -15,6 +15,6 @@
 
    The blend mode is the variable that has existed unused since the palettes
    were written: multiply on cream darkens the grain into the paper, screen on
-   near-black lifts it, and neither shifts the paper colour the way painting
+   near-black lifts it, and neither shifts the paper color the way painting
    opaque noise over it did. */
 body{background-image:url(grain.png);background-blend-mode:var(--grain-blend)}
