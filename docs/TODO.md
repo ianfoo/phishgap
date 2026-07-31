@@ -72,6 +72,10 @@ detail is in §2k. Three things a fresh session should carry:
   button has been on screen permanently on every song page since it shipped.
   `.totop[hidden]{display:none}` is the whole fix. It is now on all seven list
   and prose pages as well, which is what Ian asked for.
+- **95 recorded gaps in the archive are larger than the number of shows
+  between their two dates**, and they sit at the top of every longest-gap
+  ranking because a `max()` selects exactly them. Two of the archive's top
+  three are fiction. Open, and it needs Ian's call — see the end of §2k.
 - **The Browser pane cannot verify anything that uses IntersectionObserver.**
   Its top-level document reports `innerWidth`/`innerHeight` of 0, so IO has no
   root and never fires — not even the initial callback. The site's own sticky
@@ -1623,9 +1627,65 @@ have come back after 1,468 shows: Cold as Ice on 2026-07-22 and Gone on
 uniqueness the archive does not support, and this site's rule is that a wrong
 figure is worse than a missing one. The card names the most recent holder,
 links to it, and says how many others there are. **The index's version of the
-same card is safe by accident**: across the 692 archived reports, 2026-07-22
-holds 1,468 alone, because Gone's night is outside them. Same latent bug, one
-tie away — worth fixing there before it fires.
+same card was safe only by accident**: across the 692 archived reports,
+2026-07-22 holds 1,468 alone, because Gone's night is outside them. Ian asked
+for it to be fixed before it fires, so it is — same treatment, same two
+helpers, and the card now says which night it is about to take you to instead
+of pointing somewhere without saying where.
+
+**Five copies of the hero builder became one caller each.** `hero_html` in
+§8e's sense: the same two lines lived in `render_show`, `render_index`,
+`render_due`, `render_dormant` and `render_songs`, and they had already
+drifted — three escaped the href and two did not, on pages whose hrefs are
+built from song slugs and venue names. The show page's copy was the fifth
+because it wrote `href='#%s'` into the format string; it passes the `#` now.
+Proved by diffing every hero card in the built site against the published one:
+all 19 identical except the two that were meant to change.
+
+The `.of` sub-label and its arrow moved from `SONGS_CSS` up to `INDEX_CSS`
+half an hour after being written, which is the shortest a rule has taken to
+want a second home in this file. Which card gets the arrow moved onto its
+name is stated by `hero_html` as a `named` class rather than inferred in CSS
+with `:has(.of)` — an unsupported selector is dropped in silence, and here
+that would leave the old arrow in place *and* add a second one under it.
+
+### The tie fix found a data bug on its first day — OPEN, needs Ian
+
+Naming the tied song is what exposed it. **Gone's 1,468 is not a gap.** Its
+two performances are 2009-10-29 and 2009-12-30 with **19 counted shows**
+between them, and this archive's own report for 2009-12-30 records Gone with
+no gap at all — so the two phish.net endpoints disagree about that
+performance, the same shape as `the-curtain` in §0.
+
+Measured across all 36,580 consecutive pairs in the archive: **95 recorded
+gaps exceed the shows actually between their two dates by more than ten.** It
+is not noise, it is one shape — a first row phish.net does not count toward
+gaps, so the *second* performance is treated as a debut and given a gap equal
+to every show ever played to that point:
+
+| recorded | actually between | song | dates |
+|---|---|---|---|
+| 1,460 | 2 | Sleep Again | 2009-10-29 → 2009-11-01 |
+| 1,468 | 18 | Gone | 2009-10-29 → 2009-12-30 |
+| 1,452 | 2 | Invisible | 2009-10-29 → 2009-11-01 |
+| 1,378 | 0 | Scents and Subtle Sounds | 2003-07-06 → 2003-07-07 |
+| 1,244 | 0 | Bug | 1999-06-24 → 1999-06-30 |
+
+**This poisons the top of every longest-gap ranking, because the biggest
+overstatements are exactly the rows a `max()` selects.** Two of the archive's
+top three longest gaps are junk: Gone at 1,468 and Sleep Again at 1,460.
+Cold as Ice's 1,468 is real — 1,465 counted shows between 1992-05-18 and
+2026-07-22 — so the headline figure survives, but the songs page's "Longest
+gap" sort and its per-row longest column are ranked partly on fiction.
+
+**Not fixed, because it is the same call as `custom` and `the-curtain`**:
+deciding which phish.net endpoint to believe is Ian's, and the options differ
+a lot in blast radius. Cheapest first: bound the gap by the site's own
+`shows_since` wherever a superlative is chosen (fixes the heroes and the sort,
+changes no stored data); or drop the impossible gaps at archive time (fixes
+everything downstream, rewrites 95 rows and republishes those song pages); or
+leave them and mark them on the row. Note the third is not free either — the
+figures are already published.
 
 **Two smaller things repaired in passing, both left by the same rename.** When
 `FEW_TITLE` went from "One or two nights" to "Once or twice" at Ian's request,

@@ -41,7 +41,20 @@ bugs have come out of the copies: a nav that could not wrap, a footer link in
 the browser's default blue, a sticky-header hide out-specified by a modifier
 class, and tabular figures on show pages only. `docs/TODO.md` §8e.
 `TOTOP_CSS` was the sixth block to be named, on 2026-07-30, when the floating
-back-to-top control went from one sheet to all of them.
+back-to-top control went from one sheet to all of them. **The markup had the
+same problem**: five functions built the hero cards from five copies of the
+same two lines, three escaping the href and two not. `hero_html` is the one
+copy now, and `hero_cols` beside it is the pattern — the builder *states* what
+the CSS needs to know (how many columns, which card carries a name) rather
+than the CSS inferring it, because an inference like `:has(.of)` fails silent.
+
+**A recorded gap can be larger than the shows between its two dates.** 95 of
+the archive's 36,580 are, one of them by 1,458, and they are not noise: where
+phish.net does not count a song's first appearance, the *second* is treated as
+a debut and given a gap equal to every show ever played. They sit at the top
+of every longest-gap ranking because that is precisely what a `max()` picks —
+two of the archive's top three longest gaps are fiction. Bound a superlative
+by the site's own `shows_since` before publishing it. `docs/TODO.md` §2k.
 
 **A `hidden` attribute loses to any author `display`.** The browser hides
 `[hidden]` with a *user-agent* rule, and a user-agent rule loses to an author

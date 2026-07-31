@@ -2847,13 +2847,15 @@ def render_html(report, bar_scale="linear", index_href=None,
         longest_id = next(rid for rid, s in zip(row_ids, report["songs"])
                           if s["gap"] == biggest)
 
-    hero = "".join(
-        ("<a class='card' href='#%s'>" % href if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in (
+    hero = hero_html([
+        c for c in (
             (len(report["songs"]), "Songs Played", "", None),
-            (longest, "Longest Gap", " hot", longest_id),
+            # The one href on this page that is an anchor rather than a URL.
+            # It was written as "#%s" inside the copy of the builder that used
+            # to live here, which is exactly the difference that made this a
+            # fifth copy rather than a fifth caller.
+            (longest, "Longest Gap", " hot",
+             "#%s" % longest_id if longest_id else None),
             (med, "Median Gap", "", None),
             # Not the mean. A gap distribution with one 1,947 in it has a mean
             # that describes no song in the setlist -- across this archive it
@@ -2861,7 +2863,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             # The count of bustouts is the thing the mean was standing near.
             (sum(1 for s in report["songs"]
                  if (s["gap"] or 0) >= BUSTOUT_GAP), "Bustouts", "", None),
-        ) if counts or lbl != "Bustouts")
+        ) if counts or c[1] != "Bustouts"])
 
     sections, rows, current = [], [], None
 
@@ -3321,6 +3323,25 @@ h1 a:hover em{color:var(--ink)}
    disappears into the type. Right, not down: this card leaves for another
    page, where the show and song sheets' cards land further down their own. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+/* Which song, or which night, the figure belongs to -- under the label and in
+   the label's own small type, so the card still reads as one object. */
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
+   text-transform:none;font-size:.75rem}
+/* And on those cards the arrow moves down onto the name. The rule above
+   appends to the end of the label, and the last thing in a label carrying a
+   name is that display:block name -- so the arrow opened a line of its own and
+   sat alone under it. On the name it is also the more honest target: the card
+   goes to that song or that night, not to a page about longest gaps.
+
+   `.named` is written by hero_html rather than inferred here with `:has(.of)`,
+   because an unsupported selector is dropped in silence -- which would leave
+   the arrow where it was *and* add a second one below it, on exactly the
+   browsers nobody is testing. `.of` states its own colour, so it does not
+   inherit the label's hover and has to be named again. */
+a.card.named .lbl::after{content:none}
+a.card.named .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card.named:hover .lbl .of,
+a.card.named:hover .lbl .of::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
@@ -4150,6 +4171,50 @@ def hero_cols(n):
     return "hero-c4" if n == 4 else "hero-c3"
 
 
+def tied_with(rest):
+    """The tail of a card's sub-label when a superlative is shared.
+
+    "", ", tied with Gone", ", tied with 3 others". One function because two
+    heroes need it and the whole point of stating a tie is that both pages
+    state it the same way.
+    """
+    if not rest:
+        return ""
+    if len(rest) == 1:
+        return ", tied with %s" % rest[0]
+    return ", tied with %d others" % len(rest)
+
+
+def hero_html(cards):
+    """One hero, from (value, label, class, href[, sub-label]) per card.
+
+    Five functions built this string from five copies of the same two lines,
+    and they had already drifted: three escaped the href and two did not, on
+    pages whose hrefs come from song slugs and venue names. One copy now.
+
+    The fifth field is the name under the label -- which song, or which night,
+    a superlative belongs to. It is passed rather than written into the label
+    because a card that carries one has to say so in its markup: that is what
+    moves the arrow off the end of the label and onto the name, where the link
+    actually goes. Doing it in CSS instead would mean `:has(.of)`, and a
+    selector a browser does not understand is dropped in silence -- leaving the
+    old arrow where it was and adding a second one under it.
+    """
+    out = []
+    for card in cards:
+        val, lbl, cls, href = card[:4]
+        of = card[4] if len(card) > 4 else ""
+        klass = "card named" if of else "card"
+        out.append(
+            ("<a class='%s' href='%s'>" % (klass, html.escape(href, quote=True))
+             if href else "<div class='%s'>" % klass)
+            + "<div class='lbl'>%s%s</div><div class='num%s'>%s</div>"
+            % (lbl, "<span class='of'>%s</span>" % html.escape(of) if of else "",
+               cls, val)
+            + ("</a>" if href else "</div>"))
+    return "".join(out)
+
+
 def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
                  n_due=None):
     """A single self-contained index page over every saved report."""
@@ -4208,8 +4273,24 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # page that does not exist. The show holding the longest gap is a page the
     # site already builds, so the number points at it rather than just sitting
     # there being large.
-    peak = max((e for e in entries if e["longest"]),
-               key=lambda e: e["longest"], default=None)
+    #
+    # Every night holding it, not just one. This card was correct only by
+    # accident: `max()` returns whichever tied entry it met first and states it
+    # as the answer, and today exactly one of the 692 reports holds 1,468 --
+    # Gone's 1,468 on 2009-12-30 is a song history rather than an archived
+    # report, so it never reached this list. The songs index *is* tied, which
+    # is how the shape was found there first; as the backfill runs, the same
+    # tie arrives here. Fixed before it fires rather than after: the card names
+    # the most recent night, links to it, and says how many others there are.
+    #
+    # Naming the night is also the answer to a second thing wrong with the
+    # card, which is that it said "1,468" and pointed somewhere without saying
+    # where. Most recent first among equals, because the ordering has to come
+    # from the data and a date is the one thing every tied show differs on.
+    top_gap = max((e["longest"] for e in entries if e["longest"]), default=None)
+    holders = sorted((e for e in entries if e["longest"] == top_gap),
+                     key=lambda e: e["date"], reverse=True) if top_gap else []
+    peak = holders[0] if holders else None
     # The fullest night is deliberately *not* a hero card. It was one, and it
     # is the wrong thing for that slot: once the backfill reaches 1999-12-31 it
     # becomes Big Cypress and never moves again, so a permanently fixed number
@@ -4235,7 +4316,9 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     cards = [
         (len(entries), "Reports", "", ""),
         (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
-         page_href % peak["date"] if peak else ""),
+         page_href % peak["date"] if peak else "",
+         (peak["date"] + tied_with([e["date"] for e in holders[1:]]))
+         if peak else ""),
         (len({e["venue"] for e in entries if e["venue"]}), "Venues", "",
          "./venues.html"),
     ]
@@ -4244,12 +4327,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
     # and a link to a page that is not there is worse than no card.
     if n_due is not None:
         cards.append((n_due, "Songs Due", " hot", "./due.html"))
-    hero = "".join(
-        ("<a class='card' href='%s'>" % html.escape(href, quote=True)
-         if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in cards)
+    hero = hero_html(cards)
 
     # Not concerts, and kept off the list above rather than out of the site:
     # the pages exist, the gap figures on them do not describe a show, and a
@@ -5723,19 +5801,10 @@ SONGS_CSS = INDEX_CSS + """
 .r-when{font-size:.75rem;color:var(--dim);line-height:1.3rem;white-space:nowrap}
 .r-when b{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--ink-soft)}
 .r-stats .score{color:var(--hot-text)}
-/* Which song the figure above belongs to, under its label. */
-.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
-   text-transform:none;font-size:.75rem}
-/* The inherited arrow lands in the wrong place on this one card, and it is the
-   block that does it: `a.card .lbl::after` appends to the end of the label,
-   and the last thing in this label is a display:block song name, so the arrow
-   opened a line of its own and sat alone under it. Moved onto the name, which
-   is also the more honest target -- the card goes to that song's page, not to
-   a page about longest gaps. `.of` states its own colour, so it does not
-   inherit the label's hover and has to be named again here. */
-a.card .lbl::after{content:none}
-a.card .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
-a.card:hover .lbl .of,a.card:hover .lbl .of::after{color:var(--hot-text)}
+/* `.lbl .of` and the arrow that rides it are on the sheet this one extends.
+   They were here for half an hour, until the index wanted the same treatment
+   for the same reason -- which is the shortest a rule has ever taken to want
+   a second home in this file. */
 @media screen and (max-width:620px){
   .row{grid-template-columns:1fr}
   .r-when{white-space:normal}
@@ -6183,11 +6252,7 @@ def render_due(docs, counting, since, card=None):
              (len(overdue), "Slipping", "", "#slipping"),
              (len(shelved), "On the shelf", "", "#shelf"),
              (len(dormant), "Out of rotation", "", "#rotation")]
-    hero = "".join(
-        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in cards)
+    hero = hero_html(cards)
 
     n_due = len(due)
     subtitle = ("%d song%s you might reasonably expect tonight"
@@ -6530,11 +6595,7 @@ def render_dormant(docs, counting, since):
              (len(few), FEW_TITLE, "", "#" + ROTATION_SECTIONS[2][0]),
              ("{:,}".format(longest[0]) if longest else "n/a", "Longest gone",
               " hot", "#%s" % longest[1]["slug"] if longest else "")]
-    hero = "".join(
-        ("<a class='card' href='%s'>" % href if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in cards)
+    hero = hero_html(cards)
 
     n = len(dormant)
     # "in three kinds" was Ian's: "'of three types,' or 'in three categories,'
@@ -6740,10 +6801,7 @@ def render_songs(docs, stamp=None, card=None):
     # figure is worse than a missing one -- "Cold as Ice, 1,468" under the
     # words LONGEST GAP is a claim of uniqueness the archive does not support.
     # So the card names the most recent holder, links to it, and says how many
-    # others there are. (The index's version of this card is safe by accident
-    # and not by design: measured across the 692 archived reports, 2026-07-22
-    # holds 1,468 alone -- Gone's night is outside them. Same latent bug, one
-    # tie away.)
+    # others there are. render_index does the same, off the same two helpers.
     #
     # Most recent first, because among equals it is the one a reader has a
     # chance of remembering, and because the ordering has to come from the
@@ -6753,12 +6811,6 @@ def render_songs(docs, stamp=None, card=None):
                      key=lambda e: e["longest_on"],
                      reverse=True) if top_gap else []
     peak = holders[0] if holders else None
-    if len(holders) == 1:
-        shared = ""
-    elif len(holders) == 2:
-        shared = ", tied with %s" % html.escape(holders[1]["song"])
-    else:
-        shared = ", tied with %d others" % (len(holders) - 1)
     # "Performances" on a page listing songs can be read as the band's, and
     # 27,966 of those would be some tour. The count is of songs played, so it
     # says so.
@@ -6778,18 +6830,12 @@ def render_songs(docs, stamp=None, card=None):
     cards = [
         (len(entries), "Songs", "", ""),
         ("{:,}".format(total), "Song Performances", "", ""),
-        (_stat(peak["longest"]) if peak else "n/a",
-         "Longest Gap%s" % ("<span class='of'>%s%s</span>"
-                            % (html.escape(peak["song"]), shared)
-                            if peak else ""),
-         " hot", "./song/%s.html" % peak["slug"] if peak else ""),
+        (_stat(peak["longest"]) if peak else "n/a", "Longest Gap", " hot",
+         "./song/%s.html" % peak["slug"] if peak else "",
+         (peak["song"] + tied_with([e["song"] for e in holders[1:]]))
+         if peak else ""),
     ]
-    hero = "".join(
-        ("<a class='card' href='%s'>" % html.escape(href, quote=True)
-         if href else "<div class='card'>")
-        + "<div class='lbl'>%s</div><div class='num%s'>%s</div>" % (lbl, cls, val)
-        + ("</a>" if href else "</div>")
-        for val, lbl, cls, href in cards)
+    hero = hero_html(cards)
     # "589 songs, played 37,169 times" attaches the verb to the nearest noun a
     # reader can find, and the nearest noun is singular: it reads as one song
     # played 37,169 times. The count is of performances across the catalogue,
