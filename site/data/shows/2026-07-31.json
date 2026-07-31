@@ -20,9 +20,21 @@
       "prev_place": "Columbia, MD",
       "out": "",
       "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Everything's Right",
+      "slug": "everythings-right",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-21",
+      "prev_venue": "Empower Federal Credit Union Amphitheater at Lakeview",
+      "prev_place": "Syracuse, NY",
+      "out": "",
+      "verdict": null
     }
   ],
-  "count_since": "2026-07-31T23:11:28+00:00",
+  "count_since": "2026-07-31T23:27:03+00:00",
   "encored": false,
   "provisional": true
 }
