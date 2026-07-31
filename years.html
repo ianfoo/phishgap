@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Years &mdash; Possum Logic</title>
+<meta property="og:type" content="website"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="What each year of Phish sounded like: the songs that were only that year&#x27;s, and how much of the band&#x27;s own running order they repeated."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Years &mdash; Possum Logic"><meta property="og:description" content="What each year of Phish sounded like: the songs that were only that year&#x27;s, and how much of the band&#x27;s own running order they repeated."><meta property="og:url" content="https://possumlogic.com/years.html"><meta property="og:image" content="https://possumlogic.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="What each year of Phish sounded like: the songs that were only that year&#x27;s, and how much of the band&#x27;s own running order they repeated."><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
+<link rel="preload" href="./font/Bagnard.otf" as="font" type="font/otf" crossorigin>
+<link href="./fonts.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
+@media screen and (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
+}
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+:root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled):not(.on){color:var(--ink);
+   border-color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+/* The selected one is already ink-on-paper reversed, so hovering it must not
+   set the text to the colour it is sitting on. It brightens its edge instead. */
+.theme button.on:hover:not(:disabled){color:var(--paper);
+   box-shadow:0 0 0 2px var(--hot)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
+
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
+*{box-sizing:border-box}
+/* The whole scale, pitched one step up from where it started.
+   Ian: "the prose text feels small even by these standards... I feel this way
+   on iPhone and on desktop." He was right, and the figures said so: body was
+   .875rem against a 16px default, so running text set at 14px and the labels
+   -- the size used more than any other on the site, 101 declarations of it --
+   set at 10px.
+   It is stated once, here, rather than as 300 edited declarations. Everything
+   on this site is already sized in rem, so lifting the root lifts all of it in
+   proportion and no two sizes can change their relationship to each other. It
+   is also relative rather than absolute: a reader who has set their browser to
+   20px gets 22.5, not 18.
+   The top of the scale is held rather than lifted -- see the h1 clamps, whose
+   rem endpoints are pulled back by exactly this factor. A wordmark at 64px was
+   never the complaint; a scale should compress at the display end and open up
+   at the reading end, and this one now does both. */
+html{font-size:112.5%}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
+/* The keyboard overlay and the button that opens it. In the block every sheet
+   shares, because it is page furniture like the skip link above it and there
+   is no page it does not belong on -- and because stating it three times is
+   how four rules on this site came to disagree with themselves. */
+.keyhint{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
+   cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
+.keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* Not on a touch device. It is a discovery aid for keys, and a phone has
+   none -- so it sat in the footer of every page offering "[ and ] to step
+   between shows" to a reader with no way to press either, and "Keys ?" is
+   doubly meaningless when there is no ? to press. The footer is a flex row
+   with gap and no separator characters, so this leaves nothing stranded
+   behind it.
+
+   The `?` handler stays bound either way: this hides a button, it does not
+   remove the feature, so an iPad with a keyboard attached -- whose *primary*
+   pointer is still coarse -- can open the same list. */
+@media (hover:none) and (pointer:coarse){.keyhint{display:none}}
+dialog.keys{border:1px solid var(--ink);background:var(--paper);
+   color:var(--ink);padding:1.2rem 1.4rem 1rem;max-width:24rem;width:calc(100% - 2rem)}
+dialog.keys::backdrop{background:rgba(0,0,0,.5)}
+dialog.keys .cap{margin:0 0 .8rem;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600}
+dialog.keys dl{margin:0;display:grid;grid-template-columns:max-content 1fr;
+   gap:.5rem .9rem}
+/* display:contents so the two cells of a row land in the outer grid's columns
+   -- otherwise every <div> is one grid item and the keys never form a column. */
+dialog.keys dl > div{display:contents}
+dialog.keys dt{margin:0}
+dialog.keys dd{margin:0;font-size:.75rem;color:var(--ink-soft)}
+dialog.keys .none{margin:.9rem 0 0;font-size:.75rem;color:var(--dim)}
+kbd{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6875rem;
+   line-height:1;padding:.25rem .4rem;border:1px solid var(--edge);
+   color:var(--ink);background:var(--hover);white-space:nowrap}
+dialog.keys form{margin:1rem 0 0;text-align:right}
+dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
+dialog.keys button:hover{color:var(--hot);border-color:var(--hot)}
+@media print{.keyhint,dialog.keys{display:none}}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:.875rem;line-height:1.55}
+/* The measure in rem rather than px, so it travels with the type. Stated as
+   960px it would have held still while the scale went up a step, which quietly
+   shortens every line and tightens every column -- the same page with less room
+   in it. 60rem is the 960px this has always been, at the root above. */
+.wrap{max-width:60rem;margin:0 auto}
+/* clip, not hidden, and the difference is the whole reason this is safe:
+   overflow:hidden would make the body a scroll container and break every
+   position:sticky header on the site, where clip does not.
+
+   It is here because a hidden thing was still taking up room. The show pages'
+   hover tooltip is position:absolute and white-space:nowrap, and it is hidden
+   with visibility:hidden -- which still lays out. That was found once and fixed
+   only for phones, by dropping the tooltip below 620px; above 620px every show
+   page has been scrollable sideways ever since. Measured on the live build at
+   1280px: 1,627px of scroll width, so the page slid 347px into nothing.
+   The general shape is what earns a rule rather than a patch -- an off-screen
+   or invisible decoration extends the scrollable area exactly as a visible one
+   does, and the page it does it to looks completely normal.
+
+   On html as well as body, and that is not belt and braces. An overflow set on
+   body alone is *propagated* to the viewport, and body is then treated as
+   visible -- so `body{overflow-x:clip}` by itself clips nothing, which is
+   exactly what the first attempt at this measured: the rule shipped, the page
+   still scrolled 347px. */
+html,body{overflow-x:clip}
+/* Which of the two lists you are looking at, and the way to the other one.
+   Above the wordmark because that is where a reader looks for it, and because
+   the footer link that used to be the only route was found by nobody. */
+/* Wrapping, with the same row gap the song pages use. This row did not wrap
+   before, and did not need to at five sections: each label simply broke inside
+   itself and the row stayed within the viewport. At six it stopped fitting and
+   the due page ran 401px wide inside a 375px phone -- the whole page scrolling
+   sideways for one nav item. Breaking between labels rather than inside them
+   is what the song pages have always done; the two sheets disagreed only
+   because nothing had ever pushed this one. */
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem;margin-bottom:1.1rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb .lists,.crumb .meta{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem}
+.crumb .lists{font-size:.75rem}
+.crumb .meta{font-size:.625rem;margin-left:auto}
+/* Transparent rather than absent, so the strip does not move by a pixel when
+   an item is hovered or when it is the page you are on. The hairline under
+   every item went with it: seven of them under seven words set at 11px read
+   as a row of fine print rather than as the way around the site, and in a nav
+   landmark the underline is not carrying any meaning a body-text link needs
+   it for. What tells you where you are is now the one item drawn in full ink
+   with a rule under it. */
+.crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+   padding-bottom:.15rem;border-bottom:2px solid transparent}
+.crumb .meta a{color:var(--dim)}
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centred on the label, and never narrower
+   than it is tall. It sits inside the anchor, so it is the same target. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+/* On a phone the strip is the whole of the navigation and 24px is the floor,
+   not the target: Apple asks 44pt, Material 48dp, and WCAG's own AAA level
+   agrees at 44. So the six destinations get 44px targets here.
+
+   Which costs a row unless the labels are made to fit one, and they were not:
+   at .75rem and .14em the six of them are 310px of ink in the 336px a 390px
+   phone leaves, so "Venues" wrapped alone onto a second row and the strip came
+   to 184px -- 22% of the screen, to say six words. Measured across the
+   settings, .6875rem at .1em is 269px and fits, and it is still a size and a
+   half up on the 11.25px this strip used to be set at. Under about 340px it
+   goes back to two rows, which is why the row gap is what it is: 44px targets
+   need 44px between their centres, and the gap is the only thing providing it.
+
+   The meta pair keeps 24px, the AA floor. They are the two least-used links on
+   the site and buying them 44px each costs another 20px of every phone screen.
+   They also drop the auto margin and take a row of their own, rather than
+   being pushed to a right edge a few characters away. */
+@media (max-width:620px){
+  .crumb{row-gap:1.5rem}
+  .crumb .lists{font-size:.6875rem;letter-spacing:.1em;gap:1.5rem .7rem}
+  .crumb .meta{margin-left:0;flex-basis:100%}
+  .crumb .lists a::before{min-width:44px;height:44px}
+}
+/* The section a page sits in, which is not the page it is. A show page
+   belongs under Shows and a song page under Songs, but neither *is* that
+   page. Ian, 2026-07-30: "Considering 'show' part of 'shows' makes sense, but
+   if we highlight it, then it makes it look like we're already there, and
+   that definitely violates some sort of guideline." It does, and the
+   guideline is aria-current: "page" is a claim that this is the document you
+   are reading, and a show page saying it about the index is simply false --
+   it would also take away the link, stranding the one route back to the list.
+
+   So there are three states and not two: nothing, the section you are in
+   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   page you are on (not a link, full ink, full rule). The markup says the same
+   thing to a screen reader -- aria-current="page" for the page, plain "true"
+   for the item in the set that contains it. */
+.crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
+@media print{.crumb .meta{display:none}}
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:clamp(1.7778rem,7vw,3.5556rem);line-height:1.06;margin:0 0 .7rem;
+   letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--hot)}
+/* The wordmark goes home, as a wordmark does, without looking like a link. */
+h1 a{color:inherit;text-decoration:none}
+h1 a:hover em{color:var(--ink)}
+/* A hero card that is also a way in. Only some of them are. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+/* Some of the cards are links and some are not, so the ones that are need to
+   say so -- but a rule under a letterspaced label reads as a stray underline
+   rather than an affordance, and it was the one line in the hero not doing
+   structural work. An arrow after the label carries the same message and
+   disappears into the type. Right, not down: this card leaves for another
+   page, where the show and song sheets' cards land further down their own. */
+a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+/* Which song, or which night, the figure belongs to -- under the label and in
+   the label's own small type, so the card still reads as one object. */
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
+   text-transform:none;font-size:.75rem}
+/* And on those cards the arrow moves down onto the name. The rule above
+   appends to the end of the label, and the last thing in a label carrying a
+   name is that display:block name -- so the arrow opened a line of its own and
+   sat alone under it. On the name it is also the more honest target: the card
+   goes to that song or that night, not to a page about longest gaps.
+
+   `.named` is written by hero_html rather than inferred here with `:has(.of)`,
+   because an unsupported selector is dropped in silence -- which would leave
+   the arrow where it was *and* add a second one below it, on exactly the
+   browsers nobody is testing. `.of` states its own colour, so it does not
+   inherit the label's hover and has to be named again. */
+a.card.named .lbl::after{content:none}
+a.card.named .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card.named:hover .lbl .of,
+a.card.named:hover .lbl .of::after{color:var(--hot-text)}
+header{padding-bottom:.9rem}
+.show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
+      text-transform:uppercase;color:var(--ink-soft)}
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+/* Six cards do not fit on one line, and a wrapping flex row gives the first
+   card of the second line a left rule -- which then separates it from the page
+   margin rather than from another card, and leaves its number indented out of
+   line with the wordmark and every row below it. A grid ties both the rule and
+   the flush left edge to a *column position* rather than to wherever the cards
+   happen to wrap, so the stranded rule is impossible instead of relocated. The
+   column count is written by whoever builds the hero, so it cannot disagree
+   with the number of cards actually in it. */
+/* The class names the column count rather than the card count, so a hero that
+   gains or loses a card only has to say how many columns it now wants, and
+   four cards on the song index and six here share one set of rules. The
+   fallback is the four-across the hero had before any of this. */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);margin:.7rem 0 .3rem;
+      border-bottom:1px solid var(--ink)}
+.hero-c3{grid-template-columns:repeat(3,1fr)}
+.hero-c4{grid-template-columns:repeat(4,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column}
+/* Only above the breakpoint. The narrow layout has always been two columns and
+   already says which cards start a row down there; stating it twice meant the
+   wide rule outranked the narrow one and left card 4 of a six indented half a
+   space out of line with the cards above and below it. Each width states its
+   own row-starts and neither has to undo the other. */
+@media screen and (min-width:621px){
+  .hero-c3>.card:nth-child(3n+1),
+  .hero-c4>.card:nth-child(4n+1){border-left:0;padding-left:0}
+  /* A second row of cards needs a rule over it, or the two rows read as one
+     block with the numbers of the first sitting on the labels of the next. */
+  .hero-c3>.card:nth-child(n+4),
+  .hero-c4>.card:nth-child(n+5){border-top:1px solid var(--rule)}
+}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+     letter-spacing:0;margin-top:auto}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
+   color:var(--dim);margin-bottom:.35rem}
+.tools{margin:1.9rem 0 .9rem}
+/* Two rows rather than one wrapping run. The things you operate -- the search
+   box and the sort -- sit together on the first; the filter chips are a
+   different kind of control and get their own line instead of pushing sort to
+   wherever the chips happen to stop. */
+.tools-main{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem}
+.tools .chips{margin-top:.6rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
+        padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
+        background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.chip:focus-visible,.sort:focus-visible{
+  outline:2px solid var(--hot);outline-offset:1px}
+/* Shown only once there is something to clear. The song page has carried this
+   button for a while; the index only ever had the line of script that hides
+   it, which is why that line referred to an element that was never here. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+      padding:.42rem .6rem;border:1px solid var(--edge);background:transparent;
+      color:var(--dim);cursor:pointer}
+.chip:hover{color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* How many shows the era holds, so four chips carry the information the
+   forty years did without the forty buttons. */
+.chip-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   letter-spacing:0;color:var(--dim);margin-left:.3rem}
+.chip.on .chip-n{color:var(--paper)}
+.sort{appearance:none;-webkit-appearance:none;
+   font:inherit;font-size:.75rem;padding:.4rem 1.5rem .4rem .5rem;
+   background-color:transparent;color:var(--ink);cursor:pointer;
+   border:1px solid var(--edge);border-radius:0;
+   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+      linear-gradient(135deg,currentColor 50%,transparent 50%);
+   background-position:calc(100% - .78rem) calc(50% + .05rem),
+      calc(100% - .52rem) calc(50% + .05rem);
+   background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
+/* Matching the era chips beside it, which is the whole point of the exercise. */
+.sort:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* It ships disabled and is enabled by script; without this the UA greys out
+   text the reader can see for the split second before that happens. */
+.sort:disabled{opacity:1;color:var(--ink)}
+.sort option{background:var(--paper);color:var(--ink)}
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+       color:var(--dim);margin-left:auto}
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+         font-size:1rem;color:var(--ink)}
+.reports{list-style:none;margin:0;padding:0}
+/* Geometry shared with the header below, chrome kept separate, so a column
+   that moves moves in both at once rather than in whichever one was edited. */
+.row,.lhead{display:grid;grid-template-columns:7.2rem 1fr 20.4rem;
+     column-gap:1.1rem;align-items:baseline}
+.row{padding:.7rem .25rem;text-decoration:none;
+     color:inherit;border-bottom:1px solid var(--rule-soft)}
+/* The column header these list pages never had, and it stays put.
+
+   A grid rather than a <table>, because every row on these pages is one link
+   and HTML does not let an <a> wrap a <tr>. Show pages get a real table for
+   the opposite reason: their rows carry two destinations -- the song, and the
+   night it was last played -- so the links live in cells and a <tr> is free.
+   The tabular *look* is the same either way; only the markup differs, and it
+   differs for a reason rather than by neglect.
+
+   Opaque, because rows scroll under it. box-shadow rather than border-bottom:
+   a border on a stuck element is drawn at its edge and can be clipped by the
+   row arriving beneath it, and this way the rule never thins. */
+.lhead{position:sticky;top:0;z-index:3;background:var(--paper);
+   padding:.45rem .25rem;font-size:.625rem;text-transform:uppercase;
+   letter-spacing:.14em;color:var(--dim);font-weight:500;
+   box-shadow:inset 0 -1px 0 var(--rule)}
+/* The figures column is its own sub-grid on the row, so the header's must be
+   the same one or the labels sit over the wrong numbers. Taking .r-stats
+   wholesale would bring its 12px reading size with it. */
+.lhead .r-stats{font-size:inherit;color:inherit;line-height:inherit}
+.lhead .end{text-align:right}
+@media print{.lhead{position:static}}
+/* A sticky strip at the top of the viewport is what puts an anchor target
+   underneath it. Stated once for every id on these pages rather than per
+   anchor, so a new one cannot be the thing that finds this out. */
+[id]{scroll-margin-top:2.6rem}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
+/* Same rule, same reason: this is the one place the site still spoke two
+   languages, since the song pages had already moved. */
+/* Data in a column, so the mono: tabular by construction, which is what makes
+   710 dates present one edge to the venue beside them rather than a soft
+   ragged one. The display face keeps the mastheads, where a date is the name
+   of the page rather than a value in a list. */
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+        font-size:1rem;line-height:1.3rem;white-space:nowrap}
+.r-venue{font-size:.875rem;font-weight:500;letter-spacing:0;
+         line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+/* Deliberately not a report row. These are on file, not on the bill: smaller,
+   dimmer, no figures, and below the empty-search message so a search matching
+   nothing cannot look as though it matched these. */
+/* The due list. Same row grammar as the show index -- identity, context,
+   figure -- so the two pages read as the same object seen from two sides. */
+.onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
+   margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
+   border-left:4px solid var(--hot);background:var(--hover)}
+.onstage:hover{background:var(--hot);color:var(--paper)}
+.onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text);font-weight:600}
+.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
+.onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
+.onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
+   text-transform:none;letter-spacing:0}
+.onstage .n{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Structural, and load-bearing rather than tidiness. Every list section on the
+   due and out-of-rotation pages is wrapped in one of these so that its
+   position:sticky column header is held by the section instead of by the page:
+   sticky is bounded by the element's *parent*, so three headers sharing one
+   parent each stayed pinned for the whole rest of the document, and the header
+   of one list came to rest ruled across the heading of the next. Deliberately
+   carries no visual property -- there is nothing to draw here, and anything
+   added would land on both pages at once. `display:block` is a <section>'s own
+   default and is written out so the class is findable in this sheet. */
+.rot{display:block}
+.due{list-style:none;margin:0;padding:0}
+.due li{border-bottom:1px solid var(--rule-soft)}
+.due .row,.lhead.due-h{display:grid;grid-template-columns:1fr 11rem 11rem;
+   column-gap:1.1rem;align-items:baseline}
+.due .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
+.due /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
+.d-song{font-size:1rem;font-weight:500}
+.due .row:hover .d-song{color:var(--hot)}
+.d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;white-space:nowrap}
+.d-where{display:block;color:var(--dim);font-size:.75rem}
+.d-n{text-align:right}
+.d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
+.d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
+.d-n .typ span{display:block;white-space:nowrap}
+/* Same rule the song pages carry, and it has to be stated here too because
+   this sheet does not include theirs. It was missing entirely, so the due and
+   venue standfirsts fell through to a bare <p>: mono, 16px, full measure,
+   while the identical class on a song page was 12px and dim. One class, two
+   appearances, by accident. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 16;
+   color:var(--dim);max-width:56ch}
+/* And its links, which is the fifth time a rule has been found living in one
+   sheet of three. This one was in SONG_CSS alone, so the two links in the due
+   page's standfirst -- "slipping" and "on the shelf", both pointing at sections
+   of the page they introduce -- rendered in the browser's default link blue
+   with a browser underline, on the one page on the site that has them. */
+.dek a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+
+/* The measurement detail, folded away. Three paragraphs used to stand open
+   here: 835px of a 1,147px front matter on a phone, 73% of it, before the
+   first due song. And the FAQ already carries 2,930 characters on the same
+   subject against their 1,189 -- so this page was not explaining itself, it
+   was holding a shorter second copy of an answer that lives elsewhere, above
+   its own content.
+   What stays open is the one thing a reader cannot read the third column
+   without: what 2x means. The rest is one click, and the click does not leave
+   the page, which is the objection to sending it to the FAQ outright.
+   Nothing is remembered per reader. A flag that says "you have read this"
+   fails asymmetrically -- set wrongly it shows a first-time reader an
+   unlabelled table of multipliers, unset wrongly it costs one line -- and a
+   reference archive should not serve two different pages at one URL. The
+   site's own precedent argues the same way: the last per-reader flag here
+   shipped broken and stayed invisible for weeks.
+   Same <details> idiom the show pages use for long notes: no JavaScript and
+   keyboard-operable. It stays closed when printed, like every other one on
+   the site -- forcing it open needs more than hiding the summary, and a
+   half-done version that only removed the control would print a folded
+   section with no sign it folds. */
+details.how{margin:.7rem 0 0}
+/* display:block, which is the shape details.jam and details.note already use
+   on the song pages -- one idiom for disclosure on this site rather than two.
+   width:max-content keeps the rule under the words instead of across the
+   column.
+   A caution for whoever measures this next: the accessibility inspector
+   reports this summary as a plain "generic" node, and the site's existing
+   shipped details reports exactly the same way, so that reading is the tool
+   and not the markup. It was nearly written down here as a real defect. */
+details.how > summary{display:block;width:max-content;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule);cursor:pointer;
+   padding:0 0 .1rem;list-style:none}
+details.how > summary::-webkit-details-marker{display:none}
+details.how > summary::after{content:" \2193"}
+details.how[open] > summary::after{content:" \2191"}
+details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* A section heading, under the due list. At 1.5rem it was barely larger than
+   the 1rem song titles it headed, which made a new section read as another
+   row. 2.125rem sits clearly between the page title and the data. */
+.shelf-h{margin:3rem 0 .5rem;font-family:'Bagnard',Georgia,serif;
+   font-weight:400;font-size:2.125rem;line-height:1.15;
+   scroll-margin-top:2.6rem}
+.shelf-h+.dek{margin-bottom:1.1rem}
+/* The adjacent-sibling rule above reaches the *first* standfirst under a
+   heading and no further, which was every case until a section blurb grew a
+   second paragraph. `.dek` is margin-bottom:0 by default, so the trailing
+   paragraph sat flush against the column header below it -- measured at 0px,
+   against 19.8px for the one above it. Every `.dek` inside a section instead.
+   A no-op on the due page, whose sections still carry one apiece. */
+.rot .dek{margin-bottom:1.1rem}
+/* The way back up. This is the fourth place it has been wanted -- the FAQ's
+   answers, and now each section here -- so it is a house idiom rather than a
+   page's own trick: jumping somewhere should never maroon a reader there, and
+   these pages are long. Mono and small: a control, not a sentence. */
+.backtop{margin:1rem 0 0;font-family:'IBM Plex Mono',ui-monospace,monospace;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
+.backtop a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative;display:inline-block}
+.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media print{.backtop{display:none}}
+/* The venue list borrows the due page's three-column shape because it answers
+   the same shape of question: a name, a when, and one figure worth ranking by.
+   Its own class names, though -- .d-* means "due", and a venue row sharing
+   them would make either page impossible to restyle without the other. */
+.vn{list-style:none;margin:0;padding:0}
+.vn li{border-bottom:1px solid var(--rule-soft)}
+.vn .row,.lhead.vn-h{display:grid;grid-template-columns:1fr 12rem 7rem;
+   column-gap:1.1rem;align-items:baseline}
+.vn .row{padding:.6rem .25rem;color:inherit;text-decoration:none}
+.vn /* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
+.vn-venue{font-size:1rem;font-weight:500}
+.vn .row:hover .vn-venue{color:var(--hot)}
+.vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
+.vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
+   color:var(--dim);white-space:nowrap}
+.vn-n{text-align:right}
+.vn-n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1.5rem;line-height:1;color:var(--ink)}
+.vn-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem;
+   white-space:nowrap}
+@media screen and (max-width:620px){
+  /* "dates", not "span": grid-area:span would be parsed as the span keyword
+     and drop the whole declaration. */
+  /* max-content rather than 5.5rem, and it was the fixed figure that made this
+     worth measuring. 5.5rem was cut to fit "longest 1,468" at the old scale and
+     did not fit it at the new one -- 99px of column for 106px of label -- so
+     the figures column was quietly overflowing its own track. A column asked to
+     be exactly as wide as its content cannot be cut to fit anything. */
+  .vn .row{grid-template-columns:1fr max-content;
+     grid-template-areas:"venue n" "dates n";row-gap:.15rem}
+  .vn-venue{grid-area:venue}
+  .vn-span{grid-area:dates}
+  .vn-n{grid-area:n}
+  .vn-n b{font-size:1.25rem}
+}
+/* Below this the two columns cannot both be honest. The dates are a span --
+   "2009-12-02 -> 2026-07-27", 23 characters of mono that must not break, since
+   a date split across a line is unreadable and the arrow between them would be
+   stranded -- so the left column has a hard floor of about 217px, and the
+   figure wants another 106 beside it. At 320px there are 288 to share. The
+   answer is the one this site already gives everywhere else: stack, and let the
+   rules run the full width, rather than squeeze columns until something is
+   clipped or pushed off the screen. */
+@media screen and (max-width:400px){
+  .vn .row{grid-template-columns:1fr;
+     grid-template-areas:"venue" "dates" "n";row-gap:.2rem}
+  .vn-n{text-align:left}
+  .vn-n .typ{display:inline;margin-left:.5rem}
+}
+@media screen and (max-width:620px){
+  /* 5.5rem held one number. It now holds that number and the multiple the
+     list is ordered by, which wraps to two lines here rather than being
+     dropped -- the order is the point of the page at any width. */
+  .due .row{grid-template-columns:1fr 7rem;grid-template-areas:"song n" "last n";
+     row-gap:.15rem}
+  .d-song{grid-area:song}
+  .d-last{grid-area:last}
+  .d-n{grid-area:n}
+  .d-n > b{font-size:1.25rem}
+}
+/* The pointer to the not-a-show page, where a list of twenty used to sit at
+   the foot of 692 rows. Ian: "move the 'also on file' listings to a higher
+   prominence home, or at least something that's not tacked onto the end of
+   the show list." Under the hero, where a reader lands. */
+.aside{margin:1.1rem 0 0;font-size:.75rem;color:var(--dim);max-width:68ch}
+.aside b{color:var(--ink);font-weight:400}
+.aside a{color:var(--ink);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.aside a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The list itself, which moved to a page of its own. Named rather than
+   scoped to `.aside`, because it now has two homes and the version in this
+   file has been the wrong shape twice for want of one name. */
+.axlist{list-style:none;margin:0;padding:0}
+.axlist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+   padding:.3rem 0;border-bottom:1px solid var(--rule-soft);font-size:.75rem}
+.ax-row{display:contents;color:inherit;text-decoration:none}
+.ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
+   border-bottom:1px solid var(--rule)}
+a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
+.ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+.ax-venue{color:var(--dim)}
+.ax-n{color:var(--dim);font-variant-numeric:tabular-nums}
+/* phish.net's note, on its own line under the row. flex-basis:100% rather than
+   a grid cell because the row above it is a wrapping flex line of four
+   variable-width parts, and the note is the one thing that always wants the
+   whole measure. Set in the reading face: it is the only prose in this list,
+   and at 12px mono a 778-character note is a wall. */
+.ax-note{flex-basis:100%;margin:.15rem 0 .1rem;max-width:74ch;
+   font-family:'Literata',Georgia,serif;font-size:.8125rem;line-height:1.5;
+   font-variation-settings:'opsz' 13;color:var(--ink-soft)}
+.ax-note a{color:var(--ink-soft);border-bottom:1px solid var(--rule)}
+.ax-note a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.axlist .for{color:var(--dim)}
+.axlist .for a{color:inherit}
+/* A grid, not a right-aligned sentence. Right-alignment pins only the right
+   edge; every figure to the left of it still moved row to row with the width
+   of the numbers beside it. */
+.r-stats{font-size:.75rem;color:var(--dim);line-height:1.3rem;
+         display:grid;grid-template-columns:5.4rem 6.4rem 7.4rem;
+         justify-items:end;column-gap:.6rem}
+.r-stats .st{white-space:nowrap}
+/* Tabular numerals do the aligning; the widths these used to be given by hand
+   were a workaround for not having asked the face for them. */
+.r-stats .st b{display:inline-block;text-align:right}
+.r-stats b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+           font-size:1rem;color:var(--ink)}
+.r-stats b.hot{color:var(--hot-text)}
+/* A show still being played, said in the one place on the row where the
+   number it qualifies already is: 24 songs means something different
+   tonight than it will tomorrow. */
+.live-tag{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--hot-text)}
+/* The song that held the longest gap, under the figures it belongs to. Named
+   for what it is: ".r-song" also means "the song this row is about" on the
+   song index, which inherits this stylesheet, and one grid-column rule meant
+   for this was enough to wreck that. */
+.r-top{grid-column:1/-1;font-size:.75rem;color:var(--dim);text-align:right;
+   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);display:flex;justify-content:space-between;
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+@media screen{
+}
+/* Same lesson as the report tables: stack instead of squeezing columns, so
+   the rules still run the full width and nothing has to be hidden. */
+@media screen and (max-width:620px){
+  /* Every list row stacks into one column here and the due and venue rows
+     take a two-column area layout, so there are no columns left for a column
+     header to label. It goes rather than pretending: a header standing over
+     stacked rows is a claim about an alignment that is not there. The song
+     pages already hide their .head below 820px for the same reason.
+
+     All three selectors named, not just `.lhead`. The due and venue headers
+     are matched by `.lhead.due-h` and `.lhead.vn-h`, two classes against one,
+     so a bare `.lhead{display:none}` loses on specificity and both pages kept
+     a three-column header over two-column rows. Measured, not assumed: the
+     rule was written, the media query was active at 440px, and the computed
+     display was still `grid`. */
+  .lhead,.lhead.due-h,.lhead.vn-h{display:none}
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.6rem 0}
+  .r-stats{display:block;text-align:left;white-space:normal}
+  .r-stats .st{display:inline;white-space:normal}
+  /* Before each but the first, never after: the last .st is not the last
+     child -- the song name follows it -- so a trailing separator was left
+     stranded at the end of the line with the name wrapped beneath it. */
+  .r-stats .st:empty{display:none}
+  /* --dim, not --rule: rule is a hairline colour and a glyph drawn in it is
+     invisible on the dark paper, the way the separators were. */
+  .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\00b7";
+    color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
+  .r-stats .st b{min-width:0!important;text-align:left}
+  /* white-space, and it is the reason this rule is three declarations rather
+     than two. The wide layout gives .r-top a column of its own and clips the
+     overflow with an ellipsis, so nowrap is right up there. Down here it is an
+     inline run inside a paragraph, and nowrap made one row as wide as its
+     longest song title: "She Caught the Katy and Left Me a Mule to Ride" is 45
+     characters, which is 344px of mono at the old size and 389px at the new
+     one. The index was six pixels from scrolling sideways at 375px before the
+     scale went up a step, and 33 past it afterwards -- so the type change did
+     not cause this, it collected on it. */
+  .r-top{text-align:left;display:inline;white-space:normal}
+  .r-top::before{content:" ("}
+  .r-top::after{content:")"}
+  /* Two across, whatever the wide layout asked for. The flex basis that used
+     to be here stopped meaning anything when the hero became a grid. */
+  .hero-c3,.hero-c4{grid-template-columns:repeat(2,1fr)}
+  .card{padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  .show{font-size:.75rem;letter-spacing:0}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
+/* The years, as a strip. Generated from the same grouping as the headings
+   below, so it cannot offer a year the page does not hold. */
+.years{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+.years a{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.75rem;
+   line-height:1;padding:.4rem .5rem;border:1px solid var(--edge);
+   color:var(--ink-soft);text-decoration:none;white-space:nowrap}
+.years a:hover{color:var(--hot);border-color:var(--hot)}
+.years a b{font-weight:400;color:var(--dim);margin-left:.35rem}
+
+/* One block a year, and the year itself set the size the song titles are set
+   on a show page -- this is a page of forty headings and the reader is
+   scanning for one of them. */
+.yb{margin:0 0 2.6rem}
+.yb:first-of-type{margin-top:.4rem}
+.yh{display:flex;align-items:baseline;gap:.7rem;margin:0 0 .7rem;
+   padding:0 .25rem .35rem;border-bottom:1px solid var(--ink)}
+.yh .y{font-family:'Bagnard',Georgia,serif;font-weight:400;font-size:1.75rem;
+   line-height:1;letter-spacing:-.01em;color:var(--ink)}
+.yh .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.yh .up{margin-left:auto;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);position:relative}
+.yh .up::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+.yh .up:hover{color:var(--hot);border-bottom-color:var(--hot)}
+/* The four figures, as a grid rather than a sentence with middots in it.
+   Set as running text they stranded a separator at the end of every wrapped
+   line; a grid cell cannot strand punctuation it does not carry. */
+.shape{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem 1rem;
+   margin:0 0 .9rem;padding:0 .25rem}
+.shape dt{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin:0}
+.shape dd{margin:.15rem 0 0;font-size:.9375rem;color:var(--ink-soft);
+   font-variant-numeric:tabular-nums}
+.shape dd b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   color:var(--ink)}
+/* Said only where it is true, and it is true only before 1992. */
+.part{margin:0 0 .9rem;padding:0 .25rem;font-family:'Literata',Georgia,serif;
+   font-size:.875rem;line-height:1.5;font-variation-settings:'opsz' 14;
+   color:var(--dim)}
+.fact{display:grid;grid-template-columns:9.5rem 1fr;align-items:baseline;
+   gap:.5rem .9rem;padding:.45rem .25rem;border-top:1px solid var(--rule-soft)}
+.fact h3{margin:0;font-size:.625rem;letter-spacing:.14em;font-weight:400;
+   text-transform:uppercase;color:var(--dim)}
+/* Songs as chips, one size down from the year strip they echo. A run of
+   titles set as text put its commas at the ends of lines; an enclosed item
+   carries no punctuation to strand. */
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chips a,.chips span{font-size:.8125rem;line-height:1.15;padding:.3rem .45rem;
+   border:1px solid var(--edge);color:var(--ink-soft);text-decoration:none}
+.chips a:hover{color:var(--hot);border-color:var(--hot)}
+.chips b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
+   color:var(--dim);margin-left:.35rem;font-variant-numeric:tabular-nums}
+.chips a:hover b{color:var(--hot)}
+/* Not a chip: it is one sentence about two songs, and breaking it into two
+   enclosures would hide the only thing it says, which is the arrow. */
+.habit{margin:0;font-size:.8125rem;line-height:1.35;color:var(--ink-soft)}
+.habit .to{color:var(--dim);margin:0 .3rem}
+.habit .n{font-family:'IBM Plex Mono',ui-monospace,monospace;color:var(--dim);
+   margin-left:.4rem;font-variant-numeric:tabular-nums}
+.more{font-size:.75rem;color:var(--dim);align-self:center}
+@media (max-width:620px){
+  .shape{grid-template-columns:repeat(2,1fr)}
+  .fact{grid-template-columns:1fr;gap:.3rem}
+}
+</style><script>
+(function(){
+  // Deliberately not renamed: this is a private key in a reader's own
+  // browser, and changing it would silently reset the light/dark choice
+  // of everyone who has ever set one, to rename a string nobody sees.
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script><script>
+(function(){
+  function ready(fn){
+    if(document.readyState!=='loading') fn();
+    else document.addEventListener('DOMContentLoaded',fn);
+  }
+  ready(function(){
+    var search=document.querySelector('input.search');
+    var prev=document.querySelector('a[rel="prev"]');
+    var next=document.querySelector('a[rel="next"]');
+    var foot=document.querySelector('footer');
+    if(!foot) return;
+    // "Previous show, 2026-07-25" -> "Previous show". The pager already writes
+    // a label saying what it steps through, so the overlay does not have to
+    // guess whether this page is a list of shows or of anything else.
+    function what(a,fallback){
+      var s=(a&&a.getAttribute('aria-label'))||'';
+      s=s.split(',')[0].trim();
+      return s||fallback;
+    }
+    var rows=[];
+    if(search){
+      rows.push(['/','Jump to the search box']);
+      rows.push(['Esc','Clear the search']);
+    }
+    if(prev) rows.push(['[  \u2190', what(prev,'Previous')]);
+    if(next) rows.push([']  \u2192', what(next,'Next')]);
+    rows.push(['?','This list']);
+    var dlg=document.createElement('dialog');
+    dlg.className='keys';
+    dlg.setAttribute('aria-label','Keyboard shortcuts');
+    dlg.innerHTML='<p class="cap">Keyboard</p><dl>'
+      + rows.map(function(r){
+          return '<div><dt><kbd>'+r[0].split('  ').join('</kbd> <kbd>')
+                 +'</kbd></dt><dd>'+r[1]+'</dd></div>'; }).join('')
+      + '</dl>'
+      + (rows.length>1?'':'<p class="none">This page has nothing else to '
+         + 'step through. The show and song lists have more.</p>')
+      + '<form method="dialog"><button>Close</button></form>';
+    document.body.appendChild(dlg);
+    // A button as well as a key, because a shortcut nobody can find is a
+    // shortcut nobody has. It carries the key it stands for.
+    var hint=document.createElement('button');
+    hint.type='button';
+    hint.className='keyhint';
+    hint.setAttribute('aria-haspopup','dialog');
+    hint.innerHTML='Keys <kbd>?</kbd>';
+    hint.addEventListener('click',function(){ dlg.showModal(); });
+    foot.appendChild(hint);
+    document.addEventListener('keydown',function(e){
+      if(e.metaKey||e.ctrlKey||e.altKey||dlg.open) return;
+      var t=e.target;
+      // While typing, every one of these is a character somebody meant.
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'
+             ||t.tagName==='SELECT'||t.isContentEditable)) return;
+      if(e.key==='?'){ e.preventDefault(); dlg.showModal(); return; }
+      if(prev&&(e.key==='['||e.key==='ArrowLeft')){ e.preventDefault(); prev.click(); }
+      if(next&&(e.key===']'||e.key==='ArrowRight')){ e.preventDefault(); next.click(); }
+    });
+  });
+})();
+</script></head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb sections" aria-label="Sections"><span class="mark">Possum Logic</span><span class="lists"><a href="./index.html">Shows</a><a href="./songs.html">Songs</a><a href="./due.html">Due</a><a href="./out-of-rotation.html">Out of rotation</a><a class="here" aria-current="page">Years</a><a href="./venues.html">Venues</a></span><span class="meta"><a href="./faq.html">FAQ</a><a href="./method.html">How this works</a></span></nav>
+<div class="rule2"></div>
+<header><h1>Years</h1>
+<p class="show">39 years of Phish, 1983&ndash;2026</p>
+<p class="dek">What a year sounded like, taken from the order the songs came
+in rather than from how long the band went without them. Every other list here
+is about one song&rsquo;s habits. This one is about the band&rsquo;s.</p>
+<p class="dek"><b>Sounded like</b> is not the same list as <b>most played</b>,
+and the difference is the point: Possum was played every year, so it says
+nothing about any of them. A song earns a place in the first list by being a
+bigger share of that year than of every other year put together.</p>
+<p class="dek"><b>Moves that recur</b> is the share of a year&rsquo;s
+song-to-song moves that turn up on more than one night &mdash; stated over a
+fixed 20 nights, because otherwise it is a count of how many shows the
+band played. A long year gets more chances to repeat itself for reasons that
+have nothing to do with how it sounded. Over the same 20 nights, 1993
+reads 32% and 2017 reads 1%.</p>
+<p class="dek">Built from the running order of 1,950 nights. The archive has
+no running order for 158 of the shows the calendar counts, almost all of
+them before 1992, so a year short of its own count says so under its figures
+&mdash; and <b>only in</b> means only in the nights read here.</p>
+<nav class="years" aria-label="Years on this page"><a href='#y2026' aria-label='2026, 29 shows'>2026<b>29</b></a><a href='#y2025' aria-label='2025, 47 shows'>2025<b>47</b></a><a href='#y2024' aria-label='2024, 41 shows'>2024<b>41</b></a><a href='#y2023' aria-label='2023, 49 shows'>2023<b>49</b></a><a href='#y2022' aria-label='2022, 46 shows'>2022<b>46</b></a><a href='#y2021' aria-label='2021, 36 shows'>2021<b>36</b></a><a href='#y2020' aria-label='2020, 4 shows'>2020<b>4</b></a><a href='#y2019' aria-label='2019, 41 shows'>2019<b>41</b></a><a href='#y2018' aria-label='2018, 39 shows'>2018<b>39</b></a><a href='#y2017' aria-label='2017, 28 shows'>2017<b>28</b></a><a href='#y2016' aria-label='2016, 47 shows'>2016<b>47</b></a><a href='#y2015' aria-label='2015, 30 shows'>2015<b>30</b></a><a href='#y2014' aria-label='2014, 40 shows'>2014<b>40</b></a><a href='#y2013' aria-label='2013, 41 shows'>2013<b>41</b></a><a href='#y2012' aria-label='2012, 37 shows'>2012<b>37</b></a><a href='#y2011' aria-label='2011, 39 shows'>2011<b>39</b></a><a href='#y2010' aria-label='2010, 48 shows'>2010<b>48</b></a><a href='#y2009' aria-label='2009, 50 shows'>2009<b>50</b></a><a href='#y2004' aria-label='2004, 18 shows'>2004<b>18</b></a><a href='#y2003' aria-label='2003, 44 shows'>2003<b>44</b></a><a href='#y2002' aria-label='2002, 1 show'>2002<b>1</b></a><a href='#y2000' aria-label='2000, 53 shows'>2000<b>53</b></a><a href='#y1999' aria-label='1999, 63 shows'>1999<b>63</b></a><a href='#y1998' aria-label='1998, 67 shows'>1998<b>67</b></a><a href='#y1997' aria-label='1997, 78 shows'>1997<b>78</b></a><a href='#y1996' aria-label='1996, 70 shows'>1996<b>70</b></a><a href='#y1995' aria-label='1995, 81 shows'>1995<b>81</b></a><a href='#y1994' aria-label='1994, 124 shows'>1994<b>124</b></a><a href='#y1993' aria-label='1993, 110 shows'>1993<b>110</b></a><a href='#y1992' aria-label='1992, 122 shows'>1992<b>122</b></a><a href='#y1991' aria-label='1991, 128 shows'>1991<b>128</b></a><a href='#y1990' aria-label='1990, 146 shows'>1990<b>146</b></a><a href='#y1989' aria-label='1989, 123 shows'>1989<b>123</b></a><a href='#y1988' aria-label='1988, 95 shows'>1988<b>95</b></a><a href='#y1987' aria-label='1987, 44 shows'>1987<b>44</b></a><a href='#y1986' aria-label='1986, 22 shows'>1986<b>22</b></a><a href='#y1985' aria-label='1985, 22 shows'>1985<b>22</b></a><a href='#y1984' aria-label='1984, 3 shows'>1984<b>3</b></a><a href='#y1983' aria-label='1983, 2 shows'>1983<b>2</b></a></nav></header>
+<section class="hero hero-c4"><div class='card'><div class='lbl'>Years</div><div class='num'>39</div></div><div class='card'><div class='lbl'>Nights read</div><div class='num'>1,950</div></div><a class='card' href='#y1993'><div class='lbl'>Most habitual</div><div class='num hot'>1993</div></a><a class='card' href='#y2019'><div class='lbl'>Widest rotation</div><div class='num'>2019</div></a></section>
+<div class="rule2"></div>
+<main id="main" tabindex="-1">
+<section class='yb' id='y2026'><h2 class='yh'><span class='y'>2026</span><span class='n'>29 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>221</b> songs</dd></div><div><dt>Median song</dt><dd><b>32</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>3%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/tweezer.html'>Tweezer<b>9</b></a><a href='./song/sand.html'>Sand<b>5</b></a><a href='./song/fuego.html'>Fuego<b>5</b></a><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>5</b></a><a href='./song/character-zero.html'>Character Zero<b>5</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/whats-going-through-your-mind.html'>What’s Going Through Your Mind<b>14%</b></a><a href='./song/life-saving-gun.html'>Life Saving Gun<b>14%</b></a><a href='./song/oblivion.html'>Oblivion<b>14%</b></a><a href='./song/monsters.html'>Monsters<b>10%</b></a><a href='./song/a-wave-of-hope.html'>A Wave of Hope<b>14%</b></a></div></div><div class='fact'><h3>Only in 2026</h3><div class='chips'><a href='./song/brief-time.html'>Brief Time<b>1</b></a><a href='./song/dancing-in-midair.html'>Dancing in Midair<b>1</b></a><a href='./song/dark-puddle.html'>Dark Puddle<b>1</b></a><a href='./song/fling-your-head.html'>Fling Your Head<b>1</b></a><a href='./song/simeon.html'>Simeon<b>1</b></a></div></div></section>
+<section class='yb' id='y2025'><h2 class='yh'><span class='y'>2025</span><span class='n'>47 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>213</b> songs</dd></div><div><dt>Median song</dt><dd><b>29</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>3%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/tweezer-reprise.html'>Tweezer Reprise<b>14</b></a><a href='./song/carini.html'>Carini<b>12</b></a><a href='./song/harry-hood.html'>Harry Hood<b>12</b></a><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>12</b></a><a href='./song/tweezer.html'>Tweezer<b>12</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/whats-going-through-your-mind.html'>What’s Going Through Your Mind<b>21%</b></a><a href='./song/life-saving-gun.html'>Life Saving Gun<b>17%</b></a><a href='./song/oblivion.html'>Oblivion<b>17%</b></a><a href='./song/evolve.html'>Evolve<b>17%</b></a><a href='./song/monsters.html'>Monsters<b>13%</b></a></div></div><div class='fact'><h3>Only in 2025</h3><div class='chips'><a href='./song/sincere.html'>Sincere<b>1</b></a></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>A Life Beyond The Dream<span class='to'>&rarr;</span>Harry Hood<span class='n'>3 nights, of 5 ever</span></p></div></section>
+<section class='yb' id='y2024'><h2 class='yh'><span class='y'>2024</span><span class='n'>41 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>19</b> songs</dd></div><div><dt>In rotation</dt><dd><b>218</b> songs</dd></div><div><dt>Median song</dt><dd><b>27</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>3%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/down-with-disease.html'>Down with Disease<b>13</b></a><a href='./song/tweezer.html'>Tweezer<b>11</b></a><a href='./song/ruby-waves.html'>Ruby Waves<b>11</b></a><a href='./song/sand.html'>Sand<b>10</b></a><a href='./song/ghost.html'>Ghost<b>10</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/pillow-jets.html'>Pillow Jets<b>17%</b></a><a href='./song/oblivion.html'>Oblivion<b>20%</b></a><a href='./song/hey-stranger.html'>Hey Stranger<b>17%</b></a><a href='./song/ruby-waves.html'>Ruby Waves<b>22%</b></a><a href='./song/evolve.html'>Evolve<b>20%</b></a></div></div><div class='fact'><h3>Only in 2024</h3><div class='chips'><a href='./song/human-nature.html'>Human Nature<b>2</b></a><a href='./song/box-of-rain.html'>Box of Rain<b>1</b></a><a href='./song/woodlands-jam.html'>Woodlands Jam<b>1</b></a></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Back on the Train<span class='to'>&rarr;</span>Wolfman’s Brother<span class='n'>3 nights, of 5 ever</span></p></div></section>
+<section class='yb' id='y2023'><h2 class='yh'><span class='y'>2023</span><span class='n'>49 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>236</b> songs</dd></div><div><dt>Median song</dt><dd><b>26</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>3%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/harry-hood.html'>Harry Hood<b>12</b></a><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>12</b></a><a href='./song/blaze-on.html'>Blaze On<b>11</b></a><a href='./song/a-wave-of-hope.html'>A Wave of Hope<b>11</b></a><a href='./song/ghost.html'>Ghost<b>11</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/a-wave-of-hope.html'>A Wave of Hope<b>22%</b></a><a href='./song/oblivion.html'>Oblivion<b>16%</b></a><a href='./song/say-it-to-me-santos.html'>Say It To Me S.A.N.T.O.S.<b>20%</b></a><a href='./song/evolve.html'>Evolve<b>16%</b></a><a href='./song/ruby-waves.html'>Ruby Waves<b>18%</b></a></div></div><div class='fact'><h3>Only in 2023</h3><div class='chips'><a href='./song/broken-into-pieces.html'>Broken Into Pieces<b>2</b></a><a href='./song/and-flew-away.html'>...And Flew Away<b>1</b></a><a href='./song/back-in-the-bubble.html'>Back in the Bubble<b>1</b></a><a href='./song/the-night-the-lights-went-out-in-georgia.html'>The Night the Lights Went Out in Georgia<b>1</b></a></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Chalk Dust Torture<span class='to'>&rarr;</span>Oblivion<span class='n'>3 nights, of 3 ever</span></p></div></section>
+<section class='yb' id='y2022'><h2 class='yh'><span class='y'>2022</span><span class='n'>46 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>19</b> songs</dd></div><div><dt>In rotation</dt><dd><b>237</b> songs</dd></div><div><dt>Median song</dt><dd><b>25</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>3%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/tweezer.html'>Tweezer<b>15</b></a><a href='./song/sigma-oasis.html'>Sigma Oasis<b>12</b></a><a href='./song/sand.html'>Sand<b>12</b></a><a href='./song/ghost.html'>Ghost<b>12</b></a><a href='./song/free.html'>Free<b>11</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/sigma-oasis.html'>Sigma Oasis<b>24%</b></a><a href='./song/the-howling.html'>The Howling<b>17%</b></a><a href='./song/set-your-soul-free.html'>Set Your Soul Free<b>22%</b></a><a href='./song/a-wave-of-hope.html'>A Wave of Hope<b>20%</b></a><a href='./song/say-it-to-me-santos.html'>Say It To Me S.A.N.T.O.S.<b>20%</b></a></div></div><div class='fact'><h3>Only in 2022</h3><div class='chips'><a href='./song/i-cant-get-no-satisfaction.html'>(I Can’t Get No) Satisfaction<b>1</b></a><a href='./song/broken-heart-attack.html'>Broken Heart Attack<b>1</b></a><a href='./song/so-damn-lucky.html'>So Damn Lucky<b>1</b></a></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>A Life Beyond The Dream<span class='to'>&rarr;</span>Tweezer Reprise<span class='n'>3 nights, of 9 ever</span></p></div></section>
+<section class='yb' id='y2021'><h2 class='yh'><span class='y'>2021</span><span class='n'>36 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>20</b> songs</dd></div><div><dt>In rotation</dt><dd><b>261</b> songs</dd></div><div><dt>Median song</dt><dd><b>24</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>2%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/46-days.html'>46 Days<b>9</b></a><a href='./song/sigma-oasis.html'>Sigma Oasis<b>9</b></a><a href='./song/ghost.html'>Ghost<b>9</b></a><a href='./song/carini.html'>Carini<b>9</b></a><a href='./song/harry-hood.html'>Harry Hood<b>9</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/sigma-oasis.html'>Sigma Oasis<b>25%</b></a><a href='./song/i-never-needed-you-like-this-before.html'>I Never Needed You Like This Before<b>14%</b></a><a href='./song/lonely-trip.html'>Lonely Trip<b>17%</b></a><a href='./song/everythings-right.html'>Everything’s Right<b>22%</b></a><a href='./song/say-it-to-me-santos.html'>Say It To Me S.A.N.T.O.S.<b>19%</b></a></div></div><div class='fact'><h3>Only in 2021</h3><div class='chips'><a href='./song/and-so-to-bed.html'>And So To Bed<b>1</b></a><a href='./song/get-more-down.html'>Get More Down<b>1</b></a><a href='./song/i-never-left-home.html'>I Never Left Home<b>1</b></a><a href='./song/if-6-was-9.html'>If 6 Was 9<b>1</b></a><a href='./song/thanksgiving.html'>Thanksgiving<b>1</b></a><span class='more'>and 3 more</span></div></div></section>
+<section class='yb' id='y2020'><h2 class='yh'><span class='y'>2020</span><span class='n'>4 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>21</b> songs</dd></div><div><dt>In rotation</dt><dd><b>79</b> songs</dd></div><div><dt>Median song</dt><dd><b>22</b> years old</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/shafty.html'>Shafty<b>4</b></a><a href='./song/free.html'>Free<b>2</b></a><a href='./song/plasma.html'>Plasma<b>2</b></a><a href='./song/bathtub-gin.html'>Bathtub Gin<b>2</b></a><a href='./song/torn-and-frayed.html'>Torn and Frayed<b>1</b></a></div></div></section>
+<section class='yb' id='y2019'><h2 class='yh'><span class='y'>2019</span><span class='n'>41 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>22</b> songs</dd></div><div><dt>In rotation</dt><dd><b>271</b> songs</dd></div><div><dt>Median song</dt><dd><b>22</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>3%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/tweezer.html'>Tweezer<b>14</b></a><a href='./song/plasma.html'>Plasma<b>11</b></a><a href='./song/everythings-right.html'>Everything’s Right<b>10</b></a><a href='./song/46-days.html'>46 Days<b>10</b></a><a href='./song/no-men-in-no-mans-land.html'>No Men In No Man’s Land<b>10</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/death-dont-hurt-very-long.html'>Death Don’t Hurt Very Long<b>17%</b></a><a href='./song/we-are-come-to-outlive-our-brains.html'>We Are Come to Outlive Our Brains<b>15%</b></a><a href='./song/set-your-soul-free.html'>Set Your Soul Free<b>24%</b></a><a href='./song/turtle-in-the-clouds.html'>Turtle in the Clouds<b>17%</b></a><a href='./song/the-final-hurrah.html'>The Final Hurrah<b>17%</b></a></div></div><div class='fact'><h3>Only in 2019</h3><div class='chips'><a href='./song/20-20-vision.html'>20-20 Vision<b>1</b></a><a href='./song/cathys-clown.html'>Cathy’s Clown<b>1</b></a><a href='./song/friend.html'>Friend<b>1</b></a><a href='./song/ghosts-of-the-forest.html'>Ghosts of the Forest<b>1</b></a><a href='./song/gloria-branigan.html'>Gloria<b>1</b></a><span class='more'>and 5 more</span></div></div></section>
+<section class='yb' id='y2018'><h2 class='yh'><span class='y'>2018</span><span class='n'>39 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>19</b> songs</dd></div><div><dt>In rotation</dt><dd><b>224</b> songs</dd></div><div><dt>Median song</dt><dd><b>21</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>3%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/no-men-in-no-mans-land.html'>No Men In No Man’s Land<b>12</b></a><a href='./song/twist.html'>Twist<b>11</b></a><a href='./song/character-zero.html'>Character Zero<b>10</b></a><a href='./song/harry-hood.html'>Harry Hood<b>10</b></a><a href='./song/everythings-right.html'>Everything’s Right<b>10</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/no-men-in-no-mans-land.html'>No Men In No Man’s Land<b>31%</b></a><a href='./song/everythings-right.html'>Everything’s Right<b>26%</b></a><a href='./song/set-your-soul-free.html'>Set Your Soul Free<b>21%</b></a><a href='./song/blaze-on.html'>Blaze On<b>26%</b></a><a href='./song/soul-planet.html'>Soul Planet<b>15%</b></a></div></div><div class='fact'><h3>Only in 2018</h3><div class='chips'><a href='./song/infinite.html'>Infinite<b>2</b></a><a href='./song/keeping-it-real.html'>Keeping It Real<b>2</b></a></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Tweezer<span class='to'>&rarr;</span>Golden Age<span class='n'>3 nights, of 7 ever</span></p></div></section>
+<section class='yb' id='y2017'><h2 class='yh'><span class='y'>2017</span><span class='n'>28 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>19</b> songs</dd></div><div><dt>In rotation</dt><dd><b>252</b> songs</dd></div><div><dt>Median song</dt><dd><b>20</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>1%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/down-with-disease.html'>Down with Disease<b>6</b></a><a href='./song/free.html'>Free<b>5</b></a><a href='./song/theme-from-the-bottom.html'>Theme from the Bottom<b>5</b></a><a href='./song/wolfmans-brother.html'>Wolfman’s Brother<b>5</b></a><a href='./song/the-wedge.html'>The Wedge<b>5</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/breath-and-burning.html'>Breath and Burning<b>14%</b></a><a href='./song/waking-up-dead.html'>Waking Up Dead<b>11%</b></a><a href='./song/crazy-sometimes.html'>Crazy Sometimes<b>11%</b></a><a href='./song/winterqueen.html'>Winterqueen<b>14%</b></a><a href='./song/risecome-together.html'>Rise/Come Together<b>11%</b></a></div></div><div class='fact'><h3>Only in 2017</h3><div class='chips'><a href='./song/in-the-good-old-summer-time.html'>In The Good Old Summer Time<b>2</b></a><a href='./song/tuesday.html'>Tuesday<b>2</b></a><a href='./song/chocolate-rain.html'>Chocolate Rain<b>1</b></a><a href='./song/coconut.html'>Coconut<b>1</b></a><a href='./song/corona.html'>Corona<b>1</b></a><span class='more'>and 13 more</span></div></div></section>
+<section class='yb' id='y2016'><h2 class='yh'><span class='y'>2016</span><span class='n'>47 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>22</b> songs</dd></div><div><dt>In rotation</dt><dd><b>257</b> songs</dd></div><div><dt>Median song</dt><dd><b>19</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>4%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/fuego.html'>Fuego<b>15</b></a><a href='./song/harry-hood.html'>Harry Hood<b>14</b></a><a href='./song/ghost.html'>Ghost<b>13</b></a><a href='./song/46-days.html'>46 Days<b>13</b></a><a href='./song/blaze-on.html'>Blaze On<b>13</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/breath-and-burning.html'>Breath and Burning<b>19%</b></a><a href='./song/tide-turns.html'>Tide Turns<b>13%</b></a><a href='./song/fuego.html'>Fuego<b>32%</b></a><a href='./song/ass-handed.html'>Ass Handed<b>17%</b></a><a href='./song/blaze-on.html'>Blaze On<b>28%</b></a></div></div><div class='fact'><h3>Only in 2016</h3><div class='chips'><a href='./song/friends.html'>Friends<b>2</b></a><a href='./song/lets-go.html'>Let’s Go<b>2</b></a><a href='./song/running-out-of-time.html'>Running Out of Time<b>2</b></a><a href='./song/hang-on-to-yours.html'>Hang On to Yourself<b>1</b></a><a href='./song/it-aint-easy.html'>It Ain’t Easy<b>1</b></a><span class='more'>and 8 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>The Line<span class='to'>&rarr;</span>Tide Turns<span class='n'>3 nights, of 3 ever</span></p></div></section>
+<section class='yb' id='y2015'><h2 class='yh'><span class='y'>2015</span><span class='n'>30 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>21</b> songs</dd></div><div><dt>In rotation</dt><dd><b>186</b> songs</dd></div><div><dt>Median song</dt><dd><b>19</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>4%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/46-days.html'>46 Days<b>11</b></a><a href='./song/twist.html'>Twist<b>10</b></a><a href='./song/fuego.html'>Fuego<b>10</b></a><a href='./song/blaze-on.html'>Blaze On<b>10</b></a><a href='./song/ghost.html'>Ghost<b>10</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/waiting-all-night.html'>Waiting All Night<b>27%</b></a><a href='./song/no-men-in-no-mans-land.html'>No Men In No Man’s Land<b>33%</b></a><a href='./song/blaze-on.html'>Blaze On<b>33%</b></a><a href='./song/fuego.html'>Fuego<b>33%</b></a><a href='./song/the-line.html'>The Line<b>23%</b></a></div></div><div class='fact'><h3>Only in 2015</h3><div class='chips'><a href='./song/scabbard.html'>Scabbard<b>2</b></a><a href='./song/drive-in-jam.html'>Drive-In Jam<b>1</b></a><a href='./song/the-last-step.html'>The Last Step<b>1</b></a><a href='./song/united-we-stand.html'>United We Stand<b>1</b></a></div></div></section>
+<section class='yb' id='y2014'><h2 class='yh'><span class='y'>2014</span><span class='n'>40 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>22</b> songs</dd></div><div><dt>In rotation</dt><dd><b>193</b> songs</dd></div><div><dt>Median song</dt><dd><b>19</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>8%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/555.html'>555<b>18</b></a><a href='./song/fuego.html'>Fuego<b>17</b></a><a href='./song/the-line.html'>The Line<b>15</b></a><a href='./song/tweezer.html'>Tweezer<b>15</b></a><a href='./song/46-days.html'>46 Days<b>14</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/the-line.html'>The Line<b>38%</b></a><a href='./song/555.html'>555<b>45%</b></a><a href='./song/waiting-all-night.html'>Waiting All Night<b>35%</b></a><a href='./song/wingsuit.html'>Wingsuit<b>35%</b></a><a href='./song/fuego.html'>Fuego<b>42%</b></a></div></div><div class='fact'><h3>Only in 2014</h3><div class='chips'><a href='./song/intro-chilling-thrilling.html'>Intro<b>1</b></a><a href='./song/is-this-what-you-wanted.html'>Is This What You Wanted<b>1</b></a><a href='./song/take-me-out-to-the-ballgame.html'>Take Me Out to the Ballgame<b>1</b></a><a href='./song/the-chinese-water-torture.html'>The Chinese Water Torture<b>1</b></a><a href='./song/the-haunted-house.html'>The Haunted House<b>1</b></a><span class='more'>and 2 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>555<span class='to'>&rarr;</span>Rift<span class='n'>3 nights, of 5 ever</span></p></div></section>
+<section class='yb' id='y2013'><h2 class='yh'><span class='y'>2013</span><span class='n'>41 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>22</b> songs</dd></div><div><dt>In rotation</dt><dd><b>202</b> songs</dd></div><div><dt>Median song</dt><dd><b>20</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>5%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>14</b></a><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>13</b></a><a href='./song/ocelot.html'>Ocelot<b>13</b></a><a href='./song/run-like-an-antelope.html'>Run Like an Antelope<b>13</b></a><a href='./song/harry-hood.html'>Harry Hood<b>13</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/ocelot.html'>Ocelot<b>32%</b></a><a href='./song/yarmouth-road.html'>Yarmouth Road<b>20%</b></a><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>32%</b></a><a href='./song/stealing-time-from-the-faulty-plan.html'>Stealing Time From the Faulty Plan<b>22%</b></a><a href='./song/light.html'>Light<b>27%</b></a></div></div><div class='fact'><h3>Only in 2013</h3><div class='chips'><a href='./song/architect.html'>Architect<b>4</b></a><a href='./song/say-something.html'>Say Something<b>2</b></a><a href='./song/amidst-the-peals-of-laughter.html'>Amidst the Peals of Laughter<b>1</b></a><a href='./song/easy-to-slip.html'>Easy To Slip<b>1</b></a><a href='./song/legalize-it.html'>Legalize It<b>1</b></a><span class='more'>and 3 more</span></div></div></section>
+<section class='yb' id='y2012'><h2 class='yh'><span class='y'>2012</span><span class='n'>37 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>23</b> songs</dd></div><div><dt>In rotation</dt><dd><b>220</b> songs</dd></div><div><dt>Median song</dt><dd><b>20</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>7%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/possum.html'>Possum<b>13</b></a><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>13</b></a><a href='./song/the-moma-dance.html'>The Moma Dance<b>12</b></a><a href='./song/harry-hood.html'>Harry Hood<b>12</b></a><a href='./song/kill-devil-falls.html'>Kill Devil Falls<b>12</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>35%</b></a><a href='./song/kill-devil-falls.html'>Kill Devil Falls<b>32%</b></a><a href='./song/roses-are-free.html'>Roses Are Free<b>22%</b></a><a href='./song/golden-age.html'>Golden Age<b>24%</b></a><a href='./song/sand.html'>Sand<b>30%</b></a></div></div><div class='fact'><h3>Only in 2012</h3><div class='chips'><a href='./song/fly-like-an-eagle.html'>Fly Like an Eagle<b>1</b></a><a href='./song/garden-party.html'>Garden Party<b>1</b></a><a href='./song/the-gambler.html'>The Gambler<b>1</b></a></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Golden Age<span class='to'>&rarr;</span>Also Sprach Zarathustra<span class='n'>3 nights, of 6 ever</span></p></div></section>
+<section class='yb' id='y2011'><h2 class='yh'><span class='y'>2011</span><span class='n'>39 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>23</b> songs</dd></div><div><dt>In rotation</dt><dd><b>220</b> songs</dd></div><div><dt>Median song</dt><dd><b>19</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>8%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/possum.html'>Possum<b>15</b></a><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>15</b></a><a href='./song/tweezer.html'>Tweezer<b>12</b></a><a href='./song/funky-bitch.html'>Funky Bitch<b>12</b></a><a href='./song/kill-devil-falls.html'>Kill Devil Falls<b>12</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>38%</b></a><a href='./song/kill-devil-falls.html'>Kill Devil Falls<b>31%</b></a><a href='./song/show-of-life.html'>Show of Life<b>18%</b></a><a href='./song/crosseyed-and-painless.html'>Crosseyed and Painless<b>23%</b></a><a href='./song/roses-are-free.html'>Roses Are Free<b>21%</b></a></div></div><div class='fact'><h3>Only in 2011</h3><div class='chips'><a href='./song/50-ways-to-leave-your-lover.html'>50 Ways to Leave Your Lover<b>1</b></a><a href='./song/big-balls.html'>Big Balls<b>1</b></a><a href='./song/monkey-man.html'>Monkey Man<b>1</b></a><a href='./song/rhymes.html'>Rhymes<b>1</b></a><a href='./song/rocket-man.html'>Rocket Man<b>1</b></a><span class='more'>and 3 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Scent of a Mule<span class='to'>&rarr;</span>Stealing Time From the Faulty Plan<span class='n'>3 nights, of 3 ever</span></p></div></section>
+<section class='yb' id='y2010'><h2 class='yh'><span class='y'>2010</span><span class='n'>48 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>22</b> songs</dd></div><div><dt>In rotation</dt><dd><b>251</b> songs</dd></div><div><dt>Median song</dt><dd><b>18</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>7%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/possum.html'>Possum<b>17</b></a><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>17</b></a><a href='./song/down-with-disease.html'>Down with Disease<b>15</b></a><a href='./song/mikes-song.html'>Mike’s Song<b>15</b></a><a href='./song/weekapaug-groove.html'>Weekapaug Groove<b>15</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/backwards-down-the-number-line.html'>Backwards Down the Number Line<b>35%</b></a><a href='./song/ocelot.html'>Ocelot<b>27%</b></a><a href='./song/light.html'>Light<b>29%</b></a><a href='./song/show-of-life.html'>Show of Life<b>17%</b></a><a href='./song/stealing-time-from-the-faulty-plan.html'>Stealing Time From the Faulty Plan<b>23%</b></a></div></div><div class='fact'><h3>Only in 2010</h3><div class='chips'><a href='./song/summer-of-89.html'>Summer of ’89<b>4</b></a><a href='./song/my-problem-right-there.html'>My Problem Right There<b>3</b></a><a href='./song/what-things-seem.html'>What Things Seem<b>2</b></a><a href='./song/a-apolitical-blues.html'>A Apolitical Blues<b>1</b></a><a href='./song/all-that-you-dream.html'>All That You Dream<b>1</b></a><span class='more'>and 23 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Halley’s Comet<span class='to'>&rarr;</span>Light<span class='n'>3 nights, of 4 ever</span></p></div></section>
+<section class='yb' id='y2009'><h2 class='yh'><span class='y'>2009</span><span class='n'>50 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>23</b> songs</dd></div><div><dt>In rotation</dt><dd><b>247</b> songs</dd></div><div><dt>Median song</dt><dd><b>16</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>7%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/possum.html'>Possum<b>17</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>17</b></a><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>16</b></a><a href='./song/harry-hood.html'>Harry Hood<b>16</b></a><a href='./song/run-like-an-antelope.html'>Run Like an Antelope<b>16</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/time-turns-elastic.html'>Time Turns Elastic<b>24%</b></a><a href='./song/let-me-lie.html'>Let Me Lie<b>14%</b></a><a href='./song/kill-devil-falls.html'>Kill Devil Falls<b>32%</b></a><a href='./song/stealing-time-from-the-faulty-plan.html'>Stealing Time From the Faulty Plan<b>26%</b></a><a href='./song/ocelot.html'>Ocelot<b>28%</b></a></div></div><div class='fact'><h3>Only in 2009</h3><div class='chips'><a href='./song/middle-of-the-road.html'>Middle of the Road<b>2</b></a><a href='./song/all-down-the-line.html'>All Down the Line<b>1</b></a><a href='./song/blue-moon.html'>Blue Moon<b>1</b></a><a href='./song/bobby-jean.html'>Bobby Jean<b>1</b></a><a href='./song/casino-boogie.html'>Casino Boogie<b>1</b></a><span class='more'>and 19 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Possum<span class='to'>&rarr;</span>Down with Disease<span class='n'>3 nights, of 3 ever</span></p></div></section>
+<section class='yb' id='y2004'><h2 class='yh'><span class='y'>2004</span><span class='n'>18 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>134</b> songs</dd></div><div><dt>Median song</dt><dd><b>11</b> years old</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/wilson.html'>Wilson<b>7</b></a><a href='./song/piper.html'>Piper<b>6</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>6</b></a><a href='./song/scents-and-subtle-sounds.html'>Scents and Subtle Sounds<b>6</b></a><a href='./song/acdc-bag.html'>AC/DC Bag<b>5</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/friday.html'>Friday<b>22%</b></a><a href='./song/scents-and-subtle-sounds.html'>Scents and Subtle Sounds<b>28%</b></a><a href='./song/seven-below.html'>Seven Below<b>28%</b></a><a href='./song/crowd-control.html'>Crowd Control<b>17%</b></a><a href='./song/pebbles-and-marbles.html'>Pebbles and Marbles<b>17%</b></a></div></div><div class='fact'><h3>Only in 2004</h3><div class='chips'><span>99 Problems<b>1</b></span><span>Big Pimpin’<b>1</b></span><span>Cool Jerk<b>1</b></span><span>Girls Girls Girls<b>1</b></span><span>The Dickie Scotland Song<b>1</b></span><span class='more'>and 1 more</span></div></div></section>
+<section class='yb' id='y2003'><h2 class='yh'><span class='y'>2003</span><span class='n'>44 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>201</b> songs</dd></div><div><dt>Median song</dt><dd><b>10</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>5%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/down-with-disease.html'>Down with Disease<b>14</b></a><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>13</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>12</b></a><a href='./song/david-bowie.html'>David Bowie<b>12</b></a><a href='./song/seven-below.html'>Seven Below<b>12</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/anything-but-me.html'>Anything But Me<b>18%</b></a><a href='./song/friday.html'>Friday<b>18%</b></a><a href='./song/thunderhead.html'>Thunderhead<b>14%</b></a><a href='./song/two-versions-of-me.html'>Two Versions of Me<b>14%</b></a><a href='./song/seven-below.html'>Seven Below<b>25%</b></a></div></div><div class='fact'><h3>Only in 2003</h3><div class='chips'><span>Discern<b>4</b></span><span>Spices<b>2</b></span><span>Spread It ’Round<b>2</b></span><span>Blue Skies<b>1</b></span><span>Chariots of Fire<b>1</b></span><span class='more'>and 14 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Waves<span class='to'>&rarr;</span>Sample in a Jar<span class='n'>3 nights, of 4 ever</span></p></div></section>
+<section class='yb' id='y2002'><h2 class='yh'><span class='y'>2002</span><span class='n'>1 show</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>24</b> songs</dd></div><div><dt>In rotation</dt><dd><b>24</b> songs</dd></div><div><dt>Median song</dt><dd><b>10</b> years old</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/piper.html'>Piper<b>1</b></a><a href='./song/guyute.html'>Guyute<b>1</b></a><a href='./song/nicu.html'>NICU<b>1</b></a><a href='./song/horn.html'>Horn<b>1</b></a><a href='./song/wilson.html'>Wilson<b>1</b></a></div></div></section>
+<section class='yb' id='y2000'><h2 class='yh'><span class='y'>2000</span><span class='n'>53 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>186</b> songs</dd></div><div><dt>Median song</dt><dd><b>7</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>6%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/first-tube.html'>First Tube<b>25</b></a><a href='./song/gotta-jibboo.html'>Gotta Jibboo<b>22</b></a><a href='./song/heavy-things.html'>Heavy Things<b>20</b></a><a href='./song/piper.html'>Piper<b>19</b></a><a href='./song/back-on-the-train.html'>Back on the Train<b>18</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><span>The Inlaw Josie Wales<b>23%</b></span><a href='./song/gotta-jibboo.html'>Gotta Jibboo<b>40%</b></a><a href='./song/first-tube.html'>First Tube<b>42%</b></a><a href='./song/heavy-things.html'>Heavy Things<b>36%</b></a><a href='./song/bug.html'>Bug<b>26%</b></a></div></div><div class='fact'><h3>Only in 2000</h3><div class='chips'><span>Come on Baby Let’s Go Downtown<b>2</b></span><a href='./song/windora-bug.html'>Windora Bug<b>2</b></a><span>El Paso<b>1</b></span><span>Hold Whatcha Got<b>1</b></span><span>Rapper’s Delight<b>1</b></span><span class='more'>and 2 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Heavy Things<span class='to'>&rarr;</span>Piper<span class='n'>3 nights, of 3 ever</span></p></div></section>
+<section class='yb' id='y1999'><h2 class='yh'><span class='y'>1999</span><span class='n'>63 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>19</b> songs</dd></div><div><dt>In rotation</dt><dd><b>199</b> songs</dd></div><div><dt>Median song</dt><dd><b>6</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>6%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/back-on-the-train.html'>Back on the Train<b>23</b></a><a href='./song/guyute.html'>Guyute<b>20</b></a><a href='./song/farmhouse.html'>Farmhouse<b>19</b></a><a href='./song/down-with-disease.html'>Down with Disease<b>19</b></a><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>19</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/farmhouse.html'>Farmhouse<b>30%</b></a><a href='./song/back-on-the-train.html'>Back on the Train<b>37%</b></a><a href='./song/guyute.html'>Guyute<b>32%</b></a><a href='./song/heavy-things.html'>Heavy Things<b>27%</b></a><a href='./song/limb-by-limb.html'>Limb By Limb<b>29%</b></a></div></div><div class='fact'><h3>Only in 1999</h3><div class='chips'><span>Mozambique<b>5</b></span><span>My Left Toe<b>5</b></span><span>Misty Mountain Hop<b>4</b></span><span>Will It Go Round in Circles<b>2</b></span><span>Big Alligator<b>1</b></span><span class='more'>and 11 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Guyute<span class='to'>&rarr;</span>Loving Cup<span class='n'>3 nights, of 3 ever</span></p></div></section>
+<section class='yb' id='y1998'><h2 class='yh'><span class='y'>1998</span><span class='n'>67 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>237</b> songs</dd></div><div><dt>Median song</dt><dd><b>5</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>5%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/birds-of-a-feather.html'>Birds of a Feather<b>27</b></a><a href='./song/roggae.html'>Roggae<b>26</b></a><a href='./song/the-moma-dance.html'>The Moma Dance<b>25</b></a><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>21</b></a><a href='./song/guyute.html'>Guyute<b>20</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/roggae.html'>Roggae<b>39%</b></a><a href='./song/birds-of-a-feather.html'>Birds of a Feather<b>40%</b></a><a href='./song/frankie-says.html'>Frankie Says<b>21%</b></a><a href='./song/brian-and-robert.html'>Brian and Robert<b>24%</b></a><a href='./song/the-moma-dance.html'>The Moma Dance<b>37%</b></a></div></div><div class='fact'><h3>Only in 1998</h3><div class='chips'><span>Sexual Healing<b>4</b></span><span>Something<b>4</b></span><span>I Get a Kick Out of You<b>2</b></span><span>You Better Believe It Baby<b>2</b></span><span>All the Pain Through the Years<b>1</b></span><span class='more'>and 33 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Sexual Healing<span class='to'>&rarr;</span>Hold Your Head Up<span class='n'>4 nights, of 4 ever</span></p></div></section>
+<section class='yb' id='y1997'><h2 class='yh'><span class='y'>1997</span><span class='n'>78 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>197</b> songs</dd></div><div><dt>Median song</dt><dd><b>4</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>8%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/character-zero.html'>Character Zero<b>32</b></a><a href='./song/taste.html'>Taste<b>30</b></a><a href='./song/my-soul.html'>My Soul<b>30</b></a><a href='./song/ghost.html'>Ghost<b>28</b></a><a href='./song/theme-from-the-bottom.html'>Theme from the Bottom<b>27</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/my-soul.html'>My Soul<b>38%</b></a><a href='./song/dogs-stole-things.html'>Dogs Stole Things<b>26%</b></a><a href='./song/beauty-of-my-dreams.html'>Beauty of My Dreams<b>27%</b></a><a href='./song/taste.html'>Taste<b>38%</b></a><a href='./song/dirt.html'>Dirt<b>26%</b></a></div></div><div class='fact'><h3>Only in 1997</h3><div class='chips'><span>Black-Eyed Katy<b>7</b></span><span>Rock A William<b>5</b></span><span>Ain’t Love Funny<b>3</b></span><span>I Don’t Care<b>2</b></span><span>Merry Pranksters Jam<b>2</b></span><span class='more'>and 15 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Beauty of My Dreams<span class='to'>&rarr;</span>Wolfman’s Brother<span class='n'>4 nights, of 5 ever</span></p></div></section>
+<section class='yb' id='y1996'><h2 class='yh'><span class='y'>1996</span><span class='n'>70 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>18</b> songs</dd></div><div><dt>In rotation</dt><dd><b>165</b> songs</dd></div><div><dt>Median song</dt><dd><b>6</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>12%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/taste.html'>Taste<b>28</b></a><a href='./song/sample-in-a-jar.html'>Sample in a Jar<b>26</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>24</b></a><a href='./song/chalk-dust-torture.html'>Chalk Dust Torture<b>23</b></a><a href='./song/sparkle.html'>Sparkle<b>21</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/taste.html'>Taste<b>40%</b></a><a href='./song/hello-my-baby.html'>Hello My Baby<b>24%</b></a><a href='./song/cars-trucks-buses.html'>Cars Trucks Buses<b>27%</b></a><a href='./song/swept-away.html'>Swept Away<b>19%</b></a><a href='./song/steep.html'>Steep<b>19%</b></a></div></div><div class='fact'><h3>Only in 1996</h3><div class='chips'><span>Born Under Punches (The Heat Goes On)<b>1</b></span><span>Champagne Supernova<b>1</b></span><span>Flatbed Truck Jam<b>1</b></span><span>Hold to a Dream<b>1</b></span><span>Houses in Motion<b>1</b></span><span class='more'>and 11 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Swept Away<span class='to'>&rarr;</span>Steep<span class='n'>13 nights, of 33 ever</span></p></div></section>
+<section class='yb' id='y1995'><h2 class='yh'><span class='y'>1995</span><span class='n'>81 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>20</b> songs</dd></div><div><dt>In rotation</dt><dd><b>187</b> songs</dd></div><div><dt>Median song</dt><dd><b>5</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>11%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/hold-your-head-up.html'>Hold Your Head Up<b>37</b></a><a href='./song/free.html'>Free<b>31</b></a><a href='./song/sample-in-a-jar.html'>Sample in a Jar<b>30</b></a><a href='./song/strange-design.html'>Strange Design<b>28</b></a><a href='./song/stash.html'>Stash<b>27</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/strange-design.html'>Strange Design<b>35%</b></a><a href='./song/keyboard-army.html'>Keyboard Army<b>16%</b></a><span>I’m Blue, I’m Lonesome<b>22%</b></span><a href='./song/a-day-in-the-life.html'>A Day in the Life<b>28%</b></a><a href='./song/suspicious-minds.html'>Suspicious Minds<b>14%</b></a></div></div><div class='fact'><h3>Only in 1995</h3><div class='chips'><span>Acoustic Army<b>27</b></span><span>Taste That Surrounds<b>14</b></span><span>The Fog That Surrounds<b>8</b></span><span>Don’t You Want To Go?<b>5</b></span><span>The Real Me<b>2</b></span><span class='more'>and 26 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Suspicious Minds<span class='to'>&rarr;</span>Hold Your Head Up<span class='n'>11 nights, of 13 ever</span></p></div></section>
+<section class='yb' id='y1994'><h2 class='yh'><span class='y'>1994</span><span class='n'>124 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>22</b> songs</dd></div><div><dt>In rotation</dt><dd><b>210</b> songs</dd></div><div><dt>Median song</dt><dd><b>4</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>20%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/sample-in-a-jar.html'>Sample in a Jar<b>73</b></a><a href='./song/hold-your-head-up.html'>Hold Your Head Up<b>72</b></a><a href='./song/julius.html'>Julius<b>65</b></a><a href='./song/down-with-disease.html'>Down with Disease<b>58</b></a><a href='./song/rift.html'>Rift<b>49</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/julius.html'>Julius<b>52%</b></a><a href='./song/sample-in-a-jar.html'>Sample in a Jar<b>58%</b></a><a href='./song/axilla-part-ii.html'>Axilla (Part II)<b>27%</b></a><a href='./song/if-i-could.html'>If I Could<b>27%</b></a><span>Foreplay/Long Time<b>13%</b></span></div></div><div class='fact'><h3>Only in 1994</h3><div class='chips'><span>I Wan’na Be Like You<b>9</b></span><span>Little Tiny Butter Biscuits<b>5</b></span><span>Beaumont Rag<b>4</b></span><span>Blackbird<b>2</b></span><span>Dooley<b>2</b></span><span class='more'>and 32 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Tweezer<span class='to'>&rarr;</span>Lifeboy<span class='n'>14 nights, of 18 ever</span></p></div></section>
+<section class='yb' id='y1993'><h2 class='yh'><span class='y'>1993</span><span class='n'>110 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>25</b> songs</dd></div><div><dt>In rotation</dt><dd><b>166</b> songs</dd></div><div><dt>Median song</dt><dd><b>3</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>32%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/hold-your-head-up.html'>Hold Your Head Up<b>147</b></a><a href='./song/rift.html'>Rift<b>68</b></a><a href='./song/big-ball-jam.html'>Big Ball Jam<b>66</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>61</b></a><a href='./song/sparkle.html'>Sparkle<b>59</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/big-ball-jam.html'>Big Ball Jam<b>60%</b></a><span>Amazing Grace<b>50%</b></span><a href='./song/hold-your-head-up.html'>Hold Your Head Up<b>75%</b></a><a href='./song/rift.html'>Rift<b>62%</b></a><a href='./song/its-ice.html'>It’s Ice<b>51%</b></a></div></div><div class='fact'><h3>Only in 1993</h3><div class='chips'><span>Leprechaun<b>3</b></span><span>When Something is Wrong with My Baby<b>3</b></span><span>Nothin’ But A Nothin’<b>2</b></span><span>Choo Choo Ch’ Boogie<b>1</b></span><span>Cocaine<b>1</b></span><span class='more'>and 12 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Big Ball Jam<span class='to'>&rarr;</span>Hold Your Head Up<span class='n'>16 nights, of 22 ever</span></p></div></section>
+<section class='yb' id='y1992'><h2 class='yh'><span class='y'>1992</span><span class='n'>122 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>20</b> songs</dd></div><div><dt>In rotation</dt><dd><b>121</b> songs</dd></div><div><dt>Median song</dt><dd><b>2</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>30%</b></dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/cold-as-ice.html'>Cold as Ice<b>84</b></a><a href='./song/sparkle.html'>Sparkle<b>66</b></a><a href='./song/llama.html'>Llama<b>65</b></a><a href='./song/cavern.html'>Cavern<b>63</b></a><a href='./song/maze.html'>Maze<b>56</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/cold-as-ice.html'>Cold as Ice<b>39%</b></a><span>All Things Reconsidered<b>34%</b></span><a href='./song/sparkle.html'>Sparkle<b>54%</b></a><a href='./song/llama.html'>Llama<b>52%</b></a><a href='./song/sweet-adeline.html'>Sweet Adeline<b>35%</b></a></div></div><div class='fact'><h3>Only in 1992</h3><div class='chips'><span>Blue Bayou<b>2</b></span><span>Diamond Girl<b>1</b></span><span>Lively Up Yourself<b>1</b></span><span>Lullaby of Birdland<b>1</b></span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Cold as Ice<span class='to'>&rarr;</span>Cracklin’ Rosie<span class='n'>20 nights, of 20 ever</span></p></div></section>
+<section class='yb' id='y1991'><h2 class='yh'><span class='y'>1991</span><span class='n'>128 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>24</b> songs</dd></div><div><dt>In rotation</dt><dd><b>118</b> songs</dd></div><div><dt>Median song</dt><dd><b>2</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>31%</b></dd></div></dl><p class='part'>Running order known for 123 of these 128 nights; the figures above are what those 123 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/the-landlady.html'>The Landlady<b>95</b></a><a href='./song/hold-your-head-up.html'>Hold Your Head Up<b>91</b></a><a href='./song/my-sweet-one.html'>My Sweet One<b>89</b></a><a href='./song/cavern.html'>Cavern<b>88</b></a><a href='./song/llama.html'>Llama<b>83</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/the-landlady.html'>The Landlady<b>77%</b></a><a href='./song/my-sweet-one.html'>My Sweet One<b>72%</b></a><a href='./song/llama.html'>Llama<b>67%</b></a><a href='./song/the-squirming-coil.html'>The Squirming Coil<b>66%</b></a><a href='./song/cavern.html'>Cavern<b>72%</b></a></div></div><div class='fact'><h3>Only in 1991</h3><div class='chips'><span>Let’s Go<b>11</b></span><span>Bitchin’ Again<b>1</b></span><span>Moose the Mooche<b>1</b></span><span>Pusherman<b>1</b></span><span>T.V. Show<b>1</b></span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>The Landlady<span class='to'>&rarr;</span>Destiny Unbound<span class='n'>17 nights, of 19 ever</span></p></div></section>
+<section class='yb' id='y1990'><h2 class='yh'><span class='y'>1990</span><span class='n'>146 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>19</b> songs</dd></div><div><dt>In rotation</dt><dd><b>113</b> songs</dd></div><div><dt>Median song</dt><dd><b>2</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>28%</b></dd></div></dl><p class='part'>Running order known for 125 of these 146 nights; the figures above are what those 125 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/bouncing-around-the-room.html'>Bouncing Around the Room<b>91</b></a><a href='./song/possum.html'>Possum<b>87</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>84</b></a><a href='./song/mikes-song.html'>Mike’s Song<b>82</b></a><a href='./song/i-am-hydrogen.html'>I Am Hydrogen<b>82</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/the-oh-kee-pa-ceremony.html'>The Oh Kee Pa Ceremony<b>62%</b></a><span>The Asse Festival<b>18%</b></span><a href='./song/i-am-hydrogen.html'>I Am Hydrogen<b>66%</b></a><a href='./song/bouncing-around-the-room.html'>Bouncing Around the Room<b>73%</b></a><a href='./song/dinner-and-a-movie.html'>Dinner and a Movie<b>39%</b></a></div></div><div class='fact'><h3>Only in 1990</h3><div class='chips'><span>Communication Breakdown<b>7</b></span><span>Don’t Get Me Wrong<b>3</b></span><span>Goin’ Down Slow<b>3</b></span><span>Minute by Minute<b>3</b></span><span>No Good Trying<b>3</b></span><span class='more'>and 7 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Dinner and a Movie<span class='to'>&rarr;</span>Bouncing Around the Room<span class='n'>33 nights, of 50 ever</span></p></div></section>
+<section class='yb' id='y1989'><h2 class='yh'><span class='y'>1989</span><span class='n'>123 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>17</b> songs</dd></div><div><dt>In rotation</dt><dd><b>119</b> songs</dd></div><div><dt>Median song</dt><dd><b>2</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>29%</b></dd></div></dl><p class='part'>Running order known for 82 of these 123 nights; the figures above are what those 82 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>60</b></a><a href='./song/acdc-bag.html'>AC/DC Bag<b>53</b></a><a href='./song/alumni-blues.html'>Alumni Blues<b>50</b></a><a href='./song/possum.html'>Possum<b>50</b></a><a href='./song/weekapaug-groove.html'>Weekapaug Groove<b>45</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><a href='./song/acdc-bag.html'>AC/DC Bag<b>65%</b></a><a href='./song/alumni-blues.html'>Alumni Blues<b>33%</b></a><a href='./song/i-am-hydrogen.html'>I Am Hydrogen<b>54%</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>72%</b></a><a href='./song/letter-to-jimmy-page.html'>Letter to Jimmy Page<b>28%</b></a></div></div><div class='fact'><h3>Only in 1989</h3><div class='chips'><span>In a Hole<b>8</b></span><span>Undun<b>5</b></span><span>The Fishin’ Hole<b>2</b></span><span>The Price of Love<b>2</b></span><span>American Woman<b>1</b></span><span class='more'>and 17 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>McGrupp and the Watchful Hosemasters<span class='to'>&rarr;</span>Who Do? We Do!<span class='n'>9 nights, of 11 ever</span></p></div></section>
+<section class='yb' id='y1988'><h2 class='yh'><span class='y'>1988</span><span class='n'>95 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>19</b> songs</dd></div><div><dt>In rotation</dt><dd><b>100</b> songs</dd></div><div><dt>Median song</dt><dd><b>2</b> years old</dd></div><div><dt>Moves that recur</dt><dd><b>23%</b></dd></div></dl><p class='part'>Running order known for 52 of these 95 nights; the figures above are what those 52 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/alumni-blues.html'>Alumni Blues<b>50</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>33</b></a><a href='./song/the-lizards.html'>The Lizards<b>33</b></a><a href='./song/golgi-apparatus.html'>Golgi Apparatus<b>32</b></a><a href='./song/fluffhead.html'>Fluffhead<b>31</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><span>Take the ’A’ Train<b>54%</b></span><a href='./song/alumni-blues.html'>Alumni Blues<b>50%</b></a><a href='./song/letter-to-jimmy-page.html'>Letter to Jimmy Page<b>46%</b></a><span>Whipping Post<b>33%</b></span><a href='./song/peaches-en-regalia.html'>Peaches en Regalia<b>40%</b></a></div></div><div class='fact'><h3>Only in 1988</h3><div class='chips'><span>Phase Dance<b>4</b></span><span>Blue Bossa<b>2</b></span><span>Andy’s Chest<b>1</b></span><span>Maiden Voyage<b>1</b></span><span>St. Thomas<b>1</b></span><span class='more'>and 3 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Alumni Blues<span class='to'>&rarr;</span>Letter to Jimmy Page<span class='n'>24 nights, of 94 ever</span></p></div></section>
+<section class='yb' id='y1987'><h2 class='yh'><span class='y'>1987</span><span class='n'>44 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>20</b> songs</dd></div><div><dt>In rotation</dt><dd><b>86</b> songs</dd></div><div><dt>Median song</dt><dd><b>1</b> year old</dd></div><div><dt>Moves that recur</dt><dd><b>24%</b></dd></div></dl><p class='part'>Running order known for 21 of these 44 nights; the figures above are what those 21 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/alumni-blues.html'>Alumni Blues<b>23</b></a><a href='./song/fluffhead.html'>Fluffhead<b>15</b></a><a href='./song/possum.html'>Possum<b>14</b></a><a href='./song/golgi-apparatus.html'>Golgi Apparatus<b>13</b></a><a href='./song/letter-to-jimmy-page.html'>Letter to Jimmy Page<b>12</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><span>Lushington<b>33%</b></span><span>Clod<b>33%</b></span><a href='./song/letter-to-jimmy-page.html'>Letter to Jimmy Page<b>57%</b></a><a href='./song/alumni-blues.html'>Alumni Blues<b>57%</b></a><a href='./song/peaches-en-regalia.html'>Peaches en Regalia<b>52%</b></a></div></div><div class='fact'><h3>Only in 1987</h3><div class='chips'><span>Why Don’t You Love Me?<b>2</b></span><span>Come On (Part One)<b>1</b></span><span>Freeworld<b>1</b></span><span>Punch Me in the Eye<b>1</b></span><span>Stir It Up<b>1</b></span><span class='more'>and 1 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>I Am Hydrogen<span class='to'>&rarr;</span>Who Do? We Do!<span class='n'>4 nights, of 4 ever</span></p></div></section>
+<section class='yb' id='y1986'><h2 class='yh'><span class='y'>1986</span><span class='n'>22 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>15</b> songs</dd></div><div><dt>In rotation</dt><dd><b>55</b> songs</dd></div><div><dt>Median song</dt><dd><b>1</b> year old</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><p class='part'>Running order known for 9 of these 22 nights; the figures above are what those 9 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/alumni-blues.html'>Alumni Blues<b>8</b></a><a href='./song/slave-to-the-traffic-light.html'>Slave to the Traffic Light<b>6</b></a><a href='./song/halleys-comet.html'>Halley’s Comet<b>6</b></a><a href='./song/you-enjoy-myself.html'>You Enjoy Myself<b>5</b></a><a href='./song/acdc-bag.html'>AC/DC Bag<b>5</b></a></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><span>Back Porch Boogie Blues<b>44%</b></span><a href='./song/have-mercy.html'>Have Mercy<b>44%</b></a><span>Prep School Hippie<b>33%</b></span><span>Swing Low, Sweet Chariot<b>33%</b></span><a href='./song/skin-it-back.html'>Skin It Back<b>33%</b></a></div></div><div class='fact'><h3>Only in 1986</h3><div class='chips'><span>The Pendulum<b>2</b></span><span>Babylon is Burning<b>1</b></span><span>Exiled Shadows<b>1</b></span><span>Help on the Way<b>1</b></span><span>Not Fade Away<b>1</b></span><span class='more'>and 2 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Halley’s Comet<span class='to'>&rarr;</span>Back Porch Boogie Blues<span class='n'>3 nights, of 3 ever</span></p></div></section>
+<section class='yb' id='y1985'><h2 class='yh'><span class='y'>1985</span><span class='n'>22 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>9</b> songs</dd></div><div><dt>In rotation</dt><dd><b>44</b> songs</dd></div><div><dt>Median song</dt><dd>new</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><p class='part'>Running order known for 11 of these 22 nights; the figures above are what those 11 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><a href='./song/alumni-blues.html'>Alumni Blues<b>9</b></a><span>Anarchy<b>6</b></span><a href='./song/mikes-song.html'>Mike’s Song<b>6</b></a><a href='./song/slave-to-the-traffic-light.html'>Slave to the Traffic Light<b>5</b></a><span>Dave’s Energy Guide<b>5</b></span></div></div><div class='fact'><h3>Sounded like</h3><div class='chips'><span>Anarchy<b>45%</b></span><span>Dave’s Energy Guide<b>45%</b></span><span>Skippy the Wondermouse<b>27%</b></span><span>Wild Child<b>27%</b></span><span>Big Leg Emma<b>27%</b></span></div></div><div class='fact'><h3>Only in 1985</h3><div class='chips'><span>Revolution<b>4</b></span><span>I Wish<b>2</b></span><span>T.V. Theme<b>2</b></span><span>Bring It On Home<b>1</b></span><span>Fire Up the Ganja<b>1</b></span><span class='more'>and 4 more</span></div></div><div class='fact'><h3>Ran together</h3><p class='habit'>Mike’s Song<span class='to'>&rarr;</span>Dave’s Energy Guide<span class='n'>4 nights, of 5 ever</span></p></div></section>
+<section class='yb' id='y1984'><h2 class='yh'><span class='y'>1984</span><span class='n'>3 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>9</b> songs</dd></div><div><dt>In rotation</dt><dd><b>19</b> songs</dd></div><div><dt>Median song</dt><dd>new</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><div class='fact'><h3>Most played</h3><div class='chips'><span>Can’t You Hear Me Knocking<b>3</b></span><a href='./song/makisupa-policeman.html'>Makisupa Policeman<b>2</b></a><span>In the Midnight Hour<b>2</b></span><span>Wild Child<b>2</b></span><span>Bertha<b>2</b></span></div></div><div class='fact'><h3>Only in 1984</h3><div class='chips'><span>Spanish Flea<b>1</b></span><span>St. Stephen<b>1</b></span></div></div></section>
+<section class='yb' id='y1983'><h2 class='yh'><span class='y'>1983</span><span class='n'>2 shows</span><a class='up' href='#top'>&uarr; Top</a></h2><dl class='shape'><div><dt>A night</dt><dd><b>8</b> songs</dd></div><div><dt>In rotation</dt><dd><b>8</b> songs</dd></div><div><dt>Median song</dt><dd>new</dd></div><div><dt>Moves that recur</dt><dd>&mdash;</dd></div></dl><p class='part'>Running order known for 1 of these 2 nights; the figures above are what those 1 hold.</p><div class='fact'><h3>Most played</h3><div class='chips'><span>Long Cool Woman in a Black Dress<b>1</b></span><span>Proud Mary<b>1</b></span><span>In the Midnight Hour<b>1</b></span><span>Squeeze Box<b>1</b></span><span>Roadhouse Blues<b>1</b></span></div></div><div class='fact'><h3>Only in 1983</h3><div class='chips'><span>Roadhouse Blues<b>1</b></span><span>Squeeze Box<b>1</b></span></div></div></section>
+</main>
+<footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<span>Updated 2026-07-31</span></footer>
+<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</div></body></html>

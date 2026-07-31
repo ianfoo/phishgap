@@ -157,23 +157,79 @@ body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
    exactly what the first attempt at this measured: the rule shipped, the page
    still scrolled 347px. */
 html,body{overflow-x:clip}
-.crumb{display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem .9rem;
-   margin-bottom:1.1rem;
-   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;
-   border-bottom:1px solid var(--rule)}
-.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem;margin-bottom:1.1rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb .lists,.crumb .meta{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem}
+.crumb .lists{font-size:.75rem}
+.crumb .meta{font-size:.625rem;margin-left:auto}
+/* Transparent rather than absent, so the strip does not move by a pixel when
+   an item is hovered or when it is the page you are on. The hairline under
+   every item went with it: seven of them under seven words set at 11px read
+   as a row of fine print rather than as the way around the site, and in a nav
+   landmark the underline is not carrying any meaning a body-text link needs
+   it for. What tells you where you are is now the one item drawn in full ink
+   with a rule under it. */
+.crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+   padding-bottom:.15rem;border-bottom:2px solid transparent}
+.crumb .meta a{color:var(--dim)}
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
+   area grows -- a pseudo-element centred on the label, and never narrower
+   than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+/* On a phone the strip is the whole of the navigation and 24px is the floor,
+   not the target: Apple asks 44pt, Material 48dp, and WCAG's own AAA level
+   agrees at 44. So the six destinations get 44px targets here.
+
+   Which costs a row unless the labels are made to fit one, and they were not:
+   at .75rem and .14em the six of them are 310px of ink in the 336px a 390px
+   phone leaves, so "Venues" wrapped alone onto a second row and the strip came
+   to 184px -- 22% of the screen, to say six words. Measured across the
+   settings, .6875rem at .1em is 269px and fits, and it is still a size and a
+   half up on the 11.25px this strip used to be set at. Under about 340px it
+   goes back to two rows, which is why the row gap is what it is: 44px targets
+   need 44px between their centres, and the gap is the only thing providing it.
+
+   The meta pair keeps 24px, the AA floor. They are the two least-used links on
+   the site and buying them 44px each costs another 20px of every phone screen.
+   They also drop the auto margin and take a row of their own, rather than
+   being pushed to a right edge a few characters away. */
+@media (max-width:620px){
+  .crumb{row-gap:1.5rem}
+  .crumb .lists{font-size:.6875rem;letter-spacing:.1em;gap:1.5rem .7rem}
+  .crumb .meta{margin-left:0;flex-basis:100%}
+  .crumb .lists a::before{min-width:44px;height:44px}
+}
+/* The section a page sits in, which is not the page it is. A show page
+   belongs under Shows and a song page under Songs, but neither *is* that
+   page. Ian, 2026-07-30: "Considering 'show' part of 'shows' makes sense, but
+   if we highlight it, then it makes it look like we're already there, and
+   that definitely violates some sort of guideline." It does, and the
+   guideline is aria-current: "page" is a claim that this is the document you
+   are reading, and a show page saying it about the index is simply false --
+   it would also take away the link, stranding the one route back to the list.
+
+   So there are three states and not two: nothing, the section you are in
+   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   page you are on (not a link, full ink, full rule). The markup says the same
+   thing to a screen reader -- aria-current="page" for the page, plain "true"
+   for the item in the set that contains it. */
+.crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
+@media print{.crumb .meta{display:none}}
 /* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
@@ -981,7 +1037,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 })();
 </script></head><body id="top"><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
-<nav class="crumb sections"><span class="mark">Possum Logic</span><a href="../index.html">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../venues.html">Venues</a><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></nav>
+<nav class="crumb sections" aria-label="Sections"><span class="mark">Possum Logic</span><span class="lists"><a href="../index.html">Shows</a><a href="../songs.html" class="sect" aria-current="true">Songs</a><a href="../due.html">Due</a><a href="../out-of-rotation.html">Out of rotation</a><a href="../years.html">Years</a><a href="../venues.html">Venues</a></span><span class="meta"><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></span></nav>
 <div class="stuck" id="stuck" aria-hidden="true"><div class="in">
 <span class="name">Makisupa Policeman</span>
 <span class="n"><b>109</b> shows &middot; median gap <b>10</b></span></div>

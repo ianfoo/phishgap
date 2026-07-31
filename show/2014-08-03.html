@@ -162,37 +162,93 @@ html,body{overflow-x:clip}
    is room for it, can be lifted out to ride the breadcrumb row where there is
    not -- see the max-width block. One element either way. */
 header{padding-bottom:.9rem}
-/* Three fixed columns rather than space-between, so the index link stays put
-   when a show is missing one of its neighbours. */
-.crumb{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
-   margin:0 0 .5rem}
-.crumb.sections{display:flex;flex-wrap:wrap;align-items:baseline;
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem;margin-bottom:1.1rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb .lists,.crumb .meta{display:flex;flex-wrap:wrap;align-items:baseline;
    gap:.55rem .9rem}
+.crumb .lists{font-size:.75rem}
+.crumb .meta{font-size:.625rem;margin-left:auto}
+/* Transparent rather than absent, so the strip does not move by a pixel when
+   an item is hovered or when it is the page you are on. The hairline under
+   every item went with it: seven of them under seven words set at 11px read
+   as a row of fine print rather than as the way around the site, and in a nav
+   landmark the underline is not carrying any meaning a body-text link needs
+   it for. What tells you where you are is now the one item drawn in full ink
+   with a rule under it. */
+.crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+   padding-bottom:.15rem;border-bottom:2px solid transparent}
+.crumb .meta a{color:var(--dim)}
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 /* The site's name, not a link. It used to go where "Shows" goes, so the strip
-   offered the same destination twice under two labels. As a label it also stops
-   inheriting the link underline that made it sit differently from its
-   neighbours on the song pages. */
+   offered the same destination twice under two labels. */
 .crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
-/* Two cells, not three. The middle one held an "All reports" link that the
-   section row above already provides, and once that came out it was an empty
-   grid cell on every page in the archive. */
-.crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
-       gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
-       text-transform:uppercase}
-.crumb a{color:var(--dim);text-decoration:none;white-space:nowrap;
-         border-bottom:1px solid var(--rule)}
-.crumb a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, 24px tall and never
-   narrower than 24px. It sits inside the anchor, so it is the same target.
-   Row gaps below are widened to match: two rows 4.8px apart would have had
-   their 24px areas overlapping, which trades one failure for a worse one. */
+   area grows -- a pseudo-element centred on the label, and never narrower
+   than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+/* On a phone the strip is the whole of the navigation and 24px is the floor,
+   not the target: Apple asks 44pt, Material 48dp, and WCAG's own AAA level
+   agrees at 44. So the six destinations get 44px targets here.
+
+   Which costs a row unless the labels are made to fit one, and they were not:
+   at .75rem and .14em the six of them are 310px of ink in the 336px a 390px
+   phone leaves, so "Venues" wrapped alone onto a second row and the strip came
+   to 184px -- 22% of the screen, to say six words. Measured across the
+   settings, .6875rem at .1em is 269px and fits, and it is still a size and a
+   half up on the 11.25px this strip used to be set at. Under about 340px it
+   goes back to two rows, which is why the row gap is what it is: 44px targets
+   need 44px between their centres, and the gap is the only thing providing it.
+
+   The meta pair keeps 24px, the AA floor. They are the two least-used links on
+   the site and buying them 44px each costs another 20px of every phone screen.
+   They also drop the auto margin and take a row of their own, rather than
+   being pushed to a right edge a few characters away. */
+@media (max-width:620px){
+  .crumb{row-gap:1.5rem}
+  .crumb .lists{font-size:.6875rem;letter-spacing:.1em;gap:1.5rem .7rem}
+  .crumb .meta{margin-left:0;flex-basis:100%}
+  .crumb .lists a::before{min-width:44px;height:44px}
+}
+/* The section a page sits in, which is not the page it is. A show page
+   belongs under Shows and a song page under Songs, but neither *is* that
+   page. Ian, 2026-07-30: "Considering 'show' part of 'shows' makes sense, but
+   if we highlight it, then it makes it look like we're already there, and
+   that definitely violates some sort of guideline." It does, and the
+   guideline is aria-current: "page" is a claim that this is the document you
+   are reading, and a show page saying it about the index is simply false --
+   it would also take away the link, stranding the one route back to the list.
+
+   So there are three states and not two: nothing, the section you are in
+   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   page you are on (not a link, full ink, full rule). The markup says the same
+   thing to a screen reader -- aria-current="page" for the page, plain "true"
+   for the item in the set that contains it. */
+.crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot);
+   border-bottom-color:var(--hot)}
+@media print{.crumb .meta{display:none}}
+.crumb{margin:0 0 .5rem}
+/* Two cells, not three. The middle one held an "All reports" link that the
+   section row above already provides, and once that came out it was an empty
+   grid cell on every page in the archive.
+
+   The pager is its own strip and keeps the old size and the old hairline: it
+   is two dates, not a set of destinations, and it is the one place where an
+   underline is doing work -- the labels are bare dates, which do not read as
+   links on their own the way a word like "Venues" does. */
+.crumb.pager{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;
+       gap:.5rem;margin:0 0 1rem;font-size:.625rem;letter-spacing:.14em;
+       text-transform:uppercase}
+.crumb.pager a{color:var(--dim);border-bottom:1px solid var(--rule)}
+.crumb.pager a:hover{border-bottom-color:var(--hot)}
 .crumb .prev{grid-column:1;justify-self:start}
 .crumb .next{grid-column:2;justify-self:end}
 /* The date, not the wordmark. A report is one night, and the night's name is
@@ -667,10 +723,20 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
      even at 320px, and the masthead closes up so it reads as one block rather
      than a stack of separate announcements. */
   header{padding-bottom:.55rem}
-  /* Two full dates and the index link have to share one line here, and at
-     320px they only just do, so the pager gives up some tracking rather than
-     risk pushing the page sideways. */
-  .crumb{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;letter-spacing:.14em}
+  /* Two full dates have to share one line here, and at 320px they only just
+     do, so the pager gives up some tracking rather than risk pushing the page
+     sideways.
+
+     `.crumb.pager`, not `.crumb`. It was written as the latter, which was
+     harmless while both strips wanted the same geometry and stopped being so
+     the moment the sections strip got 44px targets on a phone: `gap:.35rem`
+     out-specified the shared block's row gap, the targets in the two rows
+     overlapped, and it showed up on show pages only -- four overlapping pairs
+     at 390px, none anywhere else on the site. The eighth instance of one sheet
+     of several quietly answering for a rule that belongs to all of them. */
+  .crumb.pager{margin-bottom:.7rem;gap:.35rem;font-size:.625rem;
+     letter-spacing:.14em}
+  .crumb.sections{margin-bottom:.7rem}
   h1{margin-bottom:.45rem}
   /* At this width the whole thing fits on one line, so it reads better joined
      -- and a middot cannot be orphaned the way a comma was, because it only
@@ -981,7 +1047,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 </script></head><body><div class="wrap">
 <a class="skip" href="#main">Skip to content</a>
 <div class="rule2"></div>
-<header><nav class='crumb sections'><span class='mark'>Possum Logic</span><a href='../index.html'>Shows</a><a href='../songs.html'>Songs</a><a href='../due.html'>Due</a><a href='../venues.html'>Venues</a><a href='../faq.html'>FAQ</a><a href='../method.html'>How this works</a></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2014-08-02.html' aria-label='Previous show, 2014-08-02'>&larr; 2014-08-02</a><a class='next' rel='next' href='./2014-08-29.html' aria-label='Next show, 2014-08-29'>2014-08-29 &rarr;</a></nav><h1>2014-08-03<span class="dow">Sunday</span></h1>
+<header><nav class="crumb sections" aria-label="Sections"><span class="mark">Possum Logic</span><span class="lists"><a href="../index.html" class="sect" aria-current="true">Shows</a><a href="../songs.html">Songs</a><a href="../due.html">Due</a><a href="../out-of-rotation.html">Out of rotation</a><a href="../years.html">Years</a><a href="../venues.html">Venues</a></span><span class="meta"><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></span></nav><nav class='crumb pager'><a class='prev' rel='prev' href='./2014-08-02.html' aria-label='Previous show, 2014-08-02'>&larr; 2014-08-02</a><a class='next' rel='next' href='./2014-08-29.html' aria-label='Next show, 2014-08-29'>2014-08-29 &rarr;</a></nav><h1>2014-08-03<span class="dow">Sunday</span></h1>
 <p class="show"><span class='nth'>239th show of 3.0</span><span class='sep'>&middot;</span><span class='tour'><a href='../index.html?q=%222014%20Summer%22'>2014 Summer</a></span></p>
 <p class="where"><span class='v-name'><a href='../index.html?q=%22Verizon%20Wireless%20Amphitheatre%20at%20Encore%20Park%22'>Verizon Wireless Amphitheatre at Encore Park</a></span><span class='v-place'>Alpharetta, GA</span></p><p class='rating'>Phish.net rating <b>4.22</b><span> via fouldomain</span></p></header>
 <section class="hero" id="main" tabindex="-1"><div class='card'><div class='lbl'>Songs Played</div><div class='num'>22</div></div><a class='card' href='#scents-and-subtle-sounds'><div class='lbl'>Longest Gap</div><div class='num hot'>109</div></a><div class='card'><div class='lbl'>Median Gap</div><div class='num'>6</div></div><div class='card'><div class='lbl'>Bustouts</div><div class='num'>1</div></div></section>
