@@ -37,19 +37,50 @@ Re-run after touching any of: a palette token, a :hover/:focus rule, or a
 selector that could out-specify one.
 -->
 <style>
-  html,body{margin:0;font:13px/1.4 ui-monospace,monospace;padding:1rem}
+  /* This tool spent its life unreadable in a dark browser: black-on-default
+     text over the UA's dark canvas, which is how Ian first saw it -- one of
+     three lines legible. It is a tool for checking contrast, so it can manage
+     its own. */
+  :root{color-scheme:light dark}
+  html,body{margin:0;font:13px/1.4 ui-monospace,monospace;padding:1rem;
+            background:#fff;color:#101214}
   iframe{border:0;position:absolute;left:-9999px;top:0}
   table{border-collapse:collapse;margin-top:.6rem;width:100%}
   th,td{text-align:left;padding:.22rem .5rem;border-bottom:1px solid #ddd;
         vertical-align:top}
   th{font-weight:600;border-bottom:2px solid #999}
   .bad{background:#fdd}.warn{background:#ffe9c7}
-  #at{color:#666}
+  #at{color:#555;margin:.35rem 0 0}
+  #at b{color:inherit}
   sw{display:inline-block;width:2.2em;height:1em;vertical-align:-.15em;
      border:1px solid #0003}
+  /* Determinate, because "is it alive or wedged?" was a real question: the
+     only moving part used to be one line of text, and a finished sweep and a
+     stalled one printed the same thing. */
+  #bar{height:6px;background:#0001;margin:.5rem 0 0;overflow:hidden}
+  #bar i{display:block;height:100%;width:0;background:#2f6feb;
+         transition:width .25s linear}
+  #bar.done i{background:#1a8a4a}
+  #pulse{display:inline-block;width:.55em;height:.55em;border-radius:50%;
+         background:#2f6feb;vertical-align:.02em;margin-right:.45em;
+         animation:blip 1s ease-in-out infinite}
+  @keyframes blip{0%,100%{opacity:.25}50%{opacity:1}}
+  .finished #pulse{animation:none;background:#1a8a4a;opacity:1}
+  @media (prefers-color-scheme:dark){
+    html,body{background:#16181c;color:#e8e6e3}
+    th,td{border-bottom-color:#31353b}
+    th{border-bottom-color:#6b7280}
+    /* Dark equivalents, not the light ones dimmed: #fdd on #16181c is a pale
+       block with dark text sitting in a dark page. */
+    .bad{background:#4d1f1f}.warn{background:#4a3a17}
+    #at{color:#9ba3ae}
+    sw{border-color:#ffffff40}
+    #bar{background:#ffffff14}
+  }
 </style>
 <h1 style="font-size:1rem;margin:0">possumlogic contrast audit</h1>
-<p id=at>starting&hellip;</p>
+<p id=at><span id=pulse></span>starting&hellip;</p>
+<div id=bar><i></i></div>
 <div id=out></div>
 <iframe id=f width=1280 height=2400></iframe>
 <script>
@@ -366,23 +397,56 @@ async function assertFresh() {
 
 (async () => {
   const at = document.getElementById('at');
+  const fill = document.querySelector('#bar i');
+  const t0 = Date.now();
+  const total = PAGES.length * 4;          // two palettes, two layouts
+  let n = 0;
+  const clock = () => {
+    const s = Math.round((Date.now() - t0) / 1000);
+    return `${Math.floor(s / 60)}m${String(s % 60).padStart(2, '0')}s`;
+  };
+  // Ticks on its own, so the page is visibly alive between page states -- some
+  // of which take minutes. A finished sweep and a wedged one used to print the
+  // same single line, and telling them apart meant asking the console.
+  const tick = setInterval(() => {
+    const el = document.getElementById('elapsed');
+    if (el) el.textContent = clock();
+  }, 1000);
+  const say = (where) => {
+    at.innerHTML = `<span id=pulse></span><b>${n}/${total}</b> · ${where}`
+      + ` · <span id=elapsed>${clock()}</span>`
+      + ` · <b>${window._res.length}</b> finding`
+      + (window._res.length === 1 ? '' : 's');
+    fill.style.width = (n / total * 100).toFixed(1) + '%';
+  };
   await assertFresh();
-  for (const spec of PAGES) {
-    const [url, synth] = Array.isArray(spec) ? spec : [spec, null];
-    for (const theme of ['light', 'dark'])
-      for (const width of [1280, 390]) {
-        at.textContent = `${url}${synth ? ' +' + synth : ''} · ${theme} · ${width}px`;
-        try {
-          for (const row of await audit(url, theme, width, synth))
-            window._res.push({page: url + (synth ? '+' + synth : ''), theme, width, ...row});
-        } catch (e) {
-          at.textContent = `FAILED on ${url}: ${e}`;
-          throw e;
+  say('starting');
+  try {
+    for (const spec of PAGES) {
+      const [url, synth] = Array.isArray(spec) ? spec : [spec, null];
+      for (const theme of ['light', 'dark'])
+        for (const width of [1280, 390]) {
+          say(`${url}${synth ? ' +' + synth : ''} · ${theme} · ${width}px`);
+          try {
+            for (const row of await audit(url, theme, width, synth))
+              window._res.push({page: url + (synth ? '+' + synth : ''),
+                                theme, width, ...row});
+          } catch (e) {
+            clearInterval(tick);
+            at.textContent = `FAILED on ${url}: ${e}`;
+            throw e;
+          }
+          n++;
+          report(window._res);
+          say(`${url}${synth ? ' +' + synth : ''} · ${theme} · ${width}px`);
         }
-        report(window._res);
-      }
-  }
-  at.textContent = `done · ${PAGES.length} page states · light and dark · 1280 and 390`;
+    }
+  } finally { clearInterval(tick); }
+  document.body.classList.add('finished');
+  document.getElementById('bar').classList.add('done');
+  fill.style.width = '100%';
+  at.innerHTML = `<span id=pulse></span><b>done</b> · ${total} page states`
+    + ` · light and dark · 1280 and 390 · ${clock()}`;
   window._done = true;
 })();
 </script>
