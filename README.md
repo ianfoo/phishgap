@@ -79,7 +79,7 @@ nights for every year. Over the same twenty nights 1993 reads 32% and 2017
 reads 1%; over their own lengths, 124 nights against 28, the same two years
 read 64% and 1% and the comparison is mostly arithmetic.
 
-The page reads `archive/setlist-order.json`, so it needs no API key and adds
+The page reads `site/data/setlist-order.jsonl`, so it needs no API key and adds
 nothing to a build. Where that file has no running order — 158 of the counting
 calendar's shows, almost all before 1992 — the year says so under its figures
 rather than presenting a part as a whole.
@@ -99,7 +99,7 @@ expose it. `--seed-setlists` fills in what each performance followed and led
 into: a song's history says where it was played but not what stood next to it,
 which needs the whole setlist of every show in the archive.
 
-It used to be the expensive one. Now it walks `archive/setlist-order.jsonl` — the
+It used to be the expensive one. Now it walks `site/data/setlist-order.jsonl` — the
 running order of every show already fetched — and buys only the dates that file
 is missing, so re-walking all 2,008 shows after a rule change costs nothing and
 needs no API key. Each show is marked on its own rows as it is walked, so an

@@ -9864,16 +9864,23 @@ def archived_history(site_dir, slug, date):
              "gap": p.get("gap"), "out": p.get("out") or ""} for p in perfs]
 
 
-# The running order of every show we have ever walked, kept beside the code
-# rather than under site/ because it is a build input and readers never see it.
-# Absolute, from this file: the workflows and publish.sh run from the repo root
-# but a run from anywhere else must find the same archive, and silently walking
-# zero shows because the relative path missed is precisely the kind of quiet
-# nothing this project keeps paying for.
-ORDER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "archive", "setlist-order.jsonl")
+# The running order of every show we have ever walked, under site/data with the
+# rest of the archive. It lived in a top-level archive/ for a day, on the theory
+# that site/ is what readers see and this is a build input. That theory does not
+# survive measurement: of site/data's 19 MB, only data/shows and current.json
+# are ever fetched by a page -- data/songs is 10 MB that no reader has ever
+# requested. .gitignore has said the real rule the whole time, that "site/data
+# is the archive that regenerates them". Being published costs 3.5 MB on a
+# 228 MB tree and buys the thing that matters: the workflows already commit
+# site/data, so CI keeps this file without a special case, and it takes
+# `site_dir` like every other archive path instead of an absolute one derived
+# from __file__.
+def order_path(site_dir):
+    return os.path.join(site_dir, "data", "setlist-order.jsonl")
+
+
 # The only five fields kept. Everything else the endpoint returns is either
-# already in the archive or of no use here; see archive/README.md.
+# already in the archive or of no use here; see docs/setlist-order.md.
 ORDER_FIELDS = ("set", "position", "slug", "song", "trans_mark")
 
 
@@ -9900,7 +9907,7 @@ def order_rows(rows, artist="Phish"):
             for r in rows]
 
 
-def setlist_order(path=None):
+def setlist_order(site_dir, path=None):
     """{date: rows} for every show the extract holds, or {} if it is missing.
 
     Missing is not an error. It costs API calls, not correctness -- every date
@@ -9911,7 +9918,7 @@ def setlist_order(path=None):
     skipped rather than failing the read: the file's whole purpose is to save
     API calls, so 2,007 usable dates and one refetch beats none.
     """
-    path = path or ORDER_PATH
+    path = path or order_path(site_dir)
     if not os.path.isfile(path):
         return {}
     shows, bad = {}, 0
@@ -9931,7 +9938,7 @@ def setlist_order(path=None):
     return shows
 
 
-def save_setlist_order(shows, path=None):
+def save_setlist_order(shows, site_dir, path=None):
     """Write the extract back, whole, via a temporary file.
 
     One line per date, sorted by date, because the reason this is line-oriented
@@ -9947,7 +9954,7 @@ def save_setlist_order(shows, path=None):
     interrupted half way would leave the record of 2,008 walked shows
     truncated -- and this file exists so those shows are never fetched twice.
     """
-    path = path or ORDER_PATH
+    path = path or order_path(site_dir)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:
@@ -10094,7 +10101,7 @@ NEIGHBOR_FLUSH = 150
 def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     """Backfill what came before and after each archived performance.
 
-    Walked from `archive/setlist-order.jsonl` wherever it reaches, and fetched
+    Walked from `site/data/setlist-order.jsonl` wherever it reaches, and fetched
     only where it does not -- so changing the neighbor rules and re-walking
     all 1,966 shows with `--force` costs nothing and needs no API key.
 
@@ -10133,7 +10140,7 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     # 2026-07-29, and it would not even have the decency to expire. So a show
     # whose report is still provisional is always re-fetched, and what comes
     # back replaces what the extract held.
-    order = setlist_order()
+    order = setlist_order(site_dir)
     unsettled = {r["date"] for r in saved_reports(site_dir)
                  if r.get("provisional")}
     have = sum(1 for d in todo if d in order and d not in unsettled)
@@ -10221,7 +10228,7 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
             log("  %d/%d shows", i, len(todo))
     flush()
     if grew:
-        save_setlist_order(order)
+        save_setlist_order(order, site_dir)
     if missed:
         log("warning: no setlist for %d show%s: %s",
             len(missed), "" if len(missed) == 1 else "s", "; ".join(missed[:5]))
@@ -10685,7 +10692,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # saved report, and the page then covers the years the archive reaches
     # rather than the career -- shorter, and honest about being shorter,
     # because every figure on it is stated against the nights it read.
-    read = year_order(setlist_order(), counting, known)
+    read = year_order(setlist_order(site_dir), counting, known)
     if read:
         years_page = os.path.join(site_dir, "years.html")
         if write_if_changed(years_page, render_years(
@@ -11304,11 +11311,11 @@ def main():
         # -- a --catch-up that finds nothing new must not touch it, or every
         # run puts a fresh commit in the archive saying nothing.
         if fresh_order:
-            order = setlist_order()
+            order = setlist_order(args.site)
             changed = {d: r for d, r in fresh_order.items() if order.get(d) != r}
             if changed:
                 order.update(changed)
-                save_setlist_order(order)
+                save_setlist_order(order, args.site)
 
         if args.seed_songs:
             # After the fetch loop, so anything new tonight is already archived

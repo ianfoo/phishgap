@@ -312,13 +312,13 @@ Everything here is pushed. Working tree clean.
 | 0 | The migration landmine deleted outright | done |
 | next.1 | Set / show opener–closer labels | done — 3,821 terminals named |
 | next.2 | Cross-boundary neighbors | done — 6,927 cross-set adjacencies shown |
-| 0 | `--seed-setlists` walks `archive/setlist-order.jsonl` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
+| 0 | `--seed-setlists` walks `site/data/setlist-order.jsonl` first, buys only what it misses | done — the full re-walk cost 44 calls, not 2,009 |
 | 0 | `--catch-up` records a new show's neighbors as it fetches it | done — no more blank column on the night |
 | 0 | The live page polls instead of hoping; "last checked" reworded | done — all four paths driven in a browser |
 
 **The archive paid for itself on its first use.** Re-walking all 2,009 shows
 under new rules cost 44 API calls — the 43 dates the extract was missing, plus
-tonight's. That is what `archive/README.md` promised and it held.
+tonight's. That is what `docs/setlist-order.md` promised and it held.
 
 **But an extract is a cache with no expiry, and it had already gone stale in
 the one place that matters.** The harvest ran mid-show, so it holds 2026-07-29
@@ -526,7 +526,7 @@ per show**. The advice that followed it — shard by year first — is also
 unnecessary: year shards measured 13.6 KiB and 250 KiB, a wash. Sharding by
 song, which is the intuitive fix and the one Ian proposed, is **fourteen times
 worse** (286 KiB wire, 497 KiB pack), because small blobs do not delta and each
-night adds a new tree over a 981-entry directory. `archive/README.md` holds the
+night adds a new tree over a 981-entry directory. `docs/setlist-order.md` holds the
 table.
 
 What the file did get is JSONL, one date per line, for the diff rather than the
@@ -562,9 +562,9 @@ still needs his call before anything is written.
    the site has no vocabulary for it. §2d and the "under 8 plays in ten years"
    note already half-know this.
 
-**No fetching required for 3.** `archive/setlist-order.jsonl` holds the running
+**No fetching required for 3.** `site/data/setlist-order.jsonl` holds the running
 order of all 2,008 settled dates — set, position, slug, song, trans_mark — which
-is everything reprises need. See `archive/README.md`.
+is everything reprises need. See `docs/setlist-order.md`.
 
 ### ~~Also open: the live page does not auto-refresh~~ DONE 2026-07-30
 
@@ -671,7 +671,7 @@ measurement first and the page second, and the measurement is what decided the
 shape — see the ruling in §4, which this does not break.
 
 **Everything below is pushed.** The page is built from
-`archive/setlist-order.json` at render time, so it costs no API calls and adds
+`site/data/setlist-order.jsonl` at render time, so it costs no API calls and adds
 ~30 ms to a rebuild.
 
 | what | state |

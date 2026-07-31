@@ -158,7 +158,7 @@ have dropped every one of them on the next `--previous` run. The list is now
 one constant, `NB_CARRY`, sitting beside the walk that produces it. **When you
 add a field, grep for the list that copies fields.**
 
-**`archive/setlist-order.jsonl` makes a re-walk free, and is a cache with no
+**`site/data/setlist-order.jsonl` makes a re-walk free, and is a cache with no
 expiry at all.** It holds the running order of every settled show, so changing
 the neighbor rules and re-walking all 2,009 of them cost 44 API calls rather
 than 2,009, and needs no API key. But the first harvest ran *during* a show and
@@ -185,7 +185,7 @@ before designing around it** — and see the note above about stale constraints
 in docs getting obeyed. Sharding was measured at the same time: by year it is a
 wash, and by song — the intuitive fix, since a show only touches the songs it
 played — it is *fourteen times worse*, because small blobs do not delta and
-each night adds a new tree over a 981-entry directory. `archive/README.md` has
+each night adds a new tree over a 981-entry directory. `docs/setlist-order.md` has
 the table.
 
 **Measures are in `rem`, and one place was missed for a year.** `.wrap` is

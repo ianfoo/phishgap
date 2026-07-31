@@ -127,13 +127,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # `archive` as well as `site/data`, because --catch-up now writes the
-          # running order of every settled show it fetches and this is the step
-          # that keeps it. Without it the file would be written into the
-          # runner's checkout and thrown away with the runner -- the write
-          # would work perfectly and change nothing, which is the failure that
-          # looks most like success.
-          git add site/data archive
+          # Covers the running order too: --catch-up writes
+          # site/data/setlist-order.jsonl for every settled show it fetches,
+          # and it is under site/data precisely so this line does not have to
+          # know about it.
+          git add site/data
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "no new shows"
@@ -147,18 +145,17 @@ jobs:
             # did not run". The publish step has replayed on rejection for a
             # while; this one now does too.
             #
-            # Only the site/data JSON and archive/ are tracked here -- every
-            # built page is gitignored -- so the rebase moves per-show files
-            # and nothing the publish reads. On conflict it aborts and gives up
-            # rather than replaying: a tree mid-rebase has conflict markers
-            # *inside* the data files, and `cp -R site/.` would copy them to
-            # gh-pages verbatim. That outage has happened here once already.
-            # Two runs catching up the same show write the same bytes and do
-            # not conflict; two catching up different ones can, and that is
-            # what the abort is for -- the extract is a saved API call, so
-            # losing a night to the next run costs one call and nothing else.
-            # A conflict in archive/ cannot reach readers either way: nothing
-            # under it is published.
+            # Only the site/data JSON is tracked here -- every built page is
+            # gitignored -- so the rebase moves per-show files and nothing the
+            # publish reads. On conflict it aborts and gives up rather than
+            # replaying: a tree mid-rebase has conflict markers *inside* the
+            # data files, and `cp -R site/.` would copy them to gh-pages
+            # verbatim. That outage has happened here once already. The running
+            # order is in that blast radius now: two runs catching up the same
+            # show write identical bytes and cannot conflict, two catching up
+            # different ones can, and the abort is what keeps a half-merged
+            # extract from being published. Losing a night to the next run
+            # costs one API call.
             pushed=""
             for attempt in 1 2 3; do
               if git push -q; then pushed=yes; break; fi

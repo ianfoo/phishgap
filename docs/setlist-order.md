@@ -1,13 +1,21 @@
-# Build inputs, not reader data
+# `site/data/setlist-order.jsonl`
 
-Nothing here is published. The workflows and `publish.sh` copy `site/.` to
-`gh-pages`, so anything under `site/` ships to readers and anything here does
-not. This directory is tracked in git and available to CI without reaching the
-CDN. That is the whole reason for the split: `site/data/shows` and
-`site/data/songs` are fetched by the browser, and this file is fetched by
-nobody — it is an input to the build, like the code.
+## Where it lives, and the theory that did not survive
 
-## `setlist-order.jsonl`
+This spent a day in a top-level `archive/`, on the reasoning that `site/` is
+what readers see and this is a build input. Measured 2026-07-31, that split is
+not the one this repo actually keeps. Of `site/data`'s 19 MB, exactly two things
+are ever fetched by a page — `data/shows/<date>.json`, which the live show page
+polls, and `data/current.json`. **`data/songs` is 10 MB that no reader has ever
+requested**, along with `calendar.json`, `cards.json`, `phishin.json` and
+`schedule.json`. `.gitignore` has said the real rule all along: "site/data is
+the archive that regenerates them."
+
+So it lives with the rest of the archive. Being published costs 3.5 MB on a
+228 MB tree, and it buys the thing that was awkward: both workflows already
+commit `site/data`, so CI keeps this file with no special case, and
+`order_path(site_dir)` takes the site directory like every other archive path
+instead of an absolute one derived from `__file__`.
 
 The running order of every **settled** show the archive has a performance for:
 one JSON object per line, `{"date": ..., "rows": [...]}`, sorted by date, each
