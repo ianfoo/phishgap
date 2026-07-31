@@ -1940,7 +1940,8 @@ preference predates the review — his call, not the reviewer's.
   A settled show's single-file output has no `.live` element, no wordmark, and
   an `h1` deliberately set in Plex Mono (`/* The date, not the wordmark */`).
   So the 17,372 bytes of inlined face — **19.0% of a 91,288-byte file** — paint
-  zero glyphs in the case the feature exists for. See §3d.
+  zero glyphs in the case the feature exists for. Whether to keep paying for it
+  is Ian's call — open as of 2026-07-30.
 
 ## 3c. Song page front matter — Ian's live review, 2026-07-28. DONE
 
