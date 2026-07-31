@@ -2,22 +2,22 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>How this is worked out &mdash; Possum Logic</title>
-<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="How the gaps, the medians and the verdicts on this site are worked out."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="How this is worked out"><meta property="og:description" content="How the gaps, the medians and the verdicts on this site are worked out."><meta property="og:url" content="https://possumlogic.com/method.html"><meta property="og:image" content="https://possumlogic.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="How the gaps, the medians and the verdicts on this site are worked out."><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="How the gaps, the medians and the verdicts on this site are worked out."><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="How this is worked out"><meta property="og:description" content="How the gaps, the medians and the verdicts on this site are worked out."><meta property="og:url" content="https://possumlogic.com/method.html"><meta property="og:image" content="https://possumlogic.com/card/method.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="How the gaps, the medians and the verdicts on this site are worked out."><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
-<link rel="preload" href="./font/Bagnard.otf" as="font" type="font/otf" crossorigin>
-<link href="./fonts.css" rel="stylesheet">
-<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+<link rel="preload" href="./static/font/Bagnard.otf" as="font" type="font/otf" crossorigin>
+<link href="./static/site.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain:url(grain-light.png);}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
 :root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 :root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
 }
 @media screen{
-:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
 :root[data-theme="dark"] .badge img.flip{filter:invert(1)}
 :root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
 }
@@ -65,7 +65,7 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
    today is precisely how the other four happened. */
 .show a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.show a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.show a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The skip link's landing spot takes focus so the next Tab continues from
    the content rather than from the top of the page again -- but it is a
    place, not a control, so it does not wear the control's ring. */
@@ -106,7 +106,7 @@ body{font-variant-numeric:tabular-nums}
    text-transform:uppercase;color:var(--dim);background:none;
    border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
    cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
-.keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.keyhint:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Not on a touch device. It is a discovery aid for keys, and a phone has
    none -- so it sat in the footer of every page offering "[ and ] to step
    between shows" to a reader with no way to press either, and "Keys ?" is
@@ -138,10 +138,10 @@ dialog.keys form{margin:1rem 0 0;text-align:right}
 dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim);background:none;
    border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
-dialog.keys button:hover{color:var(--hot);border-color:var(--hot)}
+dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
 @media print{.keyhint,dialog.keys{display:none}}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
-     background:var(--paper);color:var(--ink);
+     background-color:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 /* The measure in rem rather than px, so it travels with the type. Stated as
@@ -196,8 +196,10 @@ html,body{overflow-x:clip}
 .crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
    padding-bottom:.15rem;border-bottom:2px solid transparent}
 .crumb .meta a{color:var(--dim)}
-.crumb a:hover,.crumb a:focus-visible{color:var(--hot);
-   border-bottom-color:var(--hot)}
+/* --hot-text, not --hot: these are 12px and 10px, so they want the 4.5 floor
+   and --hot is 4.44 on paper. See the palette note. */
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 /* The site's name, not a link. It used to go where "Shows" goes, so the strip
    offered the same destination twice under two labels. */
@@ -249,8 +251,8 @@ html,body{overflow-x:clip}
    thing to a screen reader -- aria-current="page" for the page, plain "true"
    for the item in the set that contains it. */
 .crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
-.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot);
-   border-bottom-color:var(--hot)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 @media print{.crumb .meta{display:none}}
 h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    font-size:clamp(1.7778rem,7vw,3.5556rem);line-height:1.06;margin:0 0 .7rem;
@@ -355,7 +357,7 @@ header{padding-bottom:.9rem}
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
-.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
@@ -446,10 +448,13 @@ header{padding-bottom:.9rem}
 .onstage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.1rem;
    margin:1.1rem 0 0;padding:.7rem .9rem;color:inherit;text-decoration:none;
    border-left:4px solid var(--hot);background:var(--hover)}
-.onstage:hover{background:var(--hot);color:var(--paper)}
+/* --hot-text and the left edge with it, so the reversed block is one colour
+   rather than a 4px stripe of the display accent against a darker fill. Same
+   4.44-at-10px argument as .jc-chip and .verdict.bustout. */
+.onstage:hover{background:var(--hot-text);border-left-color:var(--hot-text);
+   color:var(--paper)}
 .onstage .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text);font-weight:600}
-.onstage:hover .k,.onstage:hover .n b,.onstage:hover .p{color:var(--paper)}
 .onstage .w{font-size:1rem;font-weight:600;letter-spacing:0;text-transform:uppercase}
 .onstage .p{display:block;font-size:.75rem;font-weight:400;color:var(--dim);
    text-transform:none;letter-spacing:0}
@@ -457,6 +462,26 @@ header{padding-bottom:.9rem}
    text-transform:uppercase;color:var(--dim)}
 .onstage .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1.125rem;letter-spacing:0;color:var(--ink)}
+/* Everything inside a reversed block comes with it. This used to be a list of
+   the three children that pin a colour -- .k, .n b, .p -- and the list was
+   missing .n itself, whose own text is the words "songs so far". They stayed
+   var(--dim) on the fill: 1.12:1 light, 1.08:1 dark, which is not dim, it is
+   gone. Exactly the numbers the .live span bug produced, in the same week, on
+   the banner that only ever appears while a show is being played -- so the
+   one state nobody browsing the archive can stumble into.
+
+   A list of children is a list a fourth child is not on; `*` cannot be
+   incomplete.
+
+   The class is doubled because the first attempt at this was `.onstage:hover
+   *` and it did not work on all of them. `*` contributes *nothing* to
+   specificity, so that selector is 0-2-0: it beat .k and .p at 0-2-0 on order
+   alone and lost to .onstage .n b at 0-2-1, leaving the song count as var
+   (--ink) on the fill, 2.68:1 light and 2.25:1 dark. Repeating .onstage buys
+   the third class the element in `.n b` would otherwise win with, so this is
+   0-3-0 and no descendant rule in the block can reach it -- and it does not
+   have to be kept in any particular place in the sheet to stay true. */
+.onstage:hover.onstage *{color:inherit}
 /* Structural, and load-bearing rather than tidiness. Every list section on the
    due and out-of-rotation pages is wrapped in one of these so that its
    position:sticky column header is held by the section instead of by the page:
@@ -480,13 +505,13 @@ header{padding-bottom:.9rem}
    so the two cannot drift apart the next time one gains a header. */
 .row:not(.head):hover{background:var(--hover)}
 .d-song{font-size:1rem;font-weight:500}
-.due .row:hover .d-song{color:var(--hot)}
+.due .row:hover .d-song{color:var(--hot-text)}
 .d-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;white-space:nowrap}
 .d-where{display:block;color:var(--dim);font-size:.75rem}
 .d-n{text-align:right}
 .d-n > b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
-   font-size:1.5rem;line-height:1;color:var(--hot);white-space:nowrap}
+   font-size:1.5rem;line-height:1;color:var(--hot-text);white-space:nowrap}
 .d-n .typ{display:block;font-size:.75rem;color:var(--dim);margin-top:.15rem}
 .d-n .typ span{display:block;white-space:nowrap}
 /* Same rule the song pages carry, and it has to be stated here too because
@@ -504,7 +529,7 @@ header{padding-bottom:.9rem}
    with a browser underline, on the one page on the site that has them. */
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.dek a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 
 /* The measurement detail, folded away. Three paragraphs used to stand open
    here: 835px of a 1,147px front matter on a phone, 73% of it, before the
@@ -542,7 +567,7 @@ details.how > summary{display:block;width:max-content;
 details.how > summary::-webkit-details-marker{display:none}
 details.how > summary::after{content:" \2193"}
 details.how[open] > summary::after{content:" \2191"}
-details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
+details.how > summary:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* A section heading, under the due list. At 1.5rem it was barely larger than
    the 1rem song titles it headed, which made a new section read as another
    row. 2.125rem sits clearly between the page title and the data. */
@@ -565,7 +590,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .backtop a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule);position:relative;display:inline-block}
-.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .backtop a::before{content:"";position:absolute;left:50%;top:50%;
    transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
 @media print{.backtop{display:none}}
@@ -586,7 +611,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
    so the two cannot drift apart the next time one gains a header. */
 .row:not(.head):hover{background:var(--hover)}
 .vn-venue{font-size:1rem;font-weight:500}
-.vn .row:hover .vn-venue{color:var(--hot)}
+.vn .row:hover .vn-venue{color:var(--hot-text)}
 .vn-place{display:block;color:var(--dim);font-size:.75rem;font-weight:400}
 .vn-span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.875rem;
    color:var(--dim);white-space:nowrap}
@@ -643,7 +668,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .aside b{color:var(--ink);font-weight:400}
 .aside a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.aside a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.aside a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The list itself, which moved to a page of its own. Named rather than
    scoped to `.aside`, because it now has two homes and the version in this
    file has been the wrong shape twice for want of one name. */
@@ -653,7 +678,7 @@ details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .ax-row{display:contents;color:inherit;text-decoration:none}
 .ax-date{font-family:'Bagnard',Georgia,serif;font-size:.875rem;
    border-bottom:1px solid var(--rule)}
-a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
+a.ax-row:hover .ax-date{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .ax-kind{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--hot-text)}
 .ax-venue{color:var(--dim)}
@@ -667,7 +692,7 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
    font-family:'Literata',Georgia,serif;font-size:.8125rem;line-height:1.5;
    font-variation-settings:'opsz' 13;color:var(--ink-soft)}
 .ax-note a{color:var(--ink-soft);border-bottom:1px solid var(--rule)}
-.ax-note a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.ax-note a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .axlist .for{color:var(--dim)}
 .axlist .for a{color:inherit}
 /* A grid, not a right-aligned sentence. Right-alignment pins only the right
@@ -701,7 +726,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 @media screen{
 }
 /* Same lesson as the report tables: stack instead of squeezing columns, so
@@ -760,7 +785,9 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
   justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
-.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* --hot-text: this is 18px, under the 24px the display accent is cleared for,
+   and --hot is 4.44:1 on paper. See the palette note. */
+.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
 /* And this line is the whole control. `hidden` hides an element by way of the
    browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
    any author declaration of `display` beats it outright, whatever the
@@ -794,9 +821,15 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .prose b{color:var(--ink)}
 .prose .verdict{display:inline-block;margin:0 .15rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase}
-.prose .overdue{color:var(--hot)}
+/* The same two stamps the show pages carry, and they had drifted: there
+   .verdict.overdue is --hot-text and here .overdue was still --hot, so the
+   page that exists to explain the marks showed them in a different red from
+   the marks themselves -- and at 4.44:1, under the floor for 10px caps. Both
+   copies now say --hot-text. `.crumb` and `.hero` differ between sheets for
+   real reasons; these two never did. */
+.prose .overdue{color:var(--hot-text)}
 .prose .premature{color:var(--cool)}
-.prose .bust{background:var(--hot);color:var(--paper);padding:.1rem .3rem;
+.prose .bust{background:var(--hot-text);color:var(--paper);padding:.1rem .3rem;
    font-weight:600;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .prose .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
    color:var(--ink)}
@@ -825,7 +858,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    would have come out in the browser's default blue. */
 .prose a{color:var(--ink);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.prose a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.prose a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The contents block, shared by both prose pages. Generated from the same
    list the sections are, so it cannot name one the page does not have or miss
    one it does -- the FAQ has worked this way since it was built and the method
@@ -855,10 +888,16 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    padding:.4rem 0;font-family:'Literata',Georgia,serif;
    font-size:.9375rem;line-height:1.4;font-variation-settings:'opsz' 14;
    color:var(--ink-soft);text-decoration:none;border:0}
+/* --ink-soft, not --dim. This is the one place on the site where --dim sits on
+   something other than paper: the panel above carries a --rule-soft wash, which
+   takes --dim from 4.98:1 on bare paper to 4.13:1 here, and 4.49:1 in the dark
+   -- both under the floor for 12px. The mono face and the smaller size were
+   always doing the work of separating the enumerator from the entry; being
+   dimmer as well was belt and braces that cost the contrast. */
 .toc a::before{content:counter(q);font-family:'IBM Plex Mono',ui-monospace,monospace;
-   font-size:.75rem;font-weight:600;color:var(--dim)}
-.toc a:hover{color:var(--hot)}
-.toc a:hover::before{color:var(--hot)}
+   font-size:.75rem;font-weight:600;color:var(--ink-soft)}
+.toc a:hover{color:var(--hot-text)}
+.toc a:hover::before{color:var(--hot-text)}
 /* The way back up. Every answer and every section gets one, because the point of an index is
    being able to pick a second question after the first -- and without this the
    only route was scrolling back yourself. Mono and small: it is a control, not
@@ -875,7 +914,7 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
    font-size:.625rem;letter-spacing:.14em;text-transform:uppercase}
 .backtop a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.backtop a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.backtop a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* 24x24, the same floor the nav links were held to, without moving the ink. */
 .backtop a{position:relative;display:inline-block}
 .backtop a::before{content:"";position:absolute;left:50%;top:50%;

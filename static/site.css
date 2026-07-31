@@ -17,4 +17,4 @@
    were written: multiply on cream darkens the grain into the paper, screen on
    near-black lifts it, and neither shifts the paper color the way painting
    opaque noise over it did. */
-body{background-image:url(grain.png);background-blend-mode:var(--grain-blend)}
+body{background-image:var(--grain);background-blend-mode:soft-light}

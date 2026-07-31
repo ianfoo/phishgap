@@ -6,18 +6,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
-<link rel="preload" href="../font/Bagnard.otf" as="font" type="font/otf" crossorigin>
-<link href="../fonts.css" rel="stylesheet">
-<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain-blend:multiply;--grain-opacity:.45;}
+<link rel="preload" href="../static/font/Bagnard.otf" as="font" type="font/otf" crossorigin>
+<link href="../static/site.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain:url(grain-light.png);}
 :root[data-theme="light"]{color-scheme:only light}
 :root[data-theme="dark"]{color-scheme:only dark}
 @media screen and (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
 :root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
 :root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
 }
 @media screen{
-:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain-blend:screen;--grain-opacity:.2;}
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
 :root[data-theme="dark"] .badge img.flip{filter:invert(1)}
 :root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
 }
@@ -65,7 +65,7 @@ summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
    today is precisely how the other four happened. */
 .show a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.show a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.show a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* The skip link's landing spot takes focus so the next Tab continues from
    the content rather than from the top of the page again -- but it is a
    place, not a control, so it does not wear the control's ring. */
@@ -106,7 +106,7 @@ body{font-variant-numeric:tabular-nums}
    text-transform:uppercase;color:var(--dim);background:none;
    border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
    cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
-.keyhint:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.keyhint:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Not on a touch device. It is a discovery aid for keys, and a phone has
    none -- so it sat in the footer of every page offering "[ and ] to step
    between shows" to a reader with no way to press either, and "Keys ?" is
@@ -138,10 +138,10 @@ dialog.keys form{margin:1rem 0 0;text-align:right}
 dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase;color:var(--dim);background:none;
    border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
-dialog.keys button:hover{color:var(--hot);border-color:var(--hot)}
+dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
 @media print{.keyhint,dialog.keys{display:none}}
 body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
-     background:var(--paper);color:var(--ink);
+     background-color:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
      font-size:.875rem;line-height:1.55}
 /* The measure in rem rather than px, so it travels with the type. Stated as
@@ -186,8 +186,10 @@ html,body{overflow-x:clip}
 .crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
    padding-bottom:.15rem;border-bottom:2px solid transparent}
 .crumb .meta a{color:var(--dim)}
-.crumb a:hover,.crumb a:focus-visible{color:var(--hot);
-   border-bottom-color:var(--hot)}
+/* --hot-text, not --hot: these are 12px and 10px, so they want the 4.5 floor
+   and --hot is 4.44 on paper. See the palette note. */
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 .crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
 /* The site's name, not a link. It used to go where "Shows" goes, so the strip
    offered the same destination twice under two labels. */
@@ -239,8 +241,8 @@ html,body{overflow-x:clip}
    thing to a screen reader -- aria-current="page" for the page, plain "true"
    for the item in the set that contains it. */
 .crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
-.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot);
-   border-bottom-color:var(--hot)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
 @media print{.crumb .meta{display:none}}
 /* One of the three slots the display face is allowed: the wordmark, a show's
    date, and a song's name. Nowhere else. */
@@ -316,11 +318,11 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    narrow screen breaks it between middots instead of stacking four boxes. */
 .best .v{display:inline}
 .best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
-.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot);
+.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot-text);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
-.best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.best a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Up under the title, and captioned. These are links about the *song*, and
    they used to sit directly beneath the best-version block -- so Ian read them
    as being about that one performance and could not tell without clicking.
@@ -380,17 +382,17 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
 .era-chip b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
 .era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
-.era-chip:hover b{color:var(--hot)}
+.era-chip:hover b{color:var(--hot-text)}
 /* Shown only once there is something to clear. */
 .clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
    color:var(--dim);cursor:pointer}
-.clear:hover{color:var(--hot);border-color:var(--hot)}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
 .clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
 /* A venue is a filter waiting to happen: click it to see every other night
    the song was played there. */
 .r-venue{cursor:pointer}
-.r-venue:hover{color:var(--hot)}
+.r-venue:hover{color:var(--hot-text)}
 .count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
    font-size:1rem;color:var(--ink)}
 .perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
@@ -439,7 +441,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    font-family:'IBM Plex Mono',ui-monospace,monospace;
    letter-spacing:0;text-transform:none;color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule);white-space:nowrap}
-.head .marks:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.head .marks:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 .head .ghead{grid-column:4/-1;text-align:right}
 /* Every row is its own grid, so an `auto` last column sizes to its own content
    and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
@@ -460,7 +462,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    font-size:1rem;line-height:1.3rem;white-space:nowrap}
 .r-date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.r-date a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.r-date a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* One copy of each favicon for the whole page, worn by class.
    No blanket opacity: these icons do not agree about their own. phish.net's is
    fully opaque, phish.in's averages an alpha of 130 and fouldomain's 137, so a
@@ -494,7 +496,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    with a browser underline, on the one page on the site that has them. */
 .dek a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.dek a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* Said where the page explains itself, in the same voice as the gap note above
    it, but marked -- it is a correction to what the numbers appear to mean, not
    more description of them. */
@@ -557,7 +559,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
 .card.since.over .v{color:var(--hot-text);text-transform:uppercase;
    letter-spacing:.14em}
 .card.since.dormant .num{color:var(--ink-soft)}
-.gap.big{color:var(--hot)}
+.gap.big{color:var(--hot-text)}
 .gap.none{color:var(--dim)}
 /* A soundcheck or a television session. It happened and it is listed,
    but phish.net does not count it toward a gap and neither do we, so
@@ -576,8 +578,16 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    came after -- and each is its own line. The transition mark now lives in
    a span inside one of them, and a blanket rule here made that mark a
    block too, so a row read "->" and "Golden Age" on separate lines. */
-.nb>span{display:block;overflow:hidden;text-overflow:ellipsis;
-   white-space:nowrap}
+/* Wraps rather than truncates. This track is a fixed 9rem, so `nowrap` plus
+   an ellipsis meant a long title was cut at every viewport width and widening
+   the window did nothing -- "A Song I Heard the Ocean Sing" was unreadable on
+   a 27-inch screen, which is how Ian found it. The comment this replaces said
+   the truncation kept the gap figures from being pushed around; it does not,
+   because wrapping inside a fixed grid track cannot move the track. It only
+   makes that one row taller, which the venue and the notes already do. The
+   narrow layout had been overriding this back to `normal` all along, so the
+   phone has been showing the full title while the desktop hid it. */
+.nb>span{display:block}
 /* Doubled backslashes: this is a Python string, and "90" is read as the
    octal escape  followed by "90", which reaches the browser as a control
    character and renders as a box. */
@@ -644,7 +654,7 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
 .mark.high b{color:var(--hot-text)}
 .mark a{color:var(--ink-soft);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-.mark a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+.mark a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 /* phish.net's note on the version, set under the venue rather than across the
    row: spanning every column put it against the page's left edge, where it
    read as something stuck on afterwards rather than as part of the entry.
@@ -682,7 +692,7 @@ details.note summary::after{content:"More";display:inline-block;margin-top:.2rem
 details.jam[open] summary::after,
 details.note[open] summary::after{content:"Less"}
 details.jam summary:hover::after,
-details.note summary:hover::after{color:var(--hot);border-bottom-color:var(--hot)}
+details.note summary:hover::after{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
 .empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
@@ -732,7 +742,9 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
   justify-content:center;background:var(--paper);border:1px solid var(--edge);
   color:var(--ink-soft);text-decoration:none;font-size:1rem}
-.totop:hover{color:var(--hot);border-color:var(--hot)}
+/* --hot-text: this is 18px, under the 24px the display accent is cleared for,
+   and --hot is 4.44:1 on paper. See the palette note. */
+.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
 /* And this line is the whole control. `hidden` hides an element by way of the
    browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
    any author declaration of `display` beats it outright, whatever the
@@ -754,7 +766,7 @@ footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
    flex-wrap:wrap;align-items:center;gap:.4rem .9rem}
 footer a{color:var(--dim);text-decoration:none;
    border-bottom:1px solid var(--rule)}
-footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
+footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
 @media screen{
 }
 /* Same lesson as the reports and the index: below this width the columns stop
@@ -774,7 +786,6 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
   .pair .cap{margin-top:.35rem}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.35rem}
-  .nb>span{white-space:normal;overflow:visible}
   .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
      text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
