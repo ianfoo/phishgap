@@ -150,9 +150,13 @@ constant that decides how few performances counts as never having got going.
 and falls back to the `weasyprint` CLI, then to headless Chrome. `--single-page`
 emits one continuous page instead of paginating for letter paper.
 
-Pages inline everything they can — CSS, favicons, the lot — so a file handed to
-someone in a chat still renders offline. Web fonts are the exception: they need
-the network, and fall back to Georgia and the system monospace without it.
+The file is one document — CSS, scripts, the favicon and the three source
+badges are inlined, and so is Bagnard, as a 13 KB `data:font/otf`. It is not
+self-contained: three references to Google's font hosts fetch IBM Plex Mono and
+Literata. Since `body` is Plex Mono site-wide, essentially every word depends on
+the network, and offline only the wordmark keeps its face — the rest falls back
+to the system monospace and Georgia. There is no paper grain either: the grain
+lives in `fonts.css`, and this path emits the inline face instead of the sheet.
 
 ## Publishing
 

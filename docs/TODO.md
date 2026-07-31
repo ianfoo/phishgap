@@ -1925,6 +1925,13 @@ preference predates the review — his call, not the reviewer's.
   the more useful one: periodically re-check the assumptions written down here.
   This one shaped a design decision hours after it had stopped being true.**
 
+  **The README said it too, and now says what the file actually is** (2026-07-30).
+  It claimed pages "inline everything they can … so a file handed to someone in
+  a chat still renders offline", with web fonts as a minor exception. Re-measured
+  against a fresh `--html` before rewriting: still three Google font-host
+  references, still one 13 KB inlined face, still no `grain.png`. The exception
+  was never minor — it is nearly all the text.
+
 ## 3c. Song page front matter — Ian's live review, 2026-07-28. DONE
 
 All four items landed. The block above the statistics is now three things —
