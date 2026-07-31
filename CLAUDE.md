@@ -89,10 +89,15 @@ songs while still looking like an improvement. **Check the whole set against
 the live site, and check identity rather than existence** — nine of their
 pages answer with a `<title>` of `1993 · 6:16`, so "not a 404" proves nothing;
 `og:title` names the song, and all 589 chips were confirmed to land on a page
-naming this song exactly. The two `NOT_A_SONG` pages carry no fouldomain chip:
-a title match cannot preserve an aggregate, so `custom` — nine different
-pieces filed under one entry titled Dog Log — would have claimed all nine were
-versions of Dog Log.
+naming this song exactly. One page carries no fouldomain chip — `custom`,
+where phish.net files one-off and unlisted titles and this archive shows the
+page as Dog Log because Dog Log is one of the nine, so a title match would
+have claimed the other eight were versions of it. `TITLE_NOT_THE_ENTRY` is
+that gate, and the first version of it was `NOT_A_SONG`, which was **too wide
+by one**: `jam` is equally not a composition, but its title names the bucket
+rather than one of the things in it and fouldomain files unnamed improvisation
+under the same word. The test is whether a title match lands on the same set,
+not whether the page is a song.
 
 **A debut carries a "gap" that is not a gap, and skipping row 0 does not
 always skip it.** phish.net gives a song's first counted performance a gap

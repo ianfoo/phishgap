@@ -5397,23 +5397,34 @@ def foul_song_slug(title):
     return re.sub(r"[^a-z0-9]+", "-", re.sub(r"['’]", "", title.lower())).strip("-")
 
 
+# The one entry whose *title* is not the entry. phish.net files one-off and
+# unlisted titles under `custom`, and this archive shows the page as Dog Log
+# because Dog Log is one of the nine -- so a chip matched on title lands on
+# fouldomain's page for the actual Dog Log and says the other eight are
+# versions of it. The slug-matched chips beside it point at phish.net's own
+# catch-all and keep the aggregate, which is why this is about fouldomain
+# rather than about the page.
+#
+# Not NOT_A_SONG, which was the first gate here and was too wide by one: `jam`
+# is the other page that is not a composition, but its title names the bucket
+# rather than one of the things in it, and fouldomain files unnamed
+# improvisation under the same word. Ian's call, and it holds -- the test is
+# whether a title match lands on the same set, not whether the page is a song.
+TITLE_NOT_THE_ENTRY = frozenset({"custom"})
+
+
 def _song_links(doc):
     """The chips under a song's title, for the sites that hold the rest of it.
 
-    fouldomain is left off the two pages that are not a song. It matches on
-    title, and `custom` is nine different pieces of music filed by phish.net
-    under one entry titled Dog Log -- so the chip would land on fouldomain's
-    page for the actual Dog Log and claim all nine were versions of it, where
-    the phish.net and phish.in chips beside it key on the slug and so keep the
-    aggregate. NOT_A_SONG is where this site already records that a page is
-    not one composition; a page saying so should not carry a chip that ranks
-    versions of one.
+    fouldomain matches on title where the other two match on slug, so it is
+    left off wherever those two disagree about what the page is -- see
+    TITLE_NOT_THE_ENTRY, which is one page.
     """
     ids = {"slug": doc["slug"], "foul": foul_song_slug(doc["song"])}
     return "".join(
         _badge(label, url % ids[key], icon, flip)
         for label, url, icon, flip, key in SONG_LINKS
-        if key != "foul" or doc["slug"] not in NOT_A_SONG)
+        if key != "foul" or doc["slug"] not in TITLE_NOT_THE_ENTRY)
 
 
 def _ext(url, label, cls):

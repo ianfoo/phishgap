@@ -73,15 +73,17 @@ only the first two. Done and verified; the detail worth carrying:
   the built pages were then asserted against the *published* copies: every one
   of the 712 show pages has a byte-identical chip row, and every song page is
   its published row plus one fouldomain chip.
-- **The two `NOT_A_SONG` pages carry no fouldomain chip, deliberately.** A
-  title match cannot preserve an aggregate: `custom` is nine different pieces
-  phish.net files under one entry titled Dog Log, so the chip would have landed
-  on fouldomain's page for the actual Dog Log and claimed all nine were
-  versions of it. `jam` is off for the same reason. The phish.net and phish.in
-  chips beside them key on the slug, so they keep the aggregate and stay.
-  **[ruling]** — dropping `jam` as well is the arguable half; fouldomain's
-  `jam` page is probably the same aggregate, and if Ian wants it, the gate is
-  one name.
+- **One page carries no fouldomain chip: `custom`.** A title match cannot
+  preserve an aggregate — phish.net files one-off and unlisted titles under
+  that entry and the archive shows the page as Dog Log, one of the nine, so
+  the chip would have claimed the other eight were versions of Dog Log. The
+  phish.net and phish.in chips beside it key on the slug, point at phish.net's
+  own catch-all, and stay. `TITLE_NOT_THE_ENTRY` is the gate.
+- **The first gate was `NOT_A_SONG`, and Ian corrected it: `jam` keeps its
+  chip.** fouldomain has a jam page, and its title names the bucket rather than
+  one of the things in the bucket — which is the actual test, and it is not the
+  same test as "is this page a composition". Both readings of the rule agree on
+  `custom` and only the narrow one is right about `jam`.
 - `_badge` is the one copy of the chip markup now, shared by both page types,
   and the one place its href is escaped.
 
