@@ -7623,8 +7623,13 @@ def year_profiles(order, counting, docs=()):
                           lambda slug: "%d" % p[slug]),
             "sound": named([slug for _, _, slug in sound[:YEARS_NAMED]],
                            lambda slug: "%.0f%%" % (100 * s[slug] / n)),
-            "only": named(only[:YEARS_NAMED], lambda slug: "%d" % p[slug]),
-            "only_n": len(only),
+            # Every one of them, where the two lists above take five. Those
+            # two are rankings, and the fifth-best is a real place to stop; a
+            # song being unique to a year is a yes or a no, so a five-chip cut
+            # of it followed by "and 33 more" quoted a number the page then
+            # gave the reader no way to see. 270 songs sat behind that phrase
+            # across 37 years, 33 of them in 1998 alone.
+            "only": named(only, lambda slug: "%d" % p[slug]),
             "habit": habit,
         })
     return out
@@ -7683,10 +7688,40 @@ YEARS_CSS = INDEX_CSS + YEAR_STRIP_CSS + """
 .habit .to{color:var(--dim);margin:0 .3rem}
 .habit .n{font-family:'IBM Plex Mono',ui-monospace,monospace;color:var(--dim);
    margin-left:.4rem;font-variant-numeric:tabular-nums}
-.more{font-size:.75rem;color:var(--dim);align-self:center}
+/* The eight labels this page uses, defined in the geometry they appear in --
+   the same 9.5rem label column, the same rule above each row, the same
+   uppercase. Four of the eight used to be defined and four did not, and the
+   four that were sat in running prose set in bold, which is emphasis and
+   reads as emphasis: nothing told the reader that "Sounded like" was a term
+   about to be used as a label forty times below. A definition that looks like
+   the thing it defines does not need to say so. */
+/* Below the hero rather than inside the header, where it went first. Eight
+   definitions are 872px at 1280, and putting them between the standfirst and
+   the year strip pushed 39 jump links and four cards below two screenfuls of
+   prose -- for a key that nothing above it uses. Here it is the last thing
+   before the first block that does. */
+.key{margin:1.7rem 0 0}
+/* The lead-in indents with the rows rather than with the standfirsts above.
+   A .dek sits at 0 and a .fact row's content sits at .25rem, so that the row
+   rule can span the full measure while the label lines up; stacked directly
+   on top of each other under 620px, the 4px showed. */
+.key .dek{padding-left:.25rem}
+.gloss{margin:.9rem 0 0;padding:0}
+.gloss>div{display:grid;grid-template-columns:9.5rem 1fr;align-items:baseline;
+   gap:.5rem .9rem;padding:.45rem .25rem;border-top:1px solid var(--rule-soft)}
+.gloss dt{margin:0;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+/* Held at the reading measure the standfirsts use. The label column is what
+   fills the space to the left of it, which is the answer to why a paragraph
+   on this page stops halfway across a 1080px page: it was always a measure,
+   and now something sits beside it. */
+.gloss dd{margin:0;max-width:56ch;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 16;
+   color:var(--dim)}
+.gloss dd b{font-weight:600;color:var(--ink-soft)}
 @media (max-width:620px){
   .shape{grid-template-columns:repeat(2,1fr)}
-  .fact{grid-template-columns:1fr;gap:.3rem}
+  .fact,.gloss>div{grid-template-columns:1fr;gap:.3rem}
 }
 """
 
@@ -7709,22 +7744,50 @@ YEARS_SHELL = """<!DOCTYPE html>
 <p class="dek">What a year sounded like, taken from the order the songs came
 in rather than from how long the band went without them. Every other list here
 is about one song&rsquo;s habits. This one is about the band&rsquo;s.</p>
-<p class="dek"><b>Sounded like</b> is not the same list as <b>most played</b>,
-and the difference is the point: Possum was played every year, so it says
-nothing about any of them. A song earns a place in the first list by being a
-bigger share of that year than of every other year put together.</p>
-<p class="dek"><b>Moves that recur</b> is the share of a year&rsquo;s
-song-to-song moves that turn up on more than one night &mdash; stated over a
-fixed {sample} nights, because otherwise it is a count of how many shows the
-band played. A long year gets more chances to repeat itself for reasons that
-have nothing to do with how it sounded. Over the same {sample} nights, 1993
-reads {high} and 2017 reads {low}.</p>
 <p class="dek">Built from the running order of {read} nights. The archive has
 no running order for {missing} of the shows the calendar counts, almost all of
-them before 1992, so a year short of its own count says so under its figures
-&mdash; and <b>only in</b> means only in the nights read here.</p>
+them before 1992, so a year short of its own count says so under its figures.
+The band played no show at all in {silent}, and a year with no show has no
+block here &mdash; which is why {span} is {n} years and not {calendar}.</p>
 <nav class="years" aria-label="Years on this page">{years}</nav></header>
 <section class="hero {hero_cls}">{hero}</section>
+<section class="key" aria-label="What the figures mean">
+<p class="dek">Every year below carries the same four figures and up to four
+lists, under these eight labels.</p>
+<dl class="gloss">
+<div><dt>A night</dt><dd>Songs on an average night of that year. Jams and
+untitled one-offs are left out of every figure on this page: neither is a
+composition, and counting one as a year&rsquo;s most-played song answers a
+different question than the one being asked.</dd></div>
+<div><dt>In rotation</dt><dd>How many different songs the year held at all.</dd></div>
+<div><dt>Median song</dt><dd>How old the music was. Half of that year&rsquo;s
+performances were of a song this many years past its first counted show;
+<b>new</b> means half of them were of songs the year had only just got.</dd></div>
+<div><dt>Moves that recur</dt><dd>The share of a year&rsquo;s song-to-song
+moves that turn up on more than one night &mdash; stated over a fixed {sample}
+nights, because otherwise it is a count of how many shows the band played. A
+long year gets more chances to repeat itself for reasons that have nothing to
+do with how it sounded. Over the same {sample} nights, 1993 reads {high} and
+2017 reads {low}. A year with fewer than {sample} nights read cannot be put on
+those terms and says <b>&mdash;</b> instead.</dd></div>
+<div><dt>Most played</dt><dd>The five songs the band played most that year,
+with the number of performances.</dd></div>
+<div><dt>Sounded like</dt><dd>Not the same list, and the difference is the
+point: Possum was played every year, so it says nothing about any of them. A
+song earns a place here by being a bigger share of that year than of every
+other year put together. The figure is the share of the year&rsquo;s nights it
+was on.</dd></div>
+<div><dt>Only in &hellip;</dt><dd>Songs heard in that year and in no other
+&mdash; every one of them, not a top five, most-played first. Only in the
+nights read here: a song that also played at a show whose running order the
+archive lacks cannot know it.</dd></div>
+<div><dt>Ran together</dt><dd>The song-to-song move that was most that
+year&rsquo;s own, weighed against how often the pair has ever happened rather
+than how often it happened that year. Ranked raw, nearly every year answers
+Mike&rsquo;s Song into I Am Hydrogen &mdash; which is true, and is not about a
+year.</dd></div>
+</dl>
+</section>
 <div class="rule2"></div>
 <main id="main" tabindex="-1">
 {blocks}
@@ -7757,10 +7820,9 @@ def _year_chips(items, pages, root="./"):
     return "".join(out)
 
 
-def _year_fact(label, body, more=""):
-    return ("<div class='fact'><h3>%s</h3><div class='chips'>%s%s</div></div>"
-            % (label, body,
-               "<span class='more'>%s</span>" % more if more else ""))
+def _year_fact(label, body):
+    return ("<div class='fact'><h3>%s</h3><div class='chips'>%s</div></div>"
+            % (label, body))
 
 
 def _year_block(profile, pages):
@@ -7798,10 +7860,8 @@ def _year_block(profile, pages):
         body.append(_year_fact("Sounded like",
                                _year_chips(profile["sound"], pages)))
     if profile["only"]:
-        spare = profile["only_n"] - len(profile["only"])
-        body.append(_year_fact(
-            "Only in %s" % year, _year_chips(profile["only"], pages),
-            "and %d more" % spare if spare else ""))
+        body.append(_year_fact("Only in %s" % year,
+                               _year_chips(profile["only"], pages)))
     if profile["habit"]:
         first, second, count, ever = profile["habit"]
         body.append(
@@ -7813,6 +7873,26 @@ def _year_block(profile, pages):
                count, "" if count == 1 else "s", ever))
     body.append("</section>")
     return "".join(body)
+
+
+def _year_runs(years):
+    """A set of years as prose: {2001, 2005, 2006, 2007, 2008} -> the two runs.
+
+    Written because the alternative was a hardcoded sentence, and the years it
+    would name are the two hiatuses -- one of which has ended once already and
+    could do so again. A list the page derives cannot go stale the way that
+    sentence would.
+    """
+    runs = []
+    for year in sorted(years):
+        if runs and year == runs[-1][1] + 1:
+            runs[-1][1] = year
+        else:
+            runs.append([year, year])
+    parts = [str(a) if a == b else "%d&ndash;%d" % (a, b) for a, b in runs]
+    if len(parts) < 3:
+        return " and ".join(parts)
+    return "%s and %s" % (", ".join(parts[:-1]), parts[-1])
 
 
 def render_years(profiles, missing, pages=()):
@@ -7827,7 +7907,7 @@ def render_years(profiles, missing, pages=()):
     most = max(rated, key=lambda p: p["repeat"], default=None)
     least = min(rated, key=lambda p: p["repeat"], default=None)
     widest = max(profiles, key=lambda p: p["songs"], default=None)
-    cards = [(len(profiles), "Years", "", ""),
+    cards = [(len(profiles), "Years played", "", ""),
              ("{:,}".format(read), "Nights read", "", ""),
              (most["year"] if most else "n/a", "Most habitual", " hot",
               "#y%s" % most["year"] if most else ""),
@@ -7839,8 +7919,18 @@ def render_years(profiles, missing, pages=()):
         + ("</a>" if href else "</div>")
         for val, lbl, cls, href in cards)
 
-    span = "%s&ndash;%s" % (profiles[-1]["year"], profiles[0]["year"]) if profiles else ""
-    subtitle = "%d years of Phish, %s" % (len(profiles), span)
+    # A count and a range that look like the same fact and are not. The band
+    # played in 39 years; 1983-2026 is 44 of them, because 2001 and 2005-2008
+    # hold no show at all. "39 years of Phish, 1983-2026" invited the reader
+    # to do that subtraction and left them to guess what the five were, so the
+    # subtitle now says what the 39 counts and the note above says where the
+    # other five went.
+    years = [int(p["year"]) for p in profiles]
+    span = "%d&ndash;%d" % (min(years), max(years)) if profiles else ""
+    calendar = max(years) - min(years) + 1 if profiles else 0
+    silent = _year_runs(set(range(min(years), max(years) + 1)) - set(years)) \
+        if profiles else ""
+    subtitle = "%d years with a show, %s" % (len(profiles), span)
     blurb = ("What each year of Phish sounded like: the songs that were only "
              "that year's, and how much of the band's own running order they "
              "repeated.")
@@ -7851,7 +7941,8 @@ def render_years(profiles, missing, pages=()):
         theme_ui=THEME_UI, years=strip, hero=hero,
         hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         sample=YEARS_SAMPLE, read="{:,}".format(read),
-        missing="{:,}".format(missing),
+        missing="{:,}".format(missing), silent=silent, span=span,
+        n=len(profiles), calendar=calendar,
         high="%.0f%%" % next((p["repeat"] for p in profiles
                               if p["year"] == "1993"), 0),
         low="%.0f%%" % next((p["repeat"] for p in profiles

@@ -54,7 +54,41 @@ and nothing blocking. He does not want to babysit turns or re-point a fresh
 session at this file. He also wants every turn to end with a **table** of what
 was done, why, and what came of it.
 
-### Newest first: the 2026-07-30 review of songs, home, due and dormant
+### Newest first: the 2026-07-31 review of `years.html` — four notes from Ian
+
+He read the page and sent four. All four are done and pushed; §8k has the
+detail. Three things worth carrying:
+
+- **"and 33 more" was a number the page gave no way to see.** The five-chip
+  cap belonged on *Most played* and *Sounded like*, which are rankings where
+  the fifth-best is a real place to stop. "Only in 1998" is a set, and a
+  truncated set that states its own remainder is a promise to a reader that
+  the page then breaks. 270 songs sat behind that phrase across 37 years. The
+  cap is off that one line and the page names all 433, which is +1,830px on a
+  17,900px page. **When a list is a set rather than a ranking, either show it
+  or do not count it out loud.**
+- **A count and a range that look like the same fact and are not.** "39 years
+  of Phish, 1983–2026" invited the subtraction and left the five missing years
+  unexplained. The band played no show at all in 2001 and 2005–2008 — the two
+  hiatuses. The subtitle says what the 39 counts and the note above the strip
+  says where the other five went, both derived rather than written down, since
+  one of those silences has ended once already.
+- **Four of eight labels were defined, in bold, in prose.** Bold is emphasis
+  and reads as emphasis; nothing told a reader that *Sounded like* was a term
+  about to be used as a label 39 times below, and *Median song* and *Moves
+  that recur* — the two that most need it, since one prints `new` and the
+  other prints `—` — were not defined at all. The glossary is now all eight,
+  in the fact rows' own geometry: same 9.5rem label column, same rule, same
+  uppercase, measured identical at 97px and 284px. **A definition that looks
+  like the thing it defines does not have to say it is one.**
+
+His fourth question was whether the half-width prose wrap was deliberate. It
+is: `DEK_CSS` sets `max-width:56ch`, which at this size is 547px inside a
+1080px `.wrap` — `.wrap` is 60rem because it holds chip rows and tables, not
+because prose wants that measure. The glossary is what now fills the space to
+the left of it, so the shape reads as a choice rather than as an artifact.
+
+### The 2026-07-30 review of songs, home, due and dormant
 
 Ian read four pages and sent nine notes. All nine are done and pushed; the
 detail is in §2k. Three things a fresh session should carry:
@@ -704,10 +738,11 @@ confound, because the band played 124 shows in 1991 and 28 in 2017.
 running order for 158 of the counting calendar's shows — 1985 is 11 of 22,
 1988 is 52 of 95, and everything from 1992 is complete. Those years carry a
 line under their figures naming what they were computed from. It also limits
-"only in 1994": it means only in the nights read. 163 such claims are on the
-page, 66 of them are checkable against a full song history (a song has one
-only if a saved report names it, and the reports start in 2009), and **0 of
-the 66 are contradicted**. The other 97 rest on the extract alone.
+"only in 1994": it means only in the nights read. **433 such claims are on the
+page** (163 until 2026-07-31, when the five-chip cap came off — see §0), 151
+of them checkable against a full song history (a song has one only if a saved
+report names it, and the reports start in 2009), and **0 of the 151 are
+contradicted**. The other 282 rest on the extract alone.
 
 **Still open from the measurement, and deliberately not built:**
 
@@ -3510,6 +3545,59 @@ differentiation strategy** beyond "Song — Possum Logic". The honest question
 before any of it is what someone would be searching for that this site answers
 better than phish.net, since the answer is probably a *phrase* ("how long has
 it been since Phish played X") rather than a song name.
+
+## 8k. Ian's `years.html` review — 2026-07-31. DONE
+
+Four notes, sent after reading the page. The first two are defects, the third
+is a directive, the fourth is a question that turned out to have a real answer.
+
+| what | why | outcome |
+|---|---|---|
+| "and N more" removed; every only-in song named | it quoted a count with no expansion mechanism | 433 named, was 163 |
+| Subtitle says what the 39 counts, and the note names the five silent years | 39 and 1983–2026 look like one fact and differ by 5 | derived, not written down |
+| Eight labels defined in a glossary in the fact rows' geometry | four of eight were defined, in bold, in prose | `.gloss`, `.key`, below the hero |
+| Half-width prose confirmed deliberate | `DEK_CSS` `max-width:56ch` = 547px in a 1080px `.wrap` | answered, and the glossary now fills the space beside it |
+
+**The cap was on the wrong line.** `YEARS_NAMED = 5` is right for *Most
+played* and *Sounded like* — both are rankings, and the fifth-best is a place
+a ranking can honestly stop. *Only in 1998* is a set: a song is unique to a
+year or it is not, so cutting it at five and printing "and 33 more" states a
+number the page then refuses to honour. 270 songs sat behind that phrase
+across 37 years, 33 of them in 1998 alone. **A truncated set that counts its
+own remainder out loud is a promise; either show the rest or do not count.**
+
+Cost measured before shipping: 1998's row goes 60px → 298px, the page goes
+15,359px → 17,930px at 1280 (+872 glossary, +1,830 chips, −130 prose). No
+overlapping tap targets and no horizontal overflow at 390, 620, 768, 1280 or
+1600; 584 interactive targets at every width.
+
+**Re-checking the claim now that it is four times as loud.** The page says
+"only in the nights read here", and the extract is incomplete before 1992, so
+a song with a full history can contradict it outright. All 433 claims tested
+against `song_history`: **151 are checkable and 0 are contradicted.** That is
+up from 66 of 66 — the newly-revealed 270 brought 85 more checkable claims
+with them and none of them is wrong. The 163 in §0’s 2026-07-30
+`years.html` block was corrected in the same change: it had been sitting in
+this file as though it were the total.
+
+**39 is not 44 and the page now says which.** `_year_runs` derives the silent
+stretches from the profiles rather than naming them in prose: 2001 is the
+2000–2002 hiatus and 2005–2008 is the break, and one of those has already
+ended once. A hardcoded sentence would be a figure like any other and would go
+stale the ordinary way.
+
+**The glossary is below the hero, not in the header — and that was measured
+too.** In the header it put 872px of definitions between the standfirst and
+the year strip, pushing 39 jump links and four cards past two screenfuls for
+a key that nothing above it uses. Below the hero the strip sits at 498px, the
+key at 795px, and the first year block at 1,756px. Contrast is unchanged in
+both palettes: every new element lands on the same values as the elements it
+copies (4.98 light / 6.15 dark for the labels and definitions, matching all
+139 existing `.fact h3`; 9.32 / 9.91 for the bold, matching all 492 chips).
+
+**Still open, unchanged by this:** segue density per year, the MSG tribute
+scoring, and per-year pages — all three still listed under §0’s 2026-07-30
+`years.html` block, all three deliberate.
 
 ## 9. Known and deliberately not fixed
 
