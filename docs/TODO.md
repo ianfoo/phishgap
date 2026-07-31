@@ -821,6 +821,52 @@ that a current page is *not* a link and a section marker *is*, and that show
 pages mark Shows and song pages mark Songs. Worth re-running after any nav
 change.
 
+### Same session, third round — the nav is four destinations
+
+Ian, looking at the six-item strip: "we are starting to really crowd that nav
+bar… I don't think the mobile widths could survive another addition." Measured
+at 390px he was right with room to spare — one line holds **336px**, the six
+labels came to **400px**, and **"Out of rotation" alone was 130px**, more than
+Shows, Songs and Years put together. Four spines use 219px and leave 117px.
+
+**The split that fell out of the measurement is not about width.** The four
+that fit are the ways *into* the archive — every show, every song, every year,
+every venue. The three that did not are questions asked *about* it, and each
+has a parent that owns it. Due and Out of rotation are two rotation states of
+songs; Not a show is the show calendar's own boundary.
+
+| page | door | marks |
+|---|---|---|
+| Due | hero card on songs.html **and** index.html | Songs |
+| Out of rotation | hero card on songs.html | Songs |
+| Not a show | hero card on index.html, plus the "also on file" note | Shows |
+
+**The cards cost nothing vertically, which is why this was affordable.** The
+hero is a grid: on desktop it is one row at three cards or four, and on a
+phone it is two columns, so three cards already sat in two rows with an empty
+cell. Measured before and after on songs.html: **0px at 390px and at 1100px.**
+
+**Two cards were swapped out to make room, both for the same stated reason.**
+songs.html dropped *Song Performances* — the subtitle directly above it
+already reads "589 songs · 36,958 performances between them", so the widest
+row on the page was spending a cell to say a number twice. index.html dropped
+*Venues*, because the nav carries a door to the venues page from every page on
+the site, while Not a show now has no nav entry at all. The comment above that
+card had already removed a different one on exactly this reasoning.
+
+**Result at 390px: the strip is one row and 73px**, down from two rows and
+124px, and it is one row at 320px too. Verified over 11 page types × 5
+breakpoints: no overlapping tap targets, none under 24px, no sideways scroll.
+1,310 pages: 6 marked as the current page, 1,304 by section, 0 wrong.
+
+**The check worth keeping from this round** is the orphan check: for every page
+taken *out* of the nav, assert it still has a door from a page that is *in* the
+nav. Removing a nav item is the one edit that can silently strand a page, and
+`check_links.py` cannot see it — every link on the site still resolves.
+
+**Not a show has exactly one such door** (the index). That is the thinnest
+margin on the site and the first thing to look at if it feels buried.
+
 ### The three biggest open things, in the order I would take them
 
 1. **§2e/§2f graphs.** Ian wants them and named the best one himself (a song's
