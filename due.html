@@ -204,6 +204,25 @@ a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
    disappears into the type. Right, not down: this card leaves for another
    page, where the show and song sheets' cards land further down their own. */
 a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
+/* Which song, or which night, the figure belongs to -- under the label and in
+   the label's own small type, so the card still reads as one object. */
+.lbl .of{display:block;margin-top:.2rem;letter-spacing:.14em;color:var(--ink-soft);
+   text-transform:none;font-size:.75rem}
+/* And on those cards the arrow moves down onto the name. The rule above
+   appends to the end of the label, and the last thing in a label carrying a
+   name is that display:block name -- so the arrow opened a line of its own and
+   sat alone under it. On the name it is also the more honest target: the card
+   goes to that song or that night, not to a page about longest gaps.
+
+   `.named` is written by hero_html rather than inferred here with `:has(.of)`,
+   because an unsupported selector is dropped in silence -- which would leave
+   the arrow where it was *and* add a second one below it, on exactly the
+   browsers nobody is testing. `.of` states its own colour, so it does not
+   inherit the label's hover and has to be named again. */
+a.card.named .lbl::after{content:none}
+a.card.named .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
+a.card.named:hover .lbl .of,
+a.card.named:hover .lbl .of::after{color:var(--hot-text)}
 header{padding-bottom:.9rem}
 .show{margin:0;font-size:1rem;font-weight:600;letter-spacing:0;
       text-transform:uppercase;color:var(--ink-soft)}
