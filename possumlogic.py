@@ -182,7 +182,7 @@ def env_value(stem, quiet=False):
     -- sets a variable nothing reads, and the fallback then quietly serves
     whatever the unprefixed name happens to hold, which may be a key from a
     year ago. Silence there costs an afternoon. So a fallback announces itself,
-    and a PL_ variable nobody recognises is called out by name.
+    and a PL_ variable nobody recognizes is called out by name.
     """
     for name in (ENV_PREFIX + stem, stem):
         raw = os.environ.get(name)
@@ -348,7 +348,7 @@ def _http_json(url, label, cache_dir=DEFAULT_CACHE, refresh=False,
                 retryable = exc.code == 429 or 500 <= exc.code < 600
                 if not retryable or attempt == MAX_TRIES:
                     raise ApiError("HTTP %s from %s" % (exc.code, label)) from None
-                # Honour Retry-After when the server sends one, else back off.
+                # Honor Retry-After when the server sends one, else back off.
                 try:
                     pause = float(exc.headers.get("Retry-After") or 0)
                 except ValueError:
@@ -435,7 +435,7 @@ def era(iso):
         if start <= iso <= end:
             return label
     # A date in a hiatus belongs to whichever era it sits between; nothing in
-    # the archive lands here, but a gap year should not go unlabelled.
+    # the archive lands here, but a gap year should not go unlabeled.
     return next((l for l, s, _ in reversed(ERAS) if iso >= s), ERAS[0][0])
 
 
@@ -451,7 +451,7 @@ def foul(path, cache_dir=DEFAULT_CACHE, refresh=False, **params):
 
 # Bagnard, Sebastien Sanfilippo, SIL Open Font License 1.1. Self-hosted rather
 # than served from Google: the point of changing face at all was to stop
-# wearing the same two the whole internet wears, and the licence ships beside
+# wearing the same two the whole internet wears, and the license ships beside
 # it in font/OFL.txt as the OFL requires.
 #
 # One stylesheet for the site rather than the face inlined into every page --
@@ -505,13 +505,13 @@ def inline_font_css():
             "font-display:swap;src:url(data:font/otf;base64,%s) "
             "format('opentype')}</style>" % (DISPLAY_FACE, blob))
 FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
-   Licence text: ./%(dir)s/OFL.txt */
+   License text: ./%(dir)s/OFL.txt */
 @font-face{font-family:'%(face)s';src:url('./%(dir)s/Bagnard.otf') format('opentype');
   font-weight:400;font-style:normal;font-display:swap}
 /* The paper's texture. It lives here rather than inline in every page for two
    reasons. It was an SVG feTurbulence data URI, which the browser has to run a
    filter over before it can paint -- about a quarter of a second, during which
-   the page showed flat colour and then visibly changed under the reader. A PNG
+   the page showed flat color and then visibly changed under the reader. A PNG
    decodes immediately. And as one cached file it costs 640 pages nothing,
    where a data URI large enough to look good would have been carried by each
    of them.
@@ -521,7 +521,7 @@ FONTS_CSS = """/* %(face)s -- Sebastien Sanfilippo, SIL Open Font License 1.1.
 
    The blend mode is the variable that has existed unused since the palettes
    were written: multiply on cream darkens the grain into the paper, screen on
-   near-black lifts it, and neither shifts the paper colour the way painting
+   near-black lifts it, and neither shifts the paper color the way painting
    opaque noise over it did. */
 body{background-image:url(grain.png);background-blend-mode:var(--grain-blend)}
 """ % {"face": DISPLAY_FACE, "dir": FONT_DIR}
@@ -536,7 +536,7 @@ WEB_FONTS = ("https://fonts.googleapis.com/css2"
 # ------------------------------------------------------------------ share ---
 
 # A donut with a bite out of it: near enough to Phish's own iconography to be
-# recognised on a tab strip, far enough to be our own shape, and the bite is
+# recognized on a tab strip, far enough to be our own shape, and the bite is
 # the thing the site is about. One path, so it survives being drawn at 16px.
 FAVICON = (
     "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
@@ -580,7 +580,7 @@ def share_meta(title, description, path="", image=OG_IMAGE, card=None):
 
     All of them fall back to Open Graph, so that carries the weight; the
     twitter:card line is what makes the ones that look for it render a large
-    image rather than a thumbnail. Without og:image the card is a line of grey
+    image rather than a thumbnail. Without og:image the card is a line of gray
     text, which is a poor advertisement for a page of graphs.
     """
     url = "%s/%s" % (SITE_URL, path.lstrip("./")) if path else SITE_URL + "/"
@@ -612,7 +612,7 @@ def build(showdate, apikey, artist="Phish", rows_out=None, **kw):
     Handed back rather than hung on the report: the report is written to disk
     whole, by three separate callers, so a private key on it would have shipped
     to readers the first time one of them forgot to strip it. The rows are what
-    the neighbour walk needs and they are already paid for here.
+    the neighbor walk needs and they are already paid for here.
     """
     rows = get("setlists/showdate/%s" % showdate, apikey, **kw)
     if not rows:
@@ -981,7 +981,7 @@ THEME_CSS = """
 .theme button.on{background:var(--ink);color:var(--paper);
    border-color:var(--ink)}
 /* The selected one is already ink-on-paper reversed, so hovering it must not
-   set the text to the colour it is sitting on. It brightens its edge instead. */
+   set the text to the color it is sitting on. It brightens its edge instead. */
 .theme button.on:hover:not(:disabled){color:var(--paper);
    box-shadow:0 0 0 2px var(--hot)}
 .theme button:disabled{opacity:.45;cursor:default}
@@ -1221,7 +1221,7 @@ ROW_JS = """<script>
 })();
 </script>"""
 
-THEME_UI = ("<span class='theme' role='group' aria-label='Colour theme'>"
+THEME_UI = ("<span class='theme' role='group' aria-label='Color theme'>"
             + "".join("<button type='button' data-theme='%s' disabled>%s</button>"
                       % (v, v.title()) for v in ("auto", "light", "dark"))
             + "</span>")
@@ -1539,7 +1539,7 @@ NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
    Padding is the obvious fix and the wrong one here: the border-bottom *is*
    the affordance, and padding-bottom would push that underline away from the
    word it underlines. So the ink stays exactly where it is and only the hit
-   area grows -- a pseudo-element centred on the label, and never narrower
+   area grows -- a pseudo-element centered on the label, and never narrower
    than it is tall. It sits inside the anchor, so it is the same target. */
 .crumb a{position:relative}
 .crumb a::before{content:"";position:absolute;left:50%;top:50%;
@@ -1555,7 +1555,7 @@ NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
    settings, .6875rem at .1em is 269px and fits, and it is still a size and a
    half up on the 11.25px this strip used to be set at. Under about 340px it
    goes back to two rows, which is why the row gap is what it is: 44px targets
-   need 44px between their centres, and the gap is the only thing providing it.
+   need 44px between their centers, and the gap is the only thing providing it.
 
    The meta pair keeps 24px, the AA floor. They are the two least-used links on
    the site and buying them 44px each costs another 20px of every phone screen.
@@ -1577,7 +1577,7 @@ NAV_CSS = """.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
    it would also take away the link, stranding the one route back to the list.
 
    So there are three states and not two: nothing, the section you are in
-   (still a link, ink instead of soft ink, a rule in the edge colour), and the
+   (still a link, ink instead of soft ink, a rule in the edge color), and the
    page you are on (not a link, full ink, full rule). The markup says the same
    thing to a screen reader -- aria-current="page" for the page, plain "true"
    for the item in the set that contains it. */
@@ -1701,7 +1701,7 @@ a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
 #: The standfirst. Two sheets stated this identically, which is how it comes to
 #: be one block; and it is the one size that does not simply ride the root lift
 #: above. A dek introduces the page's body text, so setting it *smaller* than
-#: that text -- 13px over 14 -- had it apologising for the thing it announces.
+#: that text -- 13px over 14 -- had it apologizing for the thing it announces.
 #: It is a step above body now. The optical size axis follows the point size,
 #: which is what the axis is for.
 DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
@@ -1723,7 +1723,7 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
 #
 # Named late. CLAUDE.md listed footer{} for a long time as a near-miss that
 # "differs by real amounts" and told sessions to leave it alone; measured on
-# 2026-07-30 the three copies were identical once whitespace is normalised, so
+# 2026-07-30 the three copies were identical once whitespace is normalized, so
 # the note was protecting nothing. `.crumb` (four occurrences, four different)
 # and `.hero` (flex in one sheet, grid in another) do still differ and stay
 # where they are.
@@ -1740,7 +1740,7 @@ DEK_CSS = """.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
 #
 # What this cannot do, and it is worth writing down before someone tries: the
 # open dropdown is an OS menu, not part of the page, and no stylesheet reaches
-# it. The `option` colours below help on Windows and Linux and are ignored on
+# it. The `option` colors below help on Windows and Linux and are ignored on
 # macOS. Chrome 135 has `appearance:base-select` for the popup as well, which
 # is one browser and too new to build on.
 #
@@ -1758,7 +1758,7 @@ SELECT_CSS = """.sort{appearance:none;-webkit-appearance:none;
    background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
 /* Matching the era chips beside it, which is the whole point of the exercise. */
 .sort:hover{color:var(--ink);border-color:var(--ink-soft)}
-/* It ships disabled and is enabled by script; without this the UA greys out
+/* It ships disabled and is enabled by script; without this the UA grays out
    text the reader can see for the split second before that happens. */
 .sort:disabled{opacity:1;color:var(--ink)}
 .sort option{background:var(--paper);color:var(--ink)}
@@ -1916,7 +1916,7 @@ h1 .dow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:400;
    text-transform:uppercase;color:var(--ink)}
 /* The venue and the tour are links now -- to the index filtered to that room
    or that run -- and a masthead link is drawn differently from a link in
-   prose. It keeps its own colour and weight, because demoting it to --dim
+   prose. It keeps its own color and weight, because demoting it to --dim
    would demote the venue in the masthead, and takes only the hairline every
    other link on this site wears. Without this rule both came out in the
    browser's default blue with a browser underline, which is the fifth time
@@ -2037,7 +2037,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
 .verdict.at-gap{display:block;margin:.1rem 0 0}
 .verdict.premature{color:var(--cool)}
 /* A bustout is the headline of a show, not a footnote to it: stamped rather
-   than merely coloured. print-color-adjust keeps the fill when a browser prints
+   than merely colored. print-color-adjust keeps the fill when a browser prints
    it; WeasyPrint keeps backgrounds anyway. */
 /* A filled edge reads tighter than text does at the same distance, so the chip
    needs more room above it than the plain tags to sit on the same rhythm. */
@@ -2115,8 +2115,8 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    box-shadow:0 0 0 2px var(--paper)}
 .bar .at.late{background:var(--hot)}
 .bar .at.early{background:var(--cool)}
-/* Inside its own band is the ordinary case and gets no colour at all -- ink,
-   like the figures. Two thirds of rows land here, and colouring them would
+/* Inside its own band is the ordinary case and gets no color at all -- ink,
+   like the figures. Two thirds of rows land here, and coloring them would
    spend the palette on "nothing to report". */
 .bar .at.usual{background:var(--ink)}
 .last{font-size:.875rem;overflow-wrap:anywhere;vertical-align:top}
@@ -2138,7 +2138,7 @@ td.song a:hover .jc-chip,a.jc-chip:hover{background:var(--hot);color:var(--paper
    scroll, which is why the other jump targets on this site carry a link. */
 tbody tr:target td{background:var(--hover)}
 tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
-/* The date links when we hold that show. Underlined rather than coloured, so
+/* The date links when we hold that show. Underlined rather than colored, so
    a column of them does not turn the right-hand side of the table orange. */
 .last .date a{color:inherit;text-decoration:none;
    border-bottom:1px solid var(--rule)}
@@ -2185,13 +2185,13 @@ tbody tr:target td:first-child{box-shadow:inset 3px 0 0 var(--hot)}
    is 4.44:1, and this is 10px uppercase, so it wants the 4.5 floor. The
    palette already carries the darker accent for exactly this ("anything small
    takes the darker") and it lands at 5.78:1. In the dark palette the two are
-   the same colour, so this is a no-op there and stays at 6.63:1. */
+   the same color, so this is a no-op there and stays at 6.63:1. */
 .since-you{display:inline-block;margin-top:.35rem;font-size:.625rem;
    letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
    background:var(--hot-text);padding:.15rem .4rem}
 /* It is an anchor now -- the count doubles as the jump to the first new row.
-   text-decoration has to be said out loud: the colour above already beats the
-   UA link colour, so this would not have come out browser blue, but it would
+   text-decoration has to be said out loud: the color above already beats the
+   UA link color, so this would not have come out browser blue, but it would
    have come out underlined, and four links on this site have shipped wearing
    a default the author sheet never overrode. The ring is not set here either;
    a:focus-visible in BASE_CSS already draws it in --hot. */
@@ -2208,7 +2208,7 @@ tr.fresh td.song{box-shadow:inset 3px 0 0 var(--hot)}
 .aside-note span{font-family:'Literata',Georgia,serif;font-size:.9375rem;
    line-height:1.5;font-variation-settings:'opsz' 14;color:var(--ink-soft)}
 /* The title carries the link to the song's own page; underlining every one of
-   them would stripe the table, so it colours on hover instead. */
+   them would stripe the table, so it colors on hover instead. */
 td.n,td.song{vertical-align:baseline}
 td.song a{color:inherit;text-decoration:none}
 td.song a:hover{color:var(--hot)}
@@ -2302,7 +2302,7 @@ td.song a:hover{color:var(--hot)}
      text-transform:uppercase;color:var(--dim);margin-bottom:.15rem}
   .last .date,.last .venue,.last .place{display:inline}
   .last .place{white-space:normal}
-  /* --dim rather than --rule. A hairline colour is for hairlines: at #413a30
+  /* --dim rather than --rule. A hairline color is for hairlines: at #413a30
      on #131210 this separator was invisible on the dark palette. */
   .last .venue::before,.last .place::before{content:" · ";color:var(--dim);
     opacity:.7}
@@ -2430,7 +2430,7 @@ SHELL = """<!DOCTYPE html>
 # no network, and a badge with a broken image looks worse than no badge.
 ICON_PNET = "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"
 # phish.in's mark ships around half-transparent -- a mean alpha of 130 where
-# phish.net's is fully opaque -- which reads as a grey smudge on cream and as
+# phish.net's is fully opaque -- which reads as a gray smudge on cream and as
 # nothing at all on near-black, whichever way it is inverted. Alpha is the one
 # thing a CSS filter cannot raise, so the shape is made opaque here instead.
 ICON_PIN = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC"
@@ -2466,7 +2466,7 @@ def _show_links(date, on_phishin=None):
     phish.in only appears once they actually have the show. They post audio a
     while after the night, so the page most likely to be shared -- tonight's,
     while it is being played -- was the one guaranteed to link to a 404. When
-    the catalogue has not been fetched the link is shown as before, because a
+    the catalog has not been fetched the link is shown as before, because a
     missing local file is not evidence of a missing recording.
     """
     return "".join(
@@ -2645,7 +2645,7 @@ FEW_PLAYS = 2
 #   - Among 3-7 it moves a lot: clustered (<=200 shows per play) 70%, scattered
 #     38%. That is the real finding, and it belongs to the rarities.
 #
-# So it is described rather than modelled -- and the page was already printing
+# So it is described rather than modeled -- and the page was already printing
 # it. The span on every row reads "2009" for a song played twice three shows
 # apart and "1992-2021" for one played twice 1,308 apart. 13 of the 48 print a
 # single year. Nothing pointed a reader at that column; the blurbs now do.
@@ -2752,7 +2752,7 @@ def gap_band(recent):
             math.exp(mid + BAND_K * spread) - 1)
 
 
-# A break this size, above the median, is taken to separate two behaviours
+# A break this size, above the median, is taken to separate two behaviors
 # rather than to mark one long gap: the song's rotation, and the stretches it
 # spent off the list entirely. Esther's recent gaps are 5 8 12 13 14 16 19 20 26
 # 29 68 76 112 -- nine of one thing and three of another, and 29 -> 68 is the
@@ -2763,7 +2763,7 @@ AWAY_JUMP = 2.0
 def layoff_break(recent):
     """The gaps that are an absence rather than a longer wait, if any.
 
-    -> the sorted layoff gaps, or [] where the record is one behaviour.
+    -> the sorted layoff gaps, or [] where the record is one behavior.
 
     A band is a single range and cannot say "either a fortnight or two years",
     which is exactly what a song like Esther does. Rather than average the two
@@ -2771,10 +2771,10 @@ def layoff_break(recent):
     and the row says the second thing in words.
 
     Four conditions, and each one is turning something down. A break of at least
-    AWAY_JUMP, or there is only one behaviour here. At least two gaps beyond it,
+    AWAY_JUMP, or there is only one behavior here. At least two gaps beyond it,
     because one is an outlier and naming it as a habit overstates it -- Mr.
     Completely's single 380 is its longest gap, which its own page already says.
-    No more than a third of the record, or the "absences" are the behaviour. And
+    No more than a third of the record, or the "absences" are the behavior. And
     the break has to sit at twice the median at least, so this is a song that
     goes away rather than one that is merely uneven.
 
@@ -2821,7 +2821,7 @@ def recent_cutoff(counting, fallback=None):
 
     `fallback` is used only when there is no calendar to anchor to -- a
     render with `counting` unset, which is the single-report path rather than
-    the site build. Deliberately not a silent fallback to the old behaviour
+    the site build. Deliberately not a silent fallback to the old behavior
     for the ordinary case: that is the shape of bug this file keeps repeating.
 
     Note this is *not* the anchor a show page wants. A verdict printed on a
@@ -2879,7 +2879,7 @@ def _classify(gap, prior, on_date, plays=None):
         # MIN_HISTORY performances, meaning to screen out a new song whose
         # return is not a bustout because it never went anywhere -- but a gap
         # counts shows, so a gap of 485 already proves the song has been in the
-        # catalogue for 485 shows. Nothing new can reach the threshold: Cream's
+        # catalog for 485 shows. Nothing new can reach the threshold: Cream's
         # largest gap ever is 17. All the test actually screened out was songs
         # that are *rare*, which is the whole population the word is for --
         # Back in the U.S.S.R., four plays between 1994 and 2026, returning
@@ -3086,7 +3086,7 @@ def render_html(report, bar_scale="linear", index_href=None,
             # A band is one range, and some songs do two things -- see
             # layoff_break. Where they do, the range alone reads as though the
             # song merely waits a long time, and "but" is doing the work: the
-            # sentence has stopped describing one behaviour and started naming
+            # sentence has stopped describing one behavior and started naming
             # the second. Esther is the case that prompted it, and her range
             # tops out at 55 against three absences of 68, 76 and 112.
             if s.get("gap_away") and s.get("recent_plays"):
@@ -3128,7 +3128,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         elif s.get("recent_plays") is not None:
             # No norm to compare against, so say why: this is how thin its
             # recent record is.
-            # Spelt out where there is room, abbreviated where there is not:
+            # Spelled out where there is room, abbreviated where there is not:
             # at 390px "3 in 10 yr" is 72px against a 56px four-digit gap, so
             # the rarest thing in the column was setting its width.
             typical = ("<span class='typ'><span class='full'>%d in %d yr</span>"
@@ -3138,7 +3138,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         # Where a verdict goes depends on what kind of thing it is. A bustout
         # is remarkable about the song -- it belongs against the title, next to
         # the jam chart chip, which is likewise about the song and not its
-        # timing. Premature and overdue are judgements about the number, so
+        # timing. Premature and overdue are judgments about the number, so
         # they belong against the number, under the median they are measured
         # from.
         #
@@ -3180,13 +3180,13 @@ def render_html(report, bar_scale="linear", index_href=None,
                 bar = ("<td class='bar'%s><span class='no-range'"
                        " aria-hidden='true'>&mdash;</span></td>" % tip_attr)
             else:
-                # The mark is coloured by where it landed, not by how large
+                # The mark is colored by where it landed, not by how large
                 # the number is. Those are different questions and they
                 # disagree: a gap of 10 against a median of 5 sits right of the
                 # band and is called overdue, but 10 is under the absolute
                 # threshold, so the mark was drawn cool while its position and
                 # the verdict beside it both said late. Position is what this
-                # graphic encodes, so position is what it may colour.
+                # graphic encodes, so position is what it may color.
                 where = ("early" if pos < 30 else
                          "late" if pos > 70 else "usual")
                 bar = ("<td class='bar'%s><span class='track'>"
@@ -3296,7 +3296,7 @@ def render_html(report, bar_scale="linear", index_href=None,
         # something else.
         # No "All reports" in the middle: the row above already has Shows,
         # pointing at the same page under the name the rest of the site uses
-        # for it. The pager is for the two neighbours.
+        # for it. The pager is for the two neighbors.
         #
         # The pager is built first and the strip concatenated after, rather
         # than interpolating both at once: nav_strip's output is markup this
@@ -3511,7 +3511,7 @@ a.card .lbl::after{content:" →";color:var(--dim);white-space:nowrap}
    `.named` is written by hero_html rather than inferred here with `:has(.of)`,
    because an unsupported selector is dropped in silence -- which would leave
    the arrow where it was *and* add a second one below it, on exactly the
-   browsers nobody is testing. `.of` states its own colour, so it does not
+   browsers nobody is testing. `.of` states its own color, so it does not
    inherit the label's hover and has to be named again. */
 a.card.named .lbl::after{content:none}
 a.card.named .lbl .of::after{content:" →";color:var(--dim);white-space:nowrap}
@@ -3708,7 +3708,7 @@ header{padding-bottom:.9rem}
    the page, which is the objection to sending it to the FAQ outright.
    Nothing is remembered per reader. A flag that says "you have read this"
    fails asymmetrically -- set wrongly it shows a first-time reader an
-   unlabelled table of multipliers, unset wrongly it costs one line -- and a
+   unlabeled table of multipliers, unset wrongly it costs one line -- and a
    reference archive should not serve two different pages at one URL. The
    site's own precedent argues the same way: the last per-reader flag here
    shipped broken and stayed invisible for weeks.
@@ -3911,7 +3911,7 @@ a.ax-row:hover .ax-date{color:var(--hot);border-bottom-color:var(--hot)}
      child -- the song name follows it -- so a trailing separator was left
      stranded at the end of the line with the name wrapped beneath it. */
   .r-stats .st:empty{display:none}
-  /* --dim, not --rule: rule is a hairline colour and a glyph drawn in it is
+  /* --dim, not --rule: rule is a hairline color and a glyph drawn in it is
      invisible on the dark paper, the way the separators were. */
   .r-stats .st:not(:empty) ~ .st:not(:empty)::before{content:"\\00b7";
     color:var(--dim);opacity:.7;margin:0 .4rem 0 .35rem}
@@ -4229,14 +4229,14 @@ def typographic(text):
     return (text or "").replace("'", "\u2019")
 
 
-def neighbours(perfs, counting=None, top=3):
+def neighbors(perfs, counting=None, top=3):
     """What this song most often came out of and went into.
 
     Every row on a song page already names both, and nothing has ever added
     them up -- which is the question this audience asks most: what does Tweezer
     come out of? Counted over performances that count toward a gap, so a
     soundcheck pairing does not enter a statistic the rest of the site would
-    not recognise.
+    not recognize.
 
     -> ([(song, n), ...] before, [(song, n), ...] after)
     """
@@ -4327,7 +4327,7 @@ def _venue_lines(report):
 
 
 def _full_weekday(iso):
-    """Saturday, Sunday... spelt out.
+    """Saturday, Sunday... spelled out.
 
     The index abbreviates because it repeats the word 710 times down a column
     and the abbreviation is unambiguous there. A masthead says it once, so it
@@ -4649,7 +4649,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* The best version gets a line rather than a fifth card: it is a date, a
    place, a score and two links, none of which fit a card built for one
    number. */
-/* A stub, not a callout. The tinted panel with a coloured left border was the
+/* A stub, not a callout. The tinted panel with a colored left border was the
    one object on the site that looked like a framework component; it reads in
    the same field language as the row above it now -- label, value, no fill. */
 .best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;
@@ -4683,7 +4683,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft)}
-/* Below the best version now, beside the list it summarises: "most often out
+/* Below the best version now, beside the list it summarizes: "most often out
    of / into" is a reading of the Before / after column, so it belongs next to
    that column rather than between the title and the figures. */
 .pairs{margin:1.4rem 0 0}
@@ -4865,7 +4865,7 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    color:var(--dim);margin-right:.4rem}
 .gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 /* The one card whose number arrives after the page does. Same shape as its
-   four neighbours so its appearance is a card filling in, not the row
+   four neighbors so its appearance is a card filling in, not the row
    reflowing around a new one. */
 .card.since.over .num{color:var(--hot)}
 /* The verdict rides in the label, which the hero can now afford to let wrap:
@@ -5007,7 +5007,7 @@ details.jam summary:focus-visible,
 details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
 .empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
 /* The header a reader keeps once the real one has scrolled away. Landing on a
-   row from a report's link otherwise drops you into an unlabelled list of
+   row from a report's link otherwise drops you into an unlabeled list of
    dates with no way to tell what page you are on. It carries the song and the
    figure the page exists for, and nothing else. */
 .stuck{position:fixed;top:0;left:0;right:0;z-index:20;
@@ -5472,7 +5472,7 @@ def countable_gaps(doc, counting=None):
     """The performances and gaps a song's own figures are computed from.
 
     Two exclusions, and both matter. Anything the counting calendar does not
-    hold is not a performance the rest of the site would recognise. And the
+    hold is not a performance the rest of the site would recognize. And the
     debut's own gap is not a gap *between two performances of this song* -- it
     counts shows since the band's first show, so Johnny B. Goode's debut
     carries 954 where its real longest gap is 927.
@@ -5663,7 +5663,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
         # which is a night the band played but not one this archive holds a Joy
         # performance for -- likewise Rift, Axilla, Free, Sleep, Waves and six
         # more. The link went to a fragment no element carried, so it landed at
-        # the top of the page: the exact behaviour the comment above says it
+        # the top of the page: the exact behavior the comment above says it
         # was added to fix. Plain text when we cannot point at the row, which
         # is this file's rule everywhere else -- say less rather than say wrong.
         anchored = any(p["date"] == top["date"] for p in perfs)
@@ -5671,7 +5671,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
                 if anchored else "<span class='when'>%s</span>" % top["date"])
         # One line, not four stacked label/value pairs. Three of those four
         # captions were naming a thing the reader can already identify: every
-        # row below puts a venue in the same slot without labelling it, and
+        # row below puts a venue in the same slot without labeling it, and
         # "Rated 83" is the phrasing the rows themselves use for a score. Only
         # "Best version" says something the values do not, so only it survives
         # as a caption. 170px of front matter on a phone for four words of
@@ -5765,7 +5765,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
                "&mdash;</span></span>")
         pos = _band_pos(g, low, high) if (g is not None and not debut) else None
         if pos is not None:
-            # Coloured by where it landed rather than by the size of the
+            # Colored by where it landed rather than by the size of the
             # number, so it cannot disagree with its own position.
             where = "early" if pos < 30 else "late" if pos > 70 else "usual"
             bar = ("<span class='bar'><span class='track'>"
@@ -5846,7 +5846,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
         # markup, so searching still reaches the hidden half.
         # phish.net's footnote first -- it is terse and about the performance --
         # then the jamchart prose, which is longer and about the playing. Each
-        # labelled, because unlabelled they read as one run-on paragraph.
+        # labeled, because unlabeled they read as one run-on paragraph.
         jam = ""
         for cls, tag, text in (("note", "Note", p.get("note")),
                                ("jam", "Jam chart", p.get("jam"))):
@@ -5892,7 +5892,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
     # Only where there are bars for it to be a gridline on. Without a band no
     # row draws a track at all -- every one is the no-range dash -- so the
     # header was promising "mark at median 8" over a column that had no marks
-    # in it. Rare while the ten-year window travelled with each song, because
+    # in it. Rare while the ten-year window traveled with each song, because
     # a song's own last performance always fell inside its own window; with
     # the window anchored to the archive it is every song that has been away
     # for the whole ten years, which is 51 of them.
@@ -5953,7 +5953,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
     n = len(countable)
     # What it usually sits between. Counted from the same rows the page
     # already prints, so nothing new is fetched or stored.
-    before, after = neighbours(perfs, counting)
+    before, after = neighbors(perfs, counting)
     pairs = ""
     if before or after:
         def _side(label, items):
@@ -6164,7 +6164,7 @@ DUE_SHELL = """<!DOCTYPE html>
 <p class="show">{subtitle}</p>
 <p class="dek">Songs you are expecting: ones the band plays often enough to
 have a habit, which are now a little past it. Measured against each
-song&rsquo;s own recent gaps rather than one number for the whole catalogue
+song&rsquo;s own recent gaps rather than one number for the whole catalog
 &mdash; a staple is late at eight shows and a rarity is not late at eighty.
 The figure on the right is how far past: 2&times; means it has now been twice
 this song&rsquo;s usual gap, which is printed under it.</p>
@@ -6621,7 +6621,7 @@ DORMANT_CSS = INDEX_CSS + """
    the thing the page is sounding an alarm about and the order the list is in.
    Here the figure is neither: the list is ordered by year, and a play count is
    a description rather than a warning. A page of 281 rows all shouting in the
-   accent colour spends it on everything and therefore on nothing. */
+   accent color spends it on everything and therefore on nothing. */
 .due.dormant .d-n > b{color:var(--ink)}
 """
 
@@ -6848,7 +6848,7 @@ def render_dormant(docs, counting, since):
     # The third cell carries the section heading verbatim, which it could not
     # when that heading was three words long: a hero label is a caption set at
     # .625rem in caps, and the old "ONE OR TWO NIGHTS" wrapped to two lines at
-    # every width the site supports while its three neighbours held one.
+    # every width the site supports while its three neighbors held one.
     # "ONCE OR TWICE" fits, so the cell and the heading it links to are now
     # one string rather than an abbreviation and its original.
     stopped, rare, few = parts
@@ -7374,7 +7374,7 @@ def render_songs(docs, stamp=None, card=None, counting=None,
     # site", which is a sentence this page never says. And the score is
     # fouldomain's, not this archive's -- a hero is where a site states what it
     # thinks, and that cell handed the largest type on the page to someone
-    # else's judgement of one performance. None of that removes the fact from
+    # else's judgment of one performance. None of that removes the fact from
     # the site: every row still carries its own best score, and "Highest rated"
     # is one of the five sorts directly below. A sort answers this for all 589
     # songs, which is the right shape for the question; a hero answered it for
@@ -7404,7 +7404,7 @@ def render_songs(docs, stamp=None, card=None, counting=None,
     hero = hero_html(cards)
     # "589 songs, played 37,169 times" attaches the verb to the nearest noun a
     # reader can find, and the nearest noun is singular: it reads as one song
-    # played 37,169 times. The count is of performances across the catalogue,
+    # played 37,169 times. The count is of performances across the catalog,
     # so it says performances, and "between them" puts the 589 back in charge
     # of the number.
     subtitle = ("%d song%s &middot; %s performance%s between them"
@@ -8082,7 +8082,7 @@ it; nothing here is counted a second time.</p>"""),
 <p>Under each gap is that song's usual one &mdash; the median of its gaps over
 the <b>ten years</b> before the show, not over all of history. Forty years of a
 working band is several different bands. The 1990s dominate any all-time
-figure, when they played far more shows a year out of a smaller catalogue, so
+figure, when they played far more shows a year out of a smaller catalog, so
 all-time gaps run much shorter and better than half of everything came out
 overdue &mdash; a word that means nothing if it fits three songs in five.</p>
 <p>Counting a fixed number of past performances instead does not fix it: twenty
@@ -8161,7 +8161,7 @@ defensible totals for how many shows the band has played: <span
 class="num">2,239</span> entries listed, <span class="num">2,114</span> that
 count toward statistics, and <span class="num">2,106</span> distinct dates
 among those. They differ by soundchecks, television and radio sessions,
-cancelled dates, and nights when two separate shows were played.</p>
+canceled dates, and nights when two separate shows were played.</p>
 <p>The disagreement reaches the beginning. <b>1983-10-30</b>, the show
 generally called Phish's first, is one phish.net excludes from statistics, so a
 count built on that flag declares the <em>second</em> show to be number one and
@@ -8197,7 +8197,7 @@ both were overdue rather than bustouts, because both were still in the band's
 rotation.</p>
 <p>Within the bustout branch the gap alone decides it, with no test on how
 often the song was ever played: a gap counts shows, so a large one already
-proves the song has been in the catalogue a long while, and nothing newly
+proves the song has been in the catalog a long while, and nothing newly
 written can reach the threshold.</p>"""),
     # The one section whose prose states the thresholds, so it is the one built
     # from them rather than written out. `.format` and not `%`: this text is a
@@ -8459,7 +8459,7 @@ one not played in ten years at all. The statistics say which.</p>"""),
     ("due", "What does &ldquo;due&rdquo; mean, and why is a song that has been"
             " gone for years not on the list?", """
 <p>Due means past its own recent usual gap &mdash; measured against that
-song&rsquo;s habit, not against a single number for the whole catalogue. A
+song&rsquo;s habit, not against a single number for the whole catalog. A
 staple is late at eight shows and a rarity is not late at eighty.</p>
 <p><em>Recent</em> means the last ten years of shows, counted back from the
 newest show in the archive rather than from the song&rsquo;s own last night on
@@ -8674,7 +8674,7 @@ CARD_CSS = """
 *{box-sizing:border-box;margin:0}
 body{background:#e9e3d6;font-family:'IBM Plex Mono',ui-monospace,monospace}
 /* The bottom padding is the wordmark's strip, reserved. The wordmark is
-   positioned absolutely and the content is centred in the box, so a title that
+   positioned absolutely and the content is centered in the box, so a title that
    took three lines pushed the figures down onto it -- "The Inner Reaches of
    Outer" printed POSSUMLOGIC hard against TIMES PLAYED. Centring inside a box
    that stops short of the wordmark cannot collide with it at any title length,
@@ -8951,7 +8951,7 @@ def site_paths(site_dir, date):
 # build time rather than anything as polite as a skip.
 #
 # Kept after the move to data/shows/, where nothing else lives and it therefore
-# guards nothing. It is what migrate_show_data() recognises a stray report by,
+# guards nothing. It is what migrate_show_data() recognizes a stray report by,
 # and a directory that holds one kind of file is worth asserting rather than
 # assuming.
 REPORT_NAME = re.compile(r"^\d{4}-\d{2}-\d{2}\.json$")
@@ -9011,7 +9011,7 @@ def write_grain(site_dir, size=140):
     single pixels from 19 to 232 on a 0-255 scale -- straight over the paper at
     28% opacity, which lifted the dark palette's #131210 to a measured #2d2c2a
     and muddied the light one. Texture should be felt rather than seen; this is
-    a narrow band around mid-grey, and the blend mode in fonts.css decides which
+    a narrow band around mid-gray, and the blend mode in fonts.css decides which
     way it pushes.
 
     Deterministic, so a rebuild does not produce a new file and republish it.
@@ -9330,7 +9330,7 @@ def phishin_dates(site_dir):
 def fetch_phishin(site_dir, **kw):
     """Refresh the list of shows phish.in has. -> the set of dates.
 
-    Three calls at a thousand a page for the whole catalogue, which is cheaper
+    Three calls at a thousand a page for the whole catalog, which is cheaper
     than asking about one show and far cheaper than being wrong: a link to
     phish.in for a show they do not have is a 404, and the show most likely to
     be missing is the one being played tonight, which is exactly the page most
@@ -9422,7 +9422,7 @@ def save_song_history(site_dir, slug, song, rows, artist=None, best=None):
     held = song_history(site_dir, slug) or {}
     if best is None:
         best = held.get("best") or []
-    # Neighbours cost a call per show to work out and are not in this response,
+    # Neighbors cost a call per show to work out and are not in this response,
     # so a history rewritten from the API carries forward the ones it had
     # rather than making the twenty-minute backfill run again.
     keep = {p["date"]: {k: p[k] for k in NB_CARRY if k in p}
@@ -9557,7 +9557,7 @@ WATCH_RULES = (
 SCHEDULE = ("data", "schedule.json")
 
 # phish.net logs unnamed improvisation under the title "Jam", which makes it
-# the 125th most played "song" in the catalogue with 93 performances. It is not
+# the 125th most played "song" in the catalog with 93 performances. It is not
 # a composition, so every figure on its page answers a different question than
 # the same figure does anywhere else: its median gap is how often the band
 # improvises without naming what came out, not how often they play a song.
@@ -9631,14 +9631,61 @@ def next_show(site_dir, now=None):
     return next((s for s in shows if s.get("date", "") >= now), None)
 
 
-def watching(site_dir, now=None):
+def released(site_dir, live, quiet=None):
+    """True when the watcher may stop polling every show in `live`.
+
+    Deliberately *not* `provisional`, and this distinction is the whole point.
+    `settle()` releases the page half an hour after an encore is recorded,
+    because an encore is the band saying the show is over and holding the page
+    at "still coming in" for two more hours is wrong for most of that time.
+    That shortcut is safe for a label, which the next pass can take back. It is
+    not safe for the watcher, because the watcher leaving is what stops the
+    next pass happening.
+
+    Ian, who has been to them: encores of six or seven songs exist. They are
+    exceedingly rare and they run close to an hour. Songs arriving keep
+    resetting `count_since`, so a long encore does not trip this on its own --
+    but phish.net posting the first encore song and then straggling for over
+    half an hour would, and that is ordinary. So the watcher holds for the full
+    QUIET_HOURS of stillness whether or not an encore is on the record, and
+    ignores the shortcut that exists for the reader's benefit.
+
+    Costs about an hour of runner time against releasing on `provisional`, and
+    still exits hours before the 7h30m window closes.
+
+    A show with no report, or no `count_since` to measure from, is not
+    released. That is the whole first hour of every night.
+    """
+    if not live:
+        return False
+    quiet = quiet or datetime.timedelta(hours=QUIET_HOURS)
+    now = _utcnow()
+    for s in live:
+        rep = archived(site_dir, s["date"])
+        if not rep:
+            return False
+        since = _ts(rep.get("count_since"))
+        if not since or now - since < quiet:
+            return False
+    return True
+
+
+def watching(site_dir, now=None, lead=0):
     """Scheduled shows whose watch window contains `now`. Usually empty.
 
     This is the whole gate: a run that finds nothing here has done no API call
     and can stop. Reading a file the repo already holds is the cheapest
     possible answer to "is anything happening", and on most days it is no.
+
+    `lead` opens each window early, in minutes. The watcher's cron fires about
+    13% of the time it is scheduled to, and the window opens only half an hour
+    before the first song is usually posted -- so on the three show nights
+    measured it started 6, 10 and 14 minutes late, which was luck rather than
+    margin. Starting early costs runner time and buys the show's opening.
     """
     now = now or _utcnow()
+    if lead:
+        now = now + datetime.timedelta(minutes=lead)
     path = os.path.join(site_dir, *SCHEDULE)
     if not os.path.isfile(path):
         return []
@@ -9711,7 +9758,7 @@ def fetch_schedule(site_dir, apikey, artist="Phish", **kw):
 #
 # phish.net flags the shows that do not count toward statistics. Of the 289
 # Phish shows it lists for 2020-2026, 39 carry exclude_from_stats: 27 are the
-# cancelled 2020 Summer Tour dates that became the Dinner and a Movie webcasts,
+# canceled 2020 Summer Tour dates that became the Dinner and a Movie webcasts,
 # which are replays of shows already in the record and would otherwise inflate
 # every gap spanning that summer. The flag is phish.net's own judgment about
 # what counts, which is a better thing to defer to than a rule of our own.
@@ -9961,21 +10008,37 @@ def archived_history(site_dir, slug, date):
              "gap": p.get("gap"), "out": p.get("out") or ""} for p in perfs]
 
 
-# The running order of every show we have ever walked, kept beside the code
-# rather than under site/ because it is a build input and readers never see it.
-# Absolute, from this file: the workflows and publish.sh run from the repo root
-# but a run from anywhere else must find the same archive, and silently walking
-# zero shows because the relative path missed is precisely the kind of quiet
-# nothing this project keeps paying for.
-ORDER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "archive", "setlist-order.json")
+# The running order of every show we have ever walked, under site/data with the
+# rest of the archive. It lived in a top-level archive/ for a day, on the theory
+# that site/ is what readers see and this is a build input. That theory does not
+# survive measurement: of site/data's 19 MB, only data/shows and current.json
+# are ever fetched by a page -- data/songs is 10 MB that no reader has ever
+# requested. .gitignore has said the real rule the whole time, that "site/data
+# is the archive that regenerates them". Being published costs 3.5 MB on a
+# 228 MB tree and buys the thing that matters: the workflows already commit
+# site/data, so CI keeps this file without a special case, and it takes
+# `site_dir` like every other archive path instead of an absolute one derived
+# from __file__.
+def order_path(site_dir):
+    return os.path.join(site_dir, "data", "setlist-order.jsonl")
+
+
 # The only five fields kept. Everything else the endpoint returns is either
-# already in the archive or of no use here; see archive/README.md.
+# already in the archive or of no use here; see docs/setlist-order.md.
 ORDER_FIELDS = ("set", "position", "slug", "song", "trans_mark")
 
 
 def order_rows(rows, artist="Phish"):
-    """One show's running order, reduced to the five fields worth keeping."""
+    """One show's running order, reduced to the five fields worth keeping.
+
+    `trans_mark` is stripped, because phish.net sends it padded inconsistently
+    -- ", " and "," and " > " and ">" all appear -- and both readers of this
+    field strip it anyway. Storing the padded form meant the same show
+    re-derived from the same response did not equal what was on disk, so the
+    write-if-changed guard in --catch-up would have rewritten a date that had
+    not moved. 380 of the archive's 39,774 rows were stored padded; they
+    normalize on the next write of their date.
+    """
     rows = [r for r in rows
             if r.get("song") and (not artist or r.get("artist_name") == artist)]
     rows.sort(key=lambda r: (SET_ORDER.get(str(r.get("set")), 9),
@@ -9984,49 +10047,70 @@ def order_rows(rows, artist="Phish"):
              "position": int(r.get("position") or 0),
              "slug": r.get("slug") or r.get("song") or "",
              "song": r.get("song") or "",
-             "trans_mark": r.get("trans_mark") or ""}
+             "trans_mark": (r.get("trans_mark") or "").strip()}
             for r in rows]
 
 
-def setlist_order(path=None):
+def setlist_order(site_dir, path=None):
     """{date: rows} for every show the extract holds, or {} if it is missing.
 
     Missing is not an error. It costs API calls, not correctness -- every date
     absent here is simply fetched -- so a checkout without the archive still
     builds, just slowly.
+
+    One JSON object per line, `{"date": ..., "rows": [...]}`. A damaged line is
+    skipped rather than failing the read: the file's whole purpose is to save
+    API calls, so 2,007 usable dates and one refetch beats none.
     """
-    path = path or ORDER_PATH
+    path = path or order_path(site_dir)
     if not os.path.isfile(path):
         return {}
+    shows, bad = {}, 0
     with open(path, encoding="utf-8") as fh:
-        try:
-            return json.load(fh).get("shows") or {}
-        except ValueError:
-            log("warning: %s is not readable JSON; walking without it", path)
-            return {}
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+                shows[rec["date"]] = rec["rows"]
+            except (ValueError, KeyError, TypeError):
+                bad += 1
+    if bad:
+        log("warning: %s has %d unreadable line%s; those dates will be refetched",
+            path, bad, "" if bad == 1 else "s")
+    return shows
 
 
-def save_setlist_order(shows, path=None, artist="Phish"):
+def save_setlist_order(shows, site_dir, path=None):
     """Write the extract back, whole, via a temporary file.
 
-    Whole because it is one JSON document, and via a temporary file because a
-    3 MB write interrupted half way would leave the record of 1,966 walked
-    shows truncated -- and this file exists so those shows never have to be
-    fetched again.
+    One line per date, sorted by date, because the reason this is line-oriented
+    is the diff. A backfilled show lands mid-history, and as a single JSON
+    document that read as one changed line of 3.3 MB -- git's own --numstat
+    called it "1 line" either way, so a pull request summary looked harmless
+    and the diff itself was 7 MB of unreadable. One date per line makes the
+    same insert a one-line diff of about 1 KB.
+
+    Whole rather than appended because a backfill inserts in the middle, and a
+    file that is only correct when writes arrive in date order is a file that
+    silently stops being sorted. Via a temporary file because a write
+    interrupted half way would leave the record of 2,008 walked shows
+    truncated -- and this file exists so those shows are never fetched twice.
     """
-    path = path or ORDER_PATH
+    path = path or order_path(site_dir)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    doc = {"artist": artist, "endpoint": "setlists/showdate/<date>",
-           "fields": list(ORDER_FIELDS), "shows": shows}
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:
-        json.dump(doc, fh, sort_keys=True, separators=(",", ":"))
+        for date in sorted(shows):
+            fh.write(json.dumps({"date": date, "rows": shows[date]},
+                                sort_keys=True, separators=(",", ":")) + "\n")
     os.replace(tmp, path)
     log("archive: running order for %d show%s",
         len(shows), "" if len(shows) == 1 else "s")
 
 
-def setlist_neighbours(rows, artist=None):
+def setlist_neighbors(rows, artist=None):
     """What each song followed and led into, per slug, for one show.
 
     Within a set, `prev`/`next` and the mark that joins them. Across a set
@@ -10057,7 +10141,7 @@ def setlist_neighbours(rows, artist=None):
     difference between "this setlist says the song opened its set" and "this
     setlist did not mention the song at all", and the caller needs it: it used
     to record both as asked-and-answered, so a show fetched while it was still
-    being typed up locked in an answer of "no neighbours" that no later run
+    being typed up locked in an answer of "no neighbors" that no later run
     would revisit.
     """
     rows = [r for r in rows
@@ -10091,7 +10175,7 @@ def setlist_neighbours(rows, artist=None):
     return out
 
 
-def apply_neighbours(perf, found, settled=True):
+def apply_neighbors(perf, found, settled=True):
     """Write one walk's answer onto one performance, replacing the last one.
 
     Cleared before updating rather than merged over: a key this walk did not
@@ -10114,8 +10198,8 @@ def apply_neighbours(perf, found, settled=True):
         perf.pop("nb", None)
 
 
-def record_neighbours(site_dir, date, rows, artist=None, settled=True):
-    """Write one show's neighbours into the songs that were played in it.
+def record_neighbors(site_dir, date, rows, artist=None, settled=True):
+    """Write one show's neighbors into the songs that were played in it.
 
     Free. The setlist that built the report is already in hand, so this is the
     walk `--seed-setlists` does, done at the moment the show is fetched rather
@@ -10130,7 +10214,7 @@ def record_neighbours(site_dir, date, rows, artist=None, settled=True):
     Everything else is true as soon as the song after it exists, so the column
     fills in live.
     """
-    nb = setlist_neighbours(rows, artist)
+    nb = setlist_neighbors(rows, artist)
     wrote = 0
     for slug, found in nb.items():
         doc = song_history(site_dir, slug)
@@ -10140,7 +10224,7 @@ def record_neighbours(site_dir, date, rows, artist=None, settled=True):
         for p in doc["performances"]:
             if p["date"] != date:
                 continue
-            apply_neighbours(p, found, settled)
+            apply_neighbors(p, found, settled)
             hit = True
         if not hit:
             continue
@@ -10149,27 +10233,27 @@ def record_neighbours(site_dir, date, rows, artist=None, settled=True):
                         doc["performances"], doc.get("best") or [])
         wrote += 1
     if wrote:
-        log("neighbours: %s on %d song%s%s", date, wrote,
+        log("neighbors: %s on %d song%s%s", date, wrote,
             "" if wrote == 1 else "s",
             "" if settled else " (show still on; not final)")
     return wrote
 
 
-NEIGHBOUR_FLUSH = 150
+NEIGHBOR_FLUSH = 150
 
 
 def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     """Backfill what came before and after each archived performance.
 
-    Walked from `archive/setlist-order.json` wherever it reaches, and fetched
-    only where it does not -- so changing the neighbour rules and re-walking
+    Walked from `site/data/setlist-order.jsonl` wherever it reaches, and fetched
+    only where it does not -- so changing the neighbor rules and re-walking
     all 1,966 shows with `--force` costs nothing and needs no API key.
 
     One setlist call per distinct show not in that archive. Every row a call
     covers is marked
     asked, on the row itself rather than in an index of dates: a date index
     cannot tell "asked, and this song opened the set" from "never asked", so
-    adding songs later left them with no neighbours on dates the index already
+    adding songs later left them with no neighbors on dates the index already
     called done -- 88 songs added in one backfill came out at 0.3% covered.
 
     Flushed in batches, because twenty minutes of fetching should not have to
@@ -10184,7 +10268,7 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     todo = sorted({p["date"] for d in songs.values() for p in d["performances"]
                    if force or not p.get("nb")})
     if not todo:
-        log("neighbours: nothing to walk")
+        log("neighbors: nothing to walk")
         return 0
 
     # The running order we already own. A date in here costs nothing, which is
@@ -10200,11 +10284,11 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     # 2026-07-29, and it would not even have the decency to expire. So a show
     # whose report is still provisional is always re-fetched, and what comes
     # back replaces what the extract held.
-    order = setlist_order()
+    order = setlist_order(site_dir)
     unsettled = {r["date"] for r in saved_reports(site_dir)
                  if r.get("provisional")}
     have = sum(1 for d in todo if d in order and d not in unsettled)
-    log("neighbours: %d show%s to walk, %d from the archive, %d to fetch",
+    log("neighbors: %d show%s to walk, %d from the archive, %d to fetch",
         len(todo), "" if len(todo) == 1 else "s", have, len(todo) - have)
     pending, walked, fetched, missed, absent, grew = {}, 0, 0, [], 0, False
 
@@ -10237,7 +10321,7 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
             except ApiError as exc:
                 missed.append("%s (%s)" % (date, exc))
                 continue
-            nb = setlist_neighbours(rows, artist)
+            nb = setlist_neighbors(rows, artist)
             kept = order_rows(rows, artist)
             if date in unsettled:
                 # A show still being played is never written down here. Its
@@ -10254,19 +10338,19 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
         else:
             # No artist filter: the extract is one artist already and does not
             # carry `artist_name`, so filtering on it would empty every row.
-            nb = setlist_neighbours(rows)
+            nb = setlist_neighbors(rows)
         for slug, doc in songs.items():
             for p in doc["performances"]:
                 if p["date"] != date:
                     continue
                 # Marked when this setlist actually mentioned the song, whether
-                # or not it had a neighbour to report: a set opener genuinely
+                # or not it had a neighbor to report: a set opener genuinely
                 # has nothing before it and must not be asked again every run.
                 #
                 # Not marked when the setlist never mentioned it. That reading
                 # is not an answer, and recording it as one is what emptied the
                 # Before / after column on songs that have never once been
-                # played without a neighbour. Colonel Forbin's Ascent > Fly
+                # played without a neighbor. Colonel Forbin's Ascent > Fly
                 # Famous Mockingbird is the same pair every time it is played,
                 # and 75 of the Mockingbird's 131 performances showed nothing,
                 # because those shows were read at a moment the song was not in
@@ -10280,15 +10364,15 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
                 # would otherwise stamp "closed the show" on whatever song was
                 # last at that moment and mark the date answered, which is the
                 # one state no later run would revisit.
-                apply_neighbours(p, nb[slug], date not in unsettled)
+                apply_neighbors(p, nb[slug], date not in unsettled)
                 pending[slug] = True
         walked += 1
-        if i % NEIGHBOUR_FLUSH == 0:
+        if i % NEIGHBOR_FLUSH == 0:
             flush()
             log("  %d/%d shows", i, len(todo))
     flush()
     if grew:
-        save_setlist_order(order)
+        save_setlist_order(order, site_dir)
     if missed:
         log("warning: no setlist for %d show%s: %s",
             len(missed), "" if len(missed) == 1 else "s", "; ".join(missed[:5]))
@@ -10297,10 +10381,10 @@ def seed_setlists(site_dir, apikey=None, artist="Phish", force=False, **kw):
     # that does not fall over successive runs means the archive and phish.net
     # genuinely disagree about who played what, which is worth knowing.
     if absent:
-        log("neighbours: %d performance%s not in the setlist fetched for its "
+        log("neighbors: %d performance%s not in the setlist fetched for its "
             "own date; left unmarked to ask again", absent,
             "" if absent == 1 else "s")
-    log("neighbours: %d show%s walked, %d of them fetched",
+    log("neighbors: %d show%s walked, %d of them fetched",
         walked, "" if walked == 1 else "s", fetched)
     return walked
 
@@ -10537,7 +10621,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     re-render every page after a template change without touching the API.
     """
     os.makedirs(show_data_dir(site_dir), exist_ok=True)
-    # Archive everything first, provisional included, so the neighbour map that
+    # Archive everything first, provisional included, so the neighbor map that
     # the prev/next links need is built from the whole published site at once.
     for report in reports:
         _, blob = site_paths(site_dir, report["date"])
@@ -10554,7 +10638,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                   order[i + 1] if i + 1 < len(order) else None)
               for i, d in enumerate(order)}
 
-    # A new show gives its neighbour a next link it did not have, so that page
+    # A new show gives its neighbor a next link it did not have, so that page
     # is stale too. --rebuild rewrites the lot regardless.
     fresh = {r["date"] for r in reports}
     stale = set(fresh)
@@ -10762,7 +10846,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # saved report, and the page then covers the years the archive reaches
     # rather than the career -- shorter, and honest about being shorter,
     # because every figure on it is stated against the nights it read.
-    read = year_order(setlist_order(), counting, known)
+    read = year_order(setlist_order(site_dir), counting, known)
     if read:
         years_page = os.path.join(site_dir, "years.html")
         if write_if_changed(years_page, render_years(
@@ -10999,7 +11083,7 @@ def _pdf_via_weasyprint_cli(markup, path, base_url, single_page=False):
 
 
 # Chrome has no single-page switch, so the document measures itself and sets
-# @page before printing. Needs preferCSSPageSize, which --print-to-pdf honours.
+# @page before printing. Needs preferCSSPageSize, which --print-to-pdf honors.
 MEASURE_JS = """<script>
 (function(){
   var d=document.documentElement, b=document.body;
@@ -11163,7 +11247,17 @@ def main():
     ap.add_argument("--watching", action="store_true",
                     help="with --site, print watching=true when a scheduled "
                          "show is inside its watch window and watching=false "
-                         "otherwise, then exit (no API calls)")
+                         "otherwise, then exit (no API calls). Also prints "
+                         "released=, which is true once every show in the "
+                         "window has been still for QUIET_HOURS -- the "
+                         "watcher's stop signal, held longer than the page's "
+                         "because leaving is what stops corrections arriving")
+    ap.add_argument("--lead", type=int, default=0, metavar="MINUTES",
+                    help="with --watching, treat a window as open this many "
+                         "minutes early. The watcher uses it to be already "
+                         "running when the first song is posted, because its "
+                         "cron fires about 13%% of the time and a show only "
+                         "gives it half an hour of slack")
     ap.add_argument("--phishin", action="store_true",
                     help="with --site, refresh the list of shows phish.in has "
                          "audio for, so links to them are only shown when they "
@@ -11232,7 +11326,7 @@ def main():
     if args.watching:
         if not args.site:
             sys.exit("error: --watching needs --site DIR")
-        live = watching(args.site)
+        live = watching(args.site, lead=args.lead)
         for s in live:
             w = watch_window(s)
             log("show in progress: %s %s (%s) -- window %s to %s UTC",
@@ -11242,11 +11336,22 @@ def main():
             nxt = next_show(args.site)
             log("nothing playing%s", " -- next is %s %s" % (nxt["date"], nxt["venue"])
                 if nxt else "")
-        # stdout stays machine-readable: a workflow reads this one line. Named
-        # for what it actually reports -- whether a scheduled show is inside
-        # its watch window right now -- and not for what a caller might do
-        # about it, which is the caller's question and has other answers.
+        done = released(args.site, live)
+        if live:
+            log("released: %s", "yes -- safe to stop polling"
+                if done else "no -- still watching")
+        # stdout stays machine-readable: a workflow reads these lines. Named
+        # for what they actually report -- whether a scheduled show is inside
+        # its watch window right now, and whether every such show has stopped
+        # changing -- and not for what a caller might do about it, which is
+        # the caller's question and has other answers.
+        #
+        # Two lines rather than one because they answer different questions
+        # and the callers differ: the gate wants `watching`, the watcher's loop
+        # wants `settled` to stop early. Both are parsed with `cut -d= -f2`
+        # after a `grep`, so adding a line cannot break a reader of the other.
         print("watching=%s" % ("true" if live else "false"))
+        print("released=%s" % ("true" if done else "false"))
         return
     if args.recheck and not args.catch_up:
         sys.exit("error: --recheck only means something with --catch-up")
@@ -11260,6 +11365,10 @@ def main():
         sys.exit("error: --html and --pdf point at the same file")
 
     reports, key, dates, recheck = [], None, list(args.showdate), set()
+    # Running orders picked up by the fetch loop below, saved once after it
+    # rather than per show: the extract is one file and rewriting it inside
+    # the loop would write it once per date for nothing.
+    fresh_order = {}
     # What the archive already holds, which the fetch loop below consults to
     # decide whether a setlist may come from the cache. Bound here rather than
     # only under --catch-up because every path reaches that loop.
@@ -11351,10 +11460,37 @@ def main():
                 # without it the songs of a brand-new show have no archived
                 # history for these to be written into.
                 if args.previous:
-                    record_neighbours(args.site, report["date"], setlist,
-                                      artist=args.artist,
-                                      settled=not report.get("provisional"))
+                    record_neighbors(args.site, report["date"], setlist,
+                                     artist=args.artist,
+                                     settled=not report.get("provisional"))
+                # Free, and for the same reason record_neighbors above is:
+                # the setlist that built the report is already in hand, so the
+                # running order costs no call. Without this the extract only
+                # grew when somebody ran --seed-setlists by hand, so it lagged
+                # by however many nights since -- and the whole point of it is
+                # that a change to the neighbor rules re-walks every show for
+                # nothing. A night it is missing is a night that costs a call.
+                #
+                # Settled shows only, which is the rule the extract has always
+                # had: it is a cache with no expiry, so a show written down at
+                # the 12 songs it had mid-performance would be believed at 12
+                # songs forever. The first harvest did exactly that.
+                if not report.get("provisional"):
+                    kept = order_rows(setlist, args.artist)
+                    if kept:
+                        fresh_order[report["date"]] = kept
             reports.append(report)
+
+        # After the fetch loop, so the file is written once however many shows
+        # were caught up, and only when a date is genuinely new or has changed
+        # -- a --catch-up that finds nothing new must not touch it, or every
+        # run puts a fresh commit in the archive saying nothing.
+        if fresh_order:
+            order = setlist_order(args.site)
+            changed = {d: r for d, r in fresh_order.items() if order.get(d) != r}
+            if changed:
+                order.update(changed)
+                save_setlist_order(order, args.site)
 
         if args.seed_songs:
             # After the fetch loop, so anything new tonight is already archived

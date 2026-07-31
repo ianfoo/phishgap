@@ -64,7 +64,7 @@ index pattern is:
 ## Conventions in this codebase, learned the hard way
 
 - Palette comes from the `LIGHT`/`DARK` dicts; the dark blocks are generated so
-  the two never drift. Never hardcode a colour.
+  the two never drift. Never hardcode a color.
 - Everything dark-mode is scoped to `@media screen` so print and PDF stay on
   paper stock.
 - A table column sized in percent cannot hold text sized in rem. Below some
@@ -73,7 +73,7 @@ index pattern is:
   end, into the next column. Either let it wrap or gate it on a width.
 - Narrow viewports drop table layout entirely for a stacked grid, so rules span
   the full width. See the `max-width:620px` block.
-- Verify at 320px and at desktop, in both colour schemes, and check the PDF.
+- Verify at 320px and at desktop, in both color schemes, and check the PDF.
   Measure with Ranges rather than element boxes — a block child fills its cell
   regardless of how wide its text is, so box measurements hide overflow.
 - Hover targets: put `title` on a whole cell, never on a small mark.

@@ -2,17 +2,24 @@ name: possum logic
 
 on:
   schedule:
-    # Every five minutes across the UTC hours a show anywhere from the east
-    # coast to the west can be playing or settling. Almost every one of these
-    # runs does nothing: the first step reads site/data/schedule.json, finds no
-    # show inside its watch window, and the rest of the job is skipped. That
-    # check makes no API call and no network request of any kind.
+    # The sentinel. Across the UTC hours a show anywhere from the east coast to
+    # the west can be playing, this asks one question -- is a show on, and is
+    # no watcher running -- and if the answer is yes it dispatches watch.yml.
+    # It does not archive or publish anything itself.
     #
-    # Five rather than ten because many songs are shorter than ten minutes, so
-    # a coarser poll can miss one entirely. GitHub delays scheduled runs under
-    # load, sometimes considerably, so this is a ceiling on freshness and not a
-    # promise of it.
-    - cron: "*/5 22-23,0-9 * * *"
+    # It used to be "*/5" and it used to run the whole pipeline. Measured over
+    # five days including a full Garden show, that produced exactly zero
+    # archive commits: every firing did the complete catch-up, found the
+    # watcher had done it five minutes earlier, and exited in forty seconds.
+    # A backup that has never once caught a show is not a backup, and the thing
+    # actually worth covering is the watcher failing to start at all.
+    #
+    # Staggered minutes rather than */5, for the same reason watch.yml uses
+    # them: */5 asks for :00, :05, :10 -- the most contended minutes on the
+    # platform -- and it showed. During the 2026-07-29 show it fired 13 times
+    # against ~96 scheduled. These are offset four minutes from watch.yml's
+    # 3,18,33,48, so between them something asks every seven or eight minutes.
+    - cron: "7,22,37,52 22-23,0-9 * * *"
     # Once a day regardless: refresh the announced schedule, re-fetch settled
     # shows for corrections, and catch anything the windows missed -- an
     # afternoon set, a festival, a show at a venue we had no time zone for.
@@ -31,6 +38,9 @@ on:
 
 permissions:
   contents: write
+  # To dispatch watch.yml when a show is on and no watcher is up, and to ask
+  # whether one is up in the first place.
+  actions: write
 
 concurrency:
   group: possumlogic
@@ -49,24 +59,64 @@ jobs:
       # The whole state machine, and it is a file rather than anything in
       # Actions: schedule.json says when the next shows are and what time zone
       # each venue keeps, so this asks a local question and answers it in
-      # milliseconds. The daily run never gates -- it is the sweep that catches
-      # whatever the windows did not.
-      # Two different questions, kept apart because they have different
-      # answers. `watching` is whether a show is on stage right now. `work` is
-      # whether this particular run should do anything -- which the frequent
-      # cron decides from `watching`, and which every other trigger answers yes
-      # to unconditionally, because the daily sweep and a manual run exist
-      # precisely to cover the times nothing is playing.
-      - name: Should this run do anything?
+      # milliseconds.
+      #
+      # Three roles, decided by what triggered the run. The show-hours cron is
+      # the *sentinel*: it never archives, it only makes sure a watcher is up.
+      # Everything else -- the daily sweep, a push, a manual dispatch -- is a
+      # *full* run, because those exist precisely to cover the times nothing
+      # is playing.
+      #
+      # The cron string here must match the one under `on:` exactly. It is
+      # compared, not parsed, so changing one without the other silently turns
+      # every show-hours firing into a full run.
+      - name: What should this run do?
         id: gate
         env:
           SCHEDULE: ${{ github.event.schedule }}
         run: |
-          if [ "$SCHEDULE" = "*/5 22-23,0-9 * * *" ]; then
-            watching=$(python possumlogic.py --site site --watching | cut -d= -f2)
-            echo "work=$watching" >> "$GITHUB_OUTPUT"
+          if [ "$SCHEDULE" = "7,22,37,52 22-23,0-9 * * *" ]; then
+            echo "role=sentinel" >> "$GITHUB_OUTPUT"
+            echo "work=false" >> "$GITHUB_OUTPUT"
           else
+            echo "role=full" >> "$GITHUB_OUTPUT"
             echo "work=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The sentinel, and the only thing this workflow does during a show.
+      #
+      # `--lead 30` matches watch.yml's gate, so the watcher is dispatched
+      # before the first song is posted rather than after. The in-progress
+      # check is what keeps this from starting a second watcher on top of a
+      # live one -- the concurrency group would queue it harmlessly, but a
+      # queued run that never runs is a confusing thing to leave in the tab.
+      #
+      # `gh workflow run` is not a scheduled event and is not throttled: it
+      # starts within seconds. That is the whole point. This cron fires about
+      # 13% of the time, and watch.yml's fires about 13% of the time, but
+      # either one landing is now enough to get a watcher up.
+      - name: Make sure a watcher is running
+        if: steps.gate.outputs.role == 'sentinel'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          out=$(python possumlogic.py --site site --watching --lead 30)
+          echo "$out"
+          watching=$(echo "$out" | grep '^watching=' | cut -d= -f2)
+          if [ "$watching" != "true" ]; then
+            echo "nothing playing; sentinel done"
+            exit 0
+          fi
+          live=$(gh run list --workflow watch.yml \
+                   --status in_progress --json databaseId --jq 'length' 2>/dev/null || echo 0)
+          queued=$(gh run list --workflow watch.yml \
+                   --status queued --json databaseId --jq 'length' 2>/dev/null || echo 0)
+          echo "watch.yml: $live in progress, $queued queued"
+          if [ "$live" = "0" ] && [ "$queued" = "0" ]; then
+            echo "no watcher up during a show -- dispatching one"
+            gh workflow run watch.yml --ref "$GITHUB_REF_NAME"
+          else
+            echo "a watcher is already up; nothing to do"
           fi
 
       # Pillow slices the batched preview-card screenshot; the browser that
@@ -127,6 +177,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Covers the running order too: --catch-up writes
+          # site/data/setlist-order.jsonl for every settled show it fetches,
+          # and it is under site/data precisely so this line does not have to
+          # know about it.
           git add site/data
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -146,7 +200,12 @@ jobs:
             # publish reads. On conflict it aborts and gives up rather than
             # replaying: a tree mid-rebase has conflict markers *inside* the
             # data files, and `cp -R site/.` would copy them to gh-pages
-            # verbatim. That outage has happened here once already.
+            # verbatim. That outage has happened here once already. The running
+            # order is in that blast radius now: two runs catching up the same
+            # show write identical bytes and cannot conflict, two catching up
+            # different ones can, and the abort is what keeps a half-merged
+            # extract from being published. Losing a night to the next run
+            # costs one API call.
             pushed=""
             for attempt in 1 2 3; do
               if git push -q; then pushed=yes; break; fi
