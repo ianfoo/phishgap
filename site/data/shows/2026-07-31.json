@@ -6,7 +6,7 @@
   "state": "MA",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "",
+  "notes": "<p>Trey teased Rainy Day Women #12 &amp; 35 in Back on the Train.</p>",
   "permalink": "https://phish.net/setlists/phish-july-31-2026-fenway-park-boston-ma-usa.html",
   "songs": [
     {
@@ -44,9 +44,21 @@
       "prev_place": "Columbia, MD",
       "out": "",
       "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Free",
+      "slug": "free",
+      "gap": 1,
+      "jamchart": false,
+      "prev_date": "2026-07-27",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "verdict": null
     }
   ],
-  "count_since": "2026-07-31T23:42:26+00:00",
+  "count_since": "2026-07-31T23:47:36+00:00",
   "encored": false,
   "provisional": true
 }
