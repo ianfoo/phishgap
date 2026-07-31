@@ -396,6 +396,43 @@ header{padding-bottom:.9rem}
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The measurement detail, folded away. Three paragraphs used to stand open
+   here: 835px of a 1,147px front matter on a phone, 73% of it, before the
+   first due song. And the FAQ already carries 2,930 characters on the same
+   subject against their 1,189 -- so this page was not explaining itself, it
+   was holding a shorter second copy of an answer that lives elsewhere, above
+   its own content.
+   What stays open is the one thing a reader cannot read the third column
+   without: what 2x means. The rest is one click, and the click does not leave
+   the page, which is the objection to sending it to the FAQ outright.
+   Nothing is remembered per reader. A flag that says "you have read this"
+   fails asymmetrically -- set wrongly it shows a first-time reader an
+   unlabelled table of multipliers, unset wrongly it costs one line -- and a
+   reference archive should not serve two different pages at one URL. The
+   site's own precedent argues the same way: the last per-reader flag here
+   shipped broken and stayed invisible for weeks.
+   Same <details> idiom the show pages use for long notes: no JavaScript and
+   keyboard-operable. It stays closed when printed, like every other one on
+   the site -- forcing it open needs more than hiding the summary, and a
+   half-done version that only removed the control would print a folded
+   section with no sign it folds. */
+details.how{margin:.7rem 0 0}
+/* display:block, which is the shape details.jam and details.note already use
+   on the song pages -- one idiom for disclosure on this site rather than two.
+   width:max-content keeps the rule under the words instead of across the
+   column.
+   A caution for whoever measures this next: the accessibility inspector
+   reports this summary as a plain "generic" node, and the site's existing
+   shipped details reports exactly the same way, so that reading is the tool
+   and not the markup. It was nearly written down here as a real defect. */
+details.how > summary{display:block;width:max-content;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule);cursor:pointer;
+   padding:0 0 .1rem;list-style:none}
+details.how > summary::-webkit-details-marker{display:none}
+details.how > summary::after{content:" \2193"}
+details.how[open] > summary::after{content:" \2191"}
+details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* A section heading, under the due list. At 1.5rem it was barely larger than
    the 1rem song titles it headed, which made a new section read as another
    row. 2.125rem sits clearly between the page title and the data. */
@@ -834,6 +871,7 @@ song&rsquo;s own recent gaps rather than one number for the whole catalogue
 &mdash; a staple is late at eight shows and a rarity is not late at eighty.
 The figure on the right is how far past: 2&times; means it has now been twice
 this song&rsquo;s usual gap, which is printed under it.</p>
+<details class="how"><summary>How these lists are measured</summary>
 <p class="dek">Being late is not the same as being expected, and more late is
 not more expected. A song at six times its usual gap is not one anybody is
 waiting on &mdash; it is drifting out of rotation. So past 3.5&times; a song
@@ -846,7 +884,10 @@ else here put together.</p>
 overrides every figure here &mdash; the 2021 Halloween runs built around
 numbers and animals, the elements nights of the first Sphere run, a run played
 entirely out of one decade &mdash; and the theme is usually not public before
-the show. On a night like that the list below is the wrong question.</p></header>
+the show. On a night like that the list below is the wrong question.</p>
+<p class="dek"><a href="./faq.html#due">The FAQ answers this at more
+length</a>, including why a song gone for years is not on the list.</p>
+</details></header>
 <section class="hero hero-c4"><a class='card' href='#main'><div class='lbl'>Due</div><div class='num hot'>9</div></a><a class='card' href='#slipping'><div class='lbl'>Slipping</div><div class='num'>24</div></a><a class='card' href='#shelf'><div class='lbl'>On the shelf</div><div class='num'>5</div></a><a class='card' href='./dormant.html#dormant'><div class='lbl'>Dormant</div><div class='num'>54</div></a></section>
 <div class="rule2"></div>
 <section class="rot">
@@ -864,7 +905,7 @@ the show. On a night like that the list below is the wrong question.</p></header
 <li><a class='row' href='./song/whats-going-through-your-mind.html'><span class='d-song'>What’s Going Through Your Mind</span><span class='d-last'><span class='d-date'>2026-07-18</span><span class='d-where'>Columbia, MD</span></span><span class='d-n'><b>1.6&times;</b><span class='typ'><span>7 shows since</span><span>usual gap 4.5</span></span></span></a></li>
 </ol>
 </section>
-<section class='rot'><h2 class='shelf-h' id='slipping'>Slipping</h2><p class='dek'>Well past their usual gap rather than a little past it. These could turn up, and they could equally be on their way out of rotation &mdash; either way they are not what anybody is expecting tonight. The usual gap beside each one is measured over the last ten years of its performances, so for a song this far past it, read it as the schedule the song <em>was</em> on. Called slipping rather than overdue because a show page already uses <em>overdue</em> for something narrower and different: one performance that came back later than that song usually does. Every song on this page, in both lists, would be stamped overdue if it turned up tonight.</p><div class='lhead due-h'><span>Song</span><span>Last played</span><span class='end'>How late</span></div><ol class='due'><li><a class='row' href='./song/death-dont-hurt-very-long.html'><span class='d-song'>Death Don’t Hurt Very Long</span><span class='d-last'><span class='d-date'>2024-08-07</span><span class='d-where'>Grand Rapids, MI</span></span><span class='d-n'><b>17.1&times;</b><span class='typ'><span>94 shows since</span><span>usual gap 5.5</span></span></span></a></li>
+<section class='rot'><h2 class='shelf-h' id='slipping'>Slipping</h2><p class='dek'>Well past their usual gap rather than a little past it. These could turn up, and they could equally be on their way out of rotation &mdash; either way they are not what anybody is expecting tonight. The usual gap beside each one is measured over the last ten years of its performances, so for a song this far past it, read it as the schedule the song <em>was</em> on.</p><div class='lhead due-h'><span>Song</span><span>Last played</span><span class='end'>How late</span></div><ol class='due'><li><a class='row' href='./song/death-dont-hurt-very-long.html'><span class='d-song'>Death Don’t Hurt Very Long</span><span class='d-last'><span class='d-date'>2024-08-07</span><span class='d-where'>Grand Rapids, MI</span></span><span class='d-n'><b>17.1&times;</b><span class='typ'><span>94 shows since</span><span>usual gap 5.5</span></span></span></a></li>
 <li><a class='row' href='./song/i-never-needed-you-like-this-before.html'><span class='d-song'>I Never Needed You Like This Before</span><span class='d-last'><span class='d-date'>2024-08-11</span><span class='d-where'>Bethel, NY</span></span><span class='d-n'><b>13&times;</b><span class='typ'><span>91 shows since</span><span>usual gap 7</span></span></span></a></li>
 <li><a class='row' href='./song/miss-you.html'><span class='d-song'>Miss You</span><span class='d-last'><span class='d-date'>2024-07-31</span><span class='d-where'>St. Louis, MO</span></span><span class='d-n'><b>7.3&times;</b><span class='typ'><span>99 shows since</span><span>usual gap 13.5</span></span></span></a></li>
 <li><a class='row' href='./song/party-time.html'><span class='d-song'>Party Time</span><span class='d-last'><span class='d-date'>2024-08-18</span><span class='d-where'>Dover, DE</span></span><span class='d-n'><b>6.7&times;</b><span class='typ'><span>87 shows since</span><span>usual gap 13</span></span></span></a></li>
@@ -894,6 +935,6 @@ the show. On a night like that the list below is the wrong question.</p></header
 <li><a class='row' href='./song/show-of-life.html'><span class='d-song'>Show of Life</span><span class='d-last'><span class='d-date'>2023-08-31</span><span class='d-where'>Commerce City, CO</span></span><span class='d-n'><b>4.5&times;</b><span class='typ'><span>132 shows since</span><span>usual gap 29.5</span></span></span></a></li></ol><p class='backtop'><a href='#top'>&uarr; Back to top</a></p></section>
 <p class="dek foot">A further 281 are <a href="./dormant.html">out of rotation</a> &mdash; gone long enough to be bustouts, with no recent habit to be late against at all. They are not due, they are the largest part of the catalogue, and they are not one thing: 54 were in rotation and left it, 53 were given a run that did not take, and 174 turned up on once or twice in the band&rsquo;s whole life and never again. That page keeps them apart.</p>
 <footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
-<span>Updated 2026-07-30</span></footer>
+<span>Updated 2026-07-31</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div></body></html>

@@ -396,6 +396,43 @@ header{padding-bottom:.9rem}
    border-bottom:1px solid var(--rule)}
 .dek a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 .dek.foot{margin-top:1.4rem;max-width:64ch}
+/* The measurement detail, folded away. Three paragraphs used to stand open
+   here: 835px of a 1,147px front matter on a phone, 73% of it, before the
+   first due song. And the FAQ already carries 2,930 characters on the same
+   subject against their 1,189 -- so this page was not explaining itself, it
+   was holding a shorter second copy of an answer that lives elsewhere, above
+   its own content.
+   What stays open is the one thing a reader cannot read the third column
+   without: what 2x means. The rest is one click, and the click does not leave
+   the page, which is the objection to sending it to the FAQ outright.
+   Nothing is remembered per reader. A flag that says "you have read this"
+   fails asymmetrically -- set wrongly it shows a first-time reader an
+   unlabelled table of multipliers, unset wrongly it costs one line -- and a
+   reference archive should not serve two different pages at one URL. The
+   site's own precedent argues the same way: the last per-reader flag here
+   shipped broken and stayed invisible for weeks.
+   Same <details> idiom the show pages use for long notes: no JavaScript and
+   keyboard-operable. It stays closed when printed, like every other one on
+   the site -- forcing it open needs more than hiding the summary, and a
+   half-done version that only removed the control would print a folded
+   section with no sign it folds. */
+details.how{margin:.7rem 0 0}
+/* display:block, which is the shape details.jam and details.note already use
+   on the song pages -- one idiom for disclosure on this site rather than two.
+   width:max-content keeps the rule under the words instead of across the
+   column.
+   A caution for whoever measures this next: the accessibility inspector
+   reports this summary as a plain "generic" node, and the site's existing
+   shipped details reports exactly the same way, so that reading is the tool
+   and not the markup. It was nearly written down here as a real defect. */
+details.how > summary{display:block;width:max-content;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule);cursor:pointer;
+   padding:0 0 .1rem;list-style:none}
+details.how > summary::-webkit-details-marker{display:none}
+details.how > summary::after{content:" \2193"}
+details.how[open] > summary::after{content:" \2191"}
+details.how > summary:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* A section heading, under the due list. At 1.5rem it was barely larger than
    the 1rem song titles it headed, which made a new section read as another
    row. 2.125rem sits clearly between the page title and the data. */
@@ -1216,6 +1253,6 @@ graveyard.</p></header>
 <li><a class='row' id='midnight-rider' href='./song/midnight-rider.html'><span class='d-song'>Midnight Rider</span><span class='d-last'><span class='d-date'>1994-06-22</span><span class='d-where'>Columbus, OH</span></span><span class='d-n'><b>1&times;</b><span class='typ'><span>1,235 shows since</span><span class='span'>1994</span></span></span></a></li></ol><p class='backtop'><a href='#top'>&uarr; Back to top</a></p></section>
 </div>
 <footer><span><a href="./method.html">How this works</a></span><span class='theme' role='group' aria-label='Colour theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
-<span>Updated 2026-07-30</span></footer>
+<span>Updated 2026-07-31</span></footer>
 <script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </div></body></html>

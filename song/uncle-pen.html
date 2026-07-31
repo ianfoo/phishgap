@@ -181,6 +181,13 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    letter-spacing:-.01em}
 .show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
    text-transform:uppercase;color:var(--ink-soft)}
+/* Two equal columns, not flex. Flex sized each card by its content, so the
+   rule that strips the first card's left padding made that card 21px narrower
+   than its siblings at every width -- correct under a grid, where the column
+   stays 1fr and only the content moves flush left, and wrong here, where it
+   moved the box. Measured 254 against 275 at 1280px, 174 against 195 at 860.
+   Two columns also have no bad arrangement: the five cards this replaced went
+   3+2 on the index's grid and onto one crammed line here. */
 
 /* Letterpress: a thick rule with a hairline under it. Three to a page at most
    -- a double rule that turns up six times is wallpaper. */
@@ -189,13 +196,24 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
 /* The tear line between one set and the next. Never between rows. */
 .perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
    to right,var(--edge) 0 5px,transparent 5px 10px)}
-.hero{display:flex;flex-wrap:wrap;margin:.7rem 0 .3rem;
-   border-bottom:1px solid var(--ink)}
-.card{flex:1 1 0;padding:.85rem 1.1rem;border-left:1px solid var(--rule);
-   display:flex;flex-direction:column}
+.hero{display:grid;grid-template-columns:repeat(2,1fr);
+   margin:.7rem 0 .3rem;border-bottom:1px solid var(--ink)}
+/* A one- or two-performance song still gets the old pair of narrow cards. */
+.hero.sparse{grid-template-columns:repeat(2,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column;min-width:0}
 .card:first-child{border-left:0;padding-left:0}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
    letter-spacing:0;margin-top:auto}
+/* The second half of each pair. It is the reason two cards can carry what five
+   did: the medians are one statistic over two windows and the gaps are one
+   distance at two moments, so the older reading belongs under the newer one
+   rather than in a card of its own. Also what fills the measure a bare number
+   left empty, which is what made two cards read as a hero and not as three
+   missing ones. */
+.card .sub{margin-top:.3rem;font-size:.6875rem;letter-spacing:.04em;
+   color:var(--dim);text-transform:none;line-height:1.35}
+.card .sub b{font-weight:600;color:var(--ink-soft)}
 /* The debut card goes to the debut's own row. SONG_CSS had no `a.card` rules
    at all -- this is the one sheet where a card had never been a link -- and
    writing them out here would have made an exact third copy of the show
@@ -225,20 +243,36 @@ a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
    font-size:.875rem}
 .best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
    color:var(--dim)}
-.best .field{display:flex;flex-direction:column;gap:.3rem}
+/* One flowing line rather than a row of stacked label/value columns. .field
+   is gone with the three captions that justified it; .v wraps as prose so a
+   narrow screen breaks it between middots instead of stacking four boxes. */
+.best .v{display:inline}
 .best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
 .best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot);
    font-size:1.25rem;line-height:1}
 .best .where{color:var(--dim)}
 .best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
 .best a:hover{color:var(--hot);border-bottom-color:var(--hot)}
-.links{margin:1.1rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
+/* Up under the title, and captioned. These are links about the *song*, and
+   they used to sit directly beneath the best-version block -- so Ian read them
+   as being about that one performance and could not tell without clicking.
+   Two things were wrong and both are fixed here: they were adjacent to the
+   wrong thing, and they named no referent. Moving them alone would have cured
+   only the instance. */
+.links{margin:.55rem 0 0;display:flex;flex-wrap:wrap;align-items:center;
+   gap:.4rem .55rem}
+.links .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
 .badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
    padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
    text-decoration:none;font-size:.625rem;letter-spacing:.14em;
    text-transform:uppercase}
 .badge img{display:block;width:13px;height:13px}
 .badge:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* Below the best version now, beside the list it summarises: "most often out
+   of / into" is a reading of the Before / after column, so it belongs next to
+   that column rather than between the title and the figures. */
+.pairs{margin:1.4rem 0 0}
 .tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
    margin:1.9rem 0 .9rem}
 .search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
@@ -920,12 +954,12 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 <div class="in cols"><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap</span></div></div></div>
 <div class="rule2"></div>
 <header><h1>Uncle Pen</h1>
-<p class="show">Last played 2017-08-05 &middot; 212 performances</p>
-<div class='pairs'><div class='pair'><span class='cap'>Most often out of</span><span class='ps'><span class='p'>Bouncing Around the Room<b>11&times;</b></span> <span class='p'>Suzy Greenberg<b>8&times;</b></span> <span class='p'>Horn<b>7&times;</b></span></span></div><div class='pair'><span class='cap'>Most often into</span><span class='ps'><span class='p'>Stash<b>18&times;</b></span> <span class='p'>Cavern<b>13&times;</b></span> <span class='p'>Tweezer<b>10&times;</b></span></span></div></div></header>
-<section class="hero"><a class='card dbt' href='#1990-03-28' title='Debuted 1990-03-28'><div class='lbl'>Debuted</div><div class='num'>1990</div></a><div class='card'><div class='lbl'>Median Gap, <span class='full'>Last 10 Years</span><span class='abbr'>10 Yr</span></div><div class='num'>47</div></div><div class='card'><div class='lbl'>Median Gap, All-Time</div><div class='num'>3</div></div><div class='card'><div class='lbl'>Longest Gap</div><div class='num hot'>136</div></div><div class='card since' hidden data-slug='uncle-pen' data-high='' data-bustout='100' data-mult='3.5' data-quiet='dormant'><div class='lbl'>Current Gap<span class='v'></span></div><div class='num'></div></div></section>
-<div class="rule2"></div>
+<p class="show">Debuted <a href='#1990-03-28'>1990-03-28</a> &middot; Last played 2017-08-05 &middot; 212 performances</p>
+<p class="links"><span class="cap">This song on</span><a class='badge' href='https://phish.net/song/uncle-pen' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,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' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://phish.in/songs/uncle-pen' target='_blank' rel='noopener noreferrer'><img class='flip' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.in</span></a></p>
+</header>
+<section class="hero"><div class='card'><div class='lbl'>Median gap</div><div class='num'>47</div><div class='sub'>last 10 years &middot; <b>3</b> all-time</div></div><div class='card since' data-slug='uncle-pen' data-high='' data-bustout='100' data-mult='3.5' data-quiet='dormant'><div class='lbl'>Current gap<span class='v'></span></div><div class='num'><span class='no-range' aria-hidden='true'>&mdash;</span></div><div class='sub'>longest <b>136</b></div></div></section>
 
-<p class="links"><a class='badge' href='https://phish.net/song/uncle-pen' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,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' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://phish.in/songs/uncle-pen' target='_blank' rel='noopener noreferrer'><img class='flip' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.in</span></a></p>
+<div class='pairs'><div class='pair'><span class='cap'>Most often out of</span><span class='ps'><span class='p'>Bouncing Around the Room<b>11&times;</b></span> <span class='p'>Suzy Greenberg<b>8&times;</b></span> <span class='p'>Horn<b>7&times;</b></span></span></div><div class='pair'><span class='cap'>Most often into</span><span class='ps'><span class='p'>Stash<b>18&times;</b></span> <span class='p'>Cavern<b>13&times;</b></span> <span class='p'>Tweezer<b>10&times;</b></span></span></div></div>
 <div class="tools" id="main" tabindex="-1">
 <input id="q" class="search" type="search" autocomplete="off" disabled
        placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
@@ -1165,9 +1199,15 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
 /* How long this song has been waiting, read from one small file rather than
    rendered into the page. It is the only figure here that moves when some
    *other* song is played, so baking it in would rewrite every song page after
-   every show -- 48 MB pushed to publish one number that fits in 7 KB. The card
-   ships hidden and stays hidden if the fetch fails, so nothing on the page is
-   ever a placeholder waiting for a network that is not coming. */
+   every show -- 48 MB pushed to publish one number that fits in 7 KB.
+
+   The card no longer ships hidden. Hiding it meant a reader without
+   JavaScript got a hero one card short with no sign the figure existed, and
+   the label a reader saw depended on whether this file ran. It now carries
+   its label and its longest-gap line from the start, and the big slot holds
+   the same em-dash the bars use for a figure that is not available -- so a
+   failed fetch leaves a card short of one number rather than no card, and
+   only the number ever waits. */
 (function(){
   var box=document.querySelector('.card.since');
   if(!box||!window.fetch) return;
@@ -1223,7 +1263,10 @@ footer a:hover{color:var(--hot);border-bottom-color:var(--hot)}
     }
     box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
             ' shows that count toward a gap';
-    box.hidden=false;
+    /* Nothing to reveal any more. Setting .num's textContent above already
+       replaced the em-dash that stood in for the number, and a song missing
+       from current.json returns before that and keeps the dash, which is the
+       honest reading rather than a card that vanishes. */
   }).catch(function(){});
 })();
 (function(){
