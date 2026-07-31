@@ -459,18 +459,31 @@ def foul(path, cache_dir=DEFAULT_CACHE, refresh=False, **params):
 # linked file is fetched once and cached for the whole visit. The single-file
 # --html output keeps its own inlined fonts, since that one is still meant to
 # survive being handed to somebody.
+#: Everything the pages load that is not a page. The site root is for the
+#: files that have to be there -- CNAME, robots.txt, sitemap.xml, .nojekyll --
+#: and for the pages themselves; assets lie under here. The sheet, the face and
+#: the paper texture are one group and they move as one, which is what makes
+#: the relative url()s below work from any depth without a second thought.
+STATIC_DIR = "static"
+#: Relative to STATIC_DIR, because the @font-face url() resolves against the
+#: sheet and both live in there.
 FONT_DIR = "font"
 DISPLAY_FACE = "Bagnard"
 FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                         "site", FONT_DIR, "Bagnard.otf")
+                         "site", STATIC_DIR, FONT_DIR, "Bagnard.otf")
+#: Not "fonts.css". It defines `body`, which a file named for the fonts has no
+#: business doing -- Ian called that a smell and it was: the name described the
+#: first thing put in it rather than what it is, which is the one stylesheet
+#: every page links.
+SITE_SHEET = "site.css"
 
 
 def sheet_links(sheet):
     """The stylesheet link, and a head start on the face it is going to ask for.
 
-    Without the preload the face cannot begin loading until fonts.css has been
+    Without the preload the face cannot begin loading until the sheet has been
     fetched *and parsed*, because that is where its url() lives. Measured on
-    localhost, where there is no latency to hide behind: fonts.css starts at
+    localhost, where there is no latency to hide behind: the sheet starts at
     9.3ms and Bagnard.otf at 24.1ms, initiated by the stylesheet rather than by
     the document. On the live site that gap is a whole round trip, and
     `font-display:swap` spends it painting Georgia and then swapping -- which
@@ -572,7 +585,18 @@ GOATCOUNTER = (env_value("GOATCOUNTER", quiet=True) or "")
 ANALYTICS = ('<script data-goatcounter="https://%s.goatcounter.com/count" '
              'async src="//gc.zgo.at/count.js"></script>' % GOATCOUNTER
              if GOATCOUNTER else "")
-OG_IMAGE = "og.png"
+#: Where the drawn cards go. Up here rather than with the drawing code,
+#: because the share tags below name it and Python reads top to bottom.
+CARD_DIR = "card"
+
+#: The house card, for a page that has none of its own. It is `card/index.png`
+#: rather than a committed og.png because that file was the one image on the
+#: site drawn by nothing: hand-made once, tracked in git, outside card_print's
+#: hashing and CARD_REVISION, and therefore unreachable by every fix that
+#: corrected the other 1,304 cards. It ended up two names and 420 songs out of
+#: date on six live pages. index.png is redrawn from the archive whenever the
+#: archive moves, so the worst this fallback can now be is generic.
+OG_IMAGE = "%s/index.png" % CARD_DIR
 
 
 def share_meta(title, description, path="", image=OG_IMAGE, card=None):
@@ -924,7 +948,7 @@ LIGHT = {
     # .58 on the dark paper lands at 3.10:1.
     "band-opacity": ".85",
     "hover": "rgba(200,55,27,.055)", "edge": "#8d8676",
-    "grain-blend": "multiply", "grain-opacity": ".45",
+    "grain-blend": "multiply",
 }
 DARK = {
     "paper": "#131210", "ink": "#ece5d5", "ink-soft": "#c4bcaa",
@@ -934,7 +958,7 @@ DARK = {
     "track": "rgba(236,229,213,.1)", "band": "#a89c85",
     "band-opacity": ".58",
     "hover": "rgba(255,107,69,.07)", "edge": "#6b5f4f",
-    "grain-blend": "screen", "grain-opacity": ".2",
+    "grain-blend": "screen",
 }
 
 
@@ -1466,6 +1490,20 @@ dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
 """
 
 #: The page box and its measure.
+#:
+#: `background`, the shorthand, and for now that is load-bearing: it resets
+#: `background-image`, which is where the paper texture hangs, so the grain has
+#: never painted -- not here and not on gh-pages, since the day it shipped.
+#: Ian remembered something being wrong with grain.png and this is it.
+#:
+#: Left switched off deliberately rather than fixed in passing. Turning it on
+#: is one word, and measured on the rendered pixels it costs the light paper
+#: 20.8% of its luminance (#f2ece0 -> #dad5ca) and lifts the dark paper by
+#: 216% (#131210 -> #262624), which moves every contrast ratio on the site --
+#: including several this branch just brought over the line. The tile is grey
+#: 108-148 and `multiply` against mid-grey is a heavy darkening; a texture
+#: meant to be felt rather than seen wants values close to white with a narrow
+#: spread, which is a retune, not a one-word fix. docs/TODO 8l.
 BODY_BOX_CSS = """body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
      background:var(--paper);color:var(--ink);
      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
@@ -1612,6 +1650,17 @@ ROTATION_PAGE = "out-of-rotation.html"
 #: these rows, and what the songs index prints for a song that has only ever
 #: been played at one.
 NOT_A_SHOW_PAGE = "not-a-show.html"
+
+#: A page's card is named for the page. Derived rather than written twice: the
+#: name appears in the <meta og:image> of the page and in the filename the
+#: shooter writes, and a card whose name has drifted from its page is a
+#: preview that 404s -- which is exactly the failure og.png was papering over.
+def card_name(page):
+    return page[:-len(".html")] if page.endswith(".html") else page
+
+
+ROTATION_CARD = card_name(ROTATION_PAGE)
+NOT_A_SHOW_CARD = card_name(NOT_A_SHOW_PAGE)
 
 #: The six lists that are the archive, then the two pages about it. Ian,
 #: 2026-07-30, on the order: "songs should come before years. I feel like
@@ -3012,7 +3061,7 @@ def _ordinal(n):
 
 def render_html(report, bar_scale="linear", index_href=None,
                 prev_date=None, next_date=None, songs=(), card=None,
-                archived_show=(), sheet="../fonts.css", calendar=(),
+                archived_show=(), sheet="../%s/%s" % (STATIC_DIR, SITE_SHEET), calendar=(),
                 on_phishin=None, unlinkable_tours=()):
     # Whether this is a show at all. A soundcheck's songs are real and its
     # gaps are phish.net's, but nothing here feeds the rest of the site, and a
@@ -4623,7 +4672,7 @@ def render_index(reports, page_href="./show/%s.html", card=None, aside=(),
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
         css=INDEX_CSS, js=INDEX_JS, totop=TOTOP_JS, theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
-        fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         hero=hero, hero_cls=hero_cols(len(cards)), years=chips,
         count=len(entries), rows="\n".join(rows) or "",
         aside=aside_html, subtitle=subtitle, onstage=onstage,
@@ -4935,8 +4984,16 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
    came after -- and each is its own line. The transition mark now lives in
    a span inside one of them, and a blanket rule here made that mark a
    block too, so a row read "->" and "Golden Age" on separate lines. */
-.nb>span{display:block;overflow:hidden;text-overflow:ellipsis;
-   white-space:nowrap}
+/* Wraps rather than truncates. This track is a fixed 9rem, so `nowrap` plus
+   an ellipsis meant a long title was cut at every viewport width and widening
+   the window did nothing -- "A Song I Heard the Ocean Sing" was unreadable on
+   a 27-inch screen, which is how Ian found it. The comment this replaces said
+   the truncation kept the gap figures from being pushed around; it does not,
+   because wrapping inside a fixed grid track cannot move the track. It only
+   makes that one row taller, which the venue and the notes already do. The
+   narrow layout had been overriding this back to `normal` all along, so the
+   phone has been showing the full title while the desktop hid it. */
+.nb>span{display:block}
 /* Doubled backslashes: this is a Python string, and "\2190" is read as the
    octal escape \21 followed by "90", which reaches the browser as a control
    character and renders as a box. */
@@ -5106,7 +5163,6 @@ details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2
   .pair .cap{margin-top:.35rem}
   .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
   .nb{margin-top:.35rem}
-  .nb>span{white-space:normal;overflow:visible}
   .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
      text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
   .r-date{display:flex;align-items:baseline;gap:.5rem}
@@ -6006,7 +6062,7 @@ def render_song(doc, archived=(), stamp=None, card=None, counting=None,
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../fonts.css"),
+        css=SONG_CSS, js=SONG_JS, fonts=WEB_FONTS, sheet=sheet_links("../%s/%s" % (STATIC_DIR, SITE_SHEET)),
         cols=cols, caveat=caveat, pairs=pairs, theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, song=html.escape(typographic(song)), subtitle=subtitle,
         hero=hero, best=top, links=links, tools=tools, listattrs=listattrs,
@@ -6539,7 +6595,7 @@ def render_due(docs, counting, since, card=None):
     return DUE_SHELL.format(
         crumb=nav_strip(here="Due", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         mult=_stat(DUE_MULTIPLE), hero=hero, hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, rows="\n".join(out), shelf=shelf, dormant=tail,
@@ -6779,7 +6835,7 @@ def _rotation_years(rows, anchor):
     return "\n".join(body)
 
 
-def render_dormant(docs, counting, since):
+def render_dormant(docs, counting, since, card=None):
     """Every song out of rotation, split by whether it ever had one."""
     parts = rotation_split(due_rows(docs, counting, since)[3])
 
@@ -6862,13 +6918,13 @@ def render_dormant(docs, counting, since):
     return DORMANT_SHELL.format(
         crumb=nav_strip(here="Out of rotation", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=DORMANT_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=DORMANT_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI, cap=BUSTOUT_GAP,
         floor=MIN_HISTORY, years_n=RECENT_YEARS,
         hero=hero, hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         rows="\n".join(body),
         share=share_meta("Out of rotation &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), ROTATION_PAGE),
+                         html.escape(blurb, quote=True), ROTATION_PAGE, card=card),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -7004,7 +7060,8 @@ def rated_off_stage(docs, counting):
     return rows
 
 
-def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
+def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html",
+                      card=None):
     """Everything the band played that was not a show, and what came of it."""
     counting = set(calendar)
     _, aside = split_archive(reports, calendar)
@@ -7120,12 +7177,12 @@ def render_not_a_show(reports, docs, calendar, page_href="./show/%s.html"):
         crumb=nav_strip(section="Shows", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
         css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS,
-        sheet=sheet_links("./fonts.css"),
+        sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         hero=hero_html(cards), hero_cls=hero_cols(len(cards)),
         subtitle=subtitle, body=body,
         share=share_meta("Not a show &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), NOT_A_SHOW_PAGE),
+                         html.escape(blurb, quote=True), NOT_A_SHOW_PAGE, card=card),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -7219,7 +7276,7 @@ def render_venues(reports, card=None):
     return VENUES_SHELL.format(
         crumb=nav_strip(here="Venues", mark=True),
         analytics=ANALYTICS, ago_js=AGO_JS, new_rows_js=NEW_ROWS_JS,
-        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=INDEX_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         subtitle=subtitle, rows="\n".join(rows),
         share=share_meta("Venues &mdash; Possum Logic",
@@ -7392,7 +7449,7 @@ def render_songs(docs, stamp=None, card=None, counting=None):
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=SONGS_CSS, js=SONGS_JS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        css=SONGS_CSS, js=SONGS_JS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, hero=hero, hero_cls=hero_cols(len(cards)),
         count=len(entries),
         rows="\n".join(rows), subtitle=subtitle,
@@ -7851,7 +7908,7 @@ def _year_block(profile, pages):
     return "".join(body)
 
 
-def render_years(profiles, missing, pages=()):
+def render_years(profiles, missing, pages=(), card=None):
     """Forty years of this band, one block each, newest first."""
     read = sum(p["known"] for p in profiles)
     strip = "".join(
@@ -7883,7 +7940,7 @@ def render_years(profiles, missing, pages=()):
     return YEARS_SHELL.format(
         crumb=nav_strip(here="Years", mark=True),
         analytics=ANALYTICS, css=YEARS_CSS, fonts=WEB_FONTS,
-        sheet=sheet_links("./fonts.css"), theme_js=THEME_JS, keys_js=KEYS_JS,
+        sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)), theme_js=THEME_JS, keys_js=KEYS_JS,
         theme_ui=THEME_UI, years=strip, hero=hero,
         hero_cls=hero_cols(len(cards)), subtitle=subtitle,
         sample=YEARS_SAMPLE, read="{:,}".format(read),
@@ -7894,7 +7951,7 @@ def render_years(profiles, missing, pages=()):
                              if p["year"] == "2017"), 0),
         blocks="\n".join(_year_block(p, pages) for p in profiles),
         share=share_meta("Years &mdash; Possum Logic",
-                         html.escape(blurb, quote=True), "years.html"),
+                         html.escape(blurb, quote=True), "years.html", card=card),
         stamp="Updated %s" % _utcnow().date().isoformat())
 
 
@@ -8295,7 +8352,7 @@ timeline.</p>"""),
 )
 
 
-def render_method():
+def render_method(card=None):
     """The page the footers point at when a number wants explaining."""
     # The heading goes inside a span of its own, for the reason render_faq
     # records: .toc a is a two-column grid, and a grid container makes every
@@ -8316,11 +8373,11 @@ def render_method():
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=METHOD_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=METHOD_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("How this is worked out", html.escape(blurb, quote=True),
-                         "method.html"))
+                         "method.html", card=card))
 
 
 # -------------------------------------------------------------------- faq ---
@@ -8551,7 +8608,7 @@ long.</a></p>"""),
 )
 
 
-def render_faq():
+def render_faq(card=None):
     """Short answers, deep-linkable, with the long reasoning left on method."""
     # The question goes inside a span of its own. The anchor is a two-column
     # grid -- number, question -- and a grid container makes *every* child a
@@ -8577,17 +8634,16 @@ def render_faq():
         ago_js=AGO_JS,
         new_rows_js=NEW_ROWS_JS,
         analytics=ANALYTICS,
-        css=FAQ_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./fonts.css"),
+        css=FAQ_CSS, totop=TOTOP_JS, fonts=WEB_FONTS, sheet=sheet_links("./%s/%s" % (STATIC_DIR, SITE_SHEET)),
         theme_js=THEME_JS, keys_js=KEYS_JS, theme_ui=THEME_UI,
         toc=toc, body=body,
         share=share_meta("FAQ", html.escape(blurb, quote=True),
-                         "faq.html"))
+                         "faq.html", card=card))
 
 
 # ------------------------------------------------------------------ cards ---
 
 CARD_W, CARD_H = 1200, 630
-CARD_DIR = "card"
 # How many cards go into one browser launch. Each launch costs about 2.7s of
 # startup and a font fetch, so doing them one at a time put eight minutes on a
 # full rebuild; stacked and sliced, the same 185 take about twenty seconds.
@@ -8678,8 +8734,14 @@ h1{font-family:'Bagnard',Georgia,serif;font-weight:400;line-height:.94;
    sets it in Aleo, so a link and the page behind it speak the same way. */
 h1.data{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;letter-spacing:-.01em}
 h1 em{font-style:normal;color:#c8371b}
+/* Wraps. It was nowrap + text-overflow:ellipsis, which cut 212 of the drawn
+   cards mid-venue -- "Bonnaroo Music & Arts Festival, Manchest…" -- and looked
+   deliberate doing it. A preview card is a thing people see instead of the
+   page, so it is the last place that should be quietly dropping words. Two
+   lines is fine here: the content is centred in a box that stops short of the
+   wordmark strip, so a second line moves the block, not the brand. */
 .sub{font-size:30px;letter-spacing:.14em;text-transform:uppercase;color:#413c31;
-  margin-top:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  margin-top:20px;line-height:1.25}
 .rule{height:7px;background:#17150f;margin-top:38px}
 .stats{display:flex;gap:58px;margin-top:30px;font-size:23px;letter-spacing:.14em;
   text-transform:uppercase;color:#877e6e}
@@ -8697,8 +8759,43 @@ CARDS_SHELL = """<!DOCTYPE html><html><head><meta charset="utf-8">
 <style>%s</style></head><body>__CARDS__</body></html>""" % CARD_CSS
 
 
+#: What .sub can hold now that it wraps: two lines rather than one. The card is
+#: 1200px with 84px of padding each side and .sub is 30px mono tracked .14em,
+#: which measures about 22.1px per character -- 46 to a line, so 92 to two, and
+#: 88 leaves a couple of characters of slack. Nothing on the site comes near
+#: it; the longest venue in the archive is 46. It is a backstop against a
+#: subtitle long enough to push the figures into the wordmark, not a line
+#: anything is expected to sit against.
+CARD_SUB_MAX = 88
+
+
+def card_sub(text):
+    """A subtitle that fits .sub, trimmed on a word boundary when it does not.
+
+    An assert was the first shape of this and it was wrong: it stopped the
+    build on "Bonnaroo Music & Arts Festival, Manchester, TN", which is a
+    venue, which is data. Not everything that overflows is a sentence somebody
+    can rewrite.
+
+    Two things it does that leaving it to CSS did not. It measures *rendered*
+    glyphs -- html.unescape first, because "&amp;" is five characters and one
+    glyph, and counting the source called that venue 50 wide when it is 45.
+    And it cuts on a word boundary and says so in the log, where
+    `text-overflow:ellipsis` cut mid-character and said nothing: some published
+    show cards have carried a chopped venue since the day they were drawn and
+    nothing anywhere reported it.
+    """
+    plain = html.unescape(text)
+    if len(plain) <= CARD_SUB_MAX:
+        return text
+    cut = plain[:CARD_SUB_MAX - 1].rsplit(" ", 1)[0].rstrip(" ,;-") + "\u2026"
+    log("card subtitle trimmed to fit: %r -> %r", plain, cut)
+    return html.escape(cut)
+
+
 def card_markup(kind, title, subtitle, stats, size=96, data=False):
     """One 1200x630 card: what it is, what it is called, and three figures."""
+    subtitle = card_sub(subtitle)
     figures = "".join(
         "<span><b class='%s'>%s</b>%s</span>" % (cls, val, lbl)
         for val, lbl, cls in stats)
@@ -8741,13 +8838,13 @@ def shoot_cards(exe, jobs, site_dir):
         # been drawn in fallbacks.
         #
         # The sheet is addressed absolutely: the markup is written to a temp
-        # directory, so a relative "fonts.css" resolves next to the temp file
+        # directory, so a relative sheet name resolves next to the temp file
         # and never to the built site.
         page = (CARDS_SHELL
                 .replace("{fonts}", WEB_FONTS)
                 .replace("{sheet}", sheet_links(
                     "file://" + urllib.parse.quote(
-                        os.path.abspath(os.path.join(site_dir, "fonts.css")))))
+                        os.path.abspath(os.path.join(site_dir, STATIC_DIR, SITE_SHEET)))))
                 .replace("__CARDS__", "".join(m for _, m in batch)))
         with tempfile.TemporaryDirectory() as tmp:
             src = os.path.join(tmp, "cards.html")
@@ -8905,6 +9002,80 @@ def songs_card(docs, counting=None):
           "Longest gap", "hot")))
 
 
+# The six pages that had no card of their own. Every one of them fell back to
+# a hand-made og.png committed once in July 2026 and never regenerated: it said
+# "Gap Reports" in a face this site does not use and claimed 169 songs against
+# the 589 it now has. A fallback that cannot be rebuilt from the data is a
+# figure with no source, and it was the last one on the site -- see docs/TODO
+# 8k. These are drawn by the same pipeline as the other 1,304, so they cannot
+# go stale without the index noticing.
+#
+# Each takes what its page takes and recomputes from it, the way due_card and
+# songs_card already do, rather than having the render function hand its
+# workings back. The labels come from the same constants the page headings do,
+# so a card cannot name a section the page calls something else.
+
+def venues_card(reports):
+    by_venue = {}
+    for e in (summarize(r) for r in reports):
+        if e["venue"]:
+            by_venue.setdefault(e["venue"], []).append(e)
+    most = max((len(v) for v in by_venue.values()), default=0)
+    return card_markup(
+        "Every venue", "Possum <em>Logic</em>", "Where the shows happened",
+        (("{:,}".format(len(by_venue)), "Venues", ""),
+         ("{:,}".format(sum(len(v) for v in by_venue.values())), "Shows", ""),
+         ("%d" % most, "Most at one room", "hot")))
+
+
+def rotation_card(docs, counting, since):
+    parts = rotation_split(due_rows(docs, counting, since)[3])
+    return card_markup(
+        "Out of rotation", "Possum <em>Logic</em>",
+        "What the band has stopped playing",
+        tuple(("%d" % len(rows), ROTATION_SECTIONS[i][1],
+               "hot" if i == 0 else "")
+              for i, rows in enumerate(parts)))
+
+
+def not_a_show_card(reports, docs, calendar):
+    counting = set(calendar)
+    _, aside = split_archive(reports, calendar)
+    return card_markup(
+        "Not a show", "Possum <em>Logic</em>",
+        "Soundchecks, sessions, and the rest",
+        (("%d" % len(aside), "Entries", ""),
+         ("%d" % len(never_at_a_show(docs, counting)), "Never at a show", ""),
+         ("%d" % len(rated_off_stage(docs, counting)), "Rated versions",
+          "hot")))
+
+
+def years_card(profiles):
+    busiest = max(profiles, key=lambda p: p["shows"]) if profiles else None
+    return card_markup(
+        "Every year", "Possum <em>Logic</em>", "What each year sounded like",
+        (("%d" % len(profiles), "Years", ""),
+         ("{:,}".format(sum(p["shows"] for p in profiles)), "Shows", ""),
+         (("%s" % busiest["year"]) if busiest else "&mdash;", "Busiest year",
+          "hot")))
+
+
+def explainer_card(kind, subtitle, reports):
+    """method and faq: pages about the archive rather than views of it.
+
+    They carry the archive's own three figures rather than invented ones. The
+    alternative was a card with no numbers on a template built around three,
+    and the alternative to that was making some up.
+    """
+    entries = [summarize(r) for r in reports]
+    longest = max((e["longest"] or 0) for e in entries) if entries else 0
+    return card_markup(
+        kind, "Possum <em>Logic</em>", subtitle,
+        (("%d" % len(entries), "Shows", ""),
+         ("{:,}".format(sum(e["songs"] for e in entries)), "Songs logged", ""),
+         (_stat(longest) if longest else "&mdash;", "Longest gap", "hot")))
+
+
 # ------------------------------------------------------------------- site ---
 
 SHOW_DIR = "show"
@@ -8990,22 +9161,26 @@ padding:0 1rem;line-height:1.6}}a{{color:#c8371b}}</style></head>
 
 
 def write_grain(site_dir, size=140):
-    """The paper texture, as a tile beside fonts.css. Skipped without Pillow.
+    """The paper texture, as a tile beside the site sheet. Skipped without Pillow.
 
     Monochrome and deliberately faint. The old SVG painted full-range noise --
     single pixels from 19 to 232 on a 0-255 scale -- straight over the paper at
     28% opacity, which lifted the dark palette's #131210 to a measured #2d2c2a
     and muddied the light one. Texture should be felt rather than seen; this is
-    a narrow band around mid-grey, and the blend mode in fonts.css decides which
+    a narrow band around mid-grey, and the blend mode in the site sheet decides which
     way it pushes.
 
     Deterministic, so a rebuild does not produce a new file and republish it.
     """
-    path = os.path.join(site_dir, "grain.png")
+    path = os.path.join(site_dir, STATIC_DIR, "grain.png")
     try:
         from PIL import Image
     except ImportError:
         return None
+    # This wrote straight into the site root until the assets moved, so it had
+    # never needed a directory to exist. write_if_changed makes its own; this
+    # one saves through PIL and would fail on a fresh checkout without it.
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     rnd = random.Random(20260727)          # fixed: the tile must not change
     img = Image.new("L", (size, size))
     img.putdata([rnd.randint(108, 148) for _ in range(size * size)])
@@ -10603,7 +10778,7 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
                 report, bar_scale=bar_scale, index_href="../index.html",
                 prev_date=prev, next_date=nxt, songs=songs,
                 card=date, archived_show=have_dates,
-                sheet="../fonts.css", calendar=calendar,
+                sheet="../%s/%s" % (STATIC_DIR, SITE_SHEET), calendar=calendar,
                 on_phishin=on_phishin, unlinkable_tours=no_tour_link)):
             if date in fresh:
                 log("wrote %s", page)
@@ -10661,7 +10836,8 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # first would set every one of them in whatever face the machine happened
     # to have -- silently, since a fallback is not an error. That is the bug
     # the "{sheet}" fix was half of.
-    write_if_changed(os.path.join(site_dir, "fonts.css"), FONTS_CSS)
+    write_if_changed(os.path.join(site_dir, STATIC_DIR, SITE_SHEET),
+                     FONTS_CSS)
     write_grain(site_dir)
     # Regenerated every publish, because every publish would otherwise remove
     # it. Never deleted when DOMAIN is empty: an unset variable in one
@@ -10703,8 +10879,10 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
         # so the figure on the card and the length of the page cannot disagree.
         rotation_page = os.path.join(site_dir, ROTATION_PAGE)
         if write_if_changed(rotation_page,
-                            render_dormant(docs, counting, since)):
+                            render_dormant(docs, counting, since,
+                                           card=ROTATION_CARD)):
             log("wrote %s", rotation_page)
+        want_card(ROTATION_CARD, rotation_card(docs, counting, since))
 
     # After the pages, because a forwarding note is only honest once the page
     # it points at is on disk -- and the note for dormant.html lands on top of
@@ -10712,11 +10890,11 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     write_redirects(site_dir)
 
     method = os.path.join(site_dir, "method.html")
-    if write_if_changed(method, render_method()):
+    if write_if_changed(method, render_method(card="method")):
         log("wrote %s", method)
 
     faq = os.path.join(site_dir, "faq.html")
-    if write_if_changed(faq, render_faq()):
+    if write_if_changed(faq, render_faq(card="faq")):
         log("wrote %s", faq)
 
     index = os.path.join(site_dir, "index.html")
@@ -10728,8 +10906,16 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     # comment is a figure like any other, and it went stale the ordinary way.)
     shows, aside = split_archive(known, load_calendar(site_dir))
     venues_page = os.path.join(site_dir, "venues.html")
-    if write_if_changed(venues_page, render_venues(shows)):
+    if write_if_changed(venues_page, render_venues(shows, card="venues")):
         log("wrote %s", venues_page)
+    want_card("venues", venues_card(shows))
+    # These two are pages about the archive rather than views of it, so they
+    # carry its figures; both are built here because `shows` is what they need
+    # and it is not settled until split_archive above.
+    want_card("method", explainer_card(
+        "How this works", "What the numbers mean", shows))
+    want_card("faq", explainer_card(
+        "Questions", "Short answers, deep-linkable", shows))
 
     # The one page whose input is the running order rather than the gaps, so
     # the one page that reads the extract at build time. A checkout without it
@@ -10740,20 +10926,24 @@ def write_site(site_dir, reports, bar_scale="linear", rebuild=False):
     read = year_order(setlist_order(), counting, known)
     if read:
         years_page = os.path.join(site_dir, "years.html")
+        profiles = year_profiles(read, counting, docs)
         if write_if_changed(years_page, render_years(
-                year_profiles(read, counting, docs), len(counting) - len(read),
-                pages={doc["slug"] for doc in docs})):
+                profiles, len(counting) - len(read),
+                pages={doc["slug"] for doc in docs}, card="years")):
             log("wrote %s (%d of %d counting nights read)",
                 years_page, len(read), len(counting))
+        want_card("years", years_card(profiles))
 
     # Needs the song histories as well as the reports, so it is built here
     # rather than beside the due page: the entries are reports, the songs that
     # exist only at them and the versions of them that got out are not.
     if docs:
         nas = os.path.join(site_dir, NOT_A_SHOW_PAGE)
-        if write_if_changed(nas, render_not_a_show(known, docs,
-                                                   load_calendar(site_dir))):
+        calendar = load_calendar(site_dir)
+        if write_if_changed(nas, render_not_a_show(known, docs, calendar,
+                                                   card=NOT_A_SHOW_CARD)):
             log("wrote %s", nas)
+        want_card(NOT_A_SHOW_CARD, not_a_show_card(known, docs, calendar))
     changed = write_if_changed(
         index, render_index(shows, card="index", aside=aside, n_due=n_due))
     want_card("index", index_card(shows))
