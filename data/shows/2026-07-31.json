@@ -141,9 +141,28 @@
       "gap_high": 6.902866813741307,
       "gap_away": null,
       "verdict": "overdue"
+    },
+    {
+      "set": "SET 2",
+      "song": "Fuego",
+      "slug": "fuego",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-07-17",
+      "prev_venue": "Coastal Credit Union Music Park at Walnut Creek",
+      "prev_place": "Raleigh, NC",
+      "out": "",
+      "plays": 102,
+      "recent_plays": 64,
+      "gap_median": 5.5,
+      "gap_mean": 5.828125,
+      "gap_low": 2.787344417236562,
+      "gap_high": 8.952591856849928,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-01T00:54:27+00:00",
+  "count_since": "2026-08-01T01:15:02+00:00",
   "encored": false,
   "provisional": true
 }
