@@ -103,9 +103,28 @@
       "gap_high": 11.965856643181834,
       "gap_away": null,
       "verdict": "overdue"
+    },
+    {
+      "set": "SET 1",
+      "song": "Harry Hood",
+      "slug": "harry-hood",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-07-22",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 443,
+      "recent_plays": 83,
+      "gap_median": 3,
+      "gap_mean": 3.5542168674698793,
+      "gap_low": 1.2339740790293763,
+      "gap_high": 6.130464827563116,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-07-31T23:57:52+00:00",
+  "count_since": "2026-08-01T00:13:22+00:00",
   "encored": false,
   "provisional": true
 }
