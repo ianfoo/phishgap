@@ -217,9 +217,28 @@
       "gap_high": 10.470939679812224,
       "gap_away": null,
       "verdict": "overdue"
+    },
+    {
+      "set": "SET 2",
+      "song": "Run Like an Antelope",
+      "slug": "run-like-an-antelope",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-07-22",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 495,
+      "recent_plays": 60,
+      "gap_median": 6.0,
+      "gap_mean": 6.266666666666667,
+      "gap_low": 3.622850164675108,
+      "gap_high": 8.90124560909591,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-01T01:56:13+00:00",
+  "count_since": "2026-08-01T02:01:25+00:00",
   "encored": false,
   "provisional": true
 }
