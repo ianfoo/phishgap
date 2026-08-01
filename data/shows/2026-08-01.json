@@ -43,9 +43,21 @@
       "prev_place": "Syracuse, NY",
       "out": "",
       "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Chalk Dust Torture",
+      "slug": "chalk-dust-torture",
+      "gap": 4,
+      "jamchart": false,
+      "prev_date": "2026-07-24",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "verdict": null
     }
   ],
-  "count_since": "2026-08-01T23:28:24+00:00",
+  "count_since": "2026-08-01T23:48:56+00:00",
   "encored": false,
   "provisional": true
 }
