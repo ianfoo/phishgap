@@ -6,7 +6,7 @@
   "state": "MA",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "<p>My Friend, My Friend did not include the \"Myfe\" ending. Sigma Oasis featured Trey on mini-drum kit.</p>",
+  "notes": "<p>My Friend, My Friend did not include the \"Myfe\" ending. Sigma Oasis featured Trey on mini-drum kit. Chalk Dust Torture was unfinished.</p>",
   "permalink": "https://phish.net/setlists/phish-august-01-2026-fenway-park-boston-ma-usa.html",
   "songs": [
     {
@@ -55,9 +55,21 @@
       "prev_place": "New York, NY",
       "out": "",
       "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Stash",
+      "slug": "stash",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-22",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "verdict": null
     }
   ],
-  "count_since": "2026-08-01T23:48:56+00:00",
+  "count_since": "2026-08-01T23:59:13+00:00",
   "encored": false,
   "provisional": true
 }
