@@ -6,7 +6,7 @@
   "state": "MA",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "<p>Everything's Right was unfinished. Trey teased Rainy Day Women #12 &amp; 35 in Back on the Train, and Martian Monster in Free. Trey played the mini-drum kit in WGTYM and Melt the Guns, which was <span>last performed </span><a href=\"https://phish.net/setlists/phish-april-29-1987-nectars-burlington-vt-usa.html\"><span>April 29, 1987</span></a><span> (2051 shows).</span></p>",
+  "notes": "<p>Everything's Right was unfinished. Trey teased Rainy Day Women #12 &amp; 35 in Back on the Train, and Martian Monster in Free. Trey played the mini-drum kit in WGTYM and Melt the Guns, which was <span>last performed </span><a href=\"https://phish.net/setlists/phish-april-29-1987-nectars-burlington-vt-usa.html\"><span>April 29, 1987</span></a><span> (2,051 shows).</span></p>",
   "permalink": "https://phish.net/setlists/phish-july-31-2026-fenway-park-boston-ma-usa.html",
   "songs": [
     {
@@ -179,9 +179,28 @@
       "gap_high": null,
       "gap_away": null,
       "verdict": "bustout"
+    },
+    {
+      "set": "SET 2",
+      "song": "A Wave of Hope",
+      "slug": "a-wave-of-hope",
+      "gap": 8,
+      "jamchart": false,
+      "prev_date": "2026-07-17",
+      "prev_venue": "Coastal Credit Union Music Park at Walnut Creek",
+      "prev_place": "Raleigh, NC",
+      "out": "",
+      "plays": 43,
+      "recent_plays": 41,
+      "gap_median": 5,
+      "gap_mean": 5.585365853658536,
+      "gap_low": 2.988170250259829,
+      "gap_high": 8.140294460287661,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-01T01:30:28+00:00",
+  "count_since": "2026-08-01T01:45:55+00:00",
   "encored": false,
   "provisional": true
 }
