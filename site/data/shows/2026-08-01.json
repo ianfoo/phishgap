@@ -6,7 +6,7 @@
   "state": "MA",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "",
+  "notes": "<p>My Friend, My Friend did not include the \"Myfe\" ending.</p>",
   "permalink": "https://phish.net/setlists/phish-august-01-2026-fenway-park-boston-ma-usa.html",
   "songs": [
     {
@@ -19,9 +19,21 @@
       "prev_venue": "Madison Square Garden",
       "prev_place": "New York, NY",
       "verdict": null
+    },
+    {
+      "set": "SET 1",
+      "song": "Tweezer",
+      "slug": "tweezer",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-07-25",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "verdict": null
     }
   ],
-  "count_since": "2026-08-01T23:07:43+00:00",
+  "count_since": "2026-08-01T23:18:07+00:00",
   "encored": false,
   "provisional": true
 }
