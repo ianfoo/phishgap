@@ -255,9 +255,28 @@
       "gap_high": 8.413200802853664,
       "gap_away": null,
       "verdict": "overdue"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Say It To Me S.A.N.T.O.S.",
+      "slug": "say-it-to-me-santos",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-21",
+      "prev_venue": "Empower Federal Credit Union Amphitheater at Lakeview",
+      "prev_place": "Syracuse, NY",
+      "out": "",
+      "plays": 57,
+      "recent_plays": 55,
+      "gap_median": 5,
+      "gap_mean": 5.327272727272727,
+      "gap_low": 2.943957501819369,
+      "gap_high": 7.809128854093025,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-01T02:16:51+00:00",
+  "count_since": "2026-08-01T02:27:10+00:00",
   "encored": true,
   "provisional": true
 }
