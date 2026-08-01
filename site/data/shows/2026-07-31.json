@@ -19,7 +19,14 @@
       "prev_venue": "Merriweather Post Pavilion",
       "prev_place": "Columbia, MD",
       "out": "",
-      "verdict": null
+      "plays": 160,
+      "recent_plays": 75,
+      "gap_median": 4,
+      "gap_mean": 4.013333333333334,
+      "gap_low": 1.8063831642296226,
+      "gap_high": 6.401381939358836,
+      "gap_away": null,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -31,7 +38,14 @@
       "prev_venue": "Empower Federal Credit Union Amphitheater at Lakeview",
       "prev_place": "Syracuse, NY",
       "out": "",
-      "verdict": null
+      "plays": 76,
+      "recent_plays": 74,
+      "gap_median": 4.0,
+      "gap_mean": 3.7432432432432434,
+      "gap_low": 1.5941294830707395,
+      "gap_high": 5.998984303232612,
+      "gap_away": null,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -43,7 +57,14 @@
       "prev_venue": "Merriweather Post Pavilion",
       "prev_place": "Columbia, MD",
       "out": "",
-      "verdict": null
+      "plays": 171,
+      "recent_plays": 62,
+      "gap_median": 5.0,
+      "gap_mean": 6.032258064516129,
+      "gap_low": 2.493038263977291,
+      "gap_high": 9.833824860023103,
+      "gap_away": null,
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
@@ -55,7 +76,14 @@
       "prev_venue": "Madison Square Garden",
       "prev_place": "New York, NY",
       "out": "",
-      "verdict": null
+      "plays": 242,
+      "recent_plays": 77,
+      "gap_median": 5,
+      "gap_mean": 4.935064935064935,
+      "gap_low": 2.683880757139924,
+      "gap_high": 7.280862910730038,
+      "gap_away": null,
+      "verdict": "premature"
     },
     {
       "set": "SET 1",
@@ -67,7 +95,14 @@
       "prev_venue": "Kohl Center",
       "prev_place": "Madison, WI",
       "out": "",
-      "verdict": null
+      "plays": 126,
+      "recent_plays": 45,
+      "gap_median": 6,
+      "gap_mean": 7.2,
+      "gap_low": 2.665490619691678,
+      "gap_high": 11.965856643181834,
+      "gap_away": null,
+      "verdict": "overdue"
     }
   ],
   "count_since": "2026-07-31T23:57:52+00:00",
