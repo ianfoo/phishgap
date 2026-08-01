@@ -1,0 +1,27 @@
+{
+  "date": "2026-08-01",
+  "venue": "Fenway Park, Boston, MA",
+  "venue_name": "Fenway Park",
+  "city": "Boston",
+  "state": "MA",
+  "artist": "Phish",
+  "tour": "2026 Summer Tour",
+  "notes": "",
+  "permalink": "https://phish.net/setlists/phish-august-01-2026-fenway-park-boston-ma-usa.html",
+  "songs": [
+    {
+      "set": "SET 1",
+      "song": "My Friend, My Friend",
+      "slug": "my-friend-my-friend",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-22",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "verdict": null
+    }
+  ],
+  "count_since": "2026-08-01T23:07:43+00:00",
+  "encored": false,
+  "provisional": true
+}
