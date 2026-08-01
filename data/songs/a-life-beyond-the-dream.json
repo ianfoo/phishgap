@@ -74,6 +74,6 @@
   {"date": "2026-01-30", "venue": "Moon Palace", "city": "Cancun", "state": "Quintana Roo", "gap": 2, "set": "e", "prev": "Simeon", "last": 1, "nb": 1},
   {"date": "2026-05-02", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 9, "set": "2", "prev": "My Friend, My Friend", "in": ">", "next": "Character Zero", "nb": 1},
   {"date": "2026-07-11", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 3, "set": "e", "next": "Tweezer Reprise", "xprev": "Carini", "nb": 1},
-  {"date": "2026-07-31", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 12, "set": "e", "xprev": "Run Like an Antelope", "next": "Say It To Me S.A.N.T.O.S.", "nb": 1}
+  {"date": "2026-07-31", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 12, "set": "e", "nb": 1, "xprev": "Run Like an Antelope", "next": "Say It To Me S.A.N.T.O.S."}
  ]
 }
