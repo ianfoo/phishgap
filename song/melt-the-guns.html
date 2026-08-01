@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Melt the Guns &mdash; Possum Logic</title>
+<meta property="og:type" content="article"><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2716%27%20r=%2710.5%27%20fill=%27none%27%20stroke=%27%23c8371b%27%20stroke-width=%278%27%20stroke-dasharray=%2744%2022%27%20transform=%27rotate%28-42%2016%2016%29%27/%3E%3C/svg%3E"><meta name="theme-color" content="#c8371b"><meta name="description" content="Every Phish performance of Melt the Guns: 5 shows, 1985-09-27 to 2026-07-31"><meta property="og:site_name" content="Possum Logic"><meta property="og:title" content="Melt the Guns"><meta property="og:description" content="Every Phish performance of Melt the Guns: 5 shows, 1985-09-27 to 2026-07-31"><meta property="og:url" content="https://possumlogic.com/song/melt-the-guns.html"><meta property="og:image" content="https://possumlogic.com/card/song-melt-the-guns.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Every Phish performance of Melt the Guns: 5 shows, 1985-09-27 to 2026-07-31"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,400..500&display=swap" rel="stylesheet">
+<link rel="preload" href="../static/font/Bagnard.otf" as="font" type="font/otf" crossorigin>
+<link href="../static/site.css" rel="stylesheet">
+<style>:root{color-scheme:light dark;--paper:#f2ece0;--ink:#17150f;--ink-soft:#413c31;--rule:#c9bfa9;--rule-soft:rgba(201,191,169,.45);--hot:#c8371b;--cool:#4f6046;--dim:#6b6456;--hot-text:#a92e14;--track:rgba(23,21,15,.085);--band:#7d7360;--band-opacity:.85;--hover:rgba(200,55,27,.055);--edge:#8d8676;--grain:url(grain-light.png);}
+:root[data-theme="light"]{color-scheme:only light}
+:root[data-theme="dark"]{color-scheme:only dark}
+@media screen and (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
+:root:not([data-theme="light"]) .badge img.flip{filter:invert(1)}
+:root:not([data-theme="light"]) .ext.i-pin::after{filter:invert(1)}
+}
+@media screen{
+:root[data-theme="dark"]{--paper:#131210;--ink:#ece5d5;--ink-soft:#c4bcaa;--rule:#413a30;--rule-soft:rgba(236,229,213,.13);--hot:#ff6b45;--cool:#93b184;--dim:#9b9384;--hot-text:#ff6b45;--track:rgba(236,229,213,.1);--band:#a89c85;--band-opacity:.58;--hover:rgba(255,107,69,.07);--edge:#6b5f4f;--grain:url(grain-dark.png);}
+:root[data-theme="dark"] .badge img.flip{filter:invert(1)}
+:root[data-theme="dark"] .ext.i-pin::after{filter:invert(1)}
+}
+
+.theme{display:inline-flex;gap:.3rem;align-items:center}
+.theme button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;padding:.28rem .45rem;border:1px solid var(--edge);
+   background:transparent;color:var(--dim);cursor:pointer;border-radius:0}
+.theme button:hover:not(:disabled):not(.on){color:var(--ink);
+   border-color:var(--ink)}
+.theme button.on{background:var(--ink);color:var(--paper);
+   border-color:var(--ink)}
+/* The selected one is already ink-on-paper reversed, so hovering it must not
+   set the text to the color it is sitting on. It brightens its edge instead. */
+.theme button.on:hover:not(:disabled){color:var(--paper);
+   box-shadow:0 0 0 2px var(--hot)}
+.theme button:disabled{opacity:.45;cursor:default}
+.theme button:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media print{.theme{display:none}}
+
+/* Off-screen until it is focused, then a real control in the corner. The
+   index puts 691 rows between the search box and the footer, and a keyboard
+   arriving on any page had to walk the whole navigation first. */
+.skip{position:absolute;left:-9999px;top:0;z-index:10}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper);color:var(--ink);
+   padding:.5rem .7rem;border:2px solid var(--hot);font-size:.75rem;
+   letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+/* One focus ring for everything that takes focus, in the site's own accent.
+   The controls -- search, sort, chips -- already had this; links, rows and
+   hero cards fell through to the browser default, which is a 1px ring in
+   Chrome blue. On cream paper and on charcoal that is both off-palette and
+   thin, and rows and cards are the things a keyboard actually travels
+   between. :focus-visible, so a pointer click does not draw it. */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+summary:focus-visible,[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline:2px solid var(--hot);outline-offset:2px}
+/* The identity line under every h1, and any link inside it. It carried no link
+   at all until the song page's debut date moved up into it on 2026-07-30, and
+   there was no rule to catch it: it rendered #9E9EFF and underlined on all 589
+   song pages, measured, while the best-version link two lines below it was
+   site ink with no underline.
+   **The fifth time a link here has shipped in the browser's default blue**,
+   and the reason it is written into BASE_CSS rather than SONG_CSS is that
+   `.show` is on every page type. Putting it in the one sheet that needs it
+   today is precisely how the other four happened. */
+.show a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.show a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* The skip link's landing spot takes focus so the next Tab continues from
+   the content rather than from the top of the page again -- but it is a
+   place, not a control, so it does not wear the control's ring. */
+[tabindex="-1"]:focus{outline:none}
+/* A row is a wide, short target and the ring reads better tucked against it
+   than floating two pixels off a full-width band. */
+.reports a.row:focus-visible,.vn a.row:focus-visible,.due a.row:focus-visible,
+a.card:focus-visible{outline-offset:-2px}
+*{box-sizing:border-box}
+/* The whole scale, pitched one step up from where it started.
+   Ian: "the prose text feels small even by these standards... I feel this way
+   on iPhone and on desktop." He was right, and the figures said so: body was
+   .875rem against a 16px default, so running text set at 14px and the labels
+   -- the size used more than any other on the site, 101 declarations of it --
+   set at 10px.
+   It is stated once, here, rather than as 300 edited declarations. Everything
+   on this site is already sized in rem, so lifting the root lifts all of it in
+   proportion and no two sizes can change their relationship to each other. It
+   is also relative rather than absolute: a reader who has set their browser to
+   20px gets 22.5, not 18.
+   The top of the scale is held rather than lifted -- see the h1 clamps, whose
+   rem endpoints are pulled back by exactly this factor. A wordmark at 64px was
+   never the complaint; a scale should compress at the display end and open up
+   at the reading end, and this one now does both. */
+html{font-size:112.5%}
+/* Every figure on this site sits in a column beside another figure. Tabular
+   numerals are what makes that work. This lived in the show-page sheet only,
+   so the index, songs, due, venues and every song page were setting their
+   figures in proportional digits -- the fourth rule found in one sheet of
+   three (see docs/TODO.md 8c), and invisible until somebody asked why a
+   column of numbers with decimals in it would not line up. */
+body{font-variant-numeric:tabular-nums}
+/* The keyboard overlay and the button that opens it. In the block every sheet
+   shares, because it is page furniture like the skip link above it and there
+   is no page it does not belong on -- and because stating it three times is
+   how four rules on this site came to disagree with themselves. */
+.keyhint{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:0;border-bottom:1px solid var(--rule);padding:0 0 .1rem;
+   cursor:pointer;display:inline-flex;align-items:baseline;gap:.35rem}
+.keyhint:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* Not on a touch device. It is a discovery aid for keys, and a phone has
+   none -- so it sat in the footer of every page offering "[ and ] to step
+   between shows" to a reader with no way to press either, and "Keys ?" is
+   doubly meaningless when there is no ? to press. The footer is a flex row
+   with gap and no separator characters, so this leaves nothing stranded
+   behind it.
+
+   The `?` handler stays bound either way: this hides a button, it does not
+   remove the feature, so an iPad with a keyboard attached -- whose *primary*
+   pointer is still coarse -- can open the same list. */
+@media (hover:none) and (pointer:coarse){.keyhint{display:none}}
+dialog.keys{border:1px solid var(--ink);background:var(--paper);
+   color:var(--ink);padding:1.2rem 1.4rem 1rem;max-width:24rem;width:calc(100% - 2rem)}
+dialog.keys::backdrop{background:rgba(0,0,0,.5)}
+dialog.keys .cap{margin:0 0 .8rem;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--ink);font-weight:600}
+dialog.keys dl{margin:0;display:grid;grid-template-columns:max-content 1fr;
+   gap:.5rem .9rem}
+/* display:contents so the two cells of a row land in the outer grid's columns
+   -- otherwise every <div> is one grid item and the keys never form a column. */
+dialog.keys dl > div{display:contents}
+dialog.keys dt{margin:0}
+dialog.keys dd{margin:0;font-size:.75rem;color:var(--ink-soft)}
+dialog.keys .none{margin:.9rem 0 0;font-size:.75rem;color:var(--dim)}
+kbd{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6875rem;
+   line-height:1;padding:.25rem .4rem;border:1px solid var(--edge);
+   color:var(--ink);background:var(--hover);white-space:nowrap}
+dialog.keys form{margin:1rem 0 0;text-align:right}
+dialog.keys button{font:inherit;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim);background:none;
+   border:1px solid var(--rule);padding:.4rem .7rem;cursor:pointer}
+dialog.keys button:hover{color:var(--hot-text);border-color:var(--hot-text)}
+@media print{.keyhint,dialog.keys{display:none}}
+body{margin:0;padding:clamp(1.4rem,4vw,3.5rem) clamp(1rem,5vw,3rem);
+     background-color:var(--paper);color:var(--ink);
+     font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+     font-size:.875rem;line-height:1.55}
+/* The measure in rem rather than px, so it travels with the type. Stated as
+   960px it would have held still while the scale went up a step, which quietly
+   shortens every line and tightens every column -- the same page with less room
+   in it. 60rem is the 960px this has always been, at the root above. */
+.wrap{max-width:60rem;margin:0 auto}
+/* clip, not hidden, and the difference is the whole reason this is safe:
+   overflow:hidden would make the body a scroll container and break every
+   position:sticky header on the site, where clip does not.
+
+   It is here because a hidden thing was still taking up room. The show pages'
+   hover tooltip is position:absolute and white-space:nowrap, and it is hidden
+   with visibility:hidden -- which still lays out. That was found once and fixed
+   only for phones, by dropping the tooltip below 620px; above 620px every show
+   page has been scrollable sideways ever since. Measured on the live build at
+   1280px: 1,627px of scroll width, so the page slid 347px into nothing.
+   The general shape is what earns a rule rather than a patch -- an off-screen
+   or invisible decoration extends the scrollable area exactly as a visible one
+   does, and the page it does it to looks completely normal.
+
+   On html as well as body, and that is not belt and braces. An overflow set on
+   body alone is *propagated* to the viewport, and body is then treated as
+   visible -- so `body{overflow-x:clip}` by itself clips nothing, which is
+   exactly what the first attempt at this measured: the rule shipped, the page
+   still scrolled 347px. */
+html,body{overflow-x:clip}
+.crumb{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem;margin-bottom:1.1rem;
+   letter-spacing:.14em;text-transform:uppercase}
+.crumb .lists,.crumb .meta{display:flex;flex-wrap:wrap;align-items:baseline;
+   gap:.55rem .9rem}
+.crumb .lists{font-size:.75rem}
+.crumb .meta{font-size:.625rem;margin-left:auto}
+/* Transparent rather than absent, so the strip does not move by a pixel when
+   an item is hovered or when it is the page you are on. The hairline under
+   every item went with it: seven of them under seven words set at 11px read
+   as a row of fine print rather than as the way around the site, and in a nav
+   landmark the underline is not carrying any meaning a body-text link needs
+   it for. What tells you where you are is now the one item drawn in full ink
+   with a rule under it. */
+.crumb a{color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+   padding-bottom:.15rem;border-bottom:2px solid transparent}
+.crumb .meta a{color:var(--dim)}
+/* --hot-text, not --hot: these are 12px and 10px, so they want the 4.5 floor
+   and --hot is 4.44 on paper. See the palette note. */
+.crumb a:hover,.crumb a:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
+.crumb a.here{color:var(--ink);border-bottom-color:var(--ink);cursor:default}
+/* The site's name, not a link. It used to go where "Shows" goes, so the strip
+   offered the same destination twice under two labels. */
+.crumb .mark{color:var(--ink);border-bottom:0;cursor:default}
+/* WCAG 2.5.8 asks for 24x24 and these measured 37x19, with "Due" only 22 wide.
+   Padding is the obvious fix and the wrong one here: the border-bottom *is*
+   the affordance, and padding-bottom would push that underline away from the
+   word it underlines. So the ink stays exactly where it is and only the hit
+   area grows -- a pseudo-element centered on the label, and never narrower
+   than it is tall. It sits inside the anchor, so it is the same target. */
+.crumb a{position:relative}
+.crumb a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+/* On a phone the strip is the whole of the navigation and 24px is the floor,
+   not the target: Apple asks 44pt, Material 48dp, and WCAG's own AAA level
+   agrees at 44. So the six destinations get 44px targets here.
+
+   Which costs a row unless the labels are made to fit one, and they were not:
+   at .75rem and .14em the six of them are 310px of ink in the 336px a 390px
+   phone leaves, so "Venues" wrapped alone onto a second row and the strip came
+   to 184px -- 22% of the screen, to say six words. Measured across the
+   settings, .6875rem at .1em is 269px and fits, and it is still a size and a
+   half up on the 11.25px this strip used to be set at. Under about 340px it
+   goes back to two rows, which is why the row gap is what it is: 44px targets
+   need 44px between their centers, and the gap is the only thing providing it.
+
+   The meta pair keeps 24px, the AA floor. They are the two least-used links on
+   the site and buying them 44px each costs another 20px of every phone screen.
+   They also drop the auto margin and take a row of their own, rather than
+   being pushed to a right edge a few characters away. */
+@media (max-width:620px){
+  .crumb{row-gap:1.5rem}
+  .crumb .lists{font-size:.6875rem;letter-spacing:.1em;gap:1.5rem .7rem}
+  .crumb .meta{margin-left:0;flex-basis:100%}
+  .crumb .lists a::before{min-width:44px;height:44px}
+}
+/* The section a page sits in, which is not the page it is. A show page
+   belongs under Shows and a song page under Songs, but neither *is* that
+   page. Ian, 2026-07-30: "Considering 'show' part of 'shows' makes sense, but
+   if we highlight it, then it makes it look like we're already there, and
+   that definitely violates some sort of guideline." It does, and the
+   guideline is aria-current: "page" is a claim that this is the document you
+   are reading, and a show page saying it about the index is simply false --
+   it would also take away the link, stranding the one route back to the list.
+
+   So there are three states and not two: nothing, the section you are in
+   (still a link, ink instead of soft ink, a rule in the edge color), and the
+   page you are on (not a link, full ink, full rule). The markup says the same
+   thing to a screen reader -- aria-current="page" for the page, plain "true"
+   for the item in the set that contains it. */
+.crumb a.sect{color:var(--ink);border-bottom-color:var(--edge)}
+.crumb a.sect:hover,.crumb a.sect:focus-visible{color:var(--hot-text);
+   border-bottom-color:var(--hot-text)}
+@media print{.crumb .meta{display:none}}
+/* One of the three slots the display face is allowed: the wordmark, a show's
+   date, and a song's name. Nowhere else. */
+h1{font-family:'Bagnard',Georgia,serif;font-weight:400;
+   font-size:clamp(1.7778rem,6.5vw,3.0222rem);line-height:1.14;margin:0 0 .5rem;
+   letter-spacing:-.01em}
+.show{margin:0;font-size:.75rem;font-weight:600;letter-spacing:0;
+   text-transform:uppercase;color:var(--ink-soft)}
+/* Two equal columns, not flex. Flex sized each card by its content, so the
+   rule that strips the first card's left padding made that card 21px narrower
+   than its siblings at every width -- correct under a grid, where the column
+   stays 1fr and only the content moves flush left, and wrong here, where it
+   moved the box. Measured 254 against 275 at 1280px, 174 against 195 at 860.
+   Two columns also have no bad arrangement: the five cards this replaced went
+   3+2 on the index's grid and onto one crammed line here. */
+
+/* Letterpress: a thick rule with a hairline under it. Three to a page at most
+   -- a double rule that turns up six times is wallpaper. */
+.rule2{height:5px;margin:0 0 1rem;background:linear-gradient(to bottom,
+   var(--ink) 0 3px,transparent 3px 4px,var(--ink) 4px 5px)}
+/* The tear line between one set and the next. Never between rows. */
+.perf{height:1px;margin:1.5rem 0 .6rem;background:repeating-linear-gradient(
+   to right,var(--edge) 0 5px,transparent 5px 10px)}
+.hero{display:grid;grid-template-columns:repeat(2,1fr);
+   margin:.7rem 0 .3rem;border-bottom:1px solid var(--ink)}
+/* A one- or two-performance song still gets the old pair of narrow cards. */
+.hero.sparse{grid-template-columns:repeat(2,1fr)}
+.card{padding:.85rem 1.1rem;border-left:1px solid var(--rule);
+   display:flex;flex-direction:column;min-width:0}
+.card:first-child{border-left:0;padding-left:0}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:2.25rem;line-height:1;
+   letter-spacing:0;margin-top:auto}
+/* The second half of each pair. It is the reason two cards can carry what five
+   did: the medians are one statistic over two windows and the gaps are one
+   distance at two moments, so the older reading belongs under the newer one
+   rather than in a card of its own. Also what fills the measure a bare number
+   left empty, which is what made two cards read as a hero and not as three
+   missing ones. */
+.card .sub{margin-top:.3rem;font-size:.6875rem;letter-spacing:.04em;
+   color:var(--dim);text-transform:none;line-height:1.35}
+.card .sub b{font-weight:600;color:var(--ink-soft)}
+/* The debut card goes to the debut's own row. SONG_CSS had no `a.card` rules
+   at all -- this is the one sheet where a card had never been a link -- and
+   writing them out here would have made an exact third copy of the show
+   sheet's block, so they were named instead. Down-arrow, not the index's
+   right: the destination is on this page. */
+a.card{text-decoration:none;color:inherit}
+a.card:hover{background:var(--hover)}
+a.card:hover .lbl,a.card:hover .lbl::after{color:var(--hot-text)}
+a.card .lbl::after{content:" \2193";color:var(--dim);white-space:nowrap}
+/* A date rather than a count: ten characters where every other figure on this
+   row is one to five, so it is set down a step. Only reachable on a
+   one-performance page, where the hero is two cards and there is half the
+   measure to spend on it -- five across it would wrap at 900, 1024 and 375. */
+.num.when{font-size:1.75rem}
+.num.hot{color:var(--hot)}
+.lbl{font-size:.625rem;text-transform:uppercase;letter-spacing:.14em;
+   color:var(--dim);margin-bottom:.35rem}
+.lbl .abbr{display:none}
+/* The best version gets a line rather than a fifth card: it is a date, a
+   place, a score and two links, none of which fit a card built for one
+   number. */
+/* A stub, not a callout. The tinted panel with a colored left border was the
+   one object on the site that looked like a framework component; it reads in
+   the same field language as the row above it now -- label, value, no fill. */
+.best{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;
+   margin:.7rem 0 0;padding:0 0 .7rem;border-bottom:1px solid var(--rule);
+   font-size:.875rem}
+.best .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+/* One flowing line rather than a row of stacked label/value columns. .field
+   is gone with the three captions that justified it; .v wraps as prose so a
+   narrow screen breaks it between middots instead of stacking four boxes. */
+.best .v{display:inline}
+.best .when{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
+.best .score{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;color:var(--hot-text);
+   font-size:1.25rem;line-height:1}
+.best .where{color:var(--dim)}
+.best a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.best a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* Up under the title, and captioned. These are links about the *song*, and
+   they used to sit directly beneath the best-version block -- so Ian read them
+   as being about that one performance and could not tell without clicking.
+   Two things were wrong and both are fixed here: they were adjacent to the
+   wrong thing, and they named no referent. Moving them alone would have cured
+   only the instance. */
+.links{margin:.55rem 0 0;display:flex;flex-wrap:wrap;align-items:center;
+   gap:.4rem .55rem}
+.links .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.badge{display:inline-flex;align-items:center;gap:.35rem;line-height:1;
+   padding:.35rem .5rem;border:1px solid var(--edge);color:var(--dim);
+   text-decoration:none;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase}
+.badge img{display:block;width:13px;height:13px}
+.badge:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* Below the best version now, beside the list it summarizes: "most often out
+   of / into" is a reading of the Before / after column, so it belongs next to
+   that column rather than between the title and the figures. */
+.pairs{margin:1.4rem 0 0}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem .8rem;
+   margin:1.9rem 0 .9rem}
+.search{flex:1 1 15rem;min-width:0;font:inherit;font-size:.875rem;
+   padding:.5rem .7rem;border:1px solid var(--edge);border-radius:0;
+   background:transparent;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus-visible,.sort:focus-visible{outline:2px solid var(--hot);
+   outline-offset:1px}
+.sort{appearance:none;-webkit-appearance:none;
+   font:inherit;font-size:.75rem;padding:.4rem 1.5rem .4rem .5rem;
+   background-color:transparent;color:var(--ink);cursor:pointer;
+   border:1px solid var(--edge);border-radius:0;
+   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+      linear-gradient(135deg,currentColor 50%,transparent 50%);
+   background-position:calc(100% - .78rem) calc(50% + .05rem),
+      calc(100% - .52rem) calc(50% + .05rem);
+   background-size:.26rem .26rem,.26rem .26rem;background-repeat:no-repeat}
+/* Matching the era chips beside it, which is the whole point of the exercise. */
+.sort:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* It ships disabled and is enabled by script; without this the UA grays out
+   text the reader can see for the split second before that happens. */
+.sort:disabled{opacity:1;color:var(--ink)}
+.sort option{background:var(--paper);color:var(--ink)}
+.count{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-left:auto}
+/* Jump to an era, with how many shows are in it. Anchors, so they work with
+   scripting off and survive a reload. */
+.eras{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+/* Captioned, because "4.0 42" beside a sort control reads as a filter with an
+   unexplained number, and nobody outside the fandom knows 4.0 is an era. */
+.eras-cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-right:.15rem}
+.era-chip{display:inline-flex;align-items:baseline;gap:.3rem;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.42rem .55rem;border:1px solid var(--edge);color:var(--dim);
+   text-decoration:none}
+.era-chip b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;letter-spacing:0;color:var(--ink-soft)}
+.era-chip:hover{color:var(--ink);border-color:var(--ink-soft)}
+.era-chip:hover b{color:var(--hot-text)}
+/* Shown only once there is something to clear. */
+.clear{font:inherit;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   padding:.45rem .6rem;border:1px solid var(--edge);background:transparent;
+   color:var(--dim);cursor:pointer}
+.clear:hover{color:var(--hot-text);border-color:var(--hot-text)}
+.clear:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+/* A venue is a filter waiting to happen: click it to see every other night
+   the song was played there. */
+.r-venue{cursor:pointer}
+.r-venue:hover{color:var(--hot-text)}
+.count b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1rem;color:var(--ink)}
+.perfs{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+/* Anything a link can land on stops clear of the condensed header, which is
+   fixed and 42px tall -- without this the browser puts the target's top edge
+   at the top of the viewport, which is exactly where the header is, and the
+   row you tapped to look at arrives half hidden underneath it. */
+/* Clear of the sticky bar, which is not one height. Below 820px it carries the
+   song and its counts and measures 42px; above, it also carries the column
+   labels and measures 73px -- against the 57.6px this used to be, which put a
+   jumped-to performance 16px underneath the bar meant to orient it. Measured
+   at both widths rather than estimated, with room left over so the row has air
+   above it rather than being flush to the edge. */
+.perfs>li,.perfs>li.yr{scroll-margin-top:3.6rem}
+@media screen and (min-width:821px){
+  .perfs>li,.perfs>li.yr{scroll-margin-top:5.4rem}
+}
+.perfs>li{border-bottom:1px solid var(--rule-soft)}
+.perfs>li.yr{border-bottom:0}
+/* The same tab the set headings take, so a section boundary looks the same
+   wherever it falls. */
+.yr h2{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .7rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   margin:1.6rem 0 .3rem;padding:0;border:0;color:var(--ink)}
+.yr h2 .tab{background:var(--ink);color:var(--paper);padding:.25rem .55rem;
+   letter-spacing:.14em;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.yr h2::after{content:"";flex:1;border-bottom:1px solid var(--ink)}
+.yr h2 span{font-family:'IBM Plex Mono',monospace;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.yr:first-child h2{margin-top:.4rem}
+/* Column labels. The date and the venue say what they are; the bar and the
+   number on the far right did not, and were left to be guessed at. */
+.head{padding-bottom:.35rem;border-bottom:1px solid var(--rule);
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.head .nhead{color:var(--dim)}
+/* The marks set in the face the setlists print them in, so the label is a
+   specimen of the thing it explains. Underlined like every other link here.
+
+   Its own line, not the tail of the label's: this column is narrow enough that
+   inline it wrapped anyway, and a wrap that was going to happen is better
+   declared than discovered. `width:max-content` keeps the underline on the two
+   marks rather than running the width of the column. */
+.head .marks{display:block;width:max-content;margin-top:.15rem;
+   font-family:'IBM Plex Mono',ui-monospace,monospace;
+   letter-spacing:0;text-transform:none;color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule);white-space:nowrap}
+.head .marks:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+.head .ghead{grid-column:4/-1;text-align:right}
+/* Every row is its own grid, so an `auto` last column sizes to its own content
+   and the gap figures stop lining up: "set 1" is 36px, "encore" 43, "set 2 -
+   2x" 71, which put the numbers at three different left edges down the page.
+   Fixed width, sized for the longest of them. */
+.row{display:grid;grid-template-columns:8.4rem 1fr 9rem 5rem 6.4rem;
+   column-gap:1.1rem;align-items:baseline;padding:.6rem .25rem}
+/* Not the column header. It wears `.row head` because it needs the same grid
+   as the performances beneath it, and so it inherited their hover: it lit up
+   exactly like a row and did nothing when clicked, which is an affordance
+   promising a target that was never there. Only the song pages carry a
+   `.row head` today; the rule is written into both sheets that have `.row`
+   so the two cannot drift apart the next time one gains a header. */
+.row:not(.head):hover{background:var(--hover)}
+/* The row's identifier, in the display face, same as the show index. It is
+   the one thing in the row that is not the song. */
+.r-date{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:1rem;line-height:1.3rem;white-space:nowrap}
+.r-date a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.r-date a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* One copy of each favicon for the whole page, worn by class.
+   No blanket opacity: these icons do not agree about their own. phish.net's is
+   fully opaque, phish.in's averages an alpha of 130 and fouldomain's 137, so a
+   single .65 on top of all three dimmed the translucent ones to about a third.
+   Black at a third reads fine on cream and disappears on near-black, which is
+   why phish.in's went missing in the dark and only in the dark. Each is dimmed
+   to taste against what it actually ships, and 12px rather than 10 because
+   they are detailed marks being drawn very small. */
+.ext::after{content:"";display:inline-block;width:12px;height:12px;
+   margin-left:.3rem;vertical-align:-1px;
+   background-position:center;background-repeat:no-repeat;
+   background-size:contain}
+.i-pnet::after{opacity:.6}
+.i-pin::after,.i-foul::after{opacity:.95}
+.ext:hover::after{opacity:1}
+.i-pnet::after{background-image:url("data:image/png;base64,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")}
+.i-pin::after{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC")}
+.i-foul::after{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR42u2Xz2tcVRTHP+e+Nz+a2MTa4Ewy0zSpq7ZiFwWhCEIRoxWULhztdBItRbKwW3fdduHfUBDFYIM/diq6cS2KoNAWwSyqTjLMpLVEW9PJzLv36yIabcvUZGZUhJztvfe8zz3nnvM9D7Zt27q0y6WD6dqLo/t79eO6Pbgrvv6qi6n0ChB3c+jq6ZGdfs3tBQ3+VHlgaLU10E7HraHc/HLjHwMQWKOcO+qJcoH4CwhDIN8meyyV1jWv1BHg3FYBbLMbGy+MHQ8Rz4I1cfKGG4TggYvIhkETmXT6tV1vfb/Stwg0KuOPBZIpF5Kvvdkxk9apxcAf6IYdwEkK0FxrTwHv9QXgyqmJrK21SxjDuMxuk0+tZ+LO1ChCLoIgRyj2rQqySfu5gHZuxZlwe+ozucG7IlkuHKmVi9ObArj2UrFQr4yedcGPb/U2QmlH/Iz+8rbqM7lJmZ1wCo83pguH7gmg2cOpJPEvI5sMcpNdFbbXU8snR6c2fPr4aUkxDieFE9VScUdHgKutH3dj0UO9NJYgLDj3qMA0eziFNPHnavRgKq0nOgIkSfp0X/p00D5KxezSzfpBYOSO1UMdAeIQdvRNLLJt5wjRXe/ElHQEaGfsvBS+6/Xbhi0w11hNx1EdY+224MC3HQEKb9aqKHwUgvmeFE66YaCRtxeXTNrojGb6OTL/2T3LcHS+ftlMK13dXCTAApH7ZCPkkRYAFGhK9lV+rvHr33dCs0+Rnse4CQxtnsBCfn7p9dty7t2HjjCcRO6D4juLi5sWo5WZvZPNVhhUlJxxFvsgP4AQWNNMGczZ72IEuAgFefi8cKH2Rl9a8f1zP1zJv1u95MwuAjhjtcPWWxJVgNh0ve9yrBJR1e3ZT5ZbUcvPOuw+M9pgERYyJt1wRtXLHs5fqL3S94HE3sdD9RLA8snCvBfTgo9BRw3yMvuyZXwD/pd/bRhdV7jxJ+uVsfONcvGR/2QqVomoUR47vv1/sG3/e/sNrEkrwQ1sbIcAAAAASUVORK5CYII=")}
+/* Literata, like every other run of prose on the site. This was mono for no
+   reason anybody chose: `body` sets Plex Mono site-wide, and .jam, .note and
+   the method page's .prose each opted out where reading matters. The dek never
+   did, so a standfirst sat in the figure face. A shade larger than the .75rem
+   it was set at, because the serif reads smaller at the same size. */
+.dek{margin:.55rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 16;
+   color:var(--dim);max-width:56ch}
+/* And its links, which is the fifth time a rule has been found living in one
+   sheet of three. This one was in SONG_CSS alone, so the two links in the due
+   page's standfirst -- "slipping" and "on the shelf", both pointing at sections
+   of the page they introduce -- rendered in the browser's default link blue
+   with a browser underline, on the one page on the site that has them. */
+.dek a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.dek a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* Said where the page explains itself, in the same voice as the gap note above
+   it, but marked -- it is a correction to what the numbers appear to mean, not
+   more description of them. */
+/* What the song sits between, counted over its whole history. Two short rows
+   rather than a table: this is context for the list below, not a finding of
+   its own, and it earns its place only because the answer is usually
+   surprising -- Harry Hood comes out of Hold Your Head Up 31 times. */
+/* One grid for both rows, so the two lists start at the same place. As two
+   independent flex rows they began wherever their own caption ended, and the
+   captions are not the same length -- "out of" against "into" put the two
+   lists 14.8px out of line at 760px. The caption column is max-content, so it
+   fits the longer of the two and neither row states a width of its own. */
+.pairs{margin:.7rem 0 0;display:grid;
+   grid-template-columns:max-content minmax(0,1fr);gap:.25rem 1rem}
+.pair{display:contents}
+.pair .cap{grid-column:1}
+/* 1.4rem between pairings rather than .7rem. At the old gap the row read as
+   one run of alternating words and numbers -- the space between a song and
+   its own count was very nearly the space between two songs. */
+.pair .ps{grid-column:2;display:flex;flex-wrap:wrap;gap:.15rem 1.4rem}
+.pair .cap{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim)}
+.pair .p{font-size:.8125rem;color:var(--ink-soft);white-space:nowrap}
+.pair .p b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.75rem;color:var(--dim);margin-left:.3rem}
+.caveat{margin:.6rem 0 0;padding-left:.8rem;border-left:2px solid var(--hot);
+   font-family:'Literata',Georgia,serif;font-size:.9375rem;line-height:1.5;
+   font-variation-settings:'opsz' 14;color:var(--ink-soft);max-width:58ch}
+
+.dow{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);line-height:1.1rem}
+/* Heavier than the show index's venue, deliberately. There the venue is the
+   row's identity repeated 259 times and the weight accumulates into a wall.
+   Here every row is the same song, so the venue is the only thing telling one
+   performance from the next -- the weight is carrying the distinction rather
+   than shouting. The date being in the display face is what keeps the two from
+   competing at the same volume. */
+.r-venue{font-size:.875rem;font-weight:600;letter-spacing:0;
+   text-transform:uppercase;line-height:1.3rem}
+.r-place{display:block;color:var(--dim);font-size:.75rem;line-height:1.15rem}
+.r-gap{text-align:right;line-height:1.3rem}
+/* The column header names this column, so the per-row label would be a second
+   answer to a question already answered -- but the header is the first thing
+   the narrow layout drops, and there the number was left to be guessed at.
+   Shown exactly where the header is not. */
+.glabel{display:none;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);margin-right:.4rem}
+.gap{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem}
+/* The one card whose number arrives after the page does. Same shape as its
+   four neighbors so its appearance is a card filling in, not the row
+   reflowing around a new one. */
+.card.since.over .num{color:var(--hot)}
+/* The verdict rides in the label, which the hero can now afford to let wrap:
+   the figures hang off a shared bottom edge, so a second line here moves this
+   label and nothing else on the row. */
+.card.since .v{display:block;text-transform:none;letter-spacing:0}
+.card.since .v:not(:empty){margin-top:.1rem}
+.card.since .v.quiet,.card.since .v.dim{color:var(--dim)}
+.card.since.over .v{color:var(--hot-text);text-transform:uppercase;
+   letter-spacing:.14em}
+.card.since.dormant .num{color:var(--ink-soft)}
+.gap.big{color:var(--hot-text)}
+.gap.none{color:var(--dim)}
+/* A soundcheck or a television session. It happened and it is listed,
+   but phish.net does not count it toward a gap and neither do we, so
+   the column says why it is empty rather than leaving a dash to be read
+   as missing data. */
+.gap.none{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
+.set{display:block;font-size:.625rem;letter-spacing:.14em;color:var(--dim);
+   text-transform:uppercase}
+/* What it followed and what it led into, stacked. Sized in ch so the column
+   holds a couple of words of song title and truncates the rest rather than
+   pushing the gap figures around. */
+.nb{font-size:.75rem;line-height:1.25rem;color:var(--dim);min-width:0}
+/* Named only where the column header is not doing it. */
+.nb .cap{display:none}
+/* Direct children only. These are the two lines -- what came before, what
+   came after -- and each is its own line. The transition mark now lives in
+   a span inside one of them, and a blanket rule here made that mark a
+   block too, so a row read "->" and "Golden Age" on separate lines. */
+/* Wraps rather than truncates. This track is a fixed 9rem, so `nowrap` plus
+   an ellipsis meant a long title was cut at every viewport width and widening
+   the window did nothing -- "A Song I Heard the Ocean Sing" was unreadable on
+   a 27-inch screen, which is how Ian found it. The comment this replaces said
+   the truncation kept the gap figures from being pushed around; it does not,
+   because wrapping inside a fixed grid track cannot move the track. It only
+   makes that one row taller, which the venue and the notes already do. The
+   narrow layout had been overriding this back to `normal` all along, so the
+   phone has been showing the full title while the desktop hid it. */
+.nb>span{display:block}
+/* Doubled backslashes: this is a Python string, and "90" is read as the
+   octal escape  followed by "90", which reaches the browser as a control
+   character and renders as a box. */
+.nb-in::before{content:"\2190\00a0";opacity:.55}
+.nb-out::before{content:"\2192\00a0";opacity:.55}
+/* Where a transition mark is shown it points on its own; the plain arrow is
+   only for rows that have none, so no line ever reads "-> ->". */
+.nb .seg::before{content:none}
+/* The set boundary, named. What is on the far side of a setbreak is a fact,
+   so the words carry the ink and the song beside them stays dim -- the label
+   is the answer, the song is the detail, and that order survives the column
+   truncating. Not bold: this column sits under a gap figure and a bar, and a
+   bold line here out-shouts both. */
+.nb b{font-weight:400;color:var(--ink)}
+/* These two wrap where every other line in the column truncates. The column
+   is 162px at any desktop width, and a line of this shape is a sentence, not
+   a title: 40 of Tweezer's 50 came out as "Opened set 3, af..." -- the cut
+   landing inside "after" rather than inside a song name. Wrapping made 14 of
+   that page's 418 rows taller and the page 0.7% longer, which is the whole
+   cost. A title still truncates, because half a title is still readable and
+   half a preposition is not. */
+.nb .edge{white-space:normal}
+/* No arrow on a show opener or closer: both name no song, so it would point
+   at nothing. Hidden rather than removed, so the slot is still there and
+   "Closed the show" starts where "Opened the encore, after ..." above it
+   starts. Dropping the slot instead left the two lines of one cell on
+   different left edges, which is visible on 3,821 rows. */
+.nb .term::before{opacity:0}
+/* Same -.06em as the report pages: enough to make -> one mark, not so
+   much that it stops matching the > on the row above it. */
+.nb .mk.tight{letter-spacing:-.06em}
+.bar{align-self:center}
+/* The same band the report pages use. This CSS is the half of that change I
+   left out the first time: the markup emitted .band, .mid and .at while this
+   sheet still described the old fill, so a song page drew an empty track with
+   three unstyled spans inside it and looked like nothing at all. */
+.bar .track{display:block;position:relative;width:100%;height:14px}
+.bar .track::before{content:"";position:absolute;left:0;right:0;top:6px;
+   height:2px;background:var(--rule)}
+/* No band to draw, so no scale is drawn. A dash where the mark would have
+   been, at the same height as the track, says the measurement was never
+   possible -- the ghost scale that used to sit here read as a bar that had
+   failed to render, and it was the emptiest graphic on the most interesting
+   rows. `.bare` is gone with it. */
+.bar .no-range{display:block;height:14px;line-height:14px;text-align:center;
+   color:var(--dim);opacity:.65;font-size:.75rem}
+.bar .band{position:absolute;left:30%;right:30%;top:3px;bottom:3px;
+   background:var(--band);opacity:var(--band-opacity);border-radius:1px}
+.bar .mid{position:absolute;left:50%;top:1px;bottom:1px;width:2px;
+   background:var(--paper);opacity:.85}
+.bar .at{position:absolute;left:50%;top:0;bottom:0;width:5px;
+   transform:translateX(-50%);background:var(--ink);border-radius:1px;
+   box-shadow:0 0 0 2px var(--paper)}
+.bar .at.late{background:var(--hot)}
+.bar .at.early{background:var(--cool)}
+.bar .at.usual{background:var(--ink)}
+/* Only the rated versions carry these, which is 25 rows out of however many
+   hundred -- and only they are known to have audio, since a version cannot be
+   scored until a recording of it circulates. */
+.mark{display:block;margin-top:.3rem;font-size:.625rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--dim)}
+.mark b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+   font-size:.875rem;color:var(--dim);letter-spacing:0}
+.mark.high b{color:var(--hot-text)}
+.mark a{color:var(--ink-soft);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+.mark a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* phish.net's note on the version, set under the venue rather than across the
+   row: spanning every column put it against the page's left edge, where it
+   read as something stuck on afterwards rather than as part of the entry.
+   Roman, not italic -- these run to 950 characters at the long end, and a
+   paragraph of italic prose is tiring well before that. */
+/* The only real prose on the site, and the one job neither other face can do.
+   The mono set it evenly and never argued with the figures, but 950 characters
+   of monospace gives the eye nothing to return on, and the display face at
+   text size is a display face at text size. Literata is drawn for reading and
+   has the optical axis to be drawn differently here than at a headline, which
+   is the whole argument for a third family rather than stretching a second.
+   15px rather than 12: a proportional face sets far more into the same measure,
+   and the old size was compensating for the mono's width. */
+.jam,.note{margin:.45rem 0 0;font-family:'Literata',Georgia,serif;
+   font-size:.9375rem;line-height:1.5;font-variation-settings:'opsz' 14;
+   color:var(--ink-soft);max-width:62ch}
+.jam a,.note a{color:inherit;text-decoration:none;
+   border-bottom:1px solid var(--edge);word-break:break-word}
+.jam a:hover,.note a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+.tag{display:inline-block;margin-right:.45rem;font-size:.625rem;
+   letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+details.jam,details.note{cursor:pointer}
+details.jam summary,details.note summary{display:block;list-style:none}
+details.jam summary::-webkit-details-marker,
+details.note summary::-webkit-details-marker{display:none}
+.clip{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+   overflow:hidden}
+details[open] .clip{-webkit-line-clamp:none;display:block}
+/* The affordance sits outside the clamped box, or it would be clipped away by
+   the very rule that makes it necessary. */
+details.jam summary::after,
+details.note summary::after{content:"More";display:inline-block;margin-top:.2rem;
+   font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);border-bottom:1px solid var(--rule)}
+details.jam[open] summary::after,
+details.note[open] summary::after{content:"Less"}
+details.jam summary:hover::after,
+details.note summary:hover::after{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+details.jam summary:focus-visible,
+details.note summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.empty{margin:2rem 0;font-size:.875rem;color:var(--dim);font-style:italic}
+/* The header a reader keeps once the real one has scrolled away. Landing on a
+   row from a report's link otherwise drops you into an unlabeled list of
+   dates with no way to tell what page you are on. It carries the song and the
+   figure the page exists for, and nothing else. */
+.stuck{position:fixed;top:0;left:0;right:0;z-index:20;
+  background:var(--paper);border-bottom:1px solid var(--rule);
+  transform:translateY(-101%);transition:transform .22s ease;
+  padding:.5rem clamp(1rem,5vw,3rem)}
+.stuck.on{transform:none}
+/* 60rem, not 960px -- the same measure as .wrap and for the same reason given
+   there. This was the one place the px-to-rem conversion was missed, so when
+   the scale went up a step the content grew to 1080px and this bar held still
+   at 960. It carries .cols, the column labels whose whole job is to sit over
+   the columns they name, so the miss did not read as a narrow bar: it put
+   every label 60px off its own column, and a long note in the venue cell then
+   ran visibly past the "Before / after" label without ever touching that
+   column. The header was wrong, not the note. */
+.stuck .in{max-width:60rem;margin:0 auto;display:flex;align-items:baseline;
+  gap:.7rem}
+.stuck .name{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;font-size:1rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stuck .n{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin-left:auto;white-space:nowrap}
+.stuck .n b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;
+  font-size:.875rem;color:var(--ink);letter-spacing:0}
+/* The column labels come along. A reader arriving from a report page lands
+   mid-list, having never seen the header row, and the last column is a bare
+   number: knowing it is a gap requires knowing the site already. Same markup
+   and same grid as the real header, so the labels sit over their columns
+   rather than near them. Dropped below 820px, where the row stops being
+   columns at all and each field carries its own label instead. */
+.stuck .cols{display:block;margin-top:.4rem}
+.stuck .cols .head{border-bottom:0;padding-bottom:0}
+@media screen and (max-width:820px){.stuck .cols{display:none}}
+@media (prefers-reduced-motion:reduce){.stuck{transition:none}}
+/* Where a link dropped you. Bright for a moment, then gone -- it answers
+   "which row?" and then stops being ink on the page. */
+@keyframes landed{from{background:var(--hover);box-shadow:inset 3px 0 0 var(--hot)}
+  to{background:transparent;box-shadow:inset 3px 0 0 transparent}}
+.perfs>li.landed{animation:landed 3.4s ease-out both}
+@media (prefers-reduced-motion:reduce){
+  .perfs>li.landed{animation:none;box-shadow:inset 3px 0 0 var(--hot)}}
+.totop{position:fixed;right:clamp(.8rem,3vw,2rem);bottom:clamp(.8rem,3vw,2rem);
+  z-index:19;width:2.6rem;height:2.6rem;display:flex;align-items:center;
+  justify-content:center;background:var(--paper);border:1px solid var(--edge);
+  color:var(--ink-soft);text-decoration:none;font-size:1rem}
+/* --hot-text: this is 18px, under the 24px the display accent is cleared for,
+   and --hot is 4.44:1 on paper. See the palette note. */
+.totop:hover{color:var(--hot-text);border-color:var(--hot-text)}
+/* And this line is the whole control. `hidden` hides an element by way of the
+   browser's own `[hidden]{display:none}`, which is a *user-agent* rule -- so
+   any author declaration of `display` beats it outright, whatever the
+   specificity, and `display:flex` two lines up is one. The attribute has
+   therefore never done anything: measured on the published song pages, where
+   this button has been on screen since the day it shipped, pinned over a
+   header it was written to appear only in the absence of. The script has been
+   setting `.hidden` correctly the whole time and the page ignored it.
+   `.totop[hidden]` is an author rule and wins on the ordinary rules.
+
+   Same family as the four bugs listed at the top of CLAUDE.md and worth adding
+   to the count: a control that hides itself needs its hidden state proved, not
+   its visible one. */
+.totop[hidden]{display:none}
+@media print{.totop{display:none}}
+footer{margin-top:2.4rem;padding-top:.9rem;border-top:1px solid var(--rule);
+   font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+   color:var(--dim);display:flex;justify-content:space-between;
+   flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding-bottom:2.5rem}
+footer a{color:var(--dim);text-decoration:none;
+   border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--hot-text);border-bottom-color:var(--hot-text)}
+/* 24px tall, without moving the ink -- the same trick `.backtop a` uses, and
+   the same floor the nav links were held to. Measured at 19px before this: the
+   nav got tap targets when it was audited and the footer did not, so every
+   footer link on the site has been under the minimum since it was written. It
+   is safe to grow them here because the row gap is .4rem: 2.5px of new box
+   above and below against 3.2px of clearance, which the sweep over twelve page
+   types at 320/390/430/600/768/1024/1280 confirms leaves no two footer targets
+   overlapping. */
+footer a{position:relative;display:inline-block}
+footer a::before{content:"";position:absolute;left:50%;top:50%;
+   transform:translate(-50%,-50%);width:100%;min-width:24px;height:24px}
+@media screen{
+}
+/* Same lesson as the reports and the index: below this width the columns stop
+   being columns, so nothing has to be squeezed or hidden. Higher than the 620
+   the other pages use, because this row carries five columns to their three --
+   at 760px the fixed four left the venue about 14rem and "Bethel Woods Center
+   for the Arts" came out over four lines. */
+@media screen and (max-width:820px){
+  .head{display:none}
+  /* The caption goes above its list rather than beside it, so the pairings get
+     the whole measure. A pairing must not break -- the count belongs to the
+     song it terminates, which is the point of setting it that way at all -- so
+     "Bouncing Around the Room 24x" is one unbreakable 240px run, and beside a
+     caption there was not 240px to give it at 375px. */
+  .pairs{grid-template-columns:minmax(0,1fr)}
+  .pair .cap,.pair .ps{grid-column:1}
+  .pair .cap{margin-top:.35rem}
+  .row{grid-template-columns:1fr;column-gap:0;row-gap:.15rem;padding:.55rem 0}
+  .nb{margin-top:.35rem}
+  .nb .cap{display:block;font-size:.625rem;letter-spacing:.14em;
+     text-transform:uppercase;color:var(--dim);margin-bottom:.1rem}
+  .r-date{display:flex;align-items:baseline;gap:.5rem}
+  .dow{display:inline}
+  .r-gap{text-align:left}
+  .glabel{display:inline}
+  .gap{font-size:1rem}
+  .set{display:inline;margin-left:.5rem}
+  .set::before{content:"\00b7";margin-right:.5rem;color:var(--dim);opacity:.7}
+  .bar{margin:.25rem 0}
+  .card{flex:1 1 45%;padding:.65rem .55rem}
+  .card:nth-child(odd){border-left:0;padding-left:0}
+  .card:nth-child(n+3){border-top:1px solid var(--rule)}
+  .num{font-size:1.5rem}
+  /* Two columns here, so the date has a 45% card rather than half the row:
+     1.5rem wants 162px against about 151px of it at 375. */
+  .num.when{font-size:1.25rem}
+  .lbl{font-size:.625rem;letter-spacing:.14em}
+  /* "Median gap, last 10 years" is the clear label and the default one; the
+     column is simply not wide enough for it here. */
+  .lbl .full{display:none}
+  .lbl .abbr{display:inline}
+  .show{font-size:.75rem;letter-spacing:0}
+  .count{margin-left:0}
+  .theme{order:1;flex-basis:100%}
+}
+/* A one-performance hero is two cards and one of them is a ten-character date,
+   which is a different problem from the five-card row: two cards share the
+   width, so each gets about 124px at 320px and the date wants 135. Measured
+   rather than guessed -- it is fine at 330 and wraps at 320, so the pair stack
+   below 360 rather than at the edge of fitting, where a fallback face a little
+   wider than IBM Plex Mono would put it back. Five cards already stack on a
+   phone; these two just do it one breakpoint later. */
+@media screen and (max-width:360px){
+  .hero.sparse .card{flex:1 1 100%;border-left:0;padding-left:0}
+  .hero.sparse .card+.card{border-top:1px solid var(--rule)}
+  .hero.sparse .num.when{font-size:1.5rem}
+}
+</style><script>
+(function(){
+  // Deliberately not renamed: this is a private key in a reader's own
+  // browser, and changing it would silently reset the light/dark choice
+  // of everyone who has ever set one, to rename a string nobody sees.
+  var KEY='phishgap-theme', root=document.documentElement;
+  function apply(v){
+    if(v==='light'||v==='dark') root.setAttribute('data-theme',v);
+    else root.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  document.addEventListener('DOMContentLoaded', function(){
+    var box=document.querySelector('.theme');
+    if(!box) return;
+    var btns=[].slice.call(box.querySelectorAll('button'));
+    function mark(){
+      var cur=root.getAttribute('data-theme')||'auto';
+      btns.forEach(function(b){
+        var on=b.getAttribute('data-theme')===cur;
+        b.classList.toggle('on',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
+    btns.forEach(function(b){
+      b.disabled=false;
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-theme');
+        apply(v);
+        try{ v==='auto'?localStorage.removeItem(KEY):localStorage.setItem(KEY,v); }
+        catch(e){}
+        mark();
+      });
+    });
+    mark();
+  });
+})();
+</script><script>
+(function(){
+  function ready(fn){
+    if(document.readyState!=='loading') fn();
+    else document.addEventListener('DOMContentLoaded',fn);
+  }
+  ready(function(){
+    var search=document.querySelector('input.search');
+    var prev=document.querySelector('a[rel="prev"]');
+    var next=document.querySelector('a[rel="next"]');
+    var foot=document.querySelector('footer');
+    if(!foot) return;
+    // "Previous show, 2026-07-25" -> "Previous show". The pager already writes
+    // a label saying what it steps through, so the overlay does not have to
+    // guess whether this page is a list of shows or of anything else.
+    function what(a,fallback){
+      var s=(a&&a.getAttribute('aria-label'))||'';
+      s=s.split(',')[0].trim();
+      return s||fallback;
+    }
+    var rows=[];
+    if(search){
+      rows.push(['/','Jump to the search box']);
+      rows.push(['Esc','Clear the search']);
+    }
+    if(prev) rows.push(['[  \u2190', what(prev,'Previous')]);
+    if(next) rows.push([']  \u2192', what(next,'Next')]);
+    rows.push(['?','This list']);
+    var dlg=document.createElement('dialog');
+    dlg.className='keys';
+    dlg.setAttribute('aria-label','Keyboard shortcuts');
+    dlg.innerHTML='<p class="cap">Keyboard</p><dl>'
+      + rows.map(function(r){
+          return '<div><dt><kbd>'+r[0].split('  ').join('</kbd> <kbd>')
+                 +'</kbd></dt><dd>'+r[1]+'</dd></div>'; }).join('')
+      + '</dl>'
+      + (rows.length>1?'':'<p class="none">This page has nothing else to '
+         + 'step through. The show and song lists have more.</p>')
+      + '<form method="dialog"><button>Close</button></form>';
+    document.body.appendChild(dlg);
+    // A button as well as a key, because a shortcut nobody can find is a
+    // shortcut nobody has. It carries the key it stands for.
+    var hint=document.createElement('button');
+    hint.type='button';
+    hint.className='keyhint';
+    hint.setAttribute('aria-haspopup','dialog');
+    hint.innerHTML='Keys <kbd>?</kbd>';
+    hint.addEventListener('click',function(){ dlg.showModal(); });
+    foot.appendChild(hint);
+    document.addEventListener('keydown',function(e){
+      if(e.metaKey||e.ctrlKey||e.altKey||dlg.open) return;
+      var t=e.target;
+      // While typing, every one of these is a character somebody meant.
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'
+             ||t.tagName==='SELECT'||t.isContentEditable)) return;
+      if(e.key==='?'){ e.preventDefault(); dlg.showModal(); return; }
+      if(prev&&(e.key==='['||e.key==='ArrowLeft')){ e.preventDefault(); prev.click(); }
+      if(next&&(e.key===']'||e.key==='ArrowRight')){ e.preventDefault(); next.click(); }
+    });
+  });
+})();
+</script><script>
+/* "4 minutes ago" rather than "01:47 UTC". A clock time on a page about dates
+   reads like a server log, and the fact a reader wants is elapsed -- has this
+   stalled? -- not the hour it happened. The stamp ships in datetime= so it is
+   correct without JavaScript and correct after the tab has been open an hour;
+   this only renders it. */
+(function(){
+  function say(sec){
+    if(sec<45) return 'just now';
+    var m=Math.round(sec/60);
+    if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+    var h=Math.round(m/60);
+    return h+' hour'+(h===1?'':'s')+' ago';
+  }
+  function start(){
+    var els=[].slice.call(document.querySelectorAll('time.ago'));
+    if(!els.length) return;
+    function tick(){
+      var now=Date.now();
+      els.forEach(function(e){
+        var t=Date.parse(e.getAttribute('datetime'));
+        if(!isNaN(t)) e.textContent=say((now-t)/1000);
+      });
+    }
+    tick();
+    setInterval(tick,20000);
+  }
+  /* This ships in the head, so on a first load it runs before the body it is
+     looking for exists: querySelectorAll found nothing, the function returned,
+     and every reader saw the bare 03:41 UTC fallback the markup carries for
+     readers with no JavaScript at all. The stamp has been a clock reading on
+     every live page since it was written. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script><script>
+/* Which rows arrived while this reader was away, so a setlist that grew does
+   not have to be re-read from the top. The count is kept in this browser
+   only; nothing is sent anywhere and nothing is stored server-side.
+
+   The claim used to outlive the fact. The count was banked at page *load*,
+   the tag was built once from it and then never touched again -- so "since
+   you last looked" really meant "since this browser last loaded a document
+   for this show", and the tag was a snapshot frozen at load time. Scrolling
+   down to the new songs and back up left it still sitting there insisting
+   they were new, because nothing re-evaluated it. Ian caught it doing exactly
+   that, and asked the right question: how can it know when I last looked.
+
+   It could not, and it was nearly invisible before, because the meta refresh
+   it relied on never fired and the page therefore almost never reloaded.
+   Making the reloads real made the false claim frequent.
+
+   One rule makes the words true: **the stored count only ever advances to
+   rows that have actually been in view.** So "since you last looked" means
+   what it says -- since these rows were last in front of you -- and the tag
+   retires itself the moment that becomes true, instead of asserting it for
+   the life of the document.
+
+   A first attempt also banked the count when the page was hidden or
+   unloaded, to stop an unread page accumulating a claim. That was wrong in
+   both directions and the first test caught it. A reload fires pagehide, so
+   the count was banked from the document being torn down and the rows in the
+   *next* one that the reader had still never seen were recorded as seen: two
+   songs landing without a scroll in between reported "1 new", not 2.
+   Accumulation is not the bug -- if you never look at the new songs they are
+   still new, and saying so is the whole point. */
+(function(){
+  function start(){
+    var live=document.querySelector('.live');
+    if(!live||!window.localStorage) return;
+    var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+    if(!rows.length) return;
+    /* Keyed on the night, which the banner carries explicitly. It used to be
+       derived from document.title -- but the title leads with the song count,
+       "(20) 2026-07-27", so stripping non-digits gave "pl-seen-202026-07-" and
+       a *different* key every time a song landed. seen was therefore always 0,
+       the mark never fired once, and a key was left behind per song count. */
+    var show=live.getAttribute('data-show');
+    if(!show) return;
+    var key='pl-seen-'+show;
+    var seen=parseInt(localStorage.getItem(key)||'0',10);
+    function bank(){ try{ localStorage.setItem(key,String(rows.length)); }catch(e){} }
+    /* Banked here only when there is nothing new to show, where it is a
+       no-op or a correction for a setlist that shrank. With something new it
+       waits for the rows to be seen: writing the count at load is precisely
+       what made the old claim false. */
+    if(!(seen>0&&rows.length>seen)){ bank(); return; }
+    var fresh=rows.slice(seen);
+    fresh.forEach(function(r){ r.classList.add('fresh'); });
+    /* The count is also the way there. Every song row already carries its
+       slug as an id, so this is a real href to a real fragment rather than a
+       scripted scroll -- which matters because a fragment jump is reversible
+       with the Back button and a scroll is not, the same reasoning as the
+       show row's landing spot in docs/TODO.md 2h. It points at the *first*
+       new row, so the reader lands at the start of what they missed and
+       reads down.
+
+       tabindex="-1" so the jump moves focus as well as the viewport, and
+       [tabindex="-1"]:focus already drops the ring for exactly this case: a
+       landing spot is a place, not a control. */
+    var target=fresh[0];
+    var tag=document.createElement(target.id?'a':'span');
+    tag.className='since-you';
+    tag.textContent=(rows.length-seen)+' new since you last looked';
+    if(target.id){
+      target.setAttribute('tabindex','-1');
+      tag.href='#'+target.id;
+      /* Non-breaking, so the arrow can never be left on a line by itself. */
+      tag.textContent+='\u00a0\u2193';
+    }
+    live.appendChild(tag);
+    if(!window.IntersectionObserver){ bank(); return; }
+    /* Retired once the last of those rows has held still in view for a
+       second. One frame would retire it during a flick past the table, which
+       is not looking at it; a second is long enough to mean a deliberate look
+       and short enough that any real one counts. */
+    var timer=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          if(!timer) timer=setTimeout(function(){
+            io.disconnect();
+            if(tag.parentNode) tag.parentNode.removeChild(tag);
+            bank();
+          },1000);
+        } else if(timer){ clearTimeout(timer); timer=null; }
+      });
+    });
+    io.observe(fresh[fresh.length-1]);
+  }
+  /* Same trap as the relative stamp beside it: this ships in the head, so it
+     ran before .live or a single row existed and returned every time. */
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script></head><body id="top"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
+<nav class="crumb sections" aria-label="Sections"><span class="mark">Possum Logic</span><span class="lists"><a href="../index.html">Shows</a><a href="../songs.html" class="sect" aria-current="true">Songs</a><a href="../years.html">Years</a><a href="../venues.html">Venues</a></span><span class="meta"><a href="../faq.html">FAQ</a><a href="../method.html">How this works</a></span></nav>
+<div class="stuck" id="stuck" aria-hidden="true"><div class="in">
+<span class="name">Melt the Guns</span>
+<span class="n"><b>5</b> shows &middot; median gap <b>17.5</b></span></div>
+<div class="in cols"><div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap</span></div></div></div>
+<div class="rule2"></div>
+<header><h1>Melt the Guns</h1>
+<p class="show">Debuted <a href='#1985-09-27'>1985-09-27</a> &middot; Last played 2026-07-31 &middot; 5 performances</p>
+<p class="links"><span class="cap">This song on</span><a class='badge' href='https://phish.net/song/melt-the-guns' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,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' alt='' width='13' height='13'><span>phish.net</span></a><a class='badge' href='https://phish.in/songs/melt-the-guns' target='_blank' rel='noopener noreferrer'><img class='flip' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAUlEQVR42s2Xz2djURTHP0kqPMIwlBKGUoZQwlRWIausQukopaWmsuowZgyl/SO67X8xs+i2225a7bYMQyndtJTwCCFeN9/HdZv77n3pq9cvR17uPe/8vOfc86BkVIznGtAAFg1qAJH2psAYGAGPwD3wpLVC8BHoAkkgfQM+A/XXKu4AmzkU27QNLCtSIajbRicF0KGM8KEBNEVRkQakKXFFoQmsW/zrSmGwggOgDwwzeNry0kQEbDj4f+MQMpix3jWE9hwCh/LW9HzL49gLJasZ3qVY9kQhxYYvslUrXGOF2cYP1XyKGPjqyHck6gB/fafSNqAHHM/gO1PzMUupkSF3BbgI7QMhB9BGK4N3oAMbIrdFYHnZGHiqJUR5Ry3ey9i18tsqqG/sqwOz72E0O1y7wMaVAEkNuAIeFNZZ+C+v+8Cft7iSV4r2Kg9V0zyUOZAkZRpQLXskK9uAI15Zx90iDuE82AFOA/h++RgWHOt7uv2awImxvgucA7fGtZyF63kNuNbtVwfW1LNjYyQPze94XgNupRDgLuP9OGNv5Nl3VsH3kBeFR6XFZcCT5OUy4CbHYRxl5PlejlzmGUi2raHSh/Rz7osxBxxo5F7S/gdHuQ6BfgX4qVD+U75HwGSO0qynA4Yw0fekaWhkzJ4xMK0An8Qc63fyRl2vZv2f8h7wDEQBdexwLq8GAAAAAElFTkSuQmCC' alt='' width='13' height='13'><span>phish.in</span></a><a class='badge' href='https://fouldomain.com/songs/melt-the-guns' target='_blank' rel='noopener noreferrer'><img class='' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR42u2Xz2tcVRTHP+e+Nz+a2MTa4Ewy0zSpq7ZiFwWhCEIRoxWULhztdBItRbKwW3fdduHfUBDFYIM/diq6cS2KoNAWwSyqTjLMpLVEW9PJzLv36yIabcvUZGZUhJztvfe8zz3nnvM9D7Zt27q0y6WD6dqLo/t79eO6Pbgrvv6qi6n0ChB3c+jq6ZGdfs3tBQ3+VHlgaLU10E7HraHc/HLjHwMQWKOcO+qJcoH4CwhDIN8meyyV1jWv1BHg3FYBbLMbGy+MHQ8Rz4I1cfKGG4TggYvIhkETmXT6tV1vfb/Stwg0KuOPBZIpF5Kvvdkxk9apxcAf6IYdwEkK0FxrTwHv9QXgyqmJrK21SxjDuMxuk0+tZ+LO1ChCLoIgRyj2rQqySfu5gHZuxZlwe+ozucG7IlkuHKmVi9ObArj2UrFQr4yedcGPb/U2QmlH/Iz+8rbqM7lJmZ1wCo83pguH7gmg2cOpJPEvI5sMcpNdFbbXU8snR6c2fPr4aUkxDieFE9VScUdHgKutH3dj0UO9NJYgLDj3qMA0eziFNPHnavRgKq0nOgIkSfp0X/p00D5KxezSzfpBYOSO1UMdAeIQdvRNLLJt5wjRXe/ElHQEaGfsvBS+6/Xbhi0w11hNx1EdY+224MC3HQEKb9aqKHwUgvmeFE66YaCRtxeXTNrojGb6OTL/2T3LcHS+ftlMK13dXCTAApH7ZCPkkRYAFGhK9lV+rvHr33dCs0+Rnse4CQxtnsBCfn7p9dty7t2HjjCcRO6D4juLi5sWo5WZvZPNVhhUlJxxFvsgP4AQWNNMGczZ72IEuAgFefi8cKH2Rl9a8f1zP1zJv1u95MwuAjhjtcPWWxJVgNh0ve9yrBJR1e3ZT5ZbUcvPOuw+M9pgERYyJt1wRtXLHs5fqL3S94HE3sdD9RLA8snCvBfTgo9BRw3yMvuyZXwD/pd/bRhdV7jxJ+uVsfONcvGR/2QqVomoUR47vv1/sG3/e/sNrEkrwQ1sbIcAAAAASUVORK5CYII=' alt='' width='13' height='13'><span>fouldomain</span></a></p>
+</header>
+<section class="hero"><div class='card'><div class='lbl'>Median gap</div><div class='num'>2,051</div><div class='sub'>last 10 years &middot; <b>17.5</b> all-time</div></div><div class='card since' data-slug='melt-the-guns' data-high='' data-bustout='100' data-mult='3.5' data-quiet='rarity'><div class='lbl'>Current gap<span class='v'></span></div><div class='num'><span class='no-range' aria-hidden='true'>&mdash;</span></div><div class='sub'>longest <b>2,051</b></div></div></section>
+
+
+<div class="tools" id="main" tabindex="-1">
+<input id="q" class="search" type="search" autocomplete="off" disabled
+       placeholder="Search venue, city, year, Sunday&hellip;" aria-label="Search performances">
+<button id="clear" class="clear" type="button" hidden>Clear</button>
+<span class="eras"><span class="eras-cap">Eras</span><a class='era-chip' href='#era-4-0'>4.0<b>1</b></a><a class='era-chip' href='#era-1-0'>1.0<b>4</b></a></span>
+<label class="count" for="sort">Sort
+<select id="sort" class="sort" disabled>
+<option value="newest">Newest</option><option value="oldest">Oldest</option>
+<option value="rating">Highest rated</option><option value="gap">Longest gap</option>
+</select></label>
+<span class="count"><b id="shown">5</b> of 5 shows</span>
+</div>
+<div class='row head'><span>Date</span><span>Venue</span><span class='nhead'>Before / after <a class='marks' href='../faq.html#segues'>&gt; and &#8211;&gt;</a></span><span class='ghead'>Gap</span></div>
+<ol class="perfs" id="list">
+<li class='yr' id='era-4-0' data-era='4.0'><h2><span class='tab'>4.0</span><span>1 show</span><span>2026&ndash;2026</span></h2></li>
+<li id='2026-07-31' data-date='2026-07-31' data-era='4.0' data-gap='2051' data-score='' data-search="2026-07-31 07/31/2026 7/31/2026 7/31/26 07/31 7/31 7-31 july 31 2026 july 31 friday fenway park boston ma  "><div class='row'><span class='r-date'><a href='../show/2026-07-31.html'>2026-07-31</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Fenway Park</span><span class='r-place'>Boston, MA</span></span><span class='nb'><span class='cap'>Before / after</span><span class='nb-in seg'>Fuego <span class='mk'>&gt;</span></span></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap big'>2,051</span><span class='set'>SET 2</span></span></div></li>
+<li class='yr' id='era-1-0' data-era='1.0'><h2><span class='tab'>1.0</span><span>4 shows</span><span>1985&ndash;1987</span></h2></li>
+<li id='1987-04-29' data-date='1987-04-29' data-era='1.0' data-gap='7' data-score='' data-search="1987-04-29 04/29/1987 4/29/1987 4/29/87 04/29 4/29 4-29 april 29 1987 april 29 wednesday nectar&#x27;s burlington vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1987-04-29' target='_blank' rel='noopener noreferrer'>1987-04-29</a><span class='dow'>Wed</span></span><span><span class='r-venue'>Nectar&#x27;s</span><span class='r-place'>Burlington, VT</span></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>7</span><span class='set'>SET 2</span></span></div></li>
+<li id='1987-02-13' data-date='1987-02-13' data-era='1.0' data-gap='11' data-score='' data-search="1987-02-13 02/13/1987 2/13/1987 2/13/87 02/13 2/13 2-13 february 13 1987 february 13 friday johnson state college johnson vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1987-02-13' target='_blank' rel='noopener noreferrer'>1987-02-13</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Johnson State College</span><span class='r-place'>Johnson, VT</span></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>11</span><span class='set'>SET 2</span></span></div></li>
+<li id='1986-10-31' data-date='1986-10-31' data-era='1.0' data-gap='24' data-score='' data-search="1986-10-31 10/31/1986 10/31/1986 10/31/86 10/31 10/31 10-31 october 31 1986 october 31 friday sculpture room, goddard college plainfield vt  "><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1986-10-31' target='_blank' rel='noopener noreferrer'>1986-10-31</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Sculpture Room, Goddard College</span><span class='r-place'>Plainfield, VT</span></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap'>24</span><span class='set'>SET 1</span></span></div></li>
+<li id='1985-09-27' data-date='1985-09-27' data-era='1.0' data-gap='-1' data-score='' data-search="1985-09-27 09/27/1985 9/27/1985 9/27/85 09/27 9/27 9-27 september 27 1985 september 27 friday slade hall, university of vermont burlington vt  first known version; with a macaroni and cheese vocal jam. audience shook boxes of macaroni and cheese."><div class='row'><span class='r-date'><a class='ext i-pnet' href='https://phish.net/setlist/?d=1985-09-27' target='_blank' rel='noopener noreferrer'>1985-09-27</a><span class='dow'>Fri</span></span><span><span class='r-venue'>Slade Hall, University of Vermont</span><span class='r-place'>Burlington, VT</span><p class='note'><span class='tag'>Note</span>First known version; with a macaroni and cheese vocal jam. Audience shook boxes of macaroni and cheese.</p></span><span class='nb'></span><span class='bar'><span class='no-range' aria-hidden='true'>&mdash;</span></span><span class='r-gap'><span class='glabel'>Gap</span><span class='gap none'>Debut</span><span class='set'>SET 2</span></span></div></li>
+</ol>
+<p class="empty" id="empty" hidden>No performances match that search.</p>
+<a class="totop" id="totop" href="#top" hidden aria-label="Back to the top">&uarr;</a>
+<footer><span><a href="../method.html">How this works</a></span>
+<span><a href="../acknowledgments.html">Acknowledgments</a></span>
+<span class='theme' role='group' aria-label='Color theme'><button type='button' data-theme='auto' disabled>Auto</button><button type='button' data-theme='light' disabled>Light</button><button type='button' data-theme='dark' disabled>Dark</button></span>
+<span>Current through 2026-07-31</span></footer>
+<script data-goatcounter="https://imolee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</div><script>
+/* How long this song has been waiting, read from one small file rather than
+   rendered into the page. It is the only figure here that moves when some
+   *other* song is played, so baking it in would rewrite every song page after
+   every show -- 48 MB pushed to publish one number that fits in 7 KB.
+
+   The card no longer ships hidden. Hiding it meant a reader without
+   JavaScript got a hero one card short with no sign the figure existed, and
+   the label a reader saw depended on whether this file ran. It now carries
+   its label and its longest-gap line from the start, and the big slot holds
+   the same em-dash the bars use for a figure that is not available -- so a
+   failed fetch leaves a card short of one number rather than no card, and
+   only the number ever waits. */
+(function(){
+  var box=document.querySelector('.card.since');
+  if(!box||!window.fetch) return;
+  var slug=box.getAttribute('data-slug');
+  fetch('../data/current.json').then(function(r){
+    if(!r.ok) throw 0;
+    return r.json();
+  }).then(function(d){
+    var n=d.since&&d.since[slug];
+    if(typeof n!=='number') return;
+    box.querySelector('.num').textContent=n.toLocaleString();
+    /* The same two thresholds the report pages apply, in the same order: the
+       upper edge of the song's usual range where it has enough history to have
+       one, and the bustout line where it does not. Ours against ours -- this
+       is not a claim about phish.net's gap, which is not reproducible from a
+       show calendar. */
+    var high=parseFloat(box.getAttribute('data-high')),
+        bust=parseFloat(box.getAttribute('data-bustout')),
+        mult=parseFloat(box.getAttribute('data-mult'))||2,
+        v=box.querySelector('.v');
+    if(high>0){
+      /* Past its norm AND past the bustout line is not "overdue" -- it is a
+         song whose return would be the headline of the night. The due page
+         draws the same line and files these under On the shelf, and the two
+         must not disagree about the same song. */
+      if(n>high&&n>=bust){ box.classList.add('dormant');
+        if(v){ v.textContent='on the shelf'; v.className='v dim'; } }
+      /* Due and overdue are different claims and the due page separates them,
+         so this must too or the same song is called two things in two places.
+         Past its norm but only just is the one a reader is expecting. */
+      else if(n>=high*mult){ box.classList.add('over');
+        if(v) v.textContent='overdue'; }
+      else if(n>high){ box.classList.add('over'); if(v) v.textContent='due'; }
+      // "line 10" was the site talking to itself: the reader has no way to
+      // know which line, and the number is the one this song becomes overdue
+      // at. Say that.
+      else if(v){ v.textContent='due at '+Math.round(high); v.className='v quiet'; }
+    }else if(n>=bust){
+      /* The word arrives already chosen, in data-quiet, rather than being
+         worked out here from thresholds. "Dormant" on a song played once was
+         the claim the out-of-rotation page was rebuilt to stop making, and it
+         was being made here too -- this box outlives any one list, so fixing
+         only the page would have left the word loose on 174 song pages.
+
+         Deciding it here meant this file spelling out the same two thresholds
+         and the same four words the page uses, in a second language, where
+         nothing would have caught them drifting apart. rotation_word() names
+         it once in Python, from the constants and FEW_NAMES; the only thing
+         left to do at this end is wait for the gap to prove it applies. */
+      box.classList.add('dormant');
+      var quiet=box.getAttribute('data-quiet');
+      if(v&&quiet){ v.textContent=quiet; v.className='v dim'; }
+    }
+    box.title='Counted through '+d.as_of+', over '+d.shows.toLocaleString()+
+            ' shows that count toward a gap';
+    /* Nothing to reveal any more. Setting .num's textContent above already
+       replaced the em-dash that stood in for the number, and a song missing
+       from current.json returns before that and keeps the dash, which is the
+       honest reading rather than a card that vanishes. */
+  }).catch(function(){});
+})();
+(function(){
+  var list=document.getElementById('list');
+  if(!list) return;
+  var kids=Array.prototype.slice.call(list.children),
+      rows=kids.filter(function(n){ return !n.classList.contains('yr'); }),
+      heads=kids.filter(function(n){ return n.classList.contains('yr'); }),
+      q=document.getElementById('q'), sort=document.getElementById('sort'),
+      shown=document.getElementById('shown'), empty=document.getElementById('empty');
+  function matcher(t){
+    if(!/^\d+$/.test(t)) return function(hay){ return hay.indexOf(t)>-1; };
+    var re=new RegExp('(^|[^0-9])'+t+'([^0-9]|$)');
+    return function(hay){ return re.test(hay); };
+  }
+  function apply(){
+    var terms=q.value.toLowerCase().split(/\s+/).filter(Boolean).map(matcher),
+        n=0, live={};
+    rows.forEach(function(r){
+      var hay=r.getAttribute('data-search'), ok=terms.every(function(t){
+        return t(hay);
+      });
+      r.hidden=!ok;
+      // A soundcheck row is shown but is not a show, so it is not counted.
+      if(ok){ if(r.getAttribute('data-counted')!=='0') n++;
+              live[r.getAttribute('data-era')]=1; }
+    });
+    // A year heading with nothing left under it is worse than no heading, so
+    // it goes when its rows do -- and stays gone whenever the order is not
+    // chronological, because then it is not describing what follows it.
+    var byDate=sort.value==='newest'||sort.value==='oldest';
+    heads.forEach(function(h){
+      h.hidden=!byDate||!live[h.getAttribute('data-era')];
+    });
+    shown.textContent=n;
+    empty.hidden=n>0;
+    // The way out of a filter appears only once there is one to leave.
+    if(clear) clear.hidden=!q.value;
+  }
+  var headFor={};
+  heads.forEach(function(h){ headFor[h.getAttribute('data-era')]=h; });
+  function order(){
+    var k=sort.value;
+    var sorted=rows.slice().sort(function(a,b){
+      if(k==='rating') return (b.getAttribute('data-score')||-1)-(a.getAttribute('data-score')||-1);
+      if(k==='gap') return (b.getAttribute('data-gap')||-1)-(a.getAttribute('data-gap')||-1);
+      var x=a.getAttribute('data-date'), y=b.getAttribute('data-date');
+      return k==='oldest' ? x.localeCompare(y) : y.localeCompare(x);
+    });
+    sorted.forEach(function(r){ list.appendChild(r); });
+    if(k==='newest'||k==='oldest'){
+      // Walk the list as it now runs and put each heading before the first row
+      // of its era. Reading the era order off the original array instead put
+      // every heading at the foot of its group when sorted oldest, because the
+      // array is newest-first and never gets re-sorted itself.
+      var placed={};
+      sorted.forEach(function(r){
+        var e=r.getAttribute('data-era');
+        if(placed[e]) return;
+        placed[e]=1;
+        if(headFor[e]) list.insertBefore(headFor[e], r);
+      });
+    } else {
+      // Hidden either way, but parked at the end rather than left stranded
+      // between rows they no longer describe.
+      heads.forEach(function(h){ list.appendChild(h); });
+    }
+    apply();
+  }
+  var clear=document.getElementById('clear');
+  function setQuery(v){ q.value=v; apply(); }
+  /* A one-performance page ships no tools bar at all, so every handler below
+     is wired only where there is something to wire it to. Guarded here rather
+     than by returning early: the sticky header and the deep-link landing at the
+     foot of this function belong to every song page, and an early return took
+     them out on the 134 pages that have one row -- which are exactly the pages
+     a report links *into* by date. */
+  if(q&&sort){
+    q.addEventListener('input', apply);
+    sort.addEventListener('change', order);
+    // Clicking a venue asks the question you were about to type.
+    list.addEventListener('click', function(e){
+      var v=e.target.closest && e.target.closest('.r-venue');
+      if(!v) return;
+      setQuery(v.textContent.trim());
+      q.scrollIntoView({block:'nearest'});
+    });
+    if(clear) clear.addEventListener('click', function(){ setQuery(''); q.focus(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+      if(e.key==='Escape' && q.value){ setQuery(''); q.blur(); }
+    });
+    q.disabled=false; sort.disabled=false;
+    apply();
+  }
+
+  // The condensed header appears once the real one is off screen, and the
+  // real one is the thing to watch rather than a scroll offset -- no
+  // magic number, and it stays right when the header wraps to more lines.
+  var stuck=document.getElementById('stuck'), head=document.querySelector('header'),
+      totop=document.getElementById('totop');
+  function perch(on){
+    if(stuck) stuck.classList.toggle('on', on);
+    if(totop) totop.hidden=!on;
+  }
+  if(head && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(e){ perch(!e[0].isIntersecting); },
+      {rootMargin:'-8px 0px 0px 0px'}).observe(head);
+  }
+
+  // A link from a report lands on one row; say which, then stop saying it.
+  function land(){
+    var id=location.hash.slice(1);
+    if(!id) return;
+    var li=document.getElementById(id);
+    if(!li || li.classList.contains('yr')) return;
+    li.classList.remove('landed');
+    void li.offsetWidth;            // restart the animation on a repeat visit
+    li.classList.add('landed');
+  }
+  window.addEventListener('hashchange', land);
+  land();
+})();
+</script></body></html>
