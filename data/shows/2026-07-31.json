@@ -236,9 +236,28 @@
       "gap_high": 8.90124560909591,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "ENCORE",
+      "song": "A Life Beyond The Dream",
+      "slug": "a-life-beyond-the-dream",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-07-11",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN",
+      "out": "",
+      "plays": 45,
+      "recent_plays": 43,
+      "gap_median": 5,
+      "gap_mean": 5.325581395348837,
+      "gap_low": 2.391550323036164,
+      "gap_high": 8.413200802853664,
+      "gap_away": null,
+      "verdict": "overdue"
     }
   ],
-  "count_since": "2026-08-01T02:01:25+00:00",
-  "encored": false,
+  "count_since": "2026-08-01T02:16:51+00:00",
+  "encored": true,
   "provisional": true
 }
