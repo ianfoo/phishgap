@@ -198,9 +198,28 @@
       "gap_high": 8.140294460287661,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Golden Age",
+      "slug": "golden-age",
+      "gap": 12,
+      "jamchart": false,
+      "prev_date": "2026-07-11",
+      "prev_venue": "Ruoff Music Center",
+      "prev_place": "Noblesville, IN",
+      "out": "",
+      "plays": 91,
+      "recent_plays": 51,
+      "gap_median": 6,
+      "gap_mean": 6.333333333333333,
+      "gap_low": 2.5520630748185447,
+      "gap_high": 10.470939679812224,
+      "gap_away": null,
+      "verdict": "overdue"
     }
   ],
-  "count_since": "2026-08-01T01:45:55+00:00",
+  "count_since": "2026-08-01T01:56:13+00:00",
   "encored": false,
   "provisional": true
 }
