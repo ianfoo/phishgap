@@ -160,9 +160,28 @@
       "gap_high": 8.952591856849928,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Melt the Guns",
+      "slug": "melt-the-guns",
+      "gap": 2051,
+      "jamchart": false,
+      "prev_date": "1987-04-29",
+      "prev_venue": "Nectar's",
+      "prev_place": "Burlington, VT",
+      "out": "",
+      "plays": 5,
+      "recent_plays": 0,
+      "gap_median": null,
+      "gap_mean": null,
+      "gap_low": null,
+      "gap_high": null,
+      "gap_away": null,
+      "verdict": "bustout"
     }
   ],
-  "count_since": "2026-08-01T01:15:02+00:00",
+  "count_since": "2026-08-01T01:30:28+00:00",
   "encored": false,
   "provisional": true
 }
