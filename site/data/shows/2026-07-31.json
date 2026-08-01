@@ -122,9 +122,28 @@
       "gap_high": 6.130464827563116,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "What's Going Through Your Mind",
+      "slug": "whats-going-through-your-mind",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-18",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD",
+      "out": "",
+      "plays": 20,
+      "recent_plays": 18,
+      "gap_median": 4.5,
+      "gap_mean": 4.722222222222222,
+      "gap_low": 2.7097859382607132,
+      "gap_high": 6.902866813741307,
+      "gap_away": null,
+      "verdict": "overdue"
     }
   ],
-  "count_since": "2026-08-01T00:13:22+00:00",
+  "count_since": "2026-08-01T00:54:27+00:00",
   "encored": false,
   "provisional": true
 }
