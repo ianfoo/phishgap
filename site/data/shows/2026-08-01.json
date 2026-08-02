@@ -254,9 +254,28 @@
       "gap_high": 7.295319614975972,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Wading in the Velvet Sea",
+      "slug": "wading-in-the-velvet-sea",
+      "gap": 17,
+      "jamchart": false,
+      "prev_date": "2026-05-02",
+      "prev_venue": "Sphere",
+      "prev_place": "Las Vegas, NV",
+      "out": "",
+      "plays": 111,
+      "recent_plays": 23,
+      "gap_median": 17,
+      "gap_mean": 15.956521739130435,
+      "gap_low": 6.097980756500601,
+      "gap_high": 27.358950979676237,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-02T02:07:51+00:00",
-  "encored": false,
+  "count_since": "2026-08-02T02:18:10+00:00",
+  "encored": true,
   "provisional": true
 }
