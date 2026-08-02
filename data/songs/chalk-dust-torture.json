@@ -560,6 +560,6 @@
   {"date": "2026-04-25", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 8, "set": "2", "jamchart": true, "jam": "A dark, spooky, and contemplative affair that maintains forward momentum thanks to Fish\u2019s pushing before shifting efficiently to an upbeat melodic climb with familiar motifs and a crushing climax that decays into an ambient sample laden froth.", "note": "Unfinished.", "prev": "Blaze On", "next": "Mercury", "nb": 1},
   {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 3, "set": "1", "note": "Unfinished.", "out": ">", "next": "Ghost", "first": 1, "nb": 1},
   {"date": "2026-07-24", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 11, "set": "2", "out": ">", "prev": "Also Sprach Zarathustra", "in": ">", "next": "Sparks", "nb": 1},
-  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 4, "set": "1", "prev": "Tweezer", "in": ">", "next": "Stash", "nb": 1}
+  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 4, "set": "1", "nb": 1, "prev": "Tweezer", "in": ">", "next": "Stash"}
  ]
 }

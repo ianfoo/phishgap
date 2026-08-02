@@ -6,7 +6,7 @@
   "state": "MA",
   "artist": "Phish",
   "tour": "2026 Summer Tour",
-  "notes": "<p>My Friend, My Friend did not include the \"Myfe\" ending. Sigma Oasis and NMINML featured Trey on mini-drum kit. Chalk Dust Torture, Stash, Ruby Waves, and Weekapaug Groove were unfinished. Trey teased Melt the Guns in Light.</p>",
+  "notes": "<p>My Friend, My Friend did not include the \"Myfe\" ending. Sigma Oasis and No Men In No Man's Land featured Trey on mini drum kit. Chalk Dust Torture, Stash, and Ruby Waves were unfinished. Trey teased Melt the Guns in Light.</p>",
   "permalink": "https://phish.net/setlists/phish-august-01-2026-fenway-park-boston-ma-usa.html",
   "songs": [
     {
@@ -18,14 +18,15 @@
       "prev_date": "2026-07-22",
       "prev_venue": "Madison Square Garden",
       "prev_place": "New York, NY",
-      "plays": null,
-      "recent_plays": 0,
-      "gap_median": null,
-      "gap_mean": null,
-      "gap_low": null,
-      "gap_high": null,
+      "out": "",
+      "plays": 188,
+      "recent_plays": 45,
+      "gap_median": 7,
+      "gap_mean": 7.555555555555555,
+      "gap_low": 3.1661941788666708,
+      "gap_high": 12.119755877215313,
       "gap_away": null,
-      "verdict": null
+      "verdict": "expected"
     },
     {
       "set": "SET 1",
