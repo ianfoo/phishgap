@@ -292,9 +292,28 @@
       "gap_high": 7.905814106703939,
       "gap_away": null,
       "verdict": "premature"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Tweezer Reprise",
+      "slug": "tweezer-reprise",
+      "gap": 3,
+      "jamchart": false,
+      "prev_date": "2026-07-25",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 332,
+      "recent_plays": 68,
+      "gap_median": 4.0,
+      "gap_mean": 4.588235294117647,
+      "gap_low": 1.7574691921132755,
+      "gap_high": 7.704200794078012,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-02T02:23:21+00:00",
+  "count_since": "2026-08-02T02:28:32+00:00",
   "encored": true,
   "provisional": true
 }
