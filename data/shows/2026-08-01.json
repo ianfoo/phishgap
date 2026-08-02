@@ -273,9 +273,28 @@
       "gap_high": 27.358950979676237,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "ENCORE",
+      "song": "Character Zero",
+      "slug": "character-zero",
+      "gap": 1,
+      "jamchart": false,
+      "prev_date": "2026-07-29",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 267,
+      "recent_plays": 74,
+      "gap_median": 5.0,
+      "gap_mean": 5.135135135135135,
+      "gap_low": 2.582583902579866,
+      "gap_high": 7.905814106703939,
+      "gap_away": null,
+      "verdict": "premature"
     }
   ],
-  "count_since": "2026-08-02T02:18:10+00:00",
+  "count_since": "2026-08-02T02:23:21+00:00",
   "encored": true,
   "provisional": true
 }
