@@ -492,6 +492,6 @@
   {"date": "2026-04-23", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 5, "set": "1", "prev": "Brian and Robert", "next": "Moonage Daydream", "nb": 1},
   {"date": "2026-07-12", "venue": "Ruoff Music Center", "city": "Noblesville", "state": "IN", "gap": 9, "set": "1", "prev": "Mountains in the Mist", "xnext": "Simple", "nb": 1},
   {"date": "2026-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 6, "set": "1", "prev": "Axilla", "next": "Cold as Ice", "nb": 1},
-  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 5, "set": "1", "prev": "Chalk Dust Torture", "in": "->"}
+  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 5, "set": "1", "prev": "Chalk Dust Torture", "in": "->", "next": "Tweezer"}
  ]
 }
