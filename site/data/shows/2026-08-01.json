@@ -140,9 +140,28 @@
       "gap_high": 9.725018833797046,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Ruby Waves",
+      "slug": "ruby-waves",
+      "gap": 7,
+      "jamchart": false,
+      "prev_date": "2026-07-19",
+      "prev_venue": "Merriweather Post Pavilion",
+      "prev_place": "Columbia, MD",
+      "out": "",
+      "plays": 45,
+      "recent_plays": 43,
+      "gap_median": 6,
+      "gap_mean": 6.4186046511627906,
+      "gap_low": 2.8933218173465516,
+      "gap_high": 10.17968432400614,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-02T00:50:36+00:00",
+  "count_since": "2026-08-02T01:00:54+00:00",
   "encored": false,
   "provisional": true
 }
