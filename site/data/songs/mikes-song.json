@@ -579,6 +579,6 @@
   {"date": "2026-04-17", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 1, "set": "2", "out": ">", "prev": "Joy", "next": "I Am Hydrogen", "nb": 1},
   {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 7, "set": "1", "prev": "Free", "next": "The Man Who Stepped Into Yesterday", "nb": 1},
   {"date": "2026-07-22", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 10, "set": "2", "out": ">", "next": "I Am Hydrogen", "xprev": "David Bowie", "nb": 1},
-  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 5, "set": "2", "xprev": "Sand", "next": "Ruby Waves"}
+  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 5, "set": "2", "xprev": "Sand", "next": "Ruby Waves", "nb": 1}
  ]
 }
