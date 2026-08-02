@@ -73,6 +73,6 @@
   {"date": "2026-05-02", "venue": "Sphere", "city": "Las Vegas", "state": "NV", "gap": 10, "set": "2", "jamchart": true, "jam": "One last 20-minute jam before the run ends. The jam starts out energetic, as most \u201cRW\u201d jams do, and keeps its pace for a while until it turns into time to try and see if the aliens can be summoned. Fish seems not ready to stop rocking, so he finds a way to get the rest of the band back on that path. There\u2019s a peak because it\u2019s \u201cRuby Waves\u201d and it almost always gets a peak.", "prev": "Kill Devil Falls", "next": "Meatstick", "nb": 1},
   {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 0, "set": "2", "out": ">", "prev": "Sand", "next": "Suzy Greenberg", "nb": 1},
   {"date": "2026-07-19", "venue": "Merriweather Post Pavilion", "city": "Columbia", "state": "MD", "gap": 8, "set": "2", "out": ">", "prev": "Beneath a Sea of Stars Part 1", "in": ">", "next": "Backwards Down the Number Line", "nb": 1},
-  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 7, "set": "2", "prev": "Mike's Song", "in": ">", "next": "No Men In No Man's Land", "nb": 1}
+  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 7, "set": "2", "nb": 1, "prev": "Mike's Song", "in": ">", "next": "No Men In No Man's Land"}
  ]
 }

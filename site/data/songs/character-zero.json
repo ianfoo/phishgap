@@ -296,6 +296,6 @@
   {"date": "2026-07-07", "venue": "Kohl Center", "city": "Madison", "state": "WI", "gap": 0, "set": "1", "prev": "A Wave of Hope", "in": ">", "xnext": "Run Like an Antelope", "nb": 1},
   {"date": "2026-07-17", "venue": "Coastal Credit Union Music Park at Walnut Creek", "city": "Raleigh", "state": "NC", "gap": 6, "set": "1", "prev": "Buried Alive", "in": ">", "next": "Llama", "nb": 1},
   {"date": "2026-07-29", "venue": "Madison Square Garden", "city": "New York", "state": "NY", "gap": 7, "set": "2", "prev": "Crosseyed and Painless", "in": ">", "xnext": "A Day in the Life", "nb": 1},
-  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 1, "set": "e", "prev": "Wading in the Velvet Sea", "next": "Tweezer Reprise", "nb": 1}
+  {"date": "2026-08-01", "venue": "Fenway Park", "city": "Boston", "state": "MA", "gap": 1, "set": "e", "nb": 1, "prev": "Wading in the Velvet Sea", "next": "Tweezer Reprise"}
  ]
 }
