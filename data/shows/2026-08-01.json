@@ -197,9 +197,28 @@
       "gap_high": 9.858097029532294,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Weekapaug Groove",
+      "slug": "weekapaug-groove",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-22",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 522,
+      "recent_plays": 62,
+      "gap_median": 6.0,
+      "gap_mean": 6.080645161290323,
+      "gap_low": 3.088901021079642,
+      "gap_high": 9.20710189371728,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-02T01:26:39+00:00",
+  "count_since": "2026-08-02T01:47:14+00:00",
   "encored": false,
   "provisional": true
 }
