@@ -235,9 +235,28 @@
       "gap_high": 6.296553508177788,
       "gap_away": null,
       "verdict": "expected"
+    },
+    {
+      "set": "SET 2",
+      "song": "Possum",
+      "slug": "possum",
+      "gap": 5,
+      "jamchart": false,
+      "prev_date": "2026-07-22",
+      "prev_venue": "Madison Square Garden",
+      "prev_place": "New York, NY",
+      "out": "",
+      "plays": 582,
+      "recent_plays": 72,
+      "gap_median": 4.0,
+      "gap_mean": 4.305555555555555,
+      "gap_low": 1.6360004045351948,
+      "gap_high": 7.295319614975972,
+      "gap_away": null,
+      "verdict": "expected"
     }
   ],
-  "count_since": "2026-08-02T01:52:25+00:00",
+  "count_since": "2026-08-02T02:07:51+00:00",
   "encored": false,
   "provisional": true
 }
